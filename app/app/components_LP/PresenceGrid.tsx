@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { Container } from "@/components/Container";
-import { SectionLabel } from "@/components/SectionLabel";
-import { GhostButton } from "@/components/GhostButton";
-import type { PresenceContent } from "@/lib/content";
+import { Container } from "@/app/app/components/Container";
+import { SectionLabel } from "@/app/app/components/SectionLabel";
+import { GhostButton } from "@/app/app/components/GhostButton";
+import type { PresenceContent } from "@/app/app/lib/content";
 
 export function PresenceGrid({ content }: { content: PresenceContent }) {
   return (

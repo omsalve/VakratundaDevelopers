@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Container } from "@/components/Container";
-import { InstagramIcon, LinkedinIcon, YoutubeIcon } from "@/components/SocialIcons";
-import type { FooterContent, SocialPlatform } from "@/lib/content";
+import { Container } from "../components/Container";
+import { InstagramIcon, LinkedinIcon, YoutubeIcon } from "../components/SocialIcons";
+import type { FooterContent, SocialPlatform } from "@/app/app/lib/content";
 
 const socialIcons: Record<SocialPlatform, typeof InstagramIcon> = {
   instagram: InstagramIcon,

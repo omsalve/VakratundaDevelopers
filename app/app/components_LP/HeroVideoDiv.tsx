@@ -1,4 +1,4 @@
-import type { HeroContent } from "@/lib/content";
+import type { HeroContent } from "@/app/app/lib/content";
 
 export function HeroVideoDiv({ content }: { content: HeroContent }) {
   return (

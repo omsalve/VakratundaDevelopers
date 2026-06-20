@@ -3,8 +3,8 @@ import { Footer } from "./components_structure/Footer";
 import { HeroVideoDiv } from "./components_LP/HeroVideoDiv";
 import { PurposeSplit } from "./components_LP/PurposeSplit";
 import { PresenceGrid } from "./components_LP/PresenceGrid";
-import { FeatureRow } from "@/components/FeatureRow";
-import { homeContent } from "@/lib/content";
+import { FeatureRow } from "./components/FeatureRow";
+import { homeContent } from "@/app/app/lib/content";
 
 export default function Home() {
   return (

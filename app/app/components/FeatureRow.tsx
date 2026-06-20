@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { Container } from "@/components/Container";
-import { SectionLabel } from "@/components/SectionLabel";
-import { GhostButton } from "@/components/GhostButton";
-import type { FeatureRowContent } from "@/lib/content";
+import { Container } from "@/app/app/components/Container";
+import { SectionLabel } from "@/app/app/components/SectionLabel";
+import { GhostButton } from "@/app/app/components/GhostButton";
+import type { FeatureRowContent } from "@/app/app/lib/content";
 
 interface FeatureRowProps extends FeatureRowContent {
   imageSide: "left" | "right";

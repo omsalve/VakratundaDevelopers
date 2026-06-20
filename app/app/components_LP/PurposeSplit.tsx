@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { Container } from "@/components/Container";
-import { SectionLabel } from "@/components/SectionLabel";
-import type { PurposeContent } from "@/lib/content";
+import { Container } from "@/app/app/components/Container";
+import { SectionLabel } from "@/app/app/components/SectionLabel";
+import type { PurposeContent } from "@/app/app/lib/content";
 
 export function PurposeSplit({ content }: { content: PurposeContent }) {
   return (

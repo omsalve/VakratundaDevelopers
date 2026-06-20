@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, MessageCircle, NotebookPen, Search, X } from "lucide-react";
-import { Container } from "@/components/Container";
-import type { NavActionIcon, NavContent } from "@/lib/content";
+import { Container } from "../components/Container";
+import type { NavActionIcon, NavContent } from "@/app/app/lib/content";
 
 const actionIcons: Record<NavActionIcon, typeof Search> = {
   enquire: NotebookPen,
