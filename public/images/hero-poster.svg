@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-label="Hero placeholder poster">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a342f"/>
+      <stop offset="100%" stop-color="#9c6a4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <text x="960" y="520" font-family="Georgia, serif" font-size="64" fill="#faf8f4" text-anchor="middle">Hero</text>
+  <text x="960" y="580" font-family="Arial, sans-serif" font-size="20" letter-spacing="3" fill="#faf8f4" text-anchor="middle" opacity="0.8">PLACEHOLDER POSTER — CLOUDINARY ASSET PENDING</text>
+</svg>
