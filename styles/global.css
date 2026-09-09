@@ -1,0 +1,342 @@
+/* ============================================================================
+   Vakratunda — global stylesheet
+   Imported once, after vars.css, from app/(frontend)/layout.tsx.
+   ========================================================================== */
+
+/* ---- Reset ------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Firefox scrollbar, themed from the palette rather than left to the UA. */
+  scrollbar-color: var(--accent-rose) var(--navy-900);
+  scrollbar-width: thin;
+}
+
+/* Lenis owns the scroll position when smooth scrolling is enabled; native
+   smooth-scroll would fight it, so it is switched off from the JS side. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+html.lenis {
+  scroll-behavior: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+body {
+  min-height: 100svh;
+  background: var(--navy-700);
+  color: var(--text-on-navy);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-body);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Horizontal scroll is never intentional here; pinned sections can
+     transiently overflow while ScrollTrigger measures. */
+  overflow-x: clip;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4 {
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:where(ul[class], ol[class]) {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+}
+
+/* ---- Browser surfaces --------------------------------------------------- */
+::selection {
+  background: var(--accent-rose);
+  color: var(--navy-900);
+}
+
+:root {
+  caret-color: var(--accent-rose);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-900);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--navy-500);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--navy-900);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-deep);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* On cream the pale rose drops below 3:1, so both the ring and the
+   selection swatch move to the deep rose. */
+.on-cream ::selection {
+  background: var(--accent-deep);
+  color: var(--cream-100);
+}
+
+/* ---- Typography utilities ---------------------------------------------- */
+.u-display {
+  font-family: var(--font-display);
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+}
+
+.u-h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+}
+
+.u-h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+.u-h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* The brand guide sets one word of most headlines in a swash italic
+   ("The *story* Behind the Structure", "Blueprints of *Versatility*"). */
+.u-swash {
+  font-style: italic;
+  color: var(--accent-text);
+}
+
+.u-lead {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+}
+
+.u-body {
+  font-size: var(--fs-body);
+  max-width: var(--measure);
+}
+
+.u-caption {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+}
+
+/* Small wide-tracked label, as used throughout the brand guide. */
+.u-label {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+.u-numeral {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+/* ---- Layout utilities --------------------------------------------------- */
+.u-shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.u-section {
+  padding-block: var(--section-pad);
+}
+
+/* ---- The section head ---------------------------------------------------
+   A heading and its standfirst, ranged left on the shell's own left edge and
+   held --head-gap clear of the content below. The measures are on the type,
+   never on the block: a narrower max-width on the shell element itself would
+   re-centre it and pull the heading inboard of everything it heads, which is
+   exactly the drift this replaces. */
+.u-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--head-gap);
+}
+
+.u-head > :is(h1, h2, h3) {
+  max-width: var(--measure-heading);
+}
+
+.u-head > p {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+}
+
+/* Ground swaps. Any subtree marked .on-cream re-points the semantic
+   text tokens so nested components need no light-mode branches. */
+.on-cream {
+  background: var(--cream-200);
+  color: var(--text-on-cream);
+  --text-on-navy: var(--text-on-cream);
+  --text-on-navy-muted: var(--text-on-cream-muted);
+  --accent-text: var(--accent-deep);
+  --navy-line: rgba(15, 20, 48, 0.14);
+  --navy-line-soft: rgba(15, 20, 48, 0.07);
+}
+
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Skip link ---------------------------------------------------------- */
+.u-skip-link {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: calc(var(--z-modal) + 10);
+  padding: var(--space-3) var(--space-5);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--space-7)));
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+.u-skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---- Film grain --------------------------------------------------------- */
+/* One fixed, GPU-cheap overlay. It keeps the large navy fields from reading
+   as flat #161e41 fill without adding a gradient. */
+.u-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* ---- Motion gate -------------------------------------------------------- */
+/* `motion-on` is set synchronously in <head> before first paint, and only
+   when the visitor has NOT asked for reduced motion. Everything below is
+   therefore additive: with no JS, or with reduced motion, every element is
+   already in its final, visible state and nothing is ever stranded hidden. */
+.motion-on [data-reveal] {
+  opacity: 0;
+}
+.motion-on [data-reveal="up"] {
+  transform: translate3d(0, 28px, 0);
+}
+.motion-on [data-reveal="rise"] {
+  transform: translate3d(0, 56px, 0);
+}
+
+.u-parallax {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .u-parallax {
+    will-change: auto;
+  }
+}

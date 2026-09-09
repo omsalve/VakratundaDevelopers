@@ -1,0 +1,59 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+.stacked {
+  flex-direction: column;
+  gap: var(--space-m);
+  text-align: center;
+}
+
+.mark {
+  flex: none;
+  color: inherit;
+  /* Carried here rather than inline, so a mark left unsized by its caller and
+     scaled from CSS still keeps its aspect ratio. */
+  object-fit: contain;
+}
+
+.wordmarkGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+.stacked .wordmarkGroup {
+  align-items: center;
+}
+
+/* The guide's own wordmark, as artwork. It is a wide plate (858 x 144), so it
+   is driven from its height and left to take whatever width that asks for —
+   a width-first rule would make it tower over the mark beside it. */
+.wordmark {
+  display: block;
+  height: calc(var(--logo-size, 40px) * 0.62);
+  width: auto;
+  object-fit: contain;
+  /* The plate carries its own rose-to-silver gradient and is drawn for the
+     navy ground both call sites stand on. */
+  flex: none;
+}
+
+.stacked .wordmark {
+  height: clamp(1.75rem, 5.5vw, 3.25rem);
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(0.9375rem, 2vw, 1.25rem);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--accent-text);
+  opacity: 0.92;
+  white-space: nowrap;
+}
