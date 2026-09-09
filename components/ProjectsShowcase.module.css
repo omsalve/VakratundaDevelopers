@@ -1,0 +1,426 @@
+/* ============================================================================
+   Our Projects — the demo transition, in the site's own colours. No florals.
+
+   TWO LAYOUTS, from the same markup:
+
+     · DEFAULT (no JS, reduced motion, or narrower than 60rem). An ordinary
+       navy section: heading, standfirst, and every project as a card in a
+       grid. Nothing sticky, nothing hidden, nothing waiting on a script.
+
+     · `.motion-on`, 60rem and up. The section grows to `--span` viewports
+       (set inline by the component) and its stage goes sticky. Two offset
+       panes merge into one photograph, the frame opens to full bleed,
+       PROJECTS lands across the hero and then lifts away so the map beneath
+       it can be read, and the rail counts the portfolio.
+
+   THE SPLIT STATE IS DECLARED HERE, exactly as the demo declares it: the
+   seam (--pj-gap), the frame insets (--pj-fx / --pj-ft / --pj-fb), the corner
+   (--pj-r), and each pane's vertical offset are CSS, visible from the first
+   paint; the GSAP timeline in ProjectsShowcase.tsx only drives them home.
+
+   Everything under `:global(.motion-on)` is additive: strip the class and a
+   complete, readable section is what is left.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+  background: var(--navy-700);
+
+  /* The demo's split geometry. Animated by the timeline (GSAP writes these
+     inline on the section), declared here so the split state needs no JS. */
+  --pj-gap: 4.5vw; /* the navy seam between the panes  */
+  --pj-fx: 15vw; /* frame horizontal inset            */
+  --pj-ft: 15svh; /* frame top inset                   */
+  --pj-fb: 11svh; /* frame bottom inset                */
+
+  /* THE CORNER, and it is part of the geometry rather than a decoration on
+     top of it — which is why it is declared here with the insets and driven
+     home by the same tween. While the picture is a held object with navy
+     around it, its corners are drawn; the moment it becomes the screen they
+     are gone, because a rounded corner at a screen edge is a card someone
+     forgot to finish, not a frame. In vw so it tracks the frame it belongs
+     to, and in the same unit as --pj-gap so both animate identically. */
+  --pj-r: 1.6vw;
+}
+
+/* ---- Head --------------------------------------------------------------- */
+/* Ranged on the shell's left edge — the same edge the project grid below it
+   starts from. The measures are on the heading and the standfirst, NOT on
+   this element: a max-width here would meet the shell's own
+   `margin-inline: auto` and centre the head inboard of its own content. */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--head-gap);
+}
+
+.title {
+  margin: 0;
+  max-width: var(--measure-heading);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+}
+
+.standfirst {
+  margin: 0;
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy);
+  opacity: 0.78;
+}
+
+/* ---- Pieces the default layout has no use for --------------------------- */
+.frame,
+.veil,
+.rail,
+.pins {
+  display: none;
+}
+
+/* ---- The projects ------------------------------------------------------- */
+.index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--space-9) var(--space-6);
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  list-style: none;
+}
+
+.item {
+  margin: 0;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  /* Reserved before the photograph arrives — this section must not reflow. */
+  aspect-ratio: 4 / 5;
+  background: var(--navy-800);
+  box-shadow: var(--shadow-m);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--text-on-navy);
+}
+
+.locality {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.status {
+  padding: 0.2em 0.75em;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-caption);
+  color: var(--accent-text);
+}
+
+.blurb {
+  margin: var(--space-3) 0 0;
+  max-width: 32ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+  opacity: 0.72;
+}
+
+/* ============================================================================
+   The motion layout
+   ========================================================================== */
+
+@media (min-width: 60rem) {
+  :global(.motion-on) .section {
+    /* --span is set inline by the component, and is the sequence plus the
+       still hold the arc below opens across — the component derives it, this
+       is only a fallback that keeps the section sane if the inline value ever
+       goes missing. */
+    min-height: calc(var(--span, 7.3) * 100svh);
+    padding-block: 0;
+  }
+
+  :global(.motion-on) .stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    isolation: isolate;
+
+    --rail-w: clamp(4.5rem, 7vw, 7.5rem); /* reserved for the progress rail */
+  }
+
+  /* ---- The photograph ---------------------------------------------------
+     One box whose insets are the split geometry; two panes, each a clip-path
+     window onto its own copy of the SAME full-frame image. When the seam
+     closes and the offsets settle, the halves are one continuous picture —
+     no alignment math to go wrong. */
+  :global(.motion-on) .frame {
+    display: block;
+    position: absolute;
+    top: var(--pj-ft);
+    bottom: var(--pj-fb);
+    left: var(--pj-fx);
+    right: var(--pj-fx);
+    z-index: 0;
+  }
+
+  :global(.motion-on) .pane {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  /* The split state, from the first paint: each pane offset vertically, the
+     seam between the half-windows showing the navy ground through it. */
+  /* THE CORNERS ARE ROUNDED ON THE OUTSIDE ONLY, and that asymmetry is the
+     whole point of doing it here rather than with a border-radius on the
+     frame. `round` in an inset() takes the full radius shorthand, so each
+     pane gets the two corners that face the world and square ones on the
+     seam. Round all four and the two halves would meet in a pinched waist
+     for the sixteen hundredths of the sequence between the seam closing and
+     the frame opening; rounded outside only, they close into ONE clean
+     rounded rectangle — a single picture that had been torn in two, which is
+     the sentence this beat is trying to say. */
+  :global(.motion-on) .paneLeft {
+    clip-path: inset(
+      0 calc(50% + var(--pj-gap) / 2) 0 0 round var(--pj-r) 0 0 var(--pj-r)
+    );
+    transform: translateY(4.5svh);
+  }
+
+  :global(.motion-on) .paneRight {
+    clip-path: inset(
+      0 0 0 calc(50% + var(--pj-gap) / 2) round 0 var(--pj-r) var(--pj-r) 0
+    );
+    transform: translateY(-4.5svh);
+  }
+
+  :global(.motion-on) .shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 38%;
+    will-change: transform;
+  }
+
+  /* The departure veil — navy, raised by the timeline over the hand-off. */
+  :global(.motion-on) .veil {
+    display: block;
+    position: absolute;
+    inset: 0;
+    /* Follows the corner rather than squaring it off. It only ever rises once
+       --pj-r has reached 0, so this costs nothing today; it costs nothing to
+       be right if the veil is ever asked to appear earlier either. NOT
+       `overflow: hidden` on the frame, which would have done the same job and
+       also clipped away the 4.5svh each pane is offset by — the offset IS the
+       split state. */
+    border-radius: var(--pj-r);
+    background: var(--navy-900);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ---- The map overlay ---------------------------------------------------
+     A sibling of the frame, not a child: the frame is clipped into two
+     windows and the pins belong to neither half, and the frame's own
+     `z-index: 0` would trap them under the wordmark.
+
+     Inset to the stage rather than to `--pj-*`, deliberately. The pins are
+     only ever live once those insets have reached zero and the frame IS the
+     stage, so tracking them would buy nothing and would resize the layer on
+     every scrubbed frame of the opening.
+
+     `data-shot` on the element hands it the photograph's overscale from the
+     timeline, about the same origin, so the two stay registered.
+
+     Above the head (z-3): an open panel is the top layer of the composition,
+     wordmark included. */
+  :global(.motion-on) .pins {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    will-change: transform;
+  }
+
+  /* ---- The rail ---------------------------------------------------------- */
+  :global(.motion-on) .rail {
+    display: flex;
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--rail-w);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  :global(.motion-on) .railTrack {
+    position: relative;
+    width: 1px;
+    height: 30svh;
+    overflow: hidden;
+    background: var(--navy-line);
+  }
+
+  :global(.motion-on) .railFill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent-rose);
+    transform: scaleY(0);
+    transform-origin: top center;
+  }
+
+  :global(.motion-on) .railCount {
+    margin: var(--space-s) 0 0;
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tracking-label);
+    color: var(--text-on-navy);
+    /* keeps the count legible once the photograph is behind it */
+    text-shadow: 0 1px 16px rgba(9, 13, 33, 0.55);
+  }
+
+  :global(.motion-on) .railTotal {
+    opacity: 0.45;
+  }
+
+  /* ---- Title and standfirst ---------------------------------------------- */
+  /* The head stops being a block of copy and becomes two placed elements —
+     and it has to stop being the SHELL as well, which is the part that was
+     missed. `.u-shell` is on this element in the markup, and its
+     `margin-inline: auto` is what the `margin: 0` below was written to
+     cancel; its `max-width: var(--maxw)` was not. So the head kept an 84rem
+     ceiling while being stretched `inset: 0` with no auto margins left to
+     centre it: a 1344px box pinned to the LEFT of a 1440px stage. Everything
+     placed inside it — the wordmark, the standfirst — was centred on 672
+     instead of 720, a 48px list nothing on the page accounted for. Released
+     here, so `left: 0; right: 0` means the frame it appears to mean. */
+  :global(.motion-on) .head {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* Placed, not ranged: both revert to the full frame. */
+  :global(.motion-on) .title,
+  :global(.motion-on) .standfirst {
+    max-width: none;
+  }
+
+  /* ---- The wordmark -------------------------------------------------------
+     Monumental, thin, cream, with a soft navy shadow so it holds over the
+     bright sky. PLACED FROM ITS CAP BAND AND SIZED FROM ITS OWN MEASURE —
+     both of which the demo it was ported from had no need to do, because the
+     demo has no fixed header and no left rail to answer to.
+
+     THE VERTICAL. The demo's `top: 1svh` is the top of the EM BOX, and an em
+     box is not what anyone sees. Measured in the browser, Playfair Display's
+     cap top sits 0.1644em below it inside this 0.94 line box — 35.5 unseen
+     pixels at 15vw on a 1440 window. So `top: 1svh` put the visible P about
+     forty-five pixels down, squarely underneath a 4.75rem fixed header that
+     goes opaque navy the moment this section is on screen. Subtracting the
+     trim makes the number below mean what it says: the CAP TOP lands exactly
+     --space-8 clear of the header, and the wordmark reads in the upper third
+     — cap band running 124px to 280px of a 900px frame — with the map's own
+     mass, focal point 38% down, carrying everything beneath it.
+
+     THE MEASURE. "PROJECTS" is eight Playfair caps, ≈4.96em of advance plus
+     tracking; at the demo's 19vw that is ~95vw of type in a field the rail
+     already owns 7vw of. It did not have margins, it had an overflow. 15vw
+     sets it at ~75vw — a full 12.5vw of air each side, so it clears the rail
+     by a wide margin and is never the widest thing on the screen. The svh arm
+     of the min() is for the wide, short window, where a vw-only figure sets a
+     wordmark taller than the space above the map.
+
+     Both figures are measured rather than estimated: at 1440 x 900 this
+     renders at 216px, 1035px of type, 203px of air each side of a 100px
+     rail. */
+  :global(.motion-on) .title {
+    position: absolute;
+    top: calc(var(--header-h) + var(--space-8) - 0.1644em);
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: clamp(3rem, min(15vw, 30svh), 18rem);
+    font-weight: 400;
+    line-height: 0.94;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: var(--cream-100);
+    text-shadow: 0 3px 34px rgba(9, 13, 33, 0.4);
+    /* The overscaled entrance grows about the middle of the CAP BAND, not the
+       middle of the em box: 35.5px of trim plus half of the 156px band, over
+       a 203px line box — 56%. The wordmark then settles onto the spot it was
+       already occupying, instead of sliding as it lands. */
+    transform-origin: 50% 56%;
+    /* GSAP sets the entrance state — and the exit: the wordmark lifts out
+       of the frame before the map underneath it goes live. Deliberately not
+       `opacity: 0` here: if the script never runs, the title must still be
+       on the screen. */
+  }
+
+  :global(.motion-on) .standfirst {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8svh;
+    width: 100%;
+    max-width: calc(var(--measure-lead) + var(--gutter) * 2);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    text-align: center;
+    font-size: var(--fs-body);
+  }
+
+  /* The full-bleed sequence is the section now; the cards return the moment
+     the layout narrows or the script goes missing. `display: none` also
+     means their images are never fetched here. */
+  :global(.motion-on) .index {
+    display: none;
+  }
+}
+
+/* Belt and braces: `motion-on` is never set under reduced motion, so this
+   only matters if the class is ever forced on. */
+@media (prefers-reduced-motion: reduce) {
+  .pane,
+  .shot,
+  .pins {
+    will-change: auto;
+  }
+}

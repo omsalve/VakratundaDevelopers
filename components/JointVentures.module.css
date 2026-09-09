@@ -1,0 +1,416 @@
+/* ============================================================================
+   JointVentures — three partnerships, one frame.
+
+   THE FRAME NEVER MOVES. All three slides are laid into the same grid cell of
+   `.stage`, so the stage measures itself once against the tallest of them and
+   then holds still; only the contents change. Everything below is written as
+   a pair — the state a slide rests in when it is not showing, and the state
+   it takes when `.isActive` is on it — so the transition in both directions
+   falls out of one set of rules.
+
+   THE MOTION LEANS. `--lean` is set on the stage from `data-dir`, so a step
+   forward and a step back are mirror images rather than the same movement
+   played twice.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  /* It follows the team on the same cream, so it opens with the larger
+     interval to keep the two sections from reading as one block. */
+  padding-block: var(--section-pad-lg) var(--section-pad);
+}
+
+/* The drawn rule that separates it from the team above — the guide's rose
+   line-work, ranged on the shell rather than bled to the window. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw));
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.5;
+}
+
+.head {
+  /* `u-head` carries the rest; only the measures differ here, and they are
+     on the type rather than on the block. */
+  max-width: var(--maxw);
+}
+
+/* ---- The stage ---------------------------------------------------------- */
+.stage {
+  position: relative;
+  display: grid;
+  /* Room for the partner's name, which hangs below the photograph. */
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  --lean: 26px;
+}
+
+.stage[data-dir="prev"] {
+  --lean: -26px;
+}
+
+.slide {
+  position: relative;
+  /* Every slide in the SAME cell: the stage takes the tallest of them and
+     never resizes as they change. */
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, clamp(17rem, 30vw, 26rem))
+    minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(var(--space-6), 5vw, var(--space-10));
+
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 280ms var(--ease-in-out-quart),
+    visibility 0s linear 280ms;
+}
+
+.isActive {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 420ms var(--ease-out-quint),
+    visibility 0s;
+}
+
+/* ---- The photograph ------------------------------------------------------
+   Cut in from its foot, with the picture itself easing off a push. Two
+   different rates on purpose: the mask finishes first, the push a beat after
+   it, so the frame settles rather than stopping. */
+.frame {
+  position: relative;
+  grid-column: 2;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: var(--cream-300);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 420ms var(--ease-in-out-quart);
+}
+
+.isActive .frame {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 900ms var(--ease-out-expo);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.09);
+  transition: transform 420ms var(--ease-in-out-quart);
+}
+
+.isActive .image {
+  transform: scale(1);
+  transition: transform 1200ms var(--ease-out-expo);
+}
+
+/* The photograph dissolves into the ground at its foot, which is what lets
+   the partner's name cross it in navy and stay legible on a dark frame. */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(246, 245, 242, 0.96) 4%,
+    rgba(246, 245, 242, 0.62) 44%,
+    rgba(246, 245, 242, 0) 100%
+  );
+}
+
+/* ---- The partner's name --------------------------------------------------
+   Set across the foot of the photograph and hung below it, in the display
+   face at the page's largest size. It rises out of its own mask — the one
+   piece of motion in the section that is allowed to be big. */
+.partner {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-raised);
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  translate: 0 24%;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 8.6vw, 7rem);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-on-cream);
+  pointer-events: none;
+}
+
+.partnerInk {
+  display: block;
+  transform: translate3d(0, 108%, 0);
+  transition: transform 380ms var(--ease-in-out-quart);
+}
+
+.isActive .partnerInk {
+  transform: none;
+  transition: transform 880ms var(--ease-out-expo) 90ms;
+}
+
+/* ---- The two columns of copy --------------------------------------------
+   They come up a beat behind the photograph and a beat apart from each
+   other, leaning in the direction of travel. */
+.facts,
+.note {
+  display: grid;
+  gap: var(--space-6);
+  opacity: 0;
+  transform: translate3d(var(--lean), 14px, 0);
+  transition:
+    opacity 240ms var(--ease-in-out-quart),
+    transform 240ms var(--ease-in-out-quart);
+}
+
+.facts {
+  grid-column: 1;
+  justify-self: end;
+  text-align: right;
+}
+
+.note {
+  grid-column: 3;
+  justify-self: start;
+  max-width: 21rem;
+  gap: var(--space-7);
+  transform: translate3d(calc(var(--lean) * -1), 14px, 0);
+}
+
+.isActive .facts,
+.isActive .note {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 560ms var(--ease-out-quint) 220ms,
+    transform 760ms var(--ease-out-expo) 220ms;
+}
+
+.isActive .note {
+  transition:
+    opacity 560ms var(--ease-out-quint) 300ms,
+    transform 760ms var(--ease-out-expo) 300ms;
+}
+
+.kicker {
+  color: var(--accent-text);
+}
+
+.statLabel {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+  margin-bottom: var(--space-3);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.blurb {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* The pill, as the rest of the site draws it: a hairline, not a fill. */
+.cta {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  border: var(--hairline) solid var(--text-on-cream);
+  border-radius: var(--radius-pill);
+  color: var(--text-on-cream);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background: var(--text-on-cream);
+  color: var(--cream-100);
+}
+
+/* ---- The controls ------------------------------------------------------- */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  margin-top: clamp(var(--space-7), 5vw, var(--space-9));
+}
+
+.nav {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--text-on-cream);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    transform var(--dur-base) var(--ease-out-expo);
+}
+
+.nav:hover {
+  color: var(--accent-deep);
+}
+
+.counter {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  color: var(--text-on-cream-muted);
+}
+
+.counterNow {
+  color: var(--text-on-cream);
+}
+
+.rail {
+  position: relative;
+  width: min(18rem, 34vw);
+  height: 2px;
+  background: var(--navy-line);
+  overflow: hidden;
+}
+
+.railFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(100% / var(--count));
+  background: var(--accent-deep);
+  transform: translate3d(calc(100% * var(--index)), 0, 0);
+  transition: transform 720ms var(--ease-out-expo);
+}
+
+/* ---- Narrow ------------------------------------------------------------- */
+/* One column: the measurements come off the side of the photograph and sit
+   above it as a row, and the sentence follows underneath. The name stays on
+   the photograph — it is the thing that names the slide. */
+@media (max-width: 63.99rem) {
+  .slide {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: var(--space-7);
+  }
+
+  .facts,
+  .note,
+  .frame {
+    grid-column: 1;
+  }
+
+  .facts {
+    justify-self: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-6) var(--space-8);
+    text-align: center;
+  }
+
+  .facts .kicker {
+    flex-basis: 100%;
+  }
+
+  .frame {
+    width: min(100%, 24rem);
+    aspect-ratio: 4 / 5;
+  }
+
+  .note {
+    justify-self: center;
+    max-width: 32rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .cta {
+    justify-self: center;
+  }
+
+  /* The name comes out of absolute positioning and takes its own row
+     between the photograph and the sentence, pulled back up over the foot of
+     the picture by exactly the row gap plus half a line. It still crosses the
+     photograph; it is just no longer hanging off the bottom of a slide that
+     now continues below it. */
+  .facts {
+    grid-row: 1;
+  }
+  .frame {
+    grid-row: 2;
+  }
+  .partner {
+    grid-row: 3;
+    position: static;
+    justify-self: stretch;
+    translate: 0 0;
+    margin-top: calc(var(--space-7) * -1 - 0.46em);
+    font-size: clamp(2rem, 11vw, 4.5rem);
+  }
+  .note {
+    grid-row: 4;
+  }
+
+  .stage {
+    padding-bottom: 0;
+  }
+}
+
+/* ---- Reduced motion ------------------------------------------------------ */
+/* The slides still change — they just change on the frame they are asked to.
+   No wipe, no push, no mask, and the delays go with them, or the inactive
+   slide would sit on screen through an exit that is no longer running. */
+@media (prefers-reduced-motion: reduce) {
+  .slide,
+  .frame,
+  .image,
+  .partnerInk,
+  .facts,
+  .note,
+  .railFill {
+    transition: none;
+    transform: none;
+    clip-path: none;
+  }
+
+  .isActive .facts,
+  .isActive .note {
+    opacity: 1;
+  }
+
+  .railFill {
+    /* Position is the whole point of this element, so it keeps its offset —
+       it simply arrives there without travelling. */
+    transform: translate3d(calc(100% * var(--index)), 0, 0);
+  }
+}

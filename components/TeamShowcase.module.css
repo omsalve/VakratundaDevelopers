@@ -1,0 +1,826 @@
+/* ============================================================================
+   TeamShowcase — four slides, and the rule that measures them.
+
+   TWO LAYOUTS, FROM ONE SET OF MARKUP — the house pattern, and the whole of
+   the stylesheet's structure:
+
+     · DEFAULT. Everything above the `@media (min-width: 64rem)` block. Four
+       cream blocks stacked in document order, each complete, with no stage,
+       no clip, no absolute positioning and no control rail. This is what a
+       visitor with no JavaScript sees, what a visitor who has asked for
+       reduced motion sees, and what every narrow window sees.
+
+     · MOTION. Everything inside that block, and only when `.motion-on` is
+       also set — which the <head> script does before first paint, and never
+       for a visitor who has asked for reduced motion. Strip that one class
+       and the default section above is what is left, at every width. Nothing
+       here can strand a slide invisible, because nothing here is the state
+       an element rests in.
+
+   THE SECTION'S HEIGHT IS DERIVED, not chosen. `--span` is set inline from
+   the one sum in TeamShowcase.tsx — every slide held, plus every cut between
+   two of them, times the viewports a timeline unit is worth. Re-pace the
+   sequence there and this stylesheet needs no edit at all.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  /* The larger rhythm token, as the section this replaces used: it arrives
+     through the page's second arc, and the cream has to be open above the
+     first slide for a beat before the first slide appears in it. */
+  padding-block: var(--section-pad-lg);
+
+  /* THE SHELL, RESTATED AS PADDING. `u-shell` centres itself with two auto
+     margins, which an absolutely positioned slide cannot have. This resolves
+     to exactly the same left edge, so the type in a stacked slide and the
+     type in a stuck one range on the same line as every other section head
+     on the page. */
+  --shell-pad: max(
+    var(--gutter),
+    calc((100% - var(--maxw)) / 2 + var(--gutter))
+  );
+
+  --node-size: 12px;
+}
+
+.stage {
+  position: relative;
+}
+
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide {
+  position: relative;
+  padding-inline: var(--shell-pad);
+}
+
+.slide + .slide {
+  margin-top: var(--section-pad);
+}
+
+/* ---- 1 · Intro ---------------------------------------------------------- */
+.intro {
+  display: grid;
+  gap: clamp(var(--space-7), 6vw, var(--space-10));
+  align-items: center;
+}
+
+.introText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.headline {
+  max-width: 13ch;
+  color: var(--text-on-cream);
+}
+
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+}
+
+.introPlate {
+  max-height: 100%;
+}
+
+/* The one filled control in the section. On cream the pale brand rose falls
+   to 1.85:1, so the solid uses the deep rose — 4.8:1 for the cream label
+   sitting on it, and a boundary that is actually visible against the ground
+   it stands on. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: var(--space-2);
+  padding: var(--space-4) var(--space-7);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-deep);
+  color: var(--cream-100);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  cursor: pointer;
+  box-shadow: 0 12px 32px -14px rgba(168, 87, 76, 0.75);
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-2px);
+  background: #96483e;
+  box-shadow: 0 18px 44px -14px rgba(168, 87, 76, 0.7);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon,
+.textCta:hover .ctaIcon,
+.cta:focus-visible .ctaIcon,
+.textCta:focus-visible .ctaIcon {
+  transform: translateX(4px);
+}
+
+/* ---- 2 · Chairman ------------------------------------------------------- */
+.chairman {
+  display: grid;
+  gap: clamp(var(--space-7), 5vw, var(--space-10));
+  align-items: center;
+}
+
+.chairmanPlate {
+  max-height: 100%;
+}
+
+.chairmanText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.quote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* The quote opens on a raised, drawn quotation mark rather than on a glyph
+   dropped into the copy: the mark is decoration, and the sentence starts at
+   the left edge the rest of the slide is ranged on. */
+.quoteText {
+  position: relative;
+  max-width: 24ch;
+  color: var(--text-on-cream);
+}
+
+.quoteText::before {
+  content: "“";
+  position: absolute;
+  top: -0.18em;
+  left: -0.44em;
+  font-family: var(--font-display);
+  font-size: 2.4em;
+  line-height: 1;
+  color: var(--accent-deep);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-style: normal;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.role {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.bio {
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* The quiet counterpart to `.cta`: a control that hands on rather than one
+   that is the point of the slide. */
+.textCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-bottom: var(--hairline) solid var(--cream-line-rose);
+  padding-bottom: var(--space-1);
+  color: var(--accent-deep);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.textCta:hover,
+.textCta:focus-visible {
+  color: var(--text-on-cream);
+  border-color: var(--text-on-cream);
+}
+
+/* ---- 3 · Leadership ----------------------------------------------------- */
+.people {
+  display: grid;
+  gap: clamp(var(--space-7), 4vw, var(--space-9));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* NOT A CARD. No box, no fill, no radius: one hairline across the top of each
+   column, which is the same drawn rule the rest of the site divides with. A
+   field of three filled panels would be the only boxed thing on this page. */
+.person {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--cream-line);
+}
+
+.personPlate {
+  width: clamp(5rem, 8vw, 7.25rem);
+  margin-bottom: var(--space-2);
+}
+
+.personName {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 0.9rem + 0.9vw, 1.6rem);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  max-width: 16ch;
+}
+
+.personRole {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+}
+
+.personLead {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+.personCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: var(--space-2);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--accent-deep);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur-fast) ease;
+}
+
+/* A drawn mark rather than a glyph: a short rule that lengthens on hover,
+   in the same line-work as everything else in the section. */
+/* Scaled from its left end rather than widened: a 20px rule is small enough
+   that animating its width would cost nothing measurable, but it would still
+   be a layout property on a hover, and there is no reason for one here. */
+.personCtaMark {
+  display: block;
+  width: 1.25rem;
+  height: 1px;
+  background: currentColor;
+  transform-origin: 0 50%;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.personCta:hover,
+.personCta:focus-visible {
+  color: var(--text-on-cream);
+}
+
+.personCta:hover .personCtaMark,
+.personCta:focus-visible .personCtaMark,
+.isOpen .personCtaMark {
+  transform: scaleX(1.8);
+}
+
+/* ---- The bio disclosure -------------------------------------------------
+   In the stacked layout it lies OVER its own column: the frame there is
+   clipped, and a panel hanging off the bottom of a card that is vertically
+   centred in a fixed frame is a panel that gets cut in half. Standing up it
+   is an ordinary block that pushes the column taller, which is what a
+   disclosure should do when there is a page to grow into. */
+.panel {
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  background: var(--cream-100);
+  border: var(--hairline) solid var(--cream-line);
+  border-radius: var(--radius-m);
+  box-shadow: 0 18px 48px -22px rgba(15, 20, 48, 0.45);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panelText {
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--text-on-cream);
+}
+
+.close {
+  margin-top: var(--space-5);
+  padding: var(--space-2) var(--space-4);
+  background: none;
+  border: var(--hairline) solid var(--cream-line);
+  border-radius: var(--radius-pill);
+  color: var(--text-on-cream-muted);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.close:hover,
+.close:focus-visible {
+  color: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
+
+/* ---- 4 · Core teams ----------------------------------------------------- */
+.roles {
+  display: grid;
+  gap: clamp(var(--space-6), 3.5vw, var(--space-8))
+    clamp(var(--space-6), 4vw, var(--space-9));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ruled, not boxed — the same construction as `.person` above, so the two
+   card slides read as one system rather than as two visits to the card
+   pattern. */
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--cream-line);
+}
+
+.roleIcon {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: var(--space-1);
+  color: var(--accent-deep);
+}
+
+.roleTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 0.95rem + 0.5vw, 1.4rem);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.roleBody {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+.roleCta {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  text-decoration: none;
+  border-bottom: var(--hairline) solid transparent;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.roleCta:hover,
+.roleCta:focus-visible {
+  color: var(--text-on-cream);
+  border-bottom-color: var(--text-on-cream);
+}
+
+/* ---- The cut's drawn parts ---------------------------------------------
+   Neither is rendered where there is no cut. A covering plane and a vignette
+   belonging to a transition that never happens are two elements lying over a
+   page for no reason at all. */
+.veil,
+.shutter {
+  display: none;
+}
+
+/* ---- The rail -----------------------------------------------------------
+   Not rendered in the stacked-by-default layout either: every slide is a real
+   block on the page there, in order, and a control rail for four adjacent
+   blocks is a map of a journey nobody is on. */
+.rail {
+  display: none;
+}
+
+/* ---- Entrance ----------------------------------------------------------- */
+/* Slide one's parts, held for `revealOnEnter`. Without `motion-on` they are
+   never hidden in the first place. */
+:global(.motion-on) .introReveal > * {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+
+/* ============================================================================
+   MOTION. One frame, and the scroll dissolves through it.
+   ========================================================================== */
+@media (min-width: 64rem) {
+  :global(.motion-on) .section {
+    /* One screen for the stage, and `--span` screens of travel to run the
+       sequence across. TeamShowcase.tsx maps its timeline onto exactly that
+       range: `start: "top top"`, `end: "bottom bottom"`. */
+    min-height: calc((1 + var(--span)) * 100svh);
+    padding-block: 0;
+  }
+
+  :global(.motion-on) .stage {
+    position: sticky;
+    top: 0;
+    display: grid;
+    /* The frame takes what is left; the rail is as tall as it needs to be.
+       `minmax(0, 1fr)` rather than `1fr`, or a slide's content would be able
+       to push the grid row past the viewport it is supposed to fit inside. */
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100svh;
+    /* The stage is stuck under the fixed header for its whole range, so it
+       clears the header itself rather than relying on section padding it has
+       just given up. */
+    padding-top: calc(var(--header-h) + var(--space-5));
+    padding-bottom: var(--space-7);
+  }
+
+  :global(.motion-on) .frame {
+    display: block;
+    /* The incoming slide arrives at 1.16 and the outgoing one leaves lifted;
+       without this the overscale would bleed across the rail below and up
+       under the header. */
+    overflow: hidden;
+  }
+
+  :global(.motion-on) .slide {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Every slide is composited about the same point, so four different
+       compositions read as one camera rather than as four. */
+    transform-origin: 50% 45%;
+  }
+
+  :global(.motion-on) .slide + .slide {
+    margin-top: 0;
+  }
+
+  /* Promoted for the range the cuts actually run in, and no longer — four
+     full-frame layers kept composited for the rest of the page is the
+     wasteful version of this effect. TeamShowcase.tsx sets the attribute
+     from the ScrollTrigger's own active range. */
+  :global(.motion-on) .section[data-cutting="on"] .slide {
+    will-change: transform, opacity;
+  }
+
+  /* `filter` as well: the plates rack in and out of focus across a cut, and
+     an un-promoted blur is re-rasterised from scratch on every frame of it. */
+  :global(.motion-on) .section[data-cutting="on"] [data-plate] {
+    will-change: transform, filter;
+  }
+
+  /* ---- Slide compositions, at this width ------------------------------- */
+  :global(.motion-on) .intro {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  :global(.motion-on) .chairman {
+    grid-template-columns: minmax(13rem, 0.42fr) minmax(0, 1fr);
+  }
+
+  :global(.motion-on) .leadership,
+  :global(.motion-on) .teams {
+    display: grid;
+    align-content: center;
+  }
+
+  :global(.motion-on) .people {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  :global(.motion-on) .roles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* The disclosure lies over its own column here; see the note on `.panel`.
+     `.person` is already the panel's containing block — it is positioned in
+     the base rule — so all this layer adds is the raise over its siblings. */
+  :global(.motion-on) .isOpen {
+    z-index: 5;
+  }
+
+  :global(.motion-on) .panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 0;
+    overflow-y: auto;
+  }
+
+  /* ---- The vignette ----------------------------------------------------
+     A navy bloom that closes down around the frame as the plane takes it and
+     opens again once the new composition is standing. Not a flat scrim: it is
+     transparent across the middle of the frame and deepens only at the
+     corners, so what it does is CLOSE DOWN AROUND the picture rather than dim
+     it. The timeline never takes it past 0.2 — at the setting where a
+     vignette can be read as a shape it has stopped being one — and holds it
+     at 0 everywhere outside a cut. */
+  :global(.motion-on) .veil {
+    display: block;
+    position: absolute;
+    inset: 0;
+    /* ABOVE the plane, not below it: this belongs to the lens rather than to
+       the composition, so it has to darken the cream as readily as it darkens
+       the type. */
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      ellipse 124% 98% at 50% 45%,
+      rgba(12, 18, 48, 0) 42%,
+      rgba(12, 18, 48, 0.34) 82%,
+      rgba(12, 18, 48, 0.72) 100%
+    );
+  }
+
+  /* ---- The plane -------------------------------------------------------
+     WHAT CARRIES EVERY CUT, and the reason no two slides are ever on the
+     screen together: the frame is completely covered by this at the moment
+     the slide is exchanged, so the exchange is a hard cut with nothing to
+     see it against.
+
+     THE GEOMETRY, because every number in it is load-bearing:
+
+       · `width: 200%` and `left: -50%`. At rest the box would span -50% to
+         150% of the frame. Twice the frame wide is what makes the end caps
+         below shallow enough to read as a curve rather than as a lens, and
+         what leaves room for both of them to sit outside the frame at the
+         moment of full cover.
+
+       · `border-radius: 14% / 50%`. The horizontal radius is 14% of the
+         box — 28% of the frame — and the vertical radius is half its height,
+         so the top and bottom corner curves meet in the middle and each end
+         is one continuous, very shallow arc. The same curve family as the
+         petal the page changes ground on twice, at a radius large enough
+         that what crosses the composition is almost a straight edge and not
+         quite.
+
+       · The flat middle therefore runs from -22% to 122% of the frame, and
+         the frame is fully covered for any travel in ±22% of it — which is
+         `xPercent` ±11, an eleven-per-cent-wide window for a cut that takes
+         two frames. There is no way to arrive at the exchange uncovered.
+
+       · ±75 is where it rests. At -75 the box spans -200% to 0%, its
+         trailing edge exactly on the frame's left edge; at +75 it spans 100%
+         to 300%. Off-frame, and therefore invisible, at both ends of every
+         cut. TeamShowcase.tsx states that figure once, as PLANE_OUT.
+
+     WHY IT IS VISIBLE AT ALL, given that it is the same cream as the ground
+     it crosses: it is lit along its travel axis, from cream-300 at the ends
+     to cream-100 through the middle, so it reads as light passing rather
+     than as a fill arriving; and it casts a wide, offset shadow onto the
+     slide underneath it, which is the one place in this section where an
+     element is physically above another. Those two together are the whole of
+     what makes the edge legible. Take either away and the plane disappears
+     into the page. */
+  :global(.motion-on) .shutter {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -50%;
+    width: 200%;
+    z-index: 9;
+    pointer-events: none;
+    border-radius: 14% / 50%;
+    background: linear-gradient(
+      96deg,
+      var(--cream-300) 0%,
+      var(--cream-200) 26%,
+      var(--cream-100) 50%,
+      var(--cream-200) 74%,
+      var(--cream-300) 100%
+    );
+    box-shadow: 0 22px 80px -28px rgba(15, 20, 48, 0.42);
+    /* The plane is in motion for every frame it exists on, so it is promoted
+       for as long as the section's cuts are live rather than per cut — the
+       attribute is on the section and the timeline owns it. */
+    will-change: transform;
+  }
+
+  /* ---- The rail --------------------------------------------------------
+     The presence timeline's survey line, kept and stood in front of the
+     slideshow: a rule, a node on it for every item in the set, a label under
+     each node, and a fill that measures the scroll continuously rather than
+     stepping. Four slides now instead of nine localities.
+     ---------------------------------------------------------------------- */
+  :global(.motion-on) .rail {
+    display: block;
+    position: relative;
+    padding-inline: var(--shell-pad);
+    padding-top: var(--space-6);
+  }
+
+  :global(.motion-on) .railTrack {
+    position: absolute;
+    left: var(--shell-pad);
+    right: var(--shell-pad);
+    /* Dead on the nodes' centre line: the nodes are the first thing in each
+       button, and the buttons start where this element's own offset does. */
+    top: calc(var(--space-6) + var(--node-size) / 2 - 0.5px);
+    height: 1px;
+    background: var(--cream-line);
+    overflow: hidden;
+  }
+
+  :global(.motion-on) .railFill {
+    display: block;
+    height: 100%;
+    background: var(--accent-deep);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+
+  :global(.motion-on) .railStops {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.motion-on) .railButton {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    width: 100%;
+    padding: 0 var(--space-4) var(--space-1) 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :global(.motion-on) .node {
+    flex: none;
+    width: var(--node-size);
+    height: var(--node-size);
+    border-radius: 50%;
+    background: var(--cream-200);
+    border: 2px solid var(--accent-deep);
+    transition:
+      transform var(--dur-base) var(--ease-out-expo),
+      background-color var(--dur-base) ease;
+  }
+
+  :global(.motion-on) .railLabel {
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--text-on-cream-muted);
+    transition: color var(--dur-base) ease;
+  }
+
+  :global(.motion-on) .railButton:hover .node,
+  :global(.motion-on) .railButton:focus-visible .node,
+  :global(.motion-on) .railButton[data-active="true"] .node {
+    transform: scale(1.35);
+    background: var(--accent-deep);
+  }
+
+  :global(.motion-on) .railButton:hover .railLabel,
+  :global(.motion-on) .railButton:focus-visible .railLabel,
+  :global(.motion-on) .railButton[data-active="true"] .railLabel {
+    color: var(--text-on-cream);
+  }
+
+  :global(.motion-on) .railButton:focus-visible {
+    outline: none;
+  }
+
+  :global(.motion-on) .railButton:focus-visible .railLabel {
+    outline: 2px solid var(--accent-deep);
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+}
+
+/* ============================================================================
+   STANDING. Below the motion layout's width, and for every visitor who never
+   gets it: four blocks, in order, complete.
+   ========================================================================== */
+@media (max-width: 63.99rem) {
+  .intro,
+  .chairman {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The plate follows the words it belongs to rather than leading them: on a
+     narrow window a portrait at the top of every block is four portraits
+     before any of the copy. */
+  .chairmanPlate {
+    order: 2;
+    width: min(100%, 18rem);
+  }
+
+  .introPlate {
+    width: 100%;
+  }
+
+  .people {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  .roles {
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+}
+
+/* Slides two to four arrive one at a time in the standing layout. Held here
+   rather than by the global `[data-reveal]` rule alone so the intent is
+   readable next to what reverses it in the motion branch. */
+@media (prefers-reduced-motion: reduce) {
+  .node,
+  .railLabel,
+  .cta,
+  .textCta,
+  .personCta,
+  .personCtaMark,
+  .roleCta,
+  .close,
+  .ctaIcon {
+    transition: none;
+  }
+
+  /* Belt and braces: `motion-on` is never set under reduced motion, so the
+     sticky stage is never built and the slides are never hidden. This only
+     matters if the preference is changed after load. */
+  .slide {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .veil,
+  .shutter {
+    display: none !important;
+  }
+}

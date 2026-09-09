@@ -1,0 +1,587 @@
+/* ============================================================================
+   Practice — the undertaking behind "people before projects".
+
+   TWO PARTS, AND THEY ARE DIFFERENT SHAPES ON PURPOSE:
+
+     · THE PANEL. A navy plate run off the left edge of the screen with the
+       print mounted on it and overhanging its top, against a right-hand
+       column that carries the photograph, the statement and the specifics —
+       and runs off the RIGHT edge. Both edges of the window are used, and the
+       composition is therefore the width of the screen rather than the width
+       of the shell. That is the only reason this section is not in `u-shell`.
+
+     · THE FRAMES. One photograph at a time, indented from the left and
+       running off the right, so the set reads as having more in it.
+
+   NOTHING HERE IS A CARD. The one rectangle in the section is the navy plate,
+   and it is a ground for a print rather than a container for text.
+   ========================================================================== */
+
+/* ---- The section's own rhythm -------------------------------------------
+   TWO INTERVALS, AND NOTHING BETWEEN THEM. Every gap in this section is one
+   of these two, so the cadence is a decision made once rather than a value
+   chosen twelve times. --air separates the parts of one thought — the
+   photograph from the statement it belongs to, the statement from its
+   specifics. --air-lg separates thoughts, and is where the section actually
+   breathes: around the plate, and before the frames.
+
+   BOTH ARE MOSTLY VIEWPORT-DRIVEN. This section is composed against the
+   window rather than against a text column, so its air has to grow with the
+   window the way the photographs in it do; the rem floors are what keep it
+   from collapsing on a short laptop screen.
+
+   They are LOCAL, not global: the page's own --section-pad still sets the
+   interval between sections, and nothing here changes the rest of the site's
+   breathing. */
+.section {
+  --air: clamp(5rem, 13vh, 9rem);
+  --air-lg: clamp(8rem, 22vh, 15rem);
+
+  position: relative;
+  /* Opens on the field of cream the arc above has already cleared. The team
+     below opens on --section-pad-lg of its own, so the closing interval here
+     is the shorter one — the gap between the two is the sum. */
+  padding-block: var(--air-lg) var(--air);
+}
+
+/* ==========================================================================
+   The panel
+   ========================================================================== */
+
+.panel {
+  display: grid;
+  row-gap: var(--air-lg);
+}
+
+/* One column below 64rem, in source order: the photograph, the statement it
+   belongs to, the specifics, the way through, then the plate and what is
+   held to. The two-column reading is a wide-screen composition and is not
+   simulated at narrow widths — it is simply not built. */
+@media (min-width: 64rem) {
+  .panel {
+    /* The columns are uneven because what they carry is uneven: a mounted
+       print on the left, a photograph and three blocks of type on the right.
+       The gap between them is a full interval, not a gutter — at this width
+       the two halves are separate thoughts standing side by side. */
+    grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
+    column-gap: clamp(var(--space-9), 7vw, 8rem);
+    align-items: start;
+  }
+
+  /* Source order is right-then-left; the grid puts them back. */
+  .left {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .right {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* ---- Left: the plate, and what is held to ------------------------------- */
+
+.left {
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 64rem) {
+  .left {
+    /* The plate's own bleed takes the left edge; nothing pads it back. */
+    padding-inline: var(--gutter) 0;
+  }
+}
+
+.plate {
+  position: relative;
+  /* The navy showing below the print, which is what makes it a mount rather
+     than a backing plate cut to size. A mount is generous or it is a border;
+     this is the one measurement in the section that is neither of the two
+     intervals, because it is a margin on an object rather than a gap between
+     two of them. */
+  padding-block-end: clamp(4rem, 10vh, 7rem);
+}
+
+/* THE PLATE ITSELF. It starts below the print's top edge — that inset IS the
+   overhang, expressed once — and runs off the left of the screen. First in
+   the tree, so it is behind the print in paint order without a z-index that
+   something later could outrank. */
+.ground {
+  position: absolute;
+  inset-block: clamp(3.25rem, 8.5vh, 6rem) 0;
+  inset-inline: calc(-1 * var(--gutter)) calc(-1 * var(--gutter));
+  background: var(--navy-700);
+}
+
+/* ---- Promotion -----------------------------------------------------------
+   Every drifting layer is promoted for the range it is actually moving in and
+   no longer; Practice.tsx sets `data-drift` from the ScrollTrigger that moves
+   it. Collected here rather than repeated beside each layer, because it is
+   one decision about cost and not five decisions about design. */
+.ground[data-drift="on"],
+.portrait[data-drift="on"],
+.leadLayer[data-drift="on"],
+.copyLayer[data-drift="on"],
+.captions[data-drift="on"],
+.dots[data-drift="on"],
+.ringMark[data-drift="on"],
+.wide img[data-drift="on"],
+.portrait img[data-drift="on"],
+.frameBox img[data-drift="on"] {
+  will-change: transform;
+}
+
+@media (min-width: 64rem) {
+  .ground {
+    /* Past the right of the print, so the print sits ON the plate rather
+       than flush to its corner. */
+    inset-inline: calc(-1 * var(--gutter)) calc(-1 * clamp(1.5rem, 4vw, 3.5rem));
+  }
+}
+
+/* The print. It drifts UP against the page — see the depth ladder in
+   Practice.tsx — which is what puts it in front of the plate rather than on
+   it. The shadow is the same statement in a second material: an offset and a
+   soft blur, cast onto the navy it stands off. */
+.portrait {
+  position: relative;
+  /* The full width of the column: below 64rem the plate bleeds to BOTH edges
+     of the screen, so the gutter either side of the print is the mount. An
+     indent here as well would push the print past the column and close that
+     margin down to nothing on the right. */
+  width: min(100%, 30rem);
+  box-shadow: var(--shadow-l);
+}
+
+@media (min-width: 64rem) {
+  .portrait {
+    /* The plate runs off the left edge here, so the print is set in from the
+       column instead — it is mounted on the plate rather than covering it. */
+    margin-inline-start: clamp(1rem, 4vw, 2.5rem);
+  }
+}
+
+/* ---- The drifting layers ------------------------------------------------
+   Depth wrappers, and nothing else. They carry no ground, no padding of their
+   own and no type: their whole job is to hold a transform so the entrance on
+   the element inside them has the `y` to itself. See the note in Practice.tsx
+   on why the two may not share an element. */
+.leadLayer,
+.copyLayer {
+  position: relative;
+}
+
+.commitmentsLayer {
+  margin-block-start: var(--air-lg);
+}
+
+/* The print's crop, weighted just below centre. PortraitPlate sets 50% 30%,
+   which is right for a face and wrong for a room: it would spend the frame on
+   the ceiling. This puts the laid table and the opening onto the city in the
+   middle of the print, and lets the 3:4 box take the ceiling and the
+   foreground decking away instead. */
+.portrait img {
+  object-position: 50% 48%;
+}
+
+.commitments {
+  max-width: 34ch;
+}
+
+/* The list's own name, not a label over a heading: the reader needs to know
+   what the three lines below it are before reading them. */
+.commitmentsTitle {
+  margin-block-end: var(--space-5);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--accent-text);
+}
+
+.commitmentList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+/* A drawn rose rule for the marker — the guide's line-work — rather than a
+   bullet glyph the type stack happens to carry. */
+.commitment {
+  position: relative;
+  padding-inline-start: var(--space-7);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+}
+
+.commitment::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.66em;
+  width: var(--space-5);
+  height: 1px;
+  background: var(--cream-line-rose);
+}
+
+/* ---- Right: the photograph, the statement, the specifics ---------------- */
+
+.right {
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 64rem) {
+  .right {
+    padding-inline: 0 var(--gutter);
+  }
+}
+
+/* Runs off the right edge of the screen at every width, and is indented from
+   the statement's own left edge above 64rem — the crop is a window onto
+   something continuing, not a picture hung in the column. */
+.wide {
+  position: relative;
+  overflow: hidden;
+  margin: 0 calc(-1 * var(--gutter));
+  aspect-ratio: 16 / 10;
+  background: var(--cream-300);
+}
+
+@media (min-width: 64rem) {
+  .wide {
+    /* Set in from the statement's own left edge. The air to the left of the
+       photograph is the widest single piece of nothing in the composition,
+       and it is what tells the eye the picture is a window in a wall rather
+       than the top of a column. */
+    margin-inline-start: clamp(3rem, 20%, 13rem);
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* No enlargement here. The headroom a crop needs to drift inside is set by
+   the call that sets the drift — see Practice.tsx — so with no script, or
+   under reduced motion, this is exactly its cover crop and not a photograph
+   left permanently zoomed for an effect that never ran. */
+.wideImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* THE STATEMENT, and the section's heading. Caps, because at this size a
+   change of case is the cheapest change of voice there is — and the swash
+   phrase is left lowercase inside them, which is the brand's own device
+   doing the work it always does: marking the words the sentence turns on. */
+.statement {
+  margin-block-start: var(--air);
+  max-width: 17em;
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 1.02rem + 2.2vw, 2.875rem);
+  line-height: 1.16;
+  /* Caps in a high-contrast serif close up; the heading tracking is set for
+     mixed case and pinches them. Well inside the -0.04em floor either way. */
+  letter-spacing: 0.008em;
+  text-transform: uppercase;
+  color: var(--text-on-cream);
+}
+
+.statement em {
+  text-transform: none;
+  font-size: 1.08em;
+  letter-spacing: -0.012em;
+}
+
+/* The specifics, and the way out of the section. Ranged right of the
+   statement, which is what keeps the column from reading as one long block
+   of left-aligned type at three different sizes. */
+.close {
+  width: min(100%, 30rem);
+  margin-block-start: var(--air);
+  margin-inline-start: auto;
+}
+
+.detail {
+  max-width: 36ch;
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The ring ----------------------------------------------------------- */
+
+.ring {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  inline-size: clamp(11rem, 15vw, 13.5rem);
+  aspect-ratio: 1;
+  margin-block-start: var(--air);
+  margin-inline: auto;
+  border-radius: 50%;
+  color: var(--text-on-cream);
+  text-align: center;
+  text-decoration: none;
+}
+
+/* The global focus ring squares off any element it lands on; a circular
+   control has to hand its own shape back. */
+.ring:focus-visible {
+  border-radius: 50%;
+  outline-offset: 6px;
+}
+
+.ringMark {
+  position: absolute;
+  inset: 0;
+}
+
+.ringMark svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Drawn open, and it closes when the control is reached — a circle that is
+   already complete has nowhere to go on hover, and a rotating one would be a
+   second animation in a section that has one idea. */
+.ringPath {
+  stroke: var(--cream-line-rose);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0.9 0.1;
+  transform: rotate(-38deg);
+  transform-origin: 50% 50%;
+  transition:
+    stroke-dasharray var(--dur-slow) var(--ease-out-expo),
+    stroke var(--dur-base) var(--ease-out-expo);
+}
+
+.ring:hover .ringPath,
+.ring:focus-visible .ringPath {
+  stroke-dasharray: 1 0;
+  stroke: var(--accent-deep);
+}
+
+.ringLabel {
+  max-width: 12ch;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.ringArrow {
+  color: var(--accent-deep);
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.ring:hover .ringArrow,
+.ring:focus-visible .ringArrow {
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   The frames
+
+   THE SAME INSTRUMENT AS THE STORY SECTION'S SHOWCASE — see lib/wipe, which
+   drives both. What is here is composition and only composition: a wide band
+   ranged left where that one is a small plate ranged centre. The classes the
+   cut touches (.slide, .slideInner, .seam, .caption) carry the same names and
+   the same resting states in both stylesheets, because they are the same
+   parts of the same machine.
+   ========================================================================== */
+
+.frames {
+  margin-block-start: calc(var(--air-lg) * 1.2);
+  /* Indented from the left, open on the right: the frame ends at the right
+     edge of the screen, the way the panel's photograph above it does. */
+  padding-inline-start: var(--gutter);
+}
+
+@media (min-width: 64rem) {
+  .frames {
+    padding-inline-start: clamp(var(--gutter), 22vw, 24rem);
+  }
+}
+
+/* A BAND, NOT A SCREEN. 21:9 is wider than any of the photographs it holds,
+   which is the point: the crop has to take something away, or the frame is
+   just the picture with corners rounded off. It also keeps the whole
+   sequence — frame, caption, controls — inside one screen on a laptop. */
+.frameBox {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-300);
+  /* Keeps the seam's z-index inside the frame rather than in the section's
+     stacking context, where it would sit above the fixed header. */
+  isolation: isolate;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The element the counter-move is applied to. Separate from `.slide` so the
+   wipe (a clip on the slide) and the camera move (a transform on the inner)
+   never fight over the same property. */
+.slideInner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* Weighted low. Every photograph in this set is a building under a lot of
+   sky, and the band is worth more spent on what was built than on the air
+   above it. */
+.frameImage {
+  object-fit: cover;
+  object-position: 50% 72%;
+}
+
+/* The drawn plate, for a frame whose photograph has been cleared. It fills
+   the inner rather than setting a ratio of its own — the band above already
+   is the ratio. */
+.framePlate {
+  height: 100%;
+  border-radius: 0;
+}
+
+/* The hairline of light pinned to the wipe edge. Zero width plus a spread
+   shadow, so it is a glow with a hard centre rather than a bar. */
+.seam {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  z-index: 3;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--cream-100);
+  box-shadow:
+    0 0 6px 1px rgba(246, 245, 242, 0.75),
+    0 0 22px 6px rgba(228, 168, 161, 0.35);
+}
+
+/* ---- The caption --------------------------------------------------------
+   A mask, not a fade: the lines are pulled through it. It needs a height of
+   its own because the lines inside are out of flow — two lines at the size
+   and leading below, which is enough for the longest of them at phone
+   widths, so nothing under it shifts mid-cut. */
+.captions {
+  position: relative;
+  overflow: hidden;
+  width: min(46ch, 100%);
+  /* Two lines at the leading below, which is what the longest caption takes
+     at phone widths. The mask clips, so this is not a nicety: an em short and
+     the second line is cut off rather than wrapped. */
+  min-height: 3.4em;
+  margin: 0;
+  margin-block-start: var(--space-6);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  color: var(--text-on-cream-muted);
+}
+
+.caption[data-active="true"] {
+  opacity: 1;
+}
+
+/* ---- The control --------------------------------------------------------
+   Generous hit area, hairline mark: the target is 44px, what you see is 2px
+   of rule. The active mark grows rather than filling in, so the row reads as
+   a measure of the set — the same rule the story section's showcase draws. */
+.dots {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* Ranged with the frame, less the button's own optical inset. */
+  margin-block-start: clamp(var(--space-6), 4vh, var(--space-8));
+  margin-inline-start: -15px;
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dotMark {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: var(--accent-deep);
+  opacity: 0.3;
+  transition:
+    width 420ms var(--ease-out-quint),
+    opacity 420ms ease;
+}
+
+.dot[data-active="true"] .dotMark {
+  width: 34px;
+  opacity: 1;
+}
+
+.dot:hover .dotMark {
+  opacity: 0.65;
+}
+
+.dot[data-active="true"]:hover .dotMark {
+  opacity: 1;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: -6px;
+  border-radius: var(--radius-s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideInner {
+    will-change: auto;
+  }
+  .dotMark {
+    transition: none;
+  }
+  /* The seam only ever exists inside a cut that is not run at all here. */
+  .seam {
+    display: none;
+  }
+}

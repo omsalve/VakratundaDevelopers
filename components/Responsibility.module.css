@@ -1,0 +1,431 @@
+/* ============================================================================
+   Responsibility — two obligations, ruled in two unequal bands.
+
+   THE PROPORTION IS THE ARGUMENT. The section used to run the two obligations
+   as two columns either side of one vertical rule, and the environment half
+   was the wider of the two — which said the practices outweighed the schools.
+   They do not. So the field is now ruled ACROSS instead of down: a community
+   band that takes the section, and an environment footing that takes a fifth
+   of it. Same ledger, honest weighting.
+
+   THE ONLY CONTAINERS ARE HAIRLINES. Nothing here has a background, a border
+   box or a radius. Two rose rubric rules open the two bands; quiet navy rules
+   carry the entries under them. Two weights, two jobs, and no third — the
+   photographs are the only filled shapes in the section, which is what makes
+   them read as evidence rather than as decoration.
+
+   EVERY EDGE IS ON ONE GRID. `.field` is a twelve-column track shared by the
+   plate, the environment band and the coda, so the frames, the type ranged
+   against them and the rules under them all land on the same lines. That is
+   deliberate: the previous version aligned its icon captions with a hard 22px
+   padding and closed two of its gaps with negative margins, so nothing in it
+   sat on a line that anything else knew about.
+
+   THE SECTION IS DRAFTED. The rubric rules are ruled open, the photographs
+   are cut in from their foot, and the four drawings are inked last. Every
+   start state lives in CSS under `.motion-on`, so with no JS — and under
+   reduced motion — the drawing is already finished.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  /* It follows the ventures on the same cream. Its top interval matches that
+     section's bottom one, and it closes on the interval JointVentures used to
+     hand to FinalCTA, so the cadence into the close is unchanged. */
+  padding-block: var(--section-pad);
+}
+
+/* The drawn rule that separates it from the ventures above — the guide's rose
+   line-work, ranged on the shell rather than bled to the window, exactly as
+   JointVentures draws its own. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw));
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.5;
+}
+
+.head {
+  /* `u-head` carries the rest; the measures are on the type, not the block. */
+  max-width: var(--maxw);
+}
+
+/* ---- The shared field ---------------------------------------------------
+   One twelve-column track, three times. Nothing in this section is positioned
+   against anything but these lines. */
+.field {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+}
+
+/* ---- The rubric rules ---------------------------------------------------
+   A band opens with its name set into a rule that runs out to the field's far
+   edge. The rule is a real element rather than a pseudo so it can be ruled
+   open by the same kind of clip the old vertical divider used. */
+.rubric {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--space-4), 1.6vw, var(--space-5));
+}
+
+.rubricLabel {
+  flex: none;
+}
+
+.rubricRule {
+  flex: 1 1 auto;
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.55;
+}
+
+/* ---- The community band -------------------------------------------------
+   Two frames stepped against each other, and the type in the counter-space of
+   each. Photograph left and name right, then entry left and photograph right:
+   the second row is the first row turned over, which is what holds the band
+   together without a container around either half.
+
+   The frames share the field's outer edges — the first opens on column 1, the
+   second closes on column 12 — so the step reads as one composition rather
+   than as two images that happen to be near each other. */
+.plate {
+  margin-top: clamp(var(--space-6), 3.5vw, var(--space-8));
+  row-gap: clamp(var(--space-7), 4.5vw, var(--space-10));
+}
+
+.leadFigure {
+  grid-column: 1 / span 8;
+  grid-row: 1;
+  margin: 0;
+}
+
+.school {
+  grid-column: 9 / -1;
+  grid-row: 1;
+  /* Ranged to the foot of the frame beside it, so the name and the frame
+     finish on one line instead of both starting on one. */
+  align-self: end;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.courtFigure {
+  grid-column: 5 / -1;
+  grid-row: 2;
+  margin: 0;
+}
+
+/* Ranged from the TOP of the second frame, so its rule and the frame's top
+   edge are the same line. Hung from the bottom instead it left a hole above
+   itself, and empty space above type reads as a mistake where the same space
+   below it reads as air — everything else on this page hangs from a top edge
+   too. */
+.also {
+  grid-column: 1 / span 4;
+  grid-row: 2;
+  align-self: start;
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--cream-line);
+}
+
+/* ---- The photographs ----------------------------------------------------
+   Same grammar as the ventures frame: the picture is cut in from its foot and
+   eases off a small push, the mask finishing first and the push a beat after
+   it, so the frame settles rather than stopping. `--cream-300` under it means
+   the reserved box is part of the ground before the file arrives. */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream-300);
+}
+
+.leadFigure .frame {
+  aspect-ratio: 3 / 2;
+}
+
+/* Wider than the frame above it: the court is a long room, and the crop is
+   what keeps the second frame from reading as a repeat of the first. */
+.courtFigure .frame {
+  aspect-ratio: 16 / 9;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Under its own frame, ranged on the frame's left edge — which is a field
+   line, so the captions range with the type in the opposite counter-space. */
+.caption {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--hairline) solid var(--cream-line);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+}
+
+/* ---- The school, named --------------------------------------------------- */
+.schoolName {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.05rem + 1.5vw, 2.5rem);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
+
+/* The place, in the swash italic — the brand's own way of qualifying a name. */
+.schoolPlace {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+}
+
+.schoolNote {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 34ch;
+}
+
+/* ---- The earlier school, as one ruled entry ----------------------------- */
+.alsoName {
+  font-family: var(--font-display);
+  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.alsoPlace {
+  margin-top: var(--space-2);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+}
+
+.alsoNote {
+  margin-top: var(--space-3);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The environment footing -------------------------------------------
+   A fifth of the section, and it looks like a fifth: the standard on four
+   columns, the four practices in two pairs on the remaining eight. It is a
+   footing under the band above, not a second band of equal standing. */
+.environment {
+  margin-top: clamp(var(--space-9), 7vw, var(--space-11));
+}
+
+.envBody {
+  margin-top: clamp(var(--space-5), 2.5vw, var(--space-6));
+  row-gap: var(--space-6);
+}
+
+.envLead {
+  grid-column: 1 / span 4;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* Two by two across the eight columns, not four across. Four abreast gave
+   each practice about 175px, which wrapped every one of the four titles onto
+   two lines and its detail onto three — a footing should be quiet, not
+   cramped. In pairs each entry gets a little over 380px, so the titles sit on
+   one line and the band reads as the fifth of the section it is. */
+.commitments {
+  grid-column: 5 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(var(--space-6), 3vw, var(--space-8));
+  row-gap: var(--space-6);
+}
+
+/* The drawing and the two lines of type sit in two real tracks, so the detail
+   ranges on the title's own left edge with nothing measured. This replaces a
+   `padding-left: calc(22px + var(--space-3))` that restated the icon's width
+   as a number and drifted the moment either changed. */
+.commitment {
+  --icon-size: 22px;
+  display: grid;
+  grid-template-columns: var(--icon-size) minmax(0, 1fr);
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
+  align-content: start;
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--cream-line);
+}
+
+.icon {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  width: var(--icon-size);
+  color: var(--accent-deep);
+}
+
+.icon svg {
+  width: 100%;
+  height: auto;
+}
+
+.commitmentTitle {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-body);
+  color: var(--text-on-cream);
+  text-wrap: pretty;
+}
+
+/* At --fs-caption this sat at 12-13px, which is a footnote inside a footing.
+   The band is quiet enough by proportion; the line itself should be read. */
+.commitmentDetail {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The coda -----------------------------------------------------------
+   The one sentence that covers both bands, so it is ranged against the
+   field's far edge rather than set under either of them. Its left edge is a
+   field line — column 7 — rather than a `max-width` that happened to land
+   near one. */
+.codaRow {
+  margin-top: clamp(var(--space-9), 6vw, var(--space-11));
+}
+
+.coda {
+  grid-column: 7 / -1;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  text-align: right;
+  text-wrap: balance;
+}
+
+/* ---- Motion start states ------------------------------------------------
+   `.motion-on` is set in <head> before first paint and only when the visitor
+   has not asked for reduced motion, so everything below is additive: with no
+   JS the rules are ruled, the frames are open and the drawings are inked. */
+:global(.motion-on) .rubricRule {
+  clip-path: inset(0 100% 0 0);
+}
+
+:global(.motion-on) .frame {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* The push is written as a `transform`, not as the `scale` property, because
+   GSAP settles it through `transform` too — the two compose rather than
+   override, so a CSS `scale: 1.08` here would never reach 1. */
+:global(.motion-on) .image {
+  transform: scale(1.08);
+}
+
+/* Every stroked element in the drawings carries `pathLength="1"`, so its
+   outline is one unit long whatever its geometry — which is what lets these
+   two declarations hold all four undrawn with no measurement anywhere. */
+:global(.motion-on) .icon path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* ---- Narrow -------------------------------------------------------------
+   The step cannot survive one column, so it is not faked: the plate becomes a
+   single stack in reading order — frame, name, frame, earlier entry — and the
+   environment footing puts its four practices in two rows under its standard.
+   The frames keep their two different crops, which is what keeps the stack
+   from reading as a list of equal pictures. */
+@media (max-width: 63.99rem) {
+  .plate,
+  .envBody,
+  .codaRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plate {
+    row-gap: clamp(var(--space-6), 4vw, var(--space-8));
+  }
+
+  .leadFigure,
+  .school,
+  .courtFigure,
+  .also {
+    grid-column: 1;
+    align-self: start;
+  }
+
+  .leadFigure {
+    grid-row: 1;
+  }
+  .school {
+    grid-row: 2;
+  }
+  .courtFigure {
+    grid-row: 3;
+  }
+  .also {
+    grid-row: 4;
+  }
+
+  .schoolNote {
+    max-width: var(--measure-narrow);
+  }
+
+  .envLead,
+  .commitments,
+  .coda {
+    grid-column: 1;
+  }
+
+  .envLead {
+    max-width: var(--measure-narrow);
+  }
+
+  .commitments {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--space-5);
+  }
+
+  .coda {
+    text-align: left;
+  }
+}
+
+@media (max-width: 34rem) {
+  /* The court crop is too long to hold a subject at phone width; it takes the
+     lead frame's proportion so both stay readable. */
+  .courtFigure .frame {
+    aspect-ratio: 3 / 2;
+  }
+
+  .commitments {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

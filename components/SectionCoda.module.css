@@ -1,0 +1,104 @@
+/* ============================================================================
+   SectionCoda — the line that closes a band, and the action beside it.
+
+   The type is Responsibility's `.coda`, the pill is Journey's `.cta`. Nothing
+   in this file is a new treatment; it is the two existing ones brought into
+   one row so they share a baseline.
+   ========================================================================== */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6) var(--space-8);
+  margin-top: clamp(var(--space-9), 6vw, var(--space-11));
+  padding-top: var(--space-6);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.coda {
+  flex: 1 1 28rem;
+  min-width: 0;
+  max-width: 44rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+}
+
+.action {
+  flex: none;
+}
+
+/* Journey's ghost pill, restated on the tokens rather than on its colours, so
+   it inverts correctly on either ground: `--accent-text` is the rose on navy
+   and the deep rose on cream. */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: var(--space-3) var(--space-6);
+  border: var(--hairline) solid var(--accent-text);
+  border-radius: var(--radius-pill);
+  color: var(--accent-text);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* Rose fills the pill from the left on hover; the label inverts. */
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent-text);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+/* On navy the fill is the pale rose, so the label inverts to the darkest
+   navy; on cream the fill is the deep rose and it inverts to cream instead. */
+.cta:hover,
+.cta:focus-visible {
+  color: var(--navy-900);
+}
+
+:global(.on-cream) .cta:hover,
+:global(.on-cream) .cta:focus-visible {
+  color: var(--cream-100);
+}
+
+.cta:hover::before,
+.cta:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon {
+  transform: translateX(4px);
+}
+
+@media (max-width: 47.99rem) {
+  .row {
+    align-items: flex-start;
+  }
+
+  .coda {
+    flex-basis: 100%;
+  }
+}

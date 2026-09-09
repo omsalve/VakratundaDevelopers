@@ -1,0 +1,491 @@
+/* ============================================================================
+   LocationMap — an interactive overlay pinned to a static map image.
+
+   THE ONE IDEA WORTH KNOWING: a point's coordinates are given against the
+   SOURCE IMAGE, not against the box the image is painted into. The layer
+   re-derives the painted rectangle (the cover/contain fit plus the focal
+   point) whenever its box changes, and positions every pin from that — so a
+   pin stays on its street through any resize, any aspect ratio, any crop.
+   This stylesheet therefore never positions a pin. It only draws one.
+
+   Two custom properties carry the component's geometry in:
+     --map-panel-offset  the pin centre to the panel's near edge
+     --sy                the panel's vertical offset, already clamped
+
+   Everything else is presentation, and `data-` attributes are the only
+   channel between the component's state and this file.
+   ========================================================================== */
+
+/* ---- The self-contained form ------------------------------------------- */
+/* <LocationMap> renders the picture as well as the pins. Its aspect ratio is
+   set inline from the image's intrinsic size, so the box never reflows once
+   the file arrives. */
+.map {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--navy-900);
+}
+
+.mapImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- The overlay -------------------------------------------------------- */
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  /* The pins take the pointer; the map underneath never does. */
+  pointer-events: none;
+
+  /* --pin-hit is written per point by the component, sized to the room that
+     pin actually has. This is only the value before anything is measured. */
+  --pin-hit: 44px;
+  --pin-core: 7px;
+  --pin-ring: 21px;
+  --pin-halo: 52px;
+  --panel-w: min(20rem, 64vw);
+
+  transition: opacity var(--dur-slow) var(--ease-out-expo);
+}
+
+/* Sections that reveal the map on scroll hand the layer down inert until the
+   picture has settled — there is nothing to aim at while it is still moving. */
+.layer[data-active="false"] {
+  opacity: 0;
+}
+
+.layer[data-active="false"] .point {
+  pointer-events: none;
+}
+
+/* ---- One point ---------------------------------------------------------- */
+/* A zero-size anchor sitting exactly on the coordinate. left/top rather than
+   a transform, so the server-rendered fallback can place it in plain per-cent
+   units before the projection has measured anything. */
+.point {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+}
+
+.point[data-open="true"] {
+  z-index: 2;
+}
+
+/* ---- The pin ------------------------------------------------------------ */
+/* Drawn small and lit from within, and the pointer target is the drawing —
+   the ring, and round, so the corners of its box do not count either. The
+   halo around it is glow, not pin: hovering the glow must do nothing.
+
+   --pin-hit comes from the component and is the collision limit, not the
+   size, so `min` here only ever narrows the target below what is drawn. */
+.pin {
+  --hit: min(var(--pin-ring), var(--pin-hit));
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  /* ONE TRACK, THE BUTTON'S OWN SIZE. An implicit track would size itself to
+     the widest child instead — the halo, at two and a half times the button —
+     and every layer would centre in THAT, putting the drawn point some 16px
+     down and right of the coordinate it is supposed to mark, and of the
+     target you have to hover. The parts overflow this track symmetrically,
+     which is what keeps the glow concentric with the dot.
+
+     minmax(0, …) is load-bearing: a bare `1fr` carries an automatic minimum
+     of `auto`, so the track would floor at the halo's width and nothing would
+     change. */
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  width: var(--hit);
+  height: var(--hit);
+  margin: calc(var(--hit) / -2) 0 0 calc(var(--hit) / -2);
+  border-radius: 50%;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  /* Keeps the stack below local. Without it those z-indices are resolved
+     against the layer, and a pin two points along would paint over an open
+     panel — a positioned element only contains its descendants' z-indices
+     once it is a stacking context of its own. */
+  isolation: isolate;
+}
+
+/* All four pieces stack on one cell. The z-indices are not decoration: .halo
+   and .beacon carry an `opacity`, which makes them stacking contexts, and a
+   stacking context paints AFTER its plain in-flow siblings whatever the DOM
+   order says — the halo would otherwise lay its dark centre over the core and
+   put the light out. Grid items take z-index without being positioned. */
+.pin > * {
+  grid-area: 1 / 1;
+  /* The parts overflow the button — the halo is two and a half times its
+     width — and each would be hit-tested on its own box, handing back all the
+     slop the round button just removed. Events belong to the button alone. */
+  pointer-events: none;
+}
+
+.halo {
+  z-index: 0;
+}
+.beacon {
+  z-index: 1;
+}
+.ring {
+  z-index: 2;
+}
+.core {
+  z-index: 3;
+}
+
+.pin:focus-visible {
+  outline: none;
+}
+
+/* A finger is blunter than a cursor, and a 21px tap target is a miss waiting
+   to happen. Taps get the comfortable box back — still never wider than the
+   gap to the next pin. */
+@media (pointer: coarse) {
+  .pin {
+    --hit: min(44px, var(--pin-hit));
+  }
+}
+
+/* A dark seat under every pin. The map's roads and its printed place names
+   are the same rose the pin is, and sections using this overlay set type over
+   the picture — without the seat a pin can land on a letterform and vanish.
+   It reads as depth rather than as a plate. */
+.halo {
+  width: var(--pin-halo);
+  height: var(--pin-halo);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(9, 13, 33, 0.72) 0%,
+      rgba(9, 13, 33, 0.42) 38%,
+      rgba(9, 13, 33, 0) 70%
+    ),
+    radial-gradient(
+      circle,
+      rgba(228, 168, 161, 0.28) 0%,
+      rgba(228, 168, 161, 0) 64%
+    );
+  opacity: 0.9;
+  transition:
+    opacity var(--dur-base) var(--ease-out-quint),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.ring {
+  width: var(--pin-ring);
+  height: var(--pin-ring);
+  border: 1px solid rgba(228, 168, 161, 0.62);
+  border-radius: 50%;
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    border-color var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
+}
+
+.core {
+  width: var(--pin-core);
+  height: var(--pin-core);
+  border-radius: 50%;
+  /* Cream, not rose: the brightest thing on a map whose every line is rose. */
+  background: var(--cream-100);
+  box-shadow:
+    0 0 0 1px rgba(228, 168, 161, 0.8),
+    0 0 14px 2px rgba(228, 168, 161, 0.55);
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    box-shadow var(--dur-base) ease;
+}
+
+/* The slow ring that says the map is live. Staggered off each pin's index so
+   the set breathes rather than blinks, and stopped the moment anyone engages
+   with any pin — the map goes quiet while it is being read. */
+.beacon {
+  width: var(--pin-ring);
+  height: var(--pin-ring);
+  border: 1px solid var(--accent-rose);
+  border-radius: 50%;
+  opacity: 0;
+  animation: beacon 5.2s var(--ease-out-expo) infinite;
+  animation-delay: calc(var(--i, 0) * 460ms);
+}
+
+.layer[data-engaged="true"] .beacon,
+.layer[data-active="false"] .beacon {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+@keyframes beacon {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.6);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}
+
+/* Engaged — hover, focus, and open are one look.
+
+   Hover no longer OPENS anything; a click does. What it does here is answer:
+   the pin lights under the cursor so it reads as a thing to press, and the
+   same look then persists while its panel is up. */
+.point[data-open="true"] .halo,
+.pin:hover .halo,
+.pin:focus-visible .halo {
+  opacity: 1;
+  transform: scale(1.14);
+}
+
+.point[data-open="true"] .ring,
+.pin:hover .ring,
+.pin:focus-visible .ring {
+  transform: scale(1.42);
+  border-color: rgba(228, 168, 161, 0.95);
+  box-shadow: 0 0 18px -2px rgba(228, 168, 161, 0.5);
+}
+
+.point[data-open="true"] .core,
+.pin:hover .core,
+.pin:focus-visible .core {
+  transform: scale(1.22);
+  box-shadow:
+    0 0 0 1px rgba(228, 168, 161, 0.95),
+    0 0 22px 4px rgba(228, 168, 161, 0.7);
+}
+
+.pin:focus-visible .ring {
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 0 2px var(--accent-rose);
+}
+
+/* ---- The panel ---------------------------------------------------------- */
+/* .slot carries the placement the component computed — which side of the pin,
+   and how far down. That leaves .panel free to own the entrance alone, so the
+   two transforms never have to be composed into one declaration. */
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--panel-w);
+  transform: translate(var(--map-panel-offset), var(--sy, 0px));
+}
+
+.point[data-side="left"] .slot {
+  transform: translate(calc(-100% - var(--map-panel-offset)), var(--sy, 0px));
+}
+
+.panel {
+  --from-x: -10px;
+
+  padding: var(--space-5);
+  background: linear-gradient(
+    180deg,
+    rgba(20, 28, 66, 0.92),
+    rgba(11, 16, 42, 0.94)
+  );
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border: var(--hairline) solid var(--navy-line);
+  /* The edge facing the pin is brighter: the panel reads as drawn out of the
+     point rather than dropped beside it. */
+  border-left-color: rgba(228, 168, 161, 0.5);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-l);
+  color: var(--text-on-navy);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(var(--from-x)) scale(0.985);
+  transform-origin: left center;
+  transition:
+    opacity 180ms var(--ease-out-quint),
+    transform 260ms var(--ease-out-quint),
+    visibility 0s linear 260ms;
+}
+
+.point[data-side="left"] .panel {
+  --from-x: 10px;
+  border-left-color: var(--navy-line);
+  border-right-color: rgba(228, 168, 161, 0.5);
+  transform-origin: right center;
+}
+
+.point[data-open="true"] .panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 320ms var(--ease-out-expo),
+    transform 620ms var(--ease-out-expo),
+    visibility 0s;
+}
+
+/* ---- Panel content ------------------------------------------------------ */
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+  opacity: 0.9;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+}
+
+.description {
+  margin: var(--space-3) 0 0;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+  opacity: 0.74;
+}
+
+.rule {
+  height: var(--hairline);
+  margin: var(--space-4) 0;
+  background: var(--navy-line);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin: 0 0 var(--space-4);
+}
+
+.metaLabel {
+  display: block;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.metaValue {
+  display: block;
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-small);
+  color: var(--text-on-navy);
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  border-top: var(--hairline) solid var(--navy-line-soft);
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+}
+
+.item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+.itemNote {
+  flex: none;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+  opacity: 0.8;
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+/* Under 48rem there is no room beside a pin for a panel, so it docks to the
+   foot of the viewport instead — the move the impact hotspots already make. */
+@media (max-width: 47.99rem) {
+  /* Only the drawing shrinks here — the pointer target is the component's,
+     and it is already sized to each pin's own elbow room. */
+  .layer {
+    --pin-ring: 17px;
+    --pin-core: 6px;
+    --pin-halo: 42px;
+  }
+
+  .slot,
+  .point[data-side="left"] .slot {
+    position: fixed;
+    inset: auto var(--space-4) var(--space-4) var(--space-4);
+    width: auto;
+    transform: none;
+    z-index: var(--z-modal);
+  }
+
+
+  .panel,
+  .point[data-side="left"] .panel {
+    --from-x: 0px;
+    transform: translateY(12px);
+    border-left-color: var(--navy-line);
+    border-right-color: var(--navy-line);
+    border-top-color: rgba(228, 168, 161, 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beacon {
+    animation: none;
+    opacity: 0;
+  }
+
+  .layer,
+  .halo,
+  .ring,
+  .core {
+    transition-duration: 1ms;
+  }
+
+  .panel,
+  .point[data-side="left"] .panel {
+    transform: none;
+    transition:
+      opacity 120ms linear,
+      visibility 0s linear 120ms;
+  }
+
+  .point[data-open="true"] .panel {
+    transform: none;
+    transition:
+      opacity 120ms linear,
+      visibility 0s;
+  }
+}

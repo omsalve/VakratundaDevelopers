@@ -1,0 +1,326 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  background: var(--navy-800);
+  isolation: isolate;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  translate: -50% -58%;
+  color: var(--accent-rose);
+  opacity: 0.07;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3rem, 7vh, 4.5rem);
+  padding-block: var(--section-pad-lg);
+  text-align: center;
+}
+
+/* ---- Quote -------------------------------------------------------------- */
+.quote {
+  position: relative;
+  margin-inline: auto;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.75rem, 4.6vw, 4rem);
+  line-height: 1.16;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.quoteMark {
+  color: var(--accent-rose);
+  opacity: 0.7;
+}
+
+/* ---- Proofs ------------------------------------------------------------- */
+/* Three columns of text divided by hairlines — not three cards. The rule
+   carries the division; a container around each would be noise. */
+.proofs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2rem, 4vw, 4rem);
+  width: 100%;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.proof {
+  position: relative;
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.proofTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-3);
+  text-wrap: balance;
+}
+
+.proofBody {
+  max-width: 34ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Action ------------------------------------------------------------- */
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  /* On top of the flex gap: the action is the section's purpose, and gets
+     the one interval here that is larger than the others. */
+  margin-top: clamp(1rem, 3vh, 2rem);
+}
+
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: var(--space-4) var(--space-7);
+  border-radius: var(--radius-pill);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  text-decoration: none;
+  box-shadow: var(--shadow-rose);
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-2px);
+  background: var(--accent-rose-bright);
+  box-shadow: 0 18px 44px -14px rgba(228, 168, 161, 0.55);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon {
+  transform: translateX(4px);
+}
+
+.attribution {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Footer ------------------------------------------------------------- */
+.footer {
+  border-top: var(--hairline) solid var(--navy-line);
+  background: var(--navy-900);
+}
+
+/* ---- The site map -------------------------------------------------------
+   Four groups on one row, collapsing to two and then to one. The links are
+   plain — no underline until hover — because a block of sixteen underlined
+   items reads as a hedge of rules rather than as a map. */
+.sitemap {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(var(--space-6), 3vw, var(--space-8));
+  padding-block: clamp(var(--space-8), 5vw, var(--space-10));
+  border-bottom: var(--hairline) solid var(--navy-line);
+}
+
+.sitemapGroup {
+  min-width: 0;
+}
+
+.sitemapLabel {
+  padding-bottom: var(--space-4);
+  color: var(--text-on-navy-muted);
+}
+
+.sitemapList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sitemapLink {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy);
+  text-decoration: none;
+  opacity: 0.78;
+  transition:
+    opacity var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+
+.sitemapLink:hover,
+.sitemapLink:focus-visible {
+  opacity: 1;
+  color: var(--accent-rose);
+}
+
+/* The page you are on. Same mark the masthead uses — the hover state, left
+   drawn — with a rose tick in the margin so it reads at a glance in a block
+   of fifteen. */
+.isCurrent {
+  position: relative;
+  opacity: 1;
+  color: var(--accent-rose);
+}
+
+.isCurrent::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-4) * -1);
+  top: 0.62em;
+  width: var(--space-3);
+  height: var(--hairline);
+  background: var(--accent-rose);
+}
+
+.footerInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-7);
+  padding-block: var(--space-7);
+}
+
+.footerLogo {
+  justify-self: start;
+}
+
+.legal {
+  justify-self: end;
+}
+
+.footerLogo {
+  font-size: 0.95rem;
+}
+
+/* Two groups, not four lines: the address is one block, and the address the
+   visitor can act on sits a step clear of the one they cannot. */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-style: normal;
+  text-align: center;
+  font-size: var(--fs-small);
+  color: var(--text-on-navy-muted);
+}
+
+.email {
+  margin-bottom: var(--space-2);
+  color: var(--accent-rose);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) ease;
+  align-self: center;
+}
+
+.email:hover,
+.email:focus-visible {
+  border-bottom-color: currentColor;
+}
+
+.addressLine {
+  line-height: var(--lh-caption);
+}
+
+.legal {
+  font-size: var(--fs-caption);
+  color: var(--text-on-navy-muted);
+  text-align: right;
+}
+
+/* ---- Entrance ----------------------------------------------------------- */
+:global(.motion-on) .quote,
+:global(.motion-on) .proof,
+:global(.motion-on) .action {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+}
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 63.99rem) {
+  .proofs {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 34rem;
+    gap: 0;
+  }
+  .proofBody {
+    max-width: none;
+  }
+  .proof {
+    padding-block: var(--space-5);
+  }
+  .proof:last-child {
+    border-bottom: var(--hairline) solid var(--navy-line);
+  }
+
+  .sitemap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  .footerInner {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: var(--space-5);
+    text-align: center;
+  }
+  .footerLogo,
+  .legal {
+    justify-self: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .watermark {
+    opacity: 0.05;
+  }
+
+  .sitemap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .watermark {
+    will-change: auto;
+  }
+  .cta {
+    transition: background-color var(--dur-fast) ease;
+  }
+}

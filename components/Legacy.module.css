@@ -1,0 +1,530 @@
+/* ============================================================================
+   Legacy — the band that extends the story section.
+
+   ONE NUMBER SIZES THE WHOLE RIGHT-HAND SIDE. `--disc` is the diameter of a
+   disc, and everything else here is a fraction of it: the six-column grid the
+   honeycomb is laid on, the gaps, the icon, the figure, the note, the weight
+   of the wires. Change `--disc` and the cluster scales as one drawing rather
+   than as a box with type in it that has to be re-fitted.
+
+   `--disc` itself is read off the COLUMN, not the viewport, so the cluster
+   fills whatever the grid gives it at every width — with a viewport-based
+   fallback first for anything without container queries.
+
+   TWO GROUNDS IN ONE SUBTREE. The band sits inside `.on-cream`, which has
+   re-pointed every semantic text token to its light-ground value. A disc is
+   navy, so it points them back — locally, on `.disc` — and its contents need
+   no light/dark branch of their own.
+
+   Nothing below assumes the script ran. The `.motion-on` block at the foot is
+   the only thing that hides a disc, holds a wire undrawn or holds the render
+   down; strip it and the band is a complete, still, readable spread.
+   ========================================================================== */
+
+.band {
+  /* Two and a half times the width the column first gave the render. Nothing
+     crops it: the picture is whole, and the only edge it meets is the page's
+     own. Everything else about the render is a fraction of this one number —
+     change it here and the overlap above it follows. */
+  --render-width: 107vw;
+  position: relative;
+  /* The showcase's headline is the largest type on the page; the band that
+     follows it needs the wider of the two rhythm intervals to read as a new
+     movement rather than the showcase's own footer. */
+  margin-top: var(--section-pad-lg);
+}
+
+/* Two columns, the copy and the cluster. The render is not one of them — it
+   is wider than the shell and runs beneath it, so it sits on the band
+   itself. */
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-areas: "intro lattice";
+  column-gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+}
+
+/* ---- The copy ------------------------------------------------------------ */
+
+/* Left-ranged, against the centred measure of the paragraphs above it. The
+   change of axis is what makes this read as a new movement in the section
+   rather than a fourth paragraph. */
+.intro {
+  grid-area: intro;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  max-width: 34rem;
+}
+
+.heading {
+  color: var(--text-on-cream);
+  max-width: 14ch;
+}
+
+.body {
+  max-width: var(--measure);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The render ---------------------------------------------------------- */
+
+/* The whole picture, with its own bottom-left corner set on the section's.
+   Flush left because the band is full width and this is not inside the shell;
+   flush bottom because the negative margin cancels the story section's
+   trailing padding, so the render meets the navy below it with no cream
+   between. No mask and no window — the picture is not cropped. */
+.plate {
+  position: relative;
+  width: 100%;
+  /* Pulled up by a little less than the height of the file's own empty sky, so
+     the shell still sits over nothing but a clear band of sky is left between
+     the copy and the roofline. The figure is a fraction of `--render-width`
+     rather than a length, so the overlap stays proportional as the render
+     scales. The building's one piece of content up there is the slab at the
+     far left, which is clear of both the copy and the cluster. */
+  margin: calc(var(--render-width) * -0.15) 0 calc(var(--section-pad) * -1);
+}
+
+/* The entrance owns this element's transform, and nothing else does. */
+.plateInner {
+  will-change: transform;
+}
+
+/* Wider than its own container on purpose. `max-width: none` because the
+   global reset caps every image at 100%. */
+.render {
+  display: block;
+  width: var(--render-width);
+  max-width: none;
+  height: auto;
+}
+
+/* ---- The cluster --------------------------------------------------------- */
+
+.lattice {
+  grid-area: lattice;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.cluster {
+  --disc: clamp(6.5rem, 12vw, 11rem);
+  position: relative;
+  isolation: isolate;
+  width: max-content;
+  max-width: 100%;
+  will-change: transform;
+}
+
+/* The size that matters is the column's, not the window's: at the same
+   viewport this band is a half-width column on a desktop and a full-width one
+   once it stacks, and the honeycomb has to fill both. */
+@supports (container-type: inline-size) {
+  .lattice {
+    container-type: inline-size;
+  }
+  .cluster {
+    --disc: clamp(6.5rem, 29cqw, 11rem);
+  }
+}
+
+/* Two rings, turning against each other behind the cluster — the same circle
+   the section's dome is cut from, held just at the edge of legibility. */
+.halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: calc(var(--disc) * 3.5);
+  aspect-ratio: 1;
+  border: 1px dashed rgba(15, 20, 48, 0.13);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: legacy-halo 96s linear infinite;
+}
+
+.halo::before {
+  content: "";
+  position: absolute;
+  inset: 13%;
+  border: 1px solid rgba(168, 87, 76, 0.14);
+  border-radius: 50%;
+}
+
+/* ---- The wires ----------------------------------------------------------- */
+
+/* Drawn in CSS px: no viewBox, so one SVG user unit is one CSS px and
+   Legacy.tsx can hand it measured geometry with no second coordinate system
+   to convert through. */
+.wires {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The three the guide draws heavy. Weighted off `--disc`, so the bar keeps
+   its proportion to the discs it joins at every width. */
+.bar {
+  fill: none;
+  stroke: var(--navy-700);
+  stroke-width: calc(var(--disc) * 0.038);
+}
+
+/* The web that binds the rows. A hairline, and never more than a suggestion —
+   it is structure, not information. */
+.strand {
+  fill: none;
+  stroke: var(--text-dark);
+  stroke-width: 1;
+  opacity: 0.16;
+}
+
+.chargeCore {
+  fill: var(--accent-deep);
+}
+
+/* No filter: a solid dot inside a soft one is a cheaper glow than a blur, and
+   it stays crisp on both grounds the charge crosses. */
+.chargeHalo {
+  fill: var(--accent-rose);
+  opacity: 0.3;
+}
+
+/* ---- The honeycomb ------------------------------------------------------- */
+
+/* Six half-columns. A disc spans two of them plus the gap between, so its
+   width is exactly `--disc`; the second row is offset by one half-column,
+   which is exactly half a disc. The whole three-over-two arrangement is those
+   two facts and nothing else. */
+.discs {
+  --gap: calc(var(--disc) * 0.115);
+  --half: calc((var(--disc) - var(--gap)) / 2);
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(6, var(--half));
+  column-gap: var(--gap);
+  row-gap: calc(var(--disc) * 0.14);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.disc:nth-child(1) {
+  grid-area: 1 / 1 / 2 / 3;
+}
+.disc:nth-child(2) {
+  grid-area: 1 / 3 / 2 / 5;
+}
+.disc:nth-child(3) {
+  grid-area: 1 / 5 / 2 / 7;
+}
+.disc:nth-child(4) {
+  grid-area: 2 / 2 / 3 / 4;
+}
+.disc:nth-child(5) {
+  grid-area: 2 / 4 / 3 / 6;
+}
+
+.disc {
+  /* Back to the navy ground. This subtree is inside `.on-cream`, which has
+     flipped the semantic tokens to their light-ground values; a disc is navy,
+     so it flips them back and everything inside it inherits correctly. */
+  --text-on-navy: #f4f2ef;
+  --text-on-navy-muted: #b3bacb;
+  --accent-text: var(--accent-rose);
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: calc(var(--disc) * 0.075) calc(var(--disc) * 0.125);
+  border-radius: 50%;
+  color: var(--text-on-navy);
+  text-align: center;
+  /* Off-centre highlight: a flat fill at this size reads as a sticker. */
+  background: radial-gradient(
+    118% 118% at 32% 16%,
+    var(--navy-600) 0%,
+    var(--navy-700) 46%,
+    var(--navy-900) 100%
+  );
+  box-shadow:
+    0 20px 46px -22px rgba(9, 13, 33, 0.55),
+    0 2px 6px -2px rgba(9, 13, 33, 0.3);
+  /* Transform is left alone on purpose — GSAP owns it, for the entrance and
+     the drift both, and a CSS transition here would fight every frame. */
+  transition: box-shadow 520ms var(--ease-out-quint);
+}
+
+.disc:hover {
+  box-shadow:
+    0 28px 62px -20px rgba(9, 13, 33, 0.62),
+    0 0 0 1px rgba(228, 168, 161, 0.38),
+    0 0 34px -8px rgba(228, 168, 161, 0.45);
+}
+
+.face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--disc) * 0.038);
+  width: 100%;
+}
+
+.icon {
+  display: block;
+  width: calc(var(--disc) * 0.18);
+  color: var(--accent-rose);
+}
+
+.icon svg {
+  width: 100%;
+  height: auto;
+}
+
+/* The unit drops to its own line when the figure is long — which is what the
+   guide does with "2.1 Million / Sq. Ft." and with "2500+ / Families". */
+.figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.34em;
+  row-gap: 0;
+  margin: 0;
+  color: var(--cream-100);
+}
+
+.count {
+  font-family: var(--font-display);
+  font-size: calc(var(--disc) * 0.225);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* Raised and small, the way the guide sets it — not a character of the
+   figure, a mark after it. */
+.suffix {
+  font-size: 0.5em;
+  vertical-align: super;
+  line-height: 1;
+}
+
+.unit,
+.phrase {
+  font-family: var(--font-display);
+  font-style: italic;
+  line-height: 1.12;
+  color: var(--cream-100);
+}
+
+.unit {
+  font-size: calc(var(--disc) * 0.098);
+}
+
+.phrase {
+  margin: 0;
+  font-size: calc(var(--disc) * 0.098);
+  text-wrap: balance;
+}
+
+/* `balance` rather than `pretty`: inside a circle the shape of the block
+   matters more than the last line, and a short centred stack of even lines is
+   the only one that fits. */
+.note {
+  margin: 0;
+  font-size: calc(var(--disc) * 0.066);
+  line-height: 1.3;
+  color: var(--text-on-navy-muted);
+  text-wrap: balance;
+}
+
+/* ---- The rings ----------------------------------------------------------- */
+
+.ring,
+.ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ring circle {
+  fill: none;
+  stroke: var(--accent-rose);
+  stroke-width: 1;
+  opacity: 0.36;
+  vector-effect: non-scaling-stroke;
+  transition: opacity 420ms ease;
+}
+
+.disc:hover .ring circle {
+  opacity: 0.95;
+}
+
+/* Only ever seen under a pointer, and only turning while it is there. */
+.ticks {
+  opacity: 0;
+  transition: opacity 480ms var(--ease-out-quint);
+  animation: legacy-turn 18s linear infinite;
+  animation-play-state: paused;
+}
+
+.ticks circle {
+  fill: none;
+  stroke: var(--accent-rose);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.disc:hover .ticks {
+  opacity: 0.8;
+  animation-play-state: running;
+}
+
+@keyframes legacy-halo {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes legacy-turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* ==========================================================================
+   Motion layout. Only applies once JS has run AND the visitor allows motion.
+   Every rule here is a starting position that Legacy.tsx tweens away from.
+   ========================================================================== */
+
+:global(.motion-on) .intro > * {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+
+:global(.motion-on) .plateInner {
+  opacity: 0;
+  transform: translate3d(0, 56px, 0) scale(1.06);
+}
+
+:global(.motion-on) .disc {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0) scale(0.78);
+}
+
+/* Every stroked element in the icons, the wires and the rings carries
+   `pathLength="1"`, so its outline is exactly one unit long whatever its real
+   geometry. That is what lets a single pair of declarations hold all of them
+   undrawn, with no measurement anywhere. */
+:global(.motion-on) .bar,
+:global(.motion-on) .strand,
+:global(.motion-on) .ring circle,
+:global(.motion-on) .icon path,
+:global(.motion-on) .icon circle {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* ---- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 63.99rem) {
+  /* Stacked, and in reading order: what it is, the proof, the place. */
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "intro"
+      "lattice";
+    row-gap: var(--space-9);
+  }
+
+  .intro {
+    max-width: 40rem;
+  }
+}
+
+@media (max-width: 33.99rem) {
+  /* Four half-columns instead of six: the honeycomb re-forms as two over one
+     over two. Larger discs, and the same measured wires — they are drawn from
+     the live layout, so this needs no geometry of its own. */
+  .discs {
+    grid-template-columns: repeat(4, var(--half));
+  }
+  .disc:nth-child(1) {
+    grid-area: 1 / 1 / 2 / 3;
+  }
+  .disc:nth-child(2) {
+    grid-area: 1 / 3 / 2 / 5;
+  }
+  .disc:nth-child(3) {
+    grid-area: 2 / 2 / 3 / 4;
+  }
+  .disc:nth-child(4) {
+    grid-area: 3 / 1 / 4 / 3;
+  }
+  .disc:nth-child(5) {
+    grid-area: 3 / 3 / 4 / 5;
+  }
+
+  .cluster {
+    --disc: clamp(6.5rem, 40vw, 11rem);
+  }
+
+  /* The web reads as clutter once the cluster is this tight. */
+  .strand {
+    opacity: 0.1;
+  }
+
+  /* A ring reads as a ring around the CLUSTER. Once the honeycomb is a
+     two-one-two stack it is taller than it is wide, and the same circle
+     becomes two stray arcs through the discs. */
+  .halo {
+    display: none;
+  }
+}
+
+@supports (container-type: inline-size) {
+  @media (max-width: 33.99rem) {
+    .cluster {
+      --disc: clamp(6.5rem, 45cqw, 11rem);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plateInner,
+  .cluster {
+    will-change: auto;
+  }
+  /* `motion-on` is never set under reduced motion, so these only matter if
+     the preference is changed after load. */
+  .halo,
+  .ticks {
+    animation: none;
+  }
+  .disc,
+  .ring circle,
+  .ticks {
+    transition: none;
+  }
+}
