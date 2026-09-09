@@ -1,0 +1,561 @@
+/* ============================================================
+   Vakratunda Developers — "Projects" transitional section
+   Off-white plaster ground · navy ink · bougainvillea magenta
+   ============================================================ */
+
+:root {
+  --paper: #f2efe6;
+  --paper-deep: #e9e5d8;
+  --ink: #1b2340;
+  --ink-soft: rgba(27, 35, 64, 0.62);
+  --magenta: #cf2d8b;
+  --magenta-deep: #a91e6f;
+  --magenta-bright: #e858b2;
+  --magenta-pale: #f2a3cd;
+  --leaf: #7da84c;
+  --leaf-deep: #55803a;
+  --stem: #6a4a44;
+
+  --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
+  --sans: "Archivo", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Animated by scripts.js (initial = split state) */
+  --gap: 4.5vw;      /* seam between the two panes            */
+  --fx: 15vw;        /* frame horizontal inset                */
+  --ft: 15vh;        /* frame top inset                       */
+  --fb: 11vh;        /* frame bottom inset                    */
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scrollbar-color: var(--ink) var(--paper-deep);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* plaster grain — a whisper of tooth over the whole surface */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+::selection {
+  background: var(--magenta);
+  color: var(--paper);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--magenta);
+  outline-offset: 4px;
+}
+
+/* ============================================================
+   Fixed chrome — monogram + corner nav
+   ============================================================ */
+
+.chrome {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: clamp(20px, 3.4vh, 38px) clamp(22px, 3.6vw, 56px);
+  pointer-events: none;
+}
+
+.chrome a { pointer-events: auto; }
+
+.monogram {
+  display: block;
+  width: clamp(84px, 8.4vw, 122px);
+}
+
+.monogram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chrome { color: var(--ink); }
+
+.monogram-ring text {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.46em;
+  fill: currentColor;
+  text-transform: uppercase;
+}
+
+/* keeps the chrome legible where white type crosses white glyphs or sky */
+.corner-nav a,
+.rail-count {
+  text-shadow: 0 1px 16px rgba(14, 20, 44, 0.3);
+}
+
+.monogram svg {
+  filter: drop-shadow(0 1px 10px rgba(14, 20, 44, 0.22));
+}
+
+.monogram-ring {
+  transform-origin: 60px 60px;
+  animation: monogram-spin 36s linear infinite;
+}
+
+@keyframes monogram-spin {
+  to { transform: rotate(360deg); }
+}
+
+.monogram-mark path { fill: currentColor; }
+.monogram-mark .monogram-petal { fill: var(--magenta); }
+
+.corner-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.corner-nav-major {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 1.9vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: clamp(14px, 2.4vh, 26px);
+}
+
+.corner-nav-major span {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.08em;
+}
+
+.corner-nav-major span + span { margin-top: 0.14em; }
+
+.corner-nav-minor {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  padding: 0.28em 0;
+}
+
+.corner-nav-minor:hover,
+.corner-nav-major:hover { color: var(--magenta-deep); }
+
+/* ============================================================
+   Lead-in section
+   ============================================================ */
+
+.lead {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6vh;
+  padding: 18vh 8vw 10vh;
+  text-align: center;
+}
+
+.lead-line {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.2vw, 3rem);
+  font-weight: 400;
+  line-height: 1.3;
+  max-width: 22ch;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead-cue {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.46em;
+  text-transform: uppercase;
+  color: var(--magenta-deep);
+  margin: 0;
+}
+
+/* ============================================================
+   Transitional section
+   ============================================================ */
+
+.transition {
+  position: relative;
+}
+
+.stage {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: clip;
+  background: var(--paper);
+}
+
+/* ---------- split frame ---------- */
+
+.frame {
+  position: absolute;
+  top: var(--ft);
+  bottom: var(--fb);
+  left: var(--fx);
+  right: var(--fx);
+  z-index: 2;
+}
+
+.pane {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  will-change: transform;
+}
+
+.pane img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 38%;
+  will-change: transform;
+}
+
+.pane--left  { clip-path: inset(0 calc(50% + var(--gap) / 2) 0 0); }
+.pane--right { clip-path: inset(0 0 0 calc(50% + var(--gap) / 2)); }
+
+/* dusk-to-departure veil, driven at the exit beat */
+.frame-veil {
+  position: absolute;
+  inset: 0;
+  background: #0e142c;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- wordmark ---------- */
+
+.wordmark {
+  position: absolute;
+  top: 1vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  margin: 0;
+  width: max-content;
+  pointer-events: none;
+}
+
+.wordmark-inner {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(90px, 19vw, 390px);
+  line-height: 0.94;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: #fdfcf8;
+  text-shadow: 0 3px 34px rgba(14, 20, 44, 0.32);
+  opacity: 0;
+  transform: scale(1.9) translateY(14vh);
+  transform-origin: 50% 20%;
+  will-change: transform, opacity;
+}
+
+/* ---------- left rail ---------- */
+
+.rail {
+  position: absolute;
+  left: clamp(26px, 4.2vw, 64px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  color: var(--ink);
+}
+
+.rail-track {
+  position: relative;
+  width: 1px;
+  height: 30vh;
+  background: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.rail-fill {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+.rail-count {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rail-tick {
+  width: 1px;
+  height: 5vh;
+  background: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.rail-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.rail-scroll-word {
+  writing-mode: vertical-rl;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+.rail-scroll-arrow {
+  width: 1px;
+  height: 4.6vh;
+  background: currentColor;
+  position: relative;
+}
+
+.rail-scroll-arrow::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -3px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* ---------- bougainvillea ---------- */
+
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.bract { fill: currentColor; }
+.bloom-core { fill: #fdf3e4; opacity: 0.9; }
+.leaf.l1 { fill: var(--leaf); }
+.leaf.l2 { fill: var(--leaf-deep); }
+.stem {
+  fill: none;
+  stroke: var(--stem);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.p1 { color: var(--magenta); }
+.p2 { color: var(--magenta-bright); }
+.p3 { color: var(--magenta-deep); }
+.p4 { color: var(--magenta-pale); }
+
+.bough {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.bough svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bough-back {
+  filter: blur(7px);
+  opacity: 0.75;
+}
+
+.bough--left {
+  left: -9vw;
+  bottom: -14vh;
+  width: clamp(340px, 42vw, 760px);
+}
+
+.bough--right {
+  right: -8vw;
+  top: 26vh;
+  width: clamp(320px, 40vw, 720px);
+}
+
+/* ============================================================
+   Next content
+   ============================================================ */
+
+.after {
+  position: relative;
+  z-index: 3;
+  background: var(--paper);
+  padding: 18vh 8vw 16vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7vh;
+}
+
+.after-kicker {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.8vw, 2.6rem);
+  font-weight: 400;
+  text-align: center;
+  margin: 0;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+.after-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: min(860px, 100%);
+}
+
+.after-list li + li { border-top: 1px solid rgba(27, 35, 64, 0.18); }
+
+.after-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2rem;
+  padding: 1.35rem 0.25rem;
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 1.9vw, 1.6rem);
+  letter-spacing: 0.02em;
+  transition: color 220ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.after-list a span {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.after-list a:hover {
+  color: var(--magenta-deep);
+  transform: translateX(0.9rem);
+}
+
+.after-cta {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  padding: 1.05em 2.6em;
+  transition: background 240ms ease, color 240ms ease;
+}
+
+.after-cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 860px) {
+  :root {
+    --gap: 5vw;
+    --fx: 9vw;
+    --ft: 17vh;
+    --fb: 15vh;
+  }
+
+  .rail { left: 14px; gap: 12px; }
+  .rail-track { height: 22vh; }
+  .rail-scroll-word { display: none; }
+
+  .corner-nav-major { font-size: 1.05rem; }
+  .corner-nav-minor { font-size: 0.6rem; letter-spacing: 0.26em; }
+
+  .monogram { width: 66px; }
+
+  .wordmark-inner { font-size: 21vw; }
+
+  .bough--left  { width: 66vw; left: -18vw; bottom: -8vh; }
+  .bough--right { width: 58vw; right: -16vw; top: auto; bottom: 22vh; }
+
+  .after-list a { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+}
+
+/* ============================================================
+   No-JS + reduced motion: rest in the merged, revealed state
+   ============================================================ */
+
+html.no-js,
+html.static-motion {
+  --gap: 0vw;
+  --fx: 0vw;
+  --ft: 0vh;
+  --fb: 0vh;
+}
+
+html.no-js .wordmark-inner,
+html.static-motion .wordmark-inner {
+  opacity: 1;
+  transform: none;
+}
+
+html.no-js .rail-fill,
+html.static-motion .rail-fill { transform: scaleY(1); }
+
+html.no-js .bough,
+html.static-motion .bough { display: none; }
+
+html.no-js .chrome,
+html.no-js .rail,
+html.static-motion .chrome,
+html.static-motion .rail { color: #f8f6ef; }
+
+@media (prefers-reduced-motion: reduce) {
+  .monogram-ring { animation: none; }
+}

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "next-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "projects-transition-demo",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "http-server", "demos/our-projects-transition", "-p", "8123", "-c-1"],
+      "port": 8123
+    }
+  ]
+}

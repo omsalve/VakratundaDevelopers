@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vakratunda Developers — Projects</title>
+  <meta name="description" content="A scroll-driven transitional section: twin gallery panels merge into a full-bleed hero as the PROJECTS wordmark reveals." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Archivo:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+  <script>document.documentElement.classList.remove('no-js');</script>
+</head>
+<body>
+<!--
+THESIS: One image earns the whole viewport. Twin gallery panels close their seam,
+swallow the frame, and the PROJECTS wordmark lands across the sky — refusing the
+category default of a static grid of project cards.
+OWN-WORLD: Plaster off-white ground, deep navy ink, Didone display at monumental
+scale, hairline rules, tracked micro-caps, bougainvillea magenta as the only
+saturated note. Recognizable with all content removed.
+STORY: The visitor feels the portfolio as a place, not a list — then is handed
+"View all projects" as the next step.
+FIRST VIEWPORT: Two vertical crops of the SkyDeck render, centered, seam of paper
+between them; circular monogram top-left, serif nav stack top-right, progress
+rail with counter on the left, bougainvillea breaching the lower-left corner and
+the right edge (the reference's asymmetric placement, kept deliberately).
+FORM: Brief-pinned recreation of the supplied reference screenshots (no seed
+roll; the pinned brief beats the roll).
+FINISH: unreviewed and undocumented is unfinished; this build ends with the
+finish review, the verdict, and DESIGN.md.
+-->
+
+  <!-- ======================= Fixed chrome ======================= -->
+  <header class="chrome" aria-label="Site">
+    <a class="monogram" href="#" aria-label="Vakratunda Developers — home">
+      <svg viewBox="0 0 120 120" role="img" aria-hidden="true" focusable="false">
+        <defs>
+          <path id="ring" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
+        </defs>
+        <g class="monogram-ring">
+          <text>
+            <textPath href="#ring" startOffset="0">VAKRATUNDA&#8202;&#183;&#8202;DEVELOPERS&#8202;&#183;</textPath>
+          </text>
+        </g>
+        <g class="monogram-mark" transform="translate(60 60)">
+          <path d="M0-17 C6-9 6-4 0 0 C-6-4 -6-9 0-17 Z" />
+          <path d="M0-17 C6-9 6-4 0 0 C-6-4 -6-9 0-17 Z" transform="rotate(90)" />
+          <path d="M0-17 C6-9 6-4 0 0 C-6-4 -6-9 0-17 Z" transform="rotate(180)" />
+          <path d="M0-17 C6-9 6-4 0 0 C-6-4 -6-9 0-17 Z" transform="rotate(270)" />
+          <path class="monogram-petal" d="M0-11 C4-6 4-3 0 0 C-4-3 -4-6 0-11 Z" transform="rotate(45)" />
+          <path class="monogram-petal" d="M0-11 C4-6 4-3 0 0 C-4-3 -4-6 0-11 Z" transform="rotate(135)" />
+          <path class="monogram-petal" d="M0-11 C4-6 4-3 0 0 C-4-3 -4-6 0-11 Z" transform="rotate(225)" />
+          <path class="monogram-petal" d="M0-11 C4-6 4-3 0 0 C-4-3 -4-6 0-11 Z" transform="rotate(315)" />
+        </g>
+      </svg>
+    </a>
+
+    <nav class="corner-nav" aria-label="Primary">
+      <a class="corner-nav-major" href="#">
+        <span>View&nbsp;all</span>
+        <span>projects</span>
+      </a>
+      <a class="corner-nav-minor" href="#">Book a site visit</a>
+      <a class="corner-nav-minor" href="#">Contact</a>
+    </nav>
+  </header>
+
+  <!-- ======================= Lead-in ======================= -->
+  <section class="lead" aria-label="Introduction">
+    <p class="lead-line">Every address we build begins as a promise kept in stone.</p>
+    <p class="lead-cue" aria-hidden="true">Our projects</p>
+  </section>
+
+  <!-- ======================= Transitional section ======================= -->
+  <section class="transition" id="projects-transition" aria-label="Projects showcase">
+    <div class="stage">
+
+      <!-- Left rail: progress + counter -->
+      <div class="rail" aria-hidden="true">
+        <div class="rail-track"><span class="rail-fill"></span></div>
+        <div class="rail-count" data-counter>01</div>
+        <div class="rail-tick"></div>
+        <div class="rail-scroll">
+          <span class="rail-scroll-word">Scroll</span>
+          <span class="rail-scroll-arrow"></span>
+        </div>
+      </div>
+
+      <!-- The split frame -->
+      <div class="frame">
+        <figure class="pane pane--left">
+          <img src="assets/skydeck.jpg" alt="Residents on the SkyDeck terrace at dusk, the city glowing beyond the parapet" />
+        </figure>
+        <figure class="pane pane--right">
+          <img src="assets/skydeck.jpg" alt="" aria-hidden="true" />
+        </figure>
+        <div class="frame-veil" aria-hidden="true"></div>
+      </div>
+
+      <!-- The monumental wordmark -->
+      <h2 class="wordmark" aria-label="Projects">
+        <span class="wordmark-inner" aria-hidden="true">Projects</span>
+      </h2>
+
+      <!-- Bougainvillea boughs -->
+      <svg class="defs" aria-hidden="true" focusable="false">
+        <defs>
+          <g id="bloom">
+            <path class="bract" d="M0,0 C7,-5 10,-16 0,-25 C-10,-16 -7,-5 0,0 Z" />
+            <path class="bract" d="M0,0 C7,-5 10,-16 0,-25 C-10,-16 -7,-5 0,0 Z" transform="rotate(118)" />
+            <path class="bract" d="M0,0 C7,-5 10,-16 0,-25 C-10,-16 -7,-5 0,0 Z" transform="rotate(-118)" />
+            <circle class="bloom-core" cx="0" cy="-4" r="2.1" />
+            <circle class="bloom-core" cx="-3.4" cy="1.4" r="2.1" />
+            <circle class="bloom-core" cx="3.4" cy="1.4" r="2.1" />
+          </g>
+          <g id="bloom2">
+            <path class="bract" d="M0,0 C9,-4 11,-14 2,-24 C-8,-17 -8,-6 0,0 Z" />
+            <path class="bract" d="M0,0 C8,-6 9,-17 -1,-23 C-10,-15 -7,-4 0,0 Z" transform="rotate(126)" />
+            <path class="bract" d="M0,0 C6,-6 11,-15 1,-25 C-11,-17 -6,-4 0,0 Z" transform="rotate(-112)" />
+            <circle class="bloom-core" cx="0.6" cy="-4" r="2" />
+            <circle class="bloom-core" cx="-3" cy="1.8" r="2" />
+            <circle class="bloom-core" cx="3.6" cy="0.8" r="2" />
+          </g>
+          <g id="bloom3">
+            <path class="bract" d="M0,0 C5,-7 8,-18 -2,-24 C-9,-14 -6,-4 0,0 Z" transform="rotate(14)" />
+            <path class="bract" d="M0,0 C8,-3 12,-13 4,-22 C-6,-16 -7,-5 0,0 Z" transform="rotate(132)" />
+            <path class="bract" d="M0,0 C7,-6 8,-16 0,-24 C-10,-15 -8,-4 0,0 Z" transform="rotate(-104)" />
+            <circle class="bloom-core" cx="-0.4" cy="-4.2" r="2" />
+            <circle class="bloom-core" cx="-3.2" cy="1.2" r="2" />
+            <circle class="bloom-core" cx="3" cy="1.6" r="2" />
+          </g>
+          <g id="leaf">
+            <path d="M0,0 C14,-8 30,-6 38,8 C24,16 8,14 0,0 Z" />
+          </g>
+          <g id="sprig">
+            <path class="stem" d="M20,430 C60,340 70,260 130,190 C170,140 210,110 265,80" />
+            <path class="stem" d="M110,236 C140,230 175,238 205,262" />
+            <path class="stem" d="M80,318 C110,318 140,332 158,356" />
+            <use href="#leaf" class="leaf l1" x="0" y="0" transform="translate(96,300) rotate(-30)" />
+            <use href="#leaf" class="leaf l2" x="0" y="0" transform="translate(150,210) rotate(-58) scale(0.9)" />
+            <use href="#leaf" class="leaf l1" x="0" y="0" transform="translate(196,268) rotate(24) scale(0.8)" />
+            <use href="#leaf" class="leaf l2" x="0" y="0" transform="translate(52,376) rotate(-8) scale(1.05)" />
+            <use href="#leaf" class="leaf l1" x="0" y="0" transform="translate(236,120) rotate(-70) scale(0.85)" />
+            <use href="#bloom" class="p1" transform="translate(262,78) scale(1.25) rotate(12)" />
+            <use href="#bloom2" class="p2" transform="translate(232,102) scale(1.05) rotate(-40)" />
+            <use href="#bloom3" class="p3" transform="translate(250,132) scale(0.9) rotate(70)" />
+            <use href="#bloom2" class="p1" transform="translate(206,148) scale(1.15) rotate(160)" />
+            <use href="#bloom" class="p4" transform="translate(178,178) scale(0.95) rotate(-100)" />
+            <use href="#bloom3" class="p2" transform="translate(148,182) scale(1.2) rotate(28)" />
+            <use href="#bloom2" class="p3" transform="translate(212,262) scale(1.1) rotate(-14)" />
+            <use href="#bloom" class="p1" transform="translate(230,286) scale(0.85) rotate(96)" />
+            <use href="#bloom3" class="p4" transform="translate(186,246) scale(0.9) rotate(-64)" />
+            <use href="#bloom2" class="p2" transform="translate(120,226) scale(1.0) rotate(140)" />
+            <use href="#bloom3" class="p1" transform="translate(94,268) scale(1.18) rotate(-30)" />
+            <use href="#bloom" class="p3" transform="translate(64,330) scale(1.05) rotate(52)" />
+            <use href="#bloom2" class="p2" transform="translate(96,352) scale(0.9) rotate(-120)" />
+            <use href="#bloom3" class="p4" transform="translate(152,346) scale(1.1) rotate(8)" />
+            <use href="#bloom2" class="p1" transform="translate(168,368) scale(0.8) rotate(76)" />
+            <use href="#bloom3" class="p3" transform="translate(36,398) scale(1.2) rotate(-52)" />
+            <use href="#bloom" class="p2" transform="translate(70,416) scale(0.95) rotate(120)" />
+          </g>
+        </defs>
+      </svg>
+
+      <div class="bough bough--left" aria-hidden="true">
+        <svg viewBox="0 0 640 520">
+          <g class="bough-back">
+            <use href="#sprig" transform="translate(30,-40) scale(1.45) rotate(6 160 260)" />
+            <use href="#sprig" transform="translate(300,60) scale(1.2) rotate(40 160 260)" />
+          </g>
+          <g class="bough-front">
+            <use href="#sprig" transform="translate(0,40) scale(1.1)" />
+            <use href="#sprig" transform="translate(210,120) scale(0.95) rotate(28 160 260)" />
+            <use href="#sprig" transform="translate(360,10) scale(0.85) rotate(66 160 260)" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="bough bough--right" aria-hidden="true">
+        <svg viewBox="0 0 640 520">
+          <g class="bough-back">
+            <use href="#sprig" transform="translate(560,-20) scale(-1.4,1.4) rotate(-12 160 260)" />
+            <use href="#sprig" transform="translate(340,80) scale(-1.15,1.15) rotate(-42 160 260)" />
+          </g>
+          <g class="bough-front">
+            <use href="#sprig" transform="translate(620,50) scale(-1.05,1.05)" />
+            <use href="#sprig" transform="translate(430,140) scale(-0.9,0.9) rotate(-30 160 260)" />
+            <use href="#sprig" transform="translate(300,-10) scale(-0.8,0.8) rotate(-70 160 260)" />
+          </g>
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================= Next content ======================= -->
+  <section class="after" aria-label="Portfolio">
+    <p class="after-kicker">Fourteen addresses across Mumbai &amp; Thane</p>
+    <ul class="after-list">
+      <li><a href="#">Godrej SkyGarden<span>Panvel</span></a></li>
+      <li><a href="#">BKC&nbsp;28<span>Bandra Kurla Complex</span></a></li>
+      <li><a href="#">Vakratunda Palace<span>Kolshet Road</span></a></li>
+      <li><a href="#">Parijat Residency<span>Badlapur East</span></a></li>
+    </ul>
+    <a class="after-cta" href="#">View all projects</a>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
