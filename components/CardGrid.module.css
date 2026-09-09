@@ -1,0 +1,110 @@
+/* ============================================================================
+   CardGrid — the site's card, which is a hairline and some type.
+
+   Lifted from Responsibility's `.commitment`, which is the only card pattern
+   this site has: a rule across the top, a 22px drawing in its own track so the
+   detail ranges on the title's left edge with nothing measured, and two
+   weights of type under it. Nothing here is boxed, filled or rounded.
+
+   The rule colour is `--navy-line`, which `.on-cream` re-points, so one card
+   works on both grounds without a light-mode branch.
+   ========================================================================== */
+
+.grid {
+  display: grid;
+  column-gap: clamp(var(--space-6), 3vw, var(--space-8));
+  row-gap: clamp(var(--space-7), 4vw, var(--space-9));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cols2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.cols3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.cols4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* The drawing and the type sit in two real tracks. Cards with no drawing
+   collapse the first track to zero, so both shapes range on the same left
+   edge and a mixed grid still lines up. */
+.card {
+  --icon-size: 22px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
+  align-content: start;
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.icon {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  width: var(--icon-size);
+  color: var(--accent-text);
+}
+
+.icon svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Undrawn until inked. `pathLength={1}` on every path is what lets this hold
+   the whole set at one unit with no measurement at all. */
+:global(.motion-on) .icon path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.eyebrow {
+  grid-column: 2;
+  margin-bottom: var(--space-1);
+}
+
+/* An icon card puts the drawing on row 1 and the title beside it; a card with
+   an eyebrow puts the eyebrow there instead. Neither ever collides, because
+   the eyebrow only exists where the icon does not. */
+.title {
+  grid-column: 2;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+}
+
+.body {
+  grid-column: 2;
+  max-width: 34ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+@media (max-width: 63.99rem) {
+  .cols3,
+  .cols4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .grid,
+  .cols2,
+  .cols3,
+  .cols4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .body {
+    max-width: var(--measure-narrow);
+  }
+}

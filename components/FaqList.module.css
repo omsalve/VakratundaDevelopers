@@ -1,0 +1,98 @@
+/* ============================================================================
+   FaqList — disclosures, on the ledger's own rules.
+
+   Same row treatment as LedgerList, because they are the same kind of thing:
+   a sequence read down, ruled by hairlines and nothing else. The marker is
+   drawn as two hairlines rather than set as a glyph, so it is the palette's
+   line-work rather than a font's idea of a plus sign — and the native
+   triangle is removed on both engines.
+   ========================================================================== */
+
+.list {
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.item {
+  border-bottom: var(--hairline) solid var(--navy-line);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-5);
+  padding-block: clamp(var(--space-5), 2.4vw, var(--space-6));
+  cursor: pointer;
+  list-style: none;
+}
+
+/* The two engines hide the native marker differently, so both are named. */
+.summary::-webkit-details-marker {
+  display: none;
+}
+.summary::marker {
+  content: "";
+}
+
+.question {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+.summary:hover .question,
+.summary:focus-visible .question {
+  color: var(--accent-text);
+}
+
+/* A plus, drawn: two hairlines crossing, the upright rotating away as the
+   answer opens. It is 22px because that is the icon size the card grid sets,
+   and the two marks should read as the same hand. */
+.marker {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.marker::before,
+.marker::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: var(--hairline);
+  background: var(--accent-text);
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.marker::after {
+  transform: rotate(90deg);
+}
+
+.item[open] .marker::after {
+  transform: rotate(0deg);
+}
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--measure);
+  padding-bottom: clamp(var(--space-5), 2.4vw, var(--space-6));
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker::before,
+  .marker::after {
+    transition: none;
+  }
+}

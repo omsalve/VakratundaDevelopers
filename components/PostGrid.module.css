@@ -1,0 +1,138 @@
+/* ============================================================================
+   PostGrid — the articles, laid out flat.
+
+   ProjectGrid's card, unchanged: the same frame, the same radius, the same
+   two-rate entrance, the same hairline meta row and three weights of type.
+   The only additions are the title's link states and the reading time, and
+   both are drawn from tokens the site already sets.
+   ========================================================================== */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+  row-gap: clamp(var(--space-9), 6vw, var(--space-11));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.frame {
+  position: relative;
+  overflow: clip;
+  border-radius: var(--radius-m);
+  background: var(--navy-800);
+  aspect-ratio: 4 / 5;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  transition: scale var(--dur-slow) var(--ease-out-expo);
+}
+
+.card:hover .image {
+  scale: 1.03;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.category {
+  flex: none;
+}
+
+.date {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+}
+
+/* The card is the target; the title carries the name. The excerpt stays
+   selectable because it is outside the anchor. */
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-m);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--accent-text);
+}
+
+.excerpt {
+  max-width: 38ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.reading {
+  margin-top: auto;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.note {
+  max-width: var(--measure-narrow);
+  margin-top: clamp(var(--space-9), 6vw, var(--space-11));
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+/* ---- Motion start states ------------------------------------------------- */
+:global(.motion-on) .frame {
+  clip-path: inset(18% 0 0 0);
+}
+
+:global(.motion-on) .image {
+  transform: scale(1.06);
+}
+
+@media (max-width: 63.99rem) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

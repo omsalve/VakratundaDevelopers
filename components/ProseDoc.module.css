@@ -1,0 +1,196 @@
+/* ============================================================================
+   ProseDoc — the reading surface.
+
+   Everything here is subordinated to the line length. The document sits at
+   --measure-narrow, the contents rail takes the counter-space, and the only
+   ornament in the whole file is the clause number set in the display face —
+   which is doing structural work, not decoration.
+   ========================================================================== */
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  column-gap: clamp(var(--space-7), 5vw, var(--space-10));
+  align-items: start;
+}
+
+/* ---- The contents rail --------------------------------------------------- */
+.contents {
+  position: sticky;
+  /* Clears the fixed masthead, which is the only thing that can overlap it. */
+  top: calc(var(--header-h) + var(--space-6));
+}
+
+.contentsLabel {
+  padding-bottom: var(--space-4);
+  border-bottom: var(--hairline) solid var(--navy-line);
+  color: var(--text-on-navy-muted);
+}
+
+.contentsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contentsLink {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-bottom: var(--hairline) solid var(--navy-line-soft);
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+  text-decoration: none;
+  transition: color var(--dur-fast) ease;
+}
+
+.contentsLink:hover,
+.contentsLink:focus-visible {
+  color: var(--accent-text);
+}
+
+.contentsNumber {
+  color: var(--accent-text);
+}
+
+/* ---- The document -------------------------------------------------------- */
+.doc {
+  max-width: var(--measure);
+  min-width: 0;
+}
+
+.updated {
+  padding-bottom: var(--space-5);
+  border-bottom: var(--hairline) solid var(--navy-line);
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.intro {
+  max-width: var(--measure-lead);
+  margin-top: var(--space-6);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy);
+}
+
+.clause {
+  margin-top: clamp(var(--space-8), 5vw, var(--space-10));
+}
+
+.clauseHeading {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+}
+
+.clauseNumber {
+  font-size: var(--fs-small);
+  color: var(--accent-text);
+}
+
+/* The prose ranges on the heading's own left edge — the heading's second
+   track — rather than on the number's. */
+.para,
+.points {
+  margin-top: var(--space-4);
+  margin-left: 3rem;
+  max-width: var(--measure-narrow);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.points {
+  padding: 0;
+  list-style: none;
+}
+
+/* A rose tick rather than a bullet glyph: the palette's line-work again. */
+.point {
+  position: relative;
+  padding-left: var(--space-5);
+  margin-top: var(--space-3);
+}
+
+.point::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: var(--space-3);
+  height: var(--hairline);
+  background: var(--accent-text);
+}
+
+.closing {
+  margin-top: clamp(var(--space-8), 5vw, var(--space-10));
+  padding-top: var(--space-6);
+  border-top: var(--hairline) solid var(--navy-line);
+  max-width: var(--measure-narrow);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy);
+}
+
+/* Journey's ghost pill, on the tokens so it inverts on either ground. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--space-6);
+  padding: var(--space-3) var(--space-6);
+  border: var(--hairline) solid var(--accent-text);
+  border-radius: var(--radius-pill);
+  color: var(--accent-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background: var(--accent-text);
+  color: var(--cream-100);
+}
+
+@media (max-width: 63.99rem) {
+  .field {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(var(--space-8), 5vw, var(--space-9));
+  }
+
+  /* Sticky in one column would pin the rail over the document it indexes. */
+  .contents {
+    position: static;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .clauseHeading {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-2);
+  }
+
+  .para,
+  .points {
+    margin-left: 0;
+  }
+}

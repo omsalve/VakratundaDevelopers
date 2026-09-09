@@ -1,0 +1,73 @@
+/* ============================================================================
+   PortraitPlate — the portrait's box, whether or not the portrait exists yet.
+
+   The box is the same shape either way: the plate below sets no size of its
+   own, only a ratio the caller passes, so swapping a real photograph in
+   cannot move a single element around it.
+   ========================================================================== */
+
+.box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-300);
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* ---- The plate ---------------------------------------------------------- */
+.plate {
+  display: grid;
+  place-items: center;
+  /* A very slight warm gradient, so a field of six plates does not read as
+     six identical fills. Two stops of the same cream, nothing more. */
+  background:
+    linear-gradient(155deg, var(--cream-100) 0%, var(--cream-300) 100%);
+  border: var(--hairline) solid var(--cream-line);
+}
+
+/* The mat. Inset from the edge the way a print sits in its mount, in the
+   guide's rose line-work rather than in a neutral. */
+.mount {
+  position: absolute;
+  inset: var(--space-3);
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: calc(var(--radius-m) - var(--space-3));
+  opacity: 0.5;
+}
+
+.initials {
+  font-family: var(--font-display);
+  /* Sized from the plate, not from the type scale: these boxes run from a
+     6rem card thumbnail to a full-height feature portrait, and one step
+     would be lost in the first and vulgar in the second. */
+  font-size: clamp(1.5rem, 22cqi, 4.5rem);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  color: var(--accent-deep);
+  opacity: 0.62;
+  /* Optically centred: the rule below takes visual weight off the bottom. */
+  transform: translateY(-0.12em);
+}
+
+.rule {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 2.25rem;
+  height: 1px;
+  translate: -50% 0;
+  background: var(--cream-line-rose);
+}
+
+/* `cqi` above needs the plate to be a container. Declared last so it applies
+   to the plate only — the photograph has no use for it. */
+.plate {
+  container-type: inline-size;
+}

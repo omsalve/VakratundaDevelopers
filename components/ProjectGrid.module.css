@@ -1,0 +1,208 @@
+/* ============================================================================
+   ProjectGrid — the portfolio, laid out flat.
+
+   THE PHOTOGRAPH IS THE ONLY FILLED SHAPE, which is the rule the whole site
+   keeps. A card is a frame, a hairline under it, and three weights of type —
+   no panel, no border box, no radius on the card itself, no shadow.
+
+   The stage buttons are the one interface control on this page, so they are
+   set in the header's own vocabulary: a pill, a hairline, and the rose fill
+   for the active one. Same tokens as SiteHeader's CTA.
+   ========================================================================== */
+
+/* ---- The filter ---------------------------------------------------------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  padding-bottom: var(--space-6);
+  margin-bottom: clamp(var(--space-8), 5vw, var(--space-10));
+  border-bottom: var(--hairline) solid var(--navy-line);
+}
+
+.controlsLabel {
+  flex: none;
+  color: var(--text-on-navy-muted);
+}
+
+.stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  /* 44px tall at the base step, so the control clears the touch target
+     without a hard height. */
+  padding: var(--space-3) var(--space-5);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-on-navy);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
+}
+
+.stage:hover {
+  border-color: var(--accent-text);
+}
+
+.isActive {
+  background: var(--accent-rose);
+  border-color: var(--accent-rose);
+  color: var(--navy-900);
+  letter-spacing: var(--tracking-ui-solid);
+}
+
+/* On cream the pale rose drops to 1.85:1 against the ground, so the active
+   pill takes the deep rose there and its label goes to cream. */
+:global(.on-cream) .isActive {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  color: var(--cream-100);
+}
+
+.count {
+  font-size: var(--fs-caption);
+  opacity: 0.7;
+}
+
+.isActive .count {
+  opacity: 0.85;
+}
+
+/* ---- The field ----------------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+  row-gap: clamp(var(--space-9), 6vw, var(--space-11));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* The frame is the mask the image is cut in through, and the only thing on
+   the page carrying a radius — the same --radius-m the site's other frames
+   take. `overflow: clip` keeps the pushed image inside it. */
+.frame {
+  position: relative;
+  overflow: clip;
+  border-radius: var(--radius-m);
+  background: var(--navy-800);
+  aspect-ratio: 4 / 5;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  /* The hover is written as the independent `scale` property, and the
+     entrance below as a `transform`, deliberately: GSAP settles the entrance
+     through `transform` and its inline value would override a `transform`
+     hover outright. As two different properties they compose. */
+  transition: scale var(--dur-slow) var(--ease-out-expo);
+}
+
+.card:hover .image {
+  scale: 1.03;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.status {
+  flex: none;
+}
+
+.locality {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+}
+
+.blurb {
+  max-width: 34ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.empty {
+  padding-block: var(--space-9);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* The small print, ranged on the field's own left edge and held clear of it
+   by the page's own interval rather than a value of its own. */
+.note {
+  max-width: var(--measure-narrow);
+  margin-top: clamp(var(--space-9), 6vw, var(--space-11));
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+/* ---- Motion start states ------------------------------------------------- */
+:global(.motion-on) .frame {
+  clip-path: inset(18% 0 0 0);
+}
+
+:global(.motion-on) .image {
+  transform: scale(1.06);
+}
+
+@media (max-width: 63.99rem) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

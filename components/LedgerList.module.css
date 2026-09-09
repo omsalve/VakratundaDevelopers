@@ -1,0 +1,148 @@
+/* ============================================================================
+   LedgerList — records, ruled.
+
+   One hairline per row and nothing else: no cell borders, no alternating
+   fill, no radius. The meta column is set in the display face at caption size
+   and full caps, which is the same treatment Journey gives its credentials
+   and BrandStory gives its captions — small type that is meant to be read as
+   engraved rather than typed.
+   ========================================================================== */
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.row {
+  border-bottom: var(--hairline) solid var(--navy-line);
+}
+
+/* Both variants lay out identically; only one of them is clickable, so the
+   grid lives here rather than being written twice. */
+.link,
+.static {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: clamp(var(--space-4), 2.4vw, var(--space-7));
+  row-gap: var(--space-2);
+  padding-block: clamp(var(--space-5), 2.4vw, var(--space-6));
+  color: inherit;
+  text-decoration: none;
+}
+
+/* The row steps in on hover rather than lighting up: the same gesture the
+   header's underline makes, in the one direction a list can move. It is a
+   translate rather than padding, so the step costs a composite instead of a
+   re-layout of every row under it. */
+.link {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.link:hover,
+.link:focus-visible {
+  transform: translateX(var(--space-4));
+}
+
+.link:hover .title,
+.link:focus-visible .title {
+  color: var(--accent-text);
+}
+
+.meta {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  line-height: var(--lh-caption);
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+.note {
+  max-width: var(--measure-narrow);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+.actionIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.link:hover .actionIcon,
+.link:focus-visible .actionIcon {
+  transform: translateX(4px);
+}
+
+/* Not a link, and not styled like one: the state is the row's own footnote. */
+.state {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+  white-space: nowrap;
+}
+
+/* The ledger's own footnote. It sits inside the list so it cannot drift away
+   from the rows it qualifies, and takes no rule of its own — the last row's
+   is directly above it. */
+.note {
+  max-width: var(--measure-narrow);
+  padding-top: var(--space-5);
+}
+
+@media (max-width: 63.99rem) {
+  .link,
+  .static {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  /* The meta runs above the title rather than beside it, and the action stays
+     on the row's own right edge where the thumb expects it. */
+  .meta {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .action,
+  .state {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}

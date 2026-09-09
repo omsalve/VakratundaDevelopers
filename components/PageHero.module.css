@@ -1,0 +1,131 @@
+/* ============================================================================
+   PageHero — the opening frame of a standing page.
+
+   Every value here resolves to a token the landing page already sets. The
+   headline is `u-display`, the rubric is `u-label`, the credentials row is the
+   display face at caption size with a rose rule between items — which is
+   Journey's `.metaItem`, restated for a frame that has no photograph under it
+   and therefore needs no vignette.
+
+   THE ONLY CONTAINER IS A HAIRLINE, as everywhere else on this site: one rose
+   rule ruled open under the headline, and nothing boxed.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  z-index: 2;
+  /* Clears the fixed masthead by construction, then takes the page's largest
+     interval below so the first real section lands on the same cadence every
+     landing-page section does. */
+  padding-block: calc(var(--header-h) + var(--section-pad)) var(--section-pad-lg);
+}
+
+/* The two petals the brand guide bleeds off opposite corners, quoted at the
+   quietest weight the palette has — enough that the field is not flat
+   #161e41, far short of competing with the type. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      42rem 30rem at 8% -10%,
+      var(--accent-wash),
+      transparent 68%
+    ),
+    radial-gradient(
+      38rem 28rem at 104% 116%,
+      var(--accent-wash),
+      transparent 66%
+    );
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: var(--measure-heading);
+  color: var(--text-on-navy);
+}
+
+/* Ruled open on arrival, exactly as the responsibility rubrics are. It is a
+   real element rather than a pseudo so the clip has something to animate. */
+.rule {
+  display: block;
+  width: min(100%, 34rem);
+  height: var(--hairline);
+  margin-block: clamp(var(--space-6), 4vh, var(--space-8));
+  background: var(--accent-rose);
+  opacity: 0.55;
+}
+
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy);
+  opacity: 0.86;
+}
+
+/* Journey's credentials row: the display face, full caps at small size, with
+   a rose tick set between items rather than a bullet character. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  margin-top: clamp(var(--space-7), 5vh, var(--space-9));
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+
+.metaItem {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent-text);
+}
+
+.metaItem + .metaItem::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-5) / -2);
+  top: 50%;
+  width: var(--hairline);
+  height: 0.9em;
+  translate: 0 -50%;
+  background: var(--navy-line);
+}
+
+/* ---- Motion start state -------------------------------------------------
+   Under `.motion-on` only, so with no JS the rule is already ruled. */
+:global(.motion-on) .rule {
+  clip-path: inset(0 100% 0 0);
+}
+
+@media (max-width: 47.99rem) {
+  .heading {
+    max-width: none;
+  }
+
+  .metaItem {
+    letter-spacing: 0.12em;
+    white-space: normal;
+  }
+}

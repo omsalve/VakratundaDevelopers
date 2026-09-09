@@ -1,0 +1,67 @@
+/* ============================================================================
+   PageSection — the standing pages' section shell.
+
+   Padding comes from --section-pad / --section-pad-lg, the head gap from
+   --head-gap, the rubric from Responsibility's own rule pattern. There is no
+   new spacing value in this file, which is the point: a section on /about
+   breathes at exactly the same rate as a section on the landing page.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* The drawn rule between two sections that share a ground — the guide's rose
+   line-work, ranged on the shell rather than bled to the window, exactly as
+   Responsibility and JointVentures draw their own. Navy is the base case; on
+   cream the deep-rose line-work takes over, as it does everywhere else. */
+.hasDivider::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw));
+  height: var(--hairline);
+  background: var(--navy-line);
+}
+
+:global(.on-cream).hasDivider::before {
+  background: var(--cream-line-rose);
+  opacity: 0.5;
+}
+
+.isLarge {
+  padding-block: var(--section-pad-lg);
+}
+
+/* ---- The rubric ---------------------------------------------------------
+   A band opens with its name set into a rule that runs out to the field's far
+   edge — Responsibility's grammar, unchanged. The rule colour follows the
+   ground: rose line-work on cream, the navy hairline token on navy, both of
+   which are already ground-aware via `.on-cream`. */
+.rubric {
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--space-4), 1.6vw, var(--space-5));
+  margin-bottom: var(--space-8);
+}
+
+.rubricLabel {
+  flex: none;
+}
+
+.rubricRule {
+  flex: 1 1 auto;
+  height: var(--hairline);
+  background: var(--navy-line);
+}
+
+.head {
+  max-width: var(--maxw);
+}
+
+:global(.motion-on) .rubricRule {
+  clip-path: inset(0 100% 0 0);
+}

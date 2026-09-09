@@ -1,0 +1,64 @@
+/* ============================================================================
+   StatRow — the figures, ruled.
+
+   The figure is the display face at h1 scale with the unit set beside it in
+   the swash italic, which is exactly how the landing page's legacy discs set
+   theirs. The rule is a hairline above each figure rather than a box around
+   it, so the row reads as a ledger line and not as four tiles.
+   ========================================================================== */
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: clamp(var(--space-6), 3vw, var(--space-8));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--navy-line);
+  min-width: 0;
+}
+
+.figure {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.12em 0.28em;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  color: var(--text-on-navy);
+}
+
+.value {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Rides the figure rather than sitting on its baseline. */
+.suffix {
+  align-self: flex-start;
+  font-size: 0.42em;
+  line-height: 1.6;
+  color: var(--accent-text);
+}
+
+.unit {
+  font-size: 0.34em;
+  font-style: italic;
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-text);
+}
+
+.note {
+  max-width: 26ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
