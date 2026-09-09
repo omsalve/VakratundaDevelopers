@@ -44,3 +44,5 @@ AGENTS.md
 CLAUDE.md
 
 .env
+# impeccable QA captures (session artifacts)
+.impeccable/review/

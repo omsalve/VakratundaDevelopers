@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,17 +79,22 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    home: Home;
+  };
+  globalsSelect: {
+    home: HomeSelect<false> | HomeSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -122,7 +128,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -147,8 +153,11 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
+  cloudinaryPublicId?: string | null;
+  cloudinaryResourceType?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -162,11 +171,75 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Every Vakratunda address. Order controls where a project sits in the home-page rail.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  name: string;
+  locality: string;
+  status: 'Completed' | 'Ongoing' | 'Upcoming';
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * URL fragment. Used by a future /projects/[slug] page.
+   */
+  slug: string;
+  /**
+   * One line. Shown under the project name.
+   */
+  blurb?: string | null;
+  /**
+   * Portrait, 4:5. 1200 × 1500 or larger.
+   */
+  cardImage?: (number | null) | Media;
+  published?: boolean | null;
+  /**
+   * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+   */
+  heading: {
+    before?: string | null;
+    swash: string;
+    after?: string | null;
+  };
+  standfirst?: string | null;
+  heroImage?: (number | null) | Media;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Feeds the same timeline component as the home page, in travel-time mode.
+   */
+  connectivity?:
+    | {
+        place: string;
+        detail: string;
+        id?: string | null;
+      }[]
+    | null;
+  highlights?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +256,24 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +283,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +306,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -263,6 +340,9 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  cloudinaryPublicId?: T;
+  cloudinaryResourceType?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -274,6 +354,51 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  name?: T;
+  locality?: T;
+  status?: T;
+  order?: T;
+  slug?: T;
+  blurb?: T;
+  cardImage?: T;
+  published?: T;
+  heading?:
+    | T
+    | {
+        before?: T;
+        swash?: T;
+        after?: T;
+      };
+  standfirst?: T;
+  heroImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  connectivity?:
+    | T
+    | {
+        place?: T;
+        detail?: T;
+        id?: T;
+      };
+  highlights?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +439,440 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Leave any field blank to fall back to the copy shipped in lib/content.ts.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home".
+ */
+export interface Home {
+  id: number;
+  nav?: {
+    links?:
+      | {
+          label: string;
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+  };
+  hero: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading: {
+      before?: string | null;
+      swash: string;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items shown under the headline, dot-separated.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+    scrollCue?: string | null;
+    /**
+     * ONE tall, continuous frame for the whole opening — the hero and the impact figures share it, and it travels from its top edge to its bottom edge across the section, reaching the bottom just as the story section closes over it. Nothing in it may repeat. Portrait, around 2880 × 3240 — roughly 8:9, which is the shape the frame is laid out at; a much taller original loses its sides to the crop. Sits at low opacity behind type throughout, so favour a dark, low-contrast image.
+     */
+    background?: (number | null) | Media;
+  };
+  immersive: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading: {
+      before?: string | null;
+      swash: string;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Each one is pinned to a point on the scene. Keep to five or fewer — they need room.
+     */
+    hotspots?:
+      | {
+          value: string;
+          unit?: string | null;
+          /**
+           * x %
+           */
+          x: number;
+          /**
+           * y %
+           */
+          y: number;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  concept?: {
+    /**
+     * The section opens on the brand mark rather than on a headline. The two wordmark parts are set either side of the mark, and the caption runs under the hairline below it.
+     */
+    lockup?: {
+      before?: string | null;
+      after?: string | null;
+      /**
+       * One entry per line. The break is set here, not by the layout — two short lines read best.
+       */
+      caption?:
+        | {
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    body?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The opening frame of the three-frame showcase at the foot of the section. Cropped to 16:9 and shown 300px wide, so put the subject in the middle third. 1600 × 900 or larger. The other two frames are shipped in content.ts.
+     */
+    image?: (number | null) | Media;
+    /**
+     * Runs under the showcase while the first frame is up. One line.
+     */
+    imageCaption?: string | null;
+  };
+  gallery: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading: {
+      before?: string | null;
+      swash: string;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Drag to reorder. Leave empty to show every project, sorted by its Order field.
+     */
+    projects?: (number | Project)[] | null;
+  };
+  /**
+   * Four slides, in this order. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.
+   */
+  team: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading: {
+      before?: string | null;
+      swash: string;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The one line carried on the cream of the arc above this section.
+     */
+    interstitial: {
+      /**
+       * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+       */
+      heading: {
+        before?: string | null;
+        swash: string;
+        after?: string | null;
+      };
+      subtext?: string | null;
+    };
+    intro?: {
+      image?: (number | null) | Media;
+      ctaLabel?: string | null;
+    };
+    chairman: {
+      name?: string | null;
+      title?: string | null;
+      /**
+       * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+       */
+      quote: {
+        before?: string | null;
+        swash: string;
+        after?: string | null;
+      };
+      superpower?: string | null;
+      bio?: string | null;
+      portrait?: (number | null) | Media;
+      ctaLabel?: string | null;
+    };
+    /**
+     * Three is what the slide is drawn for. The bio is what each card's own disclosure opens, so keep it out of the line above it.
+     */
+    leadership?:
+      | {
+          name: string;
+          title: string;
+          superpower: string;
+          bio: string;
+          portrait?: (number | null) | Media;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Four to six. Each descriptor is one line, from the construction philosophy or the core values.
+     */
+    roles?:
+      | {
+          title: string;
+          icon: 'design' | 'operations' | 'sales' | 'quality' | 'sustainability' | 'site';
+          descriptor: string;
+          id?: string | null;
+        }[]
+      | null;
+    roleCtaLabel?: string | null;
+    roleCtaHref?: string | null;
+    bioCtaLabel?: string | null;
+  };
+  finalCta: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    quote: {
+      before?: string | null;
+      swash: string;
+      after?: string | null;
+    };
+    attribution?: string | null;
+    /**
+     * Exactly three reads best — they sit in one row of columns.
+     */
+    proofs?:
+      | {
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+    email?: string | null;
+    addressLines?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  legal?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
+  nav?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        ctaLabel?: T;
+        ctaHref?: T;
+      };
+  hero?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        ctaLabel?: T;
+        ctaHref?: T;
+        scrollCue?: T;
+        background?: T;
+      };
+  immersive?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        hotspots?:
+          | T
+          | {
+              value?: T;
+              unit?: T;
+              x?: T;
+              y?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  concept?:
+    | T
+    | {
+        lockup?:
+          | T
+          | {
+              before?: T;
+              after?: T;
+              caption?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+            };
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        imageCaption?: T;
+      };
+  gallery?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        projects?: T;
+      };
+  team?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        interstitial?:
+          | T
+          | {
+              heading?:
+                | T
+                | {
+                    before?: T;
+                    swash?: T;
+                    after?: T;
+                  };
+              subtext?: T;
+            };
+        intro?:
+          | T
+          | {
+              image?: T;
+              ctaLabel?: T;
+            };
+        chairman?:
+          | T
+          | {
+              name?: T;
+              title?: T;
+              quote?:
+                | T
+                | {
+                    before?: T;
+                    swash?: T;
+                    after?: T;
+                  };
+              superpower?: T;
+              bio?: T;
+              portrait?: T;
+              ctaLabel?: T;
+            };
+        leadership?:
+          | T
+          | {
+              name?: T;
+              title?: T;
+              superpower?: T;
+              bio?: T;
+              portrait?: T;
+              id?: T;
+            };
+        roles?:
+          | T
+          | {
+              title?: T;
+              icon?: T;
+              descriptor?: T;
+              id?: T;
+            };
+        roleCtaLabel?: T;
+        roleCtaHref?: T;
+        bioCtaLabel?: T;
+      };
+  finalCta?:
+    | T
+    | {
+        quote?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        attribution?: T;
+        proofs?:
+          | T
+          | {
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+        ctaLabel?: T;
+        ctaHref?: T;
+        email?: T;
+        addressLines?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  legal?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
