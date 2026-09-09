@@ -1,0 +1,235 @@
+/* ============================================================================
+   ArcTransition — the page's second change of ground, as an event of its own.
+
+   TWO LAYOUTS, from the same markup — the house pattern:
+
+     · DEFAULT (no JS, or reduced motion). The wrapper is nothing: no runway,
+       no stage, no disc. The section below simply follows the section above,
+       on its own cream ground, complete.
+
+     · `.motion-on`. The wrapper opens a runway `--arc-span` viewports tall and
+       sticks a screen-sized stage in it. ArcTransition.tsx grows the disc from
+       a point at the bottom centre of that stage to exact coverage, over the
+       ARC_RUN viewports the stage is held for. Above 60rem the wrapper is also
+       pulled back over the section above, so the disc opens against a frame
+       that is being held still.
+
+   NO NUMBER HERE IS RESTATED IN THE COMPONENT. `--arc-span` is set inline from
+   the one constant in lib/arc, and the ScrollTrigger's range is the runway's
+   own box rather than a distance in viewports that would have to be kept in
+   sync with the height below.
+   ========================================================================== */
+
+.wrap {
+  position: relative;
+}
+
+/* Positioned so the disc, which is absolute, always resolves against the
+   stage rather than escaping to the page — including in the default layout,
+   where neither has any size. */
+.reveal,
+.stage {
+  position: relative;
+}
+
+/* Not rendered at all unless the motion layout is on. Where there is no
+   runway there is no arc, rather than a wrong one. */
+.dome {
+  display: none;
+}
+
+/* ==========================================================================
+   Motion layout. Only applies once JS has run AND the visitor allows motion.
+   ========================================================================== */
+
+:global(.motion-on) .wrap {
+  /* Paints over the sticky frame above it, at a z-index that still leaves the
+     fixed grain overlay (z-index 1) on top. */
+  z-index: 0;
+}
+
+/* The runway. Its height is the arc's scroll budget and its bottom edge is
+   where the section below begins — which is why the overlap that cancels it
+   is the same value: the children keep the document position they would have
+   had without the arc, and nothing downstream has to be re-timed. */
+:global(.motion-on) .reveal {
+  height: calc(var(--arc-span) * 100svh);
+}
+
+:global(.motion-on) .stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+:global(.motion-on) .dome {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: var(--cream-200);
+  /* DECLARED SHUT, unlike Concept's dome, which is declared open. The
+     difference is what each one contains: that dome carries the lockup and
+     has to be visible if the tween is never built; this one carries nothing,
+     so a script that fails to run should leave a plain navy gap and the whole
+     section below it — not a cream plate covering the section above. */
+  clip-path: circle(0 at 50% 100%);
+  -webkit-clip-path: circle(0 at 50% 100%);
+}
+
+/* Set by the ScrollTrigger, and only for the range in which the arc is
+   actually opening. */
+:global(.motion-on) .dome[data-arc="on"] {
+  will-change: clip-path;
+  transform: translateZ(0);
+}
+
+/* ---- The overlap -------------------------------------------------------- */
+/* THE ARC OPENS AGAINST A HELD FRAME OR IT DOES NOT OVERLAP AT ALL.
+   At 60rem and up the section above is pinned and has grown by ARC_RUN to
+   carry this, so pulling the runway back over it costs that section nothing
+   and buys the arc a completely still backdrop. Below 60rem that section is an
+   ordinary scrolling block: an overlap there would draw the disc over live
+   content and eat two and a half screens of it, so the runway stands on its
+   own instead and the disc opens on the page's navy ground. Both readings of
+   the effect are correct; only one of them is free to overlap. */
+@media (min-width: 60rem) {
+  :global(.motion-on) .wrap {
+    margin-top: calc(var(--arc-span) * -100svh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt and braces: `motion-on` is never set under reduced motion, so none of
+     the above applies in the first place. This only matters if the preference
+     is changed after load. */
+  .dome {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   The sentence the cream carries.
+
+   DEFAULT LAYOUT (no JS, or reduced motion). There is no runway, no stage and
+   no disc — `.reveal` is as tall as this band and nothing else. So the band is
+   an ordinary block: cream ground, the page's own section rhythm, and the
+   change of ground happens AT it rather than through it. That is the whole
+   fallback; there is no second one.
+   ========================================================================== */
+.interstitial {
+  position: relative;
+  z-index: 1;
+  background: var(--cream-200);
+  padding-block: var(--section-pad);
+}
+
+.interstitialShell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(var(--space-6), 5vh, var(--space-9));
+  text-align: center;
+}
+
+/* ---- The tower ----------------------------------------------------------
+   One word to a line, in display caps, closed by the swash word set larger
+   and pulled up under the roman it closes.
+
+   IT IS SET FROM THE VIEWPORT, NOT FROM THE TYPE SCALE. --fs-display tops out
+   at 6rem, which is the right ceiling for a headline in a column of prose and
+   far too small for the only thing on a full screen of cream. The clamp below
+   is driven by the SHORTER viewport axis so the tower is sized by the frame
+   it has to fill rather than by the width alone — a wide, short window is
+   exactly where a vw-only figure sets a five-line stack taller than the
+   screen. The 8rem ceiling holds it in reach of the type scale at the top
+   end; the 2.75rem floor is --fs-display's own.
+
+   `1lh` is not used anywhere here: the line box is set by --lh-tight and the
+   words are single lines by construction, so there is nothing to derive. */
+.lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, min(11.5vw, 15.5vh), 8rem);
+  line-height: 0.92;
+  color: var(--text-on-cream);
+}
+
+.lockupWord {
+  display: block;
+  text-transform: uppercase;
+  /* Caps in a high-contrast serif close up at display size; the display
+     tracking is set for mixed case and pinches them. This opens them back to
+     roughly the drawn fit — still well inside the -0.04em floor. */
+  letter-spacing: 0.005em;
+}
+
+/* The swash word is the line the stack was built to arrive at, so it is
+   bigger than the roman rather than the same size in italic, and it is pulled
+   up into the shoulder of the word above — the tuck the brand guide draws on
+   every one of its own lockups. `text-transform: none` because .lockupWord's
+   caps must not travel to it: the change of case IS the change of voice. */
+.lockupSwash {
+  display: block;
+  text-transform: none;
+  font-size: 1.34em;
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  margin-block-start: -0.14em;
+  /* The descenders of the italic — the 'p' and 'j' of "projects" — are what
+     the subtext below has to clear. Padding, not margin, so the gap the shell
+     sets is measured from the ink rather than from the em box. */
+  padding-block-end: 0.12em;
+}
+
+/* The fallback, for copy the tower was not drawn for. An ordinary headline,
+   set as one line of type, at the size the scale already has for it. */
+.lockupFlow {
+  color: var(--text-on-cream);
+  max-width: 18ch;
+}
+
+/* Quiet, and deliberately not a standfirst. The tower above it is the
+   statement; this is the line that says what the section below is. Set at
+   body size rather than lead size — a lead under a 8rem lockup is two
+   headlines. */
+.interstitialSubtext {
+  max-width: 34ch;
+  font-size: var(--fs-body);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+/* ---- Motion layout ------------------------------------------------------
+   The band stops being a band. It is centred in the sticky stage, over the
+   disc, with no ground of its own — the disc IS its ground, and by the time
+   the type is visible the disc has taken the whole screen. Held at opacity 0
+   here so it cannot flash before the arc has anything to carry it. */
+:global(.motion-on) .interstitial {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  padding-block: 0;
+  background: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt and braces, as above: `motion-on` is never set under reduced motion,
+     so the band is the ordinary block. This only matters if the preference is
+     changed after load, when the copy must not be left at opacity 0. */
+  .interstitial {
+    position: relative !important;
+    inset: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    background: var(--cream-200) !important;
+    padding-block: var(--section-pad) !important;
+  }
+}
+

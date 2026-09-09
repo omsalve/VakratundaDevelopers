@@ -1,0 +1,647 @@
+/* ============================================================================
+   Journey — the brand line, then the photograph on its own, as one section
+   over one continuous photograph.
+
+   THE HERO IS A LOCKUP AT THE CENTRE AND FURNITURE AT THE EDGES. The brand
+   line is drawn as one object — two oversized roman lines with the swash word
+   nested between them, larger and thrown off the vertical axis — and it owns
+   the middle of the frame outright. The credentials run along the foot as one
+   band split around a drawn hairline; the scroll invitation is a rail on the
+   left edge. Nothing else is allowed into the centre.
+
+   TWO LAYOUTS, from the same markup:
+
+     · DEFAULT (no JS, or reduced motion). Two ordinary full-height panels
+       stacked in flow, with the photograph covering both. Nothing is sticky,
+       nothing is clipped, nothing is hidden.
+
+     · `.motion-on`. The section grows to six viewports, the frame goes
+       sticky, and the two panels are laid on top of one another inside it so
+       the scroll can hand over from one to the other.
+
+   Everything under `:global(.motion-on)` is therefore additive: strip the
+   class and the section is still complete and readable.
+   ========================================================================== */
+
+/* The section's ground is a graded navy plate rather than a flat fill: the
+   photograph above it is carried at 0.62 opacity, so this is what the picture
+   is actually read against, and the grade is what keeps the long descent from
+   going dead in the middle. The colour underneath it is the fallback for the
+   moment before the plate lands. */
+.journey {
+  position: relative;
+  background: url("/images/journey.jpg") center / cover no-repeat var(--navy-700);
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ---- The continuous photograph ------------------------------------------ */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Carries the long descent: top edge of the frame → bottom edge. */
+.travel {
+  position: absolute;
+  inset: 0;
+}
+
+/* Carries the hero's camera push-in, so the two transforms never fight. */
+.push {
+  position: absolute;
+  inset: 0;
+  transform-origin: center 40%;
+}
+
+/* The photograph is the hero's ground, not a texture behind a wash, so it is
+   carried well above the level a scrim-flooded frame needs. The hero protects
+   its own type in bands with .scrim; below it nothing is set over the picture
+   but the pins, so nothing washes it. */
+.backdropImage {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.62;
+}
+
+/* ---- The pins, glued to the photograph ----------------------------------- */
+/* The layer sits ABOVE both panels — the photograph it belongs to sits below
+   them — so it is inert by default and hands the pointer only to the pins
+   themselves. Everything inside it rides .travel and .push, exactly as the
+   picture does. */
+.pinLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* The photograph's painted rectangle. Its size is measured in Journey and
+   written here as inline width/height; this rule only has to centre it,
+   because the image it is standing in for is `object-position: center`. */
+.pinFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pinFrame > * {
+  pointer-events: auto;
+}
+
+/* ---- Panel one: the brand line ------------------------------------------ */
+/* Above the figures, not below them: on the way out it travels up and over
+   them rather than dimming away underneath. */
+.hero {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  /* The masthead above is furniture and is reserved here. The foot of the
+     frame is not: the credentials band IS the bottom edge of the layout, so
+     it takes the gutter and nothing is held back for it. */
+  padding: calc(var(--header-h) + var(--space-6)) var(--gutter) var(--space-7);
+  overflow: hidden;
+}
+
+/* Protects the two bands the small type actually sits in — the masthead at
+   the top, the credentials at the foot — and closes the corners with a
+   vignette. The middle of the frame is left alone: that is where the lockup
+   is, it is the largest type on the site, and it does not need a wash under
+   it to hold 3:1. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(9, 14, 38, 0.8) 0%,
+      rgba(9, 14, 38, 0.26) 17%,
+      rgba(9, 14, 38, 0) 38%
+    ),
+    linear-gradient(
+      to top,
+      rgba(9, 14, 38, 0.88) 0%,
+      rgba(9, 14, 38, 0.36) 19%,
+      rgba(9, 14, 38, 0) 47%
+    ),
+    radial-gradient(
+      112% 78% at 50% 46%,
+      rgba(11, 17, 45, 0) 34%,
+      rgba(11, 17, 45, 0.42) 76%,
+      rgba(11, 17, 45, 0.74) 100%
+    );
+}
+
+.watermarks {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.watermarkTop,
+.watermarkBottom {
+  position: absolute;
+  color: var(--accent-rose);
+  opacity: 0.13;
+  will-change: transform;
+}
+
+.watermarkTop {
+  top: -14%;
+  left: -12%;
+}
+
+.watermarkBottom {
+  right: -14%;
+  bottom: -20%;
+}
+
+/* Two rows and the whole frame: the lockup takes whatever is left over and
+   centres in it, the credentials band sits on the bottom edge. */
+.heroInner {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-7);
+  width: 100%;
+  /* A grid item's automatic minimum is the min-content width of what is in
+     it, and the credentials do not wrap inside themselves. Without this the
+     band sets the width of the whole panel on a phone and everything in the
+     frame is pushed off the right edge. Every box between here and the type
+     needs it, which is why it is repeated below rather than inherited. */
+  min-width: 0;
+}
+
+/* ---- The lockup --------------------------------------------------------- */
+.lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 78rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.mark {
+  color: var(--accent-rose);
+  opacity: 0.9;
+}
+
+/* One heading, three parts. --fs-hero is deliberately well past the page's
+   --fs-display: this is the one place on the site where the type IS the
+   image, and at --fs-display it would read as a headline sitting on a
+   photograph instead. */
+.title {
+  --fs-hero: clamp(2.6rem, 7.4vw, 9rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  margin-top: clamp(1.5rem, 3vh, 2.25rem);
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 400;
+  line-height: 0.92;
+  color: var(--text-on-navy);
+  transform-origin: center 60%;
+}
+
+/* The mask the roman lines rise out of. The bottom edge is the line box's
+   own; the top is left wide open so nothing is ever trimmed at the cap
+   line, whatever the face resolves to. */
+.line {
+  display: block;
+  /* Centred flex children size to fit-content — without a ceiling the roman
+     lines never wrap and simply run off the frame. */
+  max-width: 100%;
+  clip-path: inset(-45% 0 0 0);
+  text-transform: uppercase;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.lineInner {
+  display: block;
+}
+
+/* Nested between the two roman lines rather than set after them: bigger than
+   either, in the rose, and thrown a few percent off the vertical axis so the
+   three parts read as one drawn block and not as three centred lines. The
+   offset is on the `translate` property, not on `transform`, so the entrance
+   tween can own `transform` outright and the offset survives it. */
+.script {
+  display: block;
+  max-width: 100%;
+  margin-block: -0.15em -0.09em;
+  translate: 3.5% 0;
+  font-size: 1.18em;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  color: var(--accent-text);
+}
+
+.standfirst {
+  margin-top: clamp(1.75rem, 3.4vh, 2.75rem);
+  max-width: min(40rem, 100%);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+  opacity: 0.84;
+}
+
+/* ---- Call to action ----------------------------------------------------- */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: clamp(2rem, 4vh, 3rem);
+  padding: var(--space-3) var(--space-6);
+  border: var(--hairline) solid var(--accent-rose);
+  border-radius: var(--radius-pill);
+  color: var(--accent-rose);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* Rose fills the pill from the left on hover; the label inverts to navy. */
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent-rose);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  color: var(--navy-900);
+}
+
+.cta:hover::before,
+.cta:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon {
+  transform: translateX(4px);
+}
+
+/* ---- The credentials band ----------------------------------------------- */
+/* The two clusters hang off the left and right edges of the frame and the
+   hairline is the only flexible thing between them, so the band draws itself
+   at any width and for any number of credentials. */
+.band {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3.5vw, 3rem);
+  width: 100%;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.metaTrail {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* Set in the display face, not the body sans: at caption size and full caps
+   the serif reads as engraved on the picture, which is the register the rest
+   of the frame is in. */
+.metaItem {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent-text);
+}
+
+.metaItem + .metaItem::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-5) / -2);
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.rule {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--accent-rose) 18%,
+    var(--accent-rose) 82%,
+    transparent
+  );
+  transform-origin: center;
+}
+
+/* ---- The scroll rail ---------------------------------------------------- */
+/* On the left edge of the frame, inside the gutter the layout already
+   reserves — so it costs the composition nothing and leaves the middle to
+   the lockup. It is chrome rather than copy: it sits outside .heroInner and
+   takes its own exit. */
+.rail {
+  position: absolute;
+  left: 0;
+  /* Clear of the credentials band, which owns the bottom edge of the frame:
+     the gutter is the rail's column, but it is not the rail's row. */
+  bottom: calc(var(--space-7) + 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: var(--gutter);
+  pointer-events: none;
+}
+
+.railTrack {
+  display: block;
+  width: 1px;
+  height: clamp(4rem, 9vh, 6.5rem);
+  background: var(--navy-line);
+  overflow: hidden;
+}
+
+.railFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--accent-rose));
+  transform-origin: top;
+  animation: drip 2.6s var(--ease-in-out-quart) infinite;
+}
+
+.railLabel {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+@keyframes drip {
+  0% {
+    transform: scaleY(0.15);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* ---- The #impact landing point ------------------------------------------ */
+/* A jump to #impact should arrive on the open photograph and its pins, not
+   on the top of the section — which is still the hero. */
+.anchor {
+  position: absolute;
+  top: 100svh;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+/* ==========================================================================
+   Motion layout. Only applies once JS has run AND the visitor allows motion.
+   ========================================================================== */
+
+/* Six viewports: one for the hero, one for its departure, and four over
+   which the figures are held while the photograph finishes its descent. The
+   last three of those four are the ones Concept overlaps — see the note on
+   the overlap in Concept.module.css. Shortening this eats into the time the
+   figures are readable before the dome starts covering them, which is why it
+   grew by one when the dome's opening did: the figures still get their two
+   clear viewports (100svh–300svh) before the arc starts. */
+:global(.motion-on) .journey {
+  min-height: 600svh;
+}
+
+:global(.motion-on) .viewport {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+:global(.motion-on) .travel {
+  inset: auto 0 auto 0;
+  top: 0;
+  height: calc(var(--backdrop-span, 2) * 100%);
+}
+
+:global(.motion-on) .hero {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+
+:global(.motion-on) .pinLayer {
+  opacity: 0;
+}
+
+/* The hero panel is the only thing in the frame that moves as a whole, so it
+   is the only thing that can draw a hard line across the frame on its way
+   out. Two rules stop it:
+
+   · Nothing is clipped at the panel's own edge. `.viewport` already clips the
+     frame, so the watermark petals leave with the panel instead of being cut
+     off along its bottom.
+   · The scrim hangs 35% below the panel and its mask fades across exactly
+     that overhang — which is off-screen at rest, so the hero looks untouched
+     until the panel starts to move, and there is no edge to see when it does. */
+:global(.motion-on) .hero {
+  will-change: transform;
+  overflow: visible;
+}
+
+:global(.motion-on) .watermarks {
+  overflow: visible;
+}
+
+:global(.motion-on) .scrim {
+  bottom: -35%;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 74%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, #000 0%, #000 74%, transparent 100%);
+}
+
+:global(.motion-on) .anchor {
+  top: 130svh;
+}
+
+/* ---- Phase --------------------------------------------------------------- */
+/* The hero panel covers the whole frame and stays in the DOM after it has
+   ridden out of sight, so once it has gone it must stop taking clicks — the
+   pins are underneath it. `data-phase` is flipped by a ScrollTrigger in
+   Journey.tsx. */
+:global(.motion-on) .journey[data-phase="impact"] .hero {
+  pointer-events: none;
+}
+
+/* ---- Entrance start states ---------------------------------------------- */
+:global(.motion-on) .mark,
+:global(.motion-on) .standfirst,
+:global(.motion-on) .metaItem,
+:global(.motion-on) .cta {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0);
+}
+
+/* The roman lines are not faded in — they rise out of the clip .line draws,
+   which is why the mask exists at all. */
+:global(.motion-on) .lineInner {
+  transform: translate3d(0, 106%, 0);
+}
+
+/* The swash word is the one the line turns on, so it is the one thing in the
+   frame that resolves rather than arrives: it comes out of a blur, from
+   slightly too large, behind the roman lines and after them. */
+:global(.motion-on) .script {
+  opacity: 0;
+  transform: translate3d(0, 22%, 0) scale(1.05);
+  filter: blur(16px);
+}
+
+:global(.motion-on) .rule {
+  transform: scaleX(0);
+}
+
+:global(.motion-on) .rail {
+  opacity: 0;
+}
+
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 63.99rem) {
+  /* The gutter is no longer wide enough to hold a rail, so the rail lies
+     down and centres under the band — same element, same parts, turned. */
+  .rail {
+    left: 50%;
+    translate: -50% 0;
+    bottom: var(--space-4);
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+    width: auto;
+  }
+
+  .railTrack {
+    height: 2.5rem;
+  }
+
+  .railLabel {
+    writing-mode: horizontal-tb;
+    rotate: none;
+  }
+
+  /* …which the frame then has to pay for, since the band owns the bottom
+     edge of the layout. */
+  .hero {
+    padding-bottom: calc(var(--space-7) + 4rem);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .watermarkTop {
+    top: -8%;
+    left: -30%;
+  }
+
+  .watermarkBottom {
+    right: -34%;
+    bottom: -12%;
+  }
+
+  /* The band stops being a span across the frame and becomes a stack; the
+     hairline shortens to a drawn divider between the two clusters rather
+     than a rule connecting two edges. */
+  .band {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .meta {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .rule {
+    flex: 0 0 auto;
+    width: 4rem;
+  }
+
+  .heroInner {
+    gap: var(--space-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .railFill {
+    animation: none;
+    opacity: 0.6;
+  }
+
+  .hero,
+  .travel,
+  .watermarkTop,
+  .watermarkBottom {
+    will-change: auto;
+  }
+}

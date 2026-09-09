@@ -1,0 +1,354 @@
+/* ============================================================================
+   Concept — the section that arrives as its own transition.
+
+   TWO LAYOUTS, from the same markup:
+
+     · DEFAULT (no JS, or reduced motion). An ordinary cream section: the
+       centred lockup, then the copy and the photograph. No overlap, no sticky
+       stage, no clip.
+
+     · `.motion-on`. The section is pulled three viewports back so it lands ON
+       TOP of the one above it, and its stage goes sticky. `.dome` is clipped
+       to a circle anchored at the bottom centre of that stage — a half circle
+       standing on the bottom edge of the viewport — which Concept.tsx opens
+       from a point to exact coverage, over two viewports of scroll, as the
+       overlap is scrolled through. `.arcSvg` sets one line of type on a
+       circle concentric with it.
+
+   The section's own top edge is therefore the shape of the transition. There
+   is no separate wipe element, and stripping `.motion-on` leaves a complete,
+   readable section rather than a half-clipped one.
+   ========================================================================== */
+
+.section {
+  position: relative;
+}
+
+/* ---- The dome ----------------------------------------------------------- */
+/* Symmetrical. The dome holds one centred lockup and nothing else, so an
+   uneven top and bottom would read as the composition having slipped rather
+   than as emphasis. */
+.dome {
+  padding-block: clamp(7rem, 18vh, 13rem);
+}
+
+/* The line of type set on the arc. Drawn in CSS px: no viewBox, so one SVG
+   user unit is one CSS px and Concept.tsx can hand it measured geometry
+   without a second coordinate system to convert through.
+
+   Hidden unless the motion layout is on. Where there is no arc there is no
+   line at all: it is drawing rather than copy, and the alternative — setting
+   it straight above the lockup — is an eyebrow, which this page does not do.
+   Nothing is lost; the founding year is carried in the opening section's meta
+   row and again in the prose below the dome. */
+.arcSvg {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Clipped to the stage. The line rides the arc's edge all the way out of
+     the top of the frame, and this is the edge it leaves through — without
+     it the type would go on painting over the section above, which the
+     dome's clip-path does not cover. */
+  overflow: hidden;
+  pointer-events: none;
+  /* Nothing is drawn until the first measure; until then it must not flash. */
+  opacity: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.85vw, 1.6rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  fill: var(--accent-deep);
+}
+
+.arcSvg text {
+  text-anchor: middle;
+}
+
+/* ---- The lockup --------------------------------------------------------- */
+/* ONE INTERVAL, REPEATED. The dome's three boxes — wordmark, rule, promise —
+   are spaced by a single `gap` rather than by three tuned margins, so the
+   composition is even by construction and the whole thing opens or closes on
+   one value. That evenness is the point: the field of cream around it is
+   doing as much work as the marks on it, and an uneven interval would read as
+   a mistake rather than as rhythm.
+
+   The step is set in vh as well as rem so the composition breathes with the
+   viewport it is centred in — on a short laptop it closes up rather than
+   pushing the promise off the bottom of the dome. */
+.lede {
+  --lede-step: clamp(2.75rem, 7vh, 5.5rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lede-step);
+  width: 100%;
+  /* Wider than the 44rem reading measure the prose below uses: this box holds
+     no paragraph, and the lockup's two flanking words need the room to sit
+     either side of the mark on one line. */
+  max-width: 60rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  text-align: center;
+}
+
+/* The wordmark, split around the mark. A lockup rather than a headline, so it
+   takes none of the heading measure or the display sizes — it is set at label
+   scale and let the mark carry the weight, which is what keeps the dome quiet
+   enough for the whitespace to register. */
+/* THE MARK SITS ON THE PAGE'S CENTRE AXIS, not in the middle of the phrase.
+   Three columns with equal flexible cheeks put it there whatever the two words
+   measure — "Vakratunda" is twice the length of "Group", and centring the row
+   as a whole would push the mark off the axis the rule and the caption below
+   it stand on. The words then hang symmetrically from the mark instead. */
+.lockup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(0.25rem, 1.2vw, 1.25rem);
+  width: 100%;
+  color: var(--text-on-cream);
+}
+
+.lockup > :first-child {
+  justify-self: end;
+  /* Tracking is added after every glyph, the last one included, so a
+     right-aligned word stops a full step short of its own edge. Taking that
+     step back is what makes the two gaps either side of the mark equal. */
+  margin-right: -0.2em;
+}
+
+.lockup > :last-child {
+  justify-self: start;
+}
+
+.word {
+  font-family: var(--font-display);
+  /* Small, as the reference sets it: the mark leads the lockup and the words
+     caption it. A word set at heading scale would make this a headline with a
+     picture in it. */
+  font-size: clamp(0.875rem, 0.55rem + 1.05vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Sized by HEIGHT, and with no aspect-ratio of its own: the asset is a 717×348
+   landscape plate whose artwork floats in the middle third, so pinning a width
+   sets the transparent margin rather than the mark. Height sets the mark. The
+   plate's own side margins are also most of the gap either side of it, which
+   is why the grid gap above is nearly nothing. */
+.lockupMark {
+  height: clamp(3.25rem, 2rem + 4.6vw, 6.5rem);
+  width: auto;
+  max-width: 100%;
+}
+
+/* The drop. The one piece of rose line-work on the cream ground, and the
+   element that holds the composition open: most of the dome's height is this
+   hairline and the air either side of it. */
+.rule {
+  width: var(--hairline);
+  height: clamp(7rem, 22vh, 13rem);
+  background: var(--cream-line-rose);
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--text-on-cream);
+}
+
+.captionLine {
+  font-family: var(--font-display);
+  font-size: clamp(0.8125rem, 0.7rem + 0.5vw, 1.05rem);
+  line-height: 1.25;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ---- Below the dome ----------------------------------------------------- */
+.rest {
+  padding-block: 0 var(--section-pad);
+}
+
+.shell {
+  display: grid;
+  place-items: center;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  text-align: center;
+  max-width: 44rem;
+}
+
+/* Centred, so held well inside the 68ch reading measure: a centred block
+   rags on both edges and stops being scannable long before a ranged one
+   does. */
+.body {
+  max-width: var(--measure-narrow);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The #story landing point ------------------------------------------- */
+.anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+/* ==========================================================================
+   Motion layout. Only applies once JS has run AND the visitor allows motion.
+   ========================================================================== */
+
+/* The overlap. Three viewports back puts the stage's sticky range entirely
+   inside the previous section's — so the dome opens against a held frame
+   rather than one sliding away underneath it. Three rather than two because
+   the dome is now given two viewports of scroll instead of one, and the
+   stage itself occupies the third.
+
+   `.reveal` is the same height as the overlap, which is what makes the two
+   sections let go at the same instant; see Concept.tsx. Change one and the
+   other has to move with it — and Journey's own height with them, or the
+   impact figures lose the same amount of reading time the dome gains. */
+:global(.motion-on) .section {
+  /* Positioned so it paints over the sticky frame above it, at a z-index
+     that still leaves the fixed grain overlay (z-index 1) on top. */
+  z-index: 0;
+  margin-top: -300svh;
+  /* THE OVERLAP MUST NOT EAT CLICKS.
+     Three of these viewports are laid over the whole bottom of the section
+     above, and for most of their length nothing is drawn in them at all —
+     the dome is still opening from a point. A transparent box that takes the
+     pointer is the worst of both: the pins on the opening photograph stay
+     visible underneath it and quietly stop responding.
+
+     It goes on the SECTION, not on .reveal. The overlapping box is the
+     section's own; making only the child transparent just hands the hit to
+     the parent, which is what it did. Everything Concept actually draws
+     takes the pointer back below — .dome inside the overlap, .rest for the
+     ordinary cream section under it — and because the dome is clipped to its
+     circle it claims clicks only where it has really opened to. So the pins
+     are live until the cream is genuinely over them, and dead the moment it
+     is. */
+  pointer-events: none;
+}
+
+/* The two things Concept draws, taking the pointer back. */
+:global(.motion-on) .dome,
+:global(.motion-on) .rest {
+  pointer-events: auto;
+}
+
+:global(.motion-on) .reveal {
+  position: relative;
+  height: 300svh;
+}
+
+:global(.motion-on) .stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+
+:global(.motion-on) .dome {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-3xl) 0;
+  /* Promote once, up front. Re-rasterising a clipped, full-viewport block on
+     every scroll frame is the expensive version of this effect. The clip
+     itself is set from Concept.tsx, so a script that never runs leaves the
+     section whole rather than closed. */
+  will-change: clip-path;
+  transform: translateZ(0);
+}
+
+/* A jump to #story should arrive on the open dome, not on the point it
+   grows from — which is the two viewports of the opening further up. */
+:global(.motion-on) .anchor {
+  top: 200svh;
+}
+
+:global(.motion-on) .arcSvg {
+  display: block;
+}
+
+:global(.motion-on) .lede > * {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0);
+}
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 47.99rem) {
+  .dome {
+    padding-block: clamp(5rem, 13vh, 8rem);
+  }
+  .rest {
+    padding-block: 0 var(--space-11);
+  }
+  .frame {
+    border-radius: var(--radius-l) var(--radius-l) var(--radius-s)
+      var(--radius-l);
+  }
+  :global(.motion-on) .dome {
+    padding: var(--space-2xl) 0;
+  }
+  /* The lockup stays one row at every width — stacking it would make it a
+     list of three things rather than a mark. It is held on that row by
+     closing the tracking and the type rather than by wrapping. */
+  .lockup {
+    gap: clamp(0.125rem, 1vw, 0.5rem);
+  }
+  .word {
+    font-size: clamp(0.8125rem, 3.2vw, 1.125rem);
+    letter-spacing: 0.12em;
+  }
+  .lockup > :first-child {
+    margin-right: -0.12em;
+  }
+  .lockupMark {
+    height: clamp(2.25rem, 9vw, 3.25rem);
+  }
+  .captionLine {
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+  }
+  /* Smaller and tighter on a tighter arc: at phone widths the same line has
+     roughly half the arc length to sit on, and at the desktop size the fit
+     test in Concept.tsx would hold it back until the dome was nearly open. */
+  .arcSvg {
+    font-size: clamp(0.85rem, 3.4vw, 1.05rem);
+    letter-spacing: 0.18em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dome {
+    will-change: auto;
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+  }
+  /* `motion-on` is never set under reduced motion, so this only matters if
+     the preference is changed after load — belt and braces on the one element
+     that must not be left drawing an arc that is no longer there. */
+  .arcSvg {
+    display: none !important;
+  }
+}

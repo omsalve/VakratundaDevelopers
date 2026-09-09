@@ -1,0 +1,538 @@
+/* ============================================================================
+   Atmosphere — the spread. Interior and exterior in one composition.
+
+   TWO LAYOUTS, from the same markup — the house pattern:
+
+     · DEFAULT (under 64rem). One column, in document order. The frames are
+       given different widths and ranged to different edges so the column
+       sways, but nothing overlaps and nothing leaves the gutter. Complete on
+       its own, and the whole of the no-JS and reduced-motion reading.
+
+     · 64rem and up. A twelve-column canvas whose row is exactly HALF A
+       COLUMN, so a plate `C` columns wide and `R` rows tall has an aspect
+       ratio of exactly `2C/R` and every crop in the section is a whole
+       number of the same square. Nothing here is a card and nothing repeats:
+       thirteen things are placed, once each, by column and by row.
+
+   THE CANVAS MEASURES ITSELF AGAINST THE SHELL, NOT THE WINDOW. `.shell` is
+   the query container; every span, crop, type size and margin break below is
+   a fraction of its content box. So the spread scales as one composition — at
+   64rem and at 84rem it is the same drawing at two sizes, rather than the
+   same drawing with its gutters eaten.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  /* Opens on the field of cream the arc above has already cleared. It closes
+     on nothing: the team below opens on --section-pad-lg of its own, and two
+     intervals end to end would be a hole rather than a breath. */
+  padding-block: var(--section-pad-lg) 0;
+}
+
+.shell {
+  container-type: inline-size;
+}
+
+/* ==========================================================================
+   DEFAULT LAYOUT — one column, with a sway
+   ========================================================================== */
+
+.canvas {
+  /* Half a column, at twelve columns to the shell. Every row span in the
+     canvas below is read against this, and it is the only number in this
+     stylesheet the composition depends on. */
+  --row: 4.16667cqw;
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-8), 7vw, var(--space-10));
+}
+
+/* ==========================================================================
+   The depth layers.
+
+   Three wrappers that exist for one reason: to carry a parallax. Every one of
+   them holds the element the ENTRANCE is written on, and neither ever touches
+   the other's transform — the rule the whole section's motion rests on, and
+   the reason a headline here is a heading inside a box rather than a heading
+   with two animations fighting over its `transform`.
+   ========================================================================== */
+
+.headlineLayer,
+.copyLayer,
+.noteLayer {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Type
+   ========================================================================== */
+
+.eyebrow {
+  margin: 0;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+/* SET FROM THE CANVAS, NOT FROM THE TYPE SCALE. --fs-h1 is sized for a
+   headline in a column of prose; this one has to fill seven of twelve columns
+   of a composition and stand level with a photograph. The cqw figure is what
+   ties it to the canvas; the rem floor is what carries it on a phone, where
+   there is no canvas and the shell is twenty rem wide. */
+.headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6cqw, 4.75rem);
+  line-height: 1.03;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream);
+  text-wrap: pretty;
+}
+
+/* Micro-copy. Deliberately not a standfirst, and deliberately narrow: it is a
+   note in a margin, and a note set across a full measure is a paragraph. */
+.note {
+  margin: 0;
+  max-width: 32ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+/* The guide's rose line-work, used the second of the two ways this section
+   uses it: a rule ABOVE a block. On the tags it runs beside the word instead.
+   Same mark, two jobs, and never both on the same element. */
+.note::before {
+  content: "";
+  display: block;
+  width: clamp(1.5rem, 3cqw, 2.5rem);
+  height: var(--hairline);
+  margin-block-end: var(--space-4);
+  background: var(--cream-line-rose);
+}
+
+.detailsTitle {
+  margin: 0;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+.detailList {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Numbered rather than bulleted: the three are a sequence of decisions taken
+   in order, and the figures are the one place on the page set in the tabular
+   numerals. */
+.detail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+.detailIndex {
+  font-size: var(--fs-caption);
+  color: var(--accent-text);
+  /* Optically level with the first line of the sentence beside it, which is
+     set larger and on a looser line box. */
+  padding-block-start: 0.2em;
+}
+
+/* The last line. Set in the display italic at a size between the lead and the
+   headline: it is neither a second headline nor a caption — it is the
+   sentence the section was built to be able to say. */
+.coda {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.375rem, 2.9cqw, 2.125rem);
+  line-height: 1.26;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  text-wrap: pretty;
+}
+
+/* ==========================================================================
+   Frames
+   ========================================================================== */
+
+.figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+.plate {
+  position: relative;
+  overflow: hidden;
+  /* The guide rounds the corners and cuts one of them back (pp.4, 13). ONE
+     SHAPE FOR EVERY PHOTOGRAPH IN THE SPREAD: the five frames differ in size,
+     in crop, in depth and in where they stand, and the corner is the only
+     thing that says they are all one set. */
+  border-radius: var(--radius-l) var(--radius-l) var(--radius-s)
+    var(--radius-l);
+  background: var(--cream-300);
+  /* Keeps the drifting photograph's stacking context inside the frame rather
+     than in the section's, where it could sit above the fixed header. */
+  isolation: isolate;
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* Each crop is stated once, here, and holds in both layouts — a frame that
+   re-crops itself at a breakpoint is a different photograph. */
+.deck .image {
+  object-position: 50% 46%;
+}
+.glass .image {
+  /* Holds the wall of glass and the garden through it. Cropping to centre
+     would trade the view away for the climbing wall. */
+  object-position: 42% 50%;
+}
+.terrace .image {
+  object-position: 50% 44%;
+}
+.lounge .image {
+  /* The banquette and the laid table, not the empty end of the room. This is
+     also the crop that keeps it from repeating the same frame Practice sets
+     below, which takes the room wide. */
+  object-position: 62% 50%;
+}
+.garden .image {
+  object-position: 50% 52%;
+}
+
+/* ---- The tag ------------------------------------------------------------ */
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+.tag::before {
+  content: "";
+  flex: none;
+  width: clamp(1.25rem, 2.2cqw, 2.25rem);
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+}
+
+/* Ranged to the right edge of its plate, the rule has to lead INTO the word
+   from the outside — otherwise the mark points away from the frame it
+   belongs to. */
+.figure[data-align="end"] .tag {
+  flex-direction: row-reverse;
+}
+
+/* ---- The sway -----------------------------------------------------------
+   The default layout's only composition. The frames are not all the same
+   width and are not all ranged to the same edge, so a phone still reads a
+   spread rather than a stack — but nothing overlaps, nothing is pulled out of
+   the gutter, and the order is the order in the markup.
+
+   THE ASPECT RATIOS ARE THE CANVAS'S OWN. Each is the exact crop the plate is
+   given at 64rem and up, restated here as a ratio because at this width there
+   is no canvas to derive it from. The comment on each says which columns ×
+   rows it is, so the two can be checked against one another. */
+.deck {
+  width: 92%;
+  align-self: flex-start;
+}
+.deck .plate {
+  aspect-ratio: 5 / 3; /* 5 columns × 6 rows */
+}
+
+.glass .plate {
+  aspect-ratio: 14 / 11; /* 7 columns × 11 rows */
+}
+
+.terrace {
+  width: 66%;
+  align-self: flex-end;
+}
+.terrace .plate {
+  aspect-ratio: 1 / 2; /* 4 columns × 16 rows */
+}
+
+.lounge {
+  width: 86%;
+  align-self: flex-start;
+}
+.lounge .plate {
+  aspect-ratio: 5 / 4; /* 5 columns × 8 rows */
+}
+
+.garden .plate {
+  aspect-ratio: 7 / 4; /* 7 columns × 8 rows */
+}
+
+/* The note follows the frame it belongs to, so the sway carries the type with
+   it instead of resetting to the margin under every photograph. */
+.terraceNote {
+  align-self: flex-end;
+}
+
+/* The two frames that stand off the page. On this layout there is nothing for
+   them to stand off, so the shadow is smaller: it says the plate is lifted,
+   not that it is over something. */
+.terrace .plate,
+.garden .plate {
+  box-shadow: 0 20px 48px -28px rgba(15, 20, 48, 0.45);
+}
+
+/* ==========================================================================
+   THE CANVAS — 64rem and up
+   ========================================================================== */
+
+@media (min-width: 64rem) {
+  .canvas {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    /* Every row is half a column, and grows only if the type placed in it
+       needs more than that. A photograph contributes nothing to the minimum —
+       it fills whatever its span is — so the composition holds its
+       proportions and no block of copy can ever be clipped by them. */
+    grid-auto-rows: minmax(var(--row), auto);
+    gap: 0;
+    align-items: stretch;
+  }
+
+  /* ---- Placement --------------------------------------------------------
+     THE WHOLE COMPOSITION IS THESE THIRTEEN RULES. Read down the columns and
+     the section swings left, right, left, right; read down the rows and it
+     never once starts a new thing on the line the last one finished on.
+
+     THE TWO OVERLAPS ARE HERE AND NOWHERE ELSE:
+       · terrace (cols 7–10, rows 18–33) over glass   (cols 1–7,  rows 13–23)
+       · garden  (cols 6–12, rows 41–48) over lounge  (cols 8–12, rows 36–43)
+
+     Both are an OUTSIDE laid across an INSIDE — the section's subject, built
+     rather than described, and the reason the row grid exists at all.
+
+     TWO, NOT THREE. An earlier pass had the terrace over the lounge as well;
+     between the two of them the lounge was reduced to an L-shaped sliver of
+     itself and read as a mistake rather than as a layer. An overlap has to
+     leave the frame underneath legible as a photograph or it is not a layer,
+     it is a crop — so the terrace now clears the lounge by a row, and every
+     photograph in the section can still be seen as the thing it is. */
+
+  .eyebrow {
+    grid-column: 1 / 5;
+    grid-row: 2 / 4;
+    align-self: start;
+  }
+
+  .deck {
+    grid-column: 8 / 13;
+    grid-row: 1 / 7;
+    z-index: 1;
+  }
+
+  .headlineLayer {
+    grid-column: 1 / 8;
+    grid-row: 5 / 11;
+    align-self: start;
+    z-index: 4;
+  }
+
+  .deckNote {
+    grid-column: 8 / 12;
+    grid-row: 9 / 12;
+    align-self: start;
+    z-index: 4;
+  }
+
+  .glass {
+    grid-column: 1 / 8;
+    grid-row: 13 / 24;
+    z-index: 1;
+  }
+
+  .terrace {
+    grid-column: 7 / 11;
+    grid-row: 18 / 34;
+    /* The nearest plate in the section, and the only one that overlaps two
+       others. */
+    z-index: 3;
+  }
+
+  .terraceNote {
+    grid-column: 11 / 13;
+    grid-row: 21 / 27;
+    align-self: start;
+    z-index: 4;
+    /* The canvas has no column gap — a plate and the column beside it share
+       an edge. This is the one block of type placed hard against a
+       photograph, so it carries the gutter the grid does not. */
+    padding-inline-start: var(--space-5);
+  }
+
+  .leadCell {
+    grid-column: 1 / 6;
+    grid-row: 26 / 33;
+    align-self: start;
+    z-index: 4;
+  }
+
+  .lounge {
+    grid-column: 8 / 13;
+    grid-row: 36 / 44;
+    z-index: 1;
+  }
+
+  .gardenNote {
+    grid-column: 1 / 5;
+    grid-row: 45 / 49;
+    align-self: start;
+    z-index: 4;
+  }
+
+  .garden {
+    grid-column: 6 / 13;
+    grid-row: 41 / 49;
+    z-index: 2;
+  }
+
+  .detailsCell {
+    grid-column: 1 / 6;
+    grid-row: 35 / 42;
+    align-self: start;
+    z-index: 4;
+  }
+
+  .codaCell {
+    grid-column: 6 / 13;
+    grid-row: 52 / 56;
+    align-self: start;
+    z-index: 4;
+  }
+
+  /* The two frames that are over something. Only they carry a shadow, and it
+     is deep and very soft — a plate standing a plane forward on a field of
+     cream, not a card sitting on a page. */
+  .terrace .plate,
+  .garden .plate {
+    box-shadow: 0 34px 84px -34px rgba(15, 20, 48, 0.5);
+  }
+
+  /* ---- The margin breaks ------------------------------------------------
+     FOUR, AND NONE OF THEM MORE THAN HALF A GUTTER. Enough to read as a
+     decision — the eye catches an edge that does not line up with the ones
+     above it — and not enough to reach the edge of the window at any width,
+     so a break here can never become a horizontal overflow. The two frames
+     that break right are the two on the right of the composition, and the
+     one that breaks left is the widest thing on the left. */
+  .deck,
+  .lounge,
+  .terraceNote {
+    margin-inline-end: calc(var(--gutter) * -0.5);
+  }
+
+  .glass {
+    margin-inline-start: calc(var(--gutter) * -0.5);
+  }
+
+  /* ---- Frames on the canvas ---------------------------------------------
+     The figure's box IS the plate here: the sway's widths are dropped, and
+     the tag is taken out of flow so it cannot eat its own height out of a
+     crop that was placed as a whole number of squares. See the note on
+     <Plate> in Atmosphere.tsx. */
+  .figure {
+    width: auto;
+    align-self: stretch;
+  }
+
+  .figure .plate {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+  }
+
+  .tag {
+    position: absolute;
+    inset-inline-start: 0;
+    margin-block-start: 0;
+  }
+
+  .figure[data-tag="below"] .tag {
+    top: calc(100% + var(--space-4));
+  }
+
+  .figure[data-tag="above"] .tag {
+    bottom: calc(100% + var(--space-4));
+  }
+
+  .figure[data-align="end"] .tag {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+}
+
+/* ==========================================================================
+   Motion — promotion only. Everything that moves is written by
+   Atmosphere.tsx; this is the layer hint, set for the range each layer is
+   actually travelling in and taken off again after it.
+   ========================================================================== */
+
+.deck[data-drift="on"],
+.garden[data-drift="on"],
+.terrace[data-drift="on"],
+.noteLayer[data-drift="on"],
+.copyLayer[data-drift="on"],
+.headlineLayer[data-drift="on"],
+.image[data-drift="on"] {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt and braces: `motion-on` is never set under reduced motion, so no
+     drift is ever built and none of the above applies. This only matters if
+     the preference is changed after load, when no photograph may be left
+     sitting at the enlargement a parallax that is not running would have
+     needed. */
+  .deck,
+  .garden,
+  .terrace,
+  .image,
+  .noteLayer,
+  .copyLayer,
+  .headlineLayer {
+    transform: none !important;
+    will-change: auto !important;
+  }
+}

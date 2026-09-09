@@ -1,0 +1,244 @@
+/* ============================================================================
+   ConceptShowcase — a very large headline over a deliberately small plate.
+
+   Every resting state lives here, keyed off `data-active`. GSAP paints over
+   these rules for the length of a cut and then calls `clearProps`, handing
+   the slide back. Nothing in this file assumes the script ran: with no JS the
+   buttons are ordinary buttons and the change is a plain cut.
+   ========================================================================== */
+
+.showcase {
+  /* The plate's width, in one place: the frame is set from it and the caption
+     is measured against it, so the two cannot drift apart. */
+  --plate-w: clamp(15rem, 20vw, 18rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* ONE interval, not a uniform one. This gap binds plate → caption → controls
+     into a single object; the headline is pushed clear of it by the frame's
+     own margin below. A single gap for all four parts made the caption and the
+     dots read as three separate things stacked at the same distance. */
+  gap: var(--space-5);
+  width: 100%;
+  margin-top: var(--space-11);
+}
+
+/* ---- The headline -------------------------------------------------------- */
+
+/* Deliberately off the type scale, and larger than the page's own h1. The
+   scale tops out at --fs-display (6rem); this goes past it because it is
+   playing against a plate a fifth of its width — the gap between the two is
+   the effect, and closing it would leave an ordinary captioned figure. */
+.heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 1.5rem + 9vw, 8.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  text-align: center;
+  text-wrap: balance;
+  /* Tight enough that "Enclaves Living." always breaks into its two words,
+     which is the line the plate below is centred under; loose enough that a
+     longer heading from the CMS still sets sensibly. */
+  max-width: 10ch;
+  color: var(--text-on-cream);
+}
+
+/* ---- The frame ----------------------------------------------------------- */
+
+.frame {
+  position: relative;
+  width: min(var(--plate-w), 100%);
+  /* PORTRAIT, BECAUSE THE SUBJECT IS. Every photograph in this set is a tower
+     shot from the street, and a 16:9 letterbox at this width kept a horizontal
+     band of façade and threw away the building. 4:5 is the ratio the pictures
+     are already cut to, so the plate crops nothing it does not mean to. */
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  /* The interval the headline gets, on top of the stack's own gap: the space
+     between the two is the composition, so it is the one that is larger. */
+  margin-block-start: var(--space-4);
+  background: var(--cream-300);
+  /* The guide rounds one corner hard and leaves the others square (pp.4, 13).
+     Scaled down from the section's larger figures — at this width the full
+     --radius-xl would eat the picture. */
+  border-radius: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
+  box-shadow: 0 18px 44px -24px rgba(15, 20, 48, 0.55);
+  /* Keeps the seam's z-index inside the frame rather than in the section's
+     stacking context, where it would sit above the sticky header. */
+  isolation: isolate;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* The element the counter-move is applied to. Separate from `.slide` so the
+   wipe (a clip on the slide) and the camera move (a transform on the inner)
+   never fight over the same property. */
+.slideInner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.image {
+  object-fit: cover;
+  /* Only bites when a source is taller than the plate. When it does, the top
+     of the building is worth more than the pavement at its foot. */
+  object-position: 50% 45%;
+}
+
+/* The hairline of light pinned to the wipe edge. Zero width plus a spread
+   shadow, so it is a glow with a hard centre rather than a bar. */
+.seam {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 1px;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--cream-100);
+  box-shadow:
+    0 0 6px 1px rgba(246, 245, 242, 0.75),
+    0 0 22px 6px rgba(228, 168, 161, 0.35);
+}
+
+/* ---- The caption --------------------------------------------------------- */
+
+/* A mask, not a fade: the lines are pulled through it. Sized by the longest
+   caption in flow so the block never changes height mid-cut. */
+.captions {
+  position: relative;
+  overflow: hidden;
+  /* Ranged to the plate rather than to the page: wide enough that every
+     caption in the set holds one line here, narrow enough that the block
+     still reads as this picture's caption and not the section's. */
+  width: min(30rem, 100%);
+  /* The captions are out of flow, so the block needs a height of its own.
+     One line at the size and leading below, with a little air — the mask
+     clips, so a short value cuts a caption off rather than wrapping it. The
+     phone width, where they take two lines, raises it. */
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  min-height: 1.7em;
+  margin: 0;
+  text-align: center;
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  /* Centred, not top-ranged: the box is sized for the longest caption, so a
+     shorter one would otherwise hang off the top of a pocket of air. */
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-on-cream-muted);
+}
+
+.caption[data-active="true"] {
+  opacity: 1;
+}
+
+/* ---- The control --------------------------------------------------------- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* The marks sit 21px inside their own hit areas. Without this the row reads
+     as twice the distance from the caption that every other gap here is. */
+  margin-block-start: calc(var(--space-4) * -1);
+}
+
+/* Generous hit area, hairline mark — the target is 44px, what you see is 2px
+   of rule. */
+.dot {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dotMark {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: var(--accent-deep);
+  opacity: 0.3;
+  transition:
+    width 420ms var(--ease-out-quint),
+    opacity 420ms ease;
+}
+
+.dot[data-active="true"] .dotMark {
+  width: 34px;
+  opacity: 1;
+}
+
+.dot:hover .dotMark {
+  opacity: 0.65;
+}
+
+.dot[data-active="true"]:hover .dotMark {
+  opacity: 1;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: -6px;
+  border-radius: var(--radius-s);
+}
+
+/* ---- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .showcase {
+    gap: var(--space-4);
+    margin-top: var(--space-9);
+  }
+  .heading {
+    font-size: clamp(2.75rem, 12vw, 4.5rem);
+    max-width: 9ch;
+  }
+  /* Two lines at this width, and the mask clips: an em short here and the
+     second line is cut off rather than wrapped. */
+  .captions {
+    min-height: 2.9em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideInner {
+    will-change: auto;
+  }
+  .dotMark {
+    transition: none;
+  }
+  /* The seam only ever exists inside a cut that is not run at all here. */
+  .seam {
+    display: none;
+  }
+}

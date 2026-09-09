@@ -1,0 +1,423 @@
+/* ============================================================================
+   ScenePin — an annotation glued to a point in the opening photograph.
+
+   Everything here is positioned against the PICTURE, not the window: the pin
+   layer in Journey sizes its box to the photograph's painted rectangle and
+   carries the same transforms the photograph rides, so a `left`/`top` set
+   here lands on the same feature at every size. Which way the card opens is
+   decided from the same coordinates — see FLIP_X / FLIP_Y in ScenePin.tsx.
+   ========================================================================== */
+
+.pin {
+  --node-size: 32px;
+  position: absolute;
+  z-index: var(--z-hotspot);
+  /* The coordinate is the centre of the node, not its corner. */
+  transform: translate(-50%, -50%);
+}
+
+.pin.isOpen {
+  z-index: calc(var(--z-hotspot) + 5);
+}
+
+/* ---- The node ----------------------------------------------------------- */
+/* A DRAWN RING, and nothing inside it. The pin is a piece of line-work laid
+   over a photograph, in the same copper the rest of the site draws its rules
+   and its hairlines in (--accent-rose, the palette's warm metallic on navy),
+   so it reads as part of the drawing rather than as a sticker on the picture.
+   No fill of any kind: the photograph shows through the middle of it.
+
+   The one thing it keeps is a soft dark shadow. That is not a fill — it sits
+   under the stroke, and it is what holds a hollow ring against the bright
+   half of a sunset as well as against the dark half. */
+.node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: none;
+  border: 2px solid var(--accent-rose);
+  box-shadow: 0 2px 16px -4px rgba(7, 10, 28, 0.8);
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) ease;
+}
+
+.node:hover .dot,
+.node:focus-visible .dot,
+.isOpen .dot {
+  border-color: var(--accent-rose-bright);
+}
+
+.node:hover .dot,
+.node:focus-visible .dot,
+.isOpen .dot {
+  transform: scale(1.14);
+}
+
+.node:focus-visible {
+  outline: none;
+}
+.node:focus-visible .dot {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 5px;
+}
+
+/* The same slow breathing ring the impact hotspots use, so the two kinds of
+   annotation read as one family. It stops the moment the pin is engaged. */
+.pulse {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent-rose);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pinPulse 3.4s var(--ease-out-expo) infinite;
+}
+
+.node:hover .pulse,
+.node:focus-visible .pulse,
+.isOpen .pulse {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+@keyframes pinPulse {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.72);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.85);
+  }
+}
+
+/* ---- The card ----------------------------------------------------------- */
+.card {
+  position: absolute;
+  width: min(21rem, 74vw);
+  /* Capped to the room measured at open time; see ScenePin.tsx. The cap is
+     the safety net rather than the plan — the flip usually finds a side the
+     whole card fits on, and this only bites on a short window. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-5);
+  background: rgba(12, 18, 48, 0.94);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-l);
+  color: var(--text-on-navy);
+
+  /* ---- The closed state, and the only state the card rests in -----------
+     THE PANEL IS CUT OPEN, NOT FADED IN. The wipe runs from the edge nearest
+     the node — the direction the card grows in — so the movement reads as the
+     pin opening the card rather than as a tooltip appearing over it. Four
+     things travel together on that one axis: the clip, a short slide, a
+     hairline of scale, and the opacity. The custom properties below are set
+     by the flip classes, so all four reverse when the card flips sides and
+     nothing here needs a second copy.
+
+     `visibility`, not `display`: it takes the card out of the accessibility
+     tree and out of the tab order exactly as the `hidden` attribute did, but
+     it is a transitionable property, so the card can be held visible for the
+     length of its own exit and hidden on the frame it finishes. */
+  --slide-x: 0px;
+  --slide-y: 0px;
+  --clip-in: inset(0 0 0 0 round var(--radius-m));
+
+  visibility: hidden;
+  opacity: 0;
+  transform: translate3d(var(--slide-x), var(--slide-y), 0) scale(0.965);
+  transform-origin: var(--origin-x, 0%) var(--origin-y, 0%);
+  clip-path: var(--clip-in);
+  /* The way out is quicker than the way in, and it is the same curve the page
+     uses for a cut. Nothing lingers on a dismissal. */
+  transition:
+    clip-path 260ms var(--ease-in-out-quart),
+    transform 260ms var(--ease-in-out-quart),
+    opacity 200ms var(--ease-in-out-quart),
+    visibility 0s linear 260ms;
+}
+
+/* ---- The open state ------------------------------------------------------
+   Slower, and on the house ease. The clip and the slide take the full 620ms;
+   the opacity is done well before them, so the card is legible while it is
+   still settling rather than arriving all at once at the end. */
+.isOpen .card {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0 round var(--radius-m));
+  transition:
+    clip-path 620ms var(--ease-out-expo),
+    transform 620ms var(--ease-out-expo),
+    opacity 380ms var(--ease-out-quint),
+    visibility 0s;
+}
+
+/* Offset from the NODE, not from the coordinate. The pin's box is the circle
+   itself, so a full --node-size clears it and the 14px on top is the visible
+   gap — it stays 14px however the node is sized. Vertically the card's near
+   edge lands on the pin's centreline, so the two flips are mirror images of
+   each other rather than one hanging lower than the other. */
+/* Each flip also sets which edge the wipe opens from, which way the card
+   slides in, and the corner it scales out of — so the motion is a mirror of
+   the layout rather than a second set of rules that has to be kept in step
+   with it. */
+.right .card {
+  left: calc(var(--node-size) + 14px);
+  --clip-in: inset(0 100% 0 0 round var(--radius-m));
+  --slide-x: -18px;
+  --origin-x: 0%;
+}
+.left .card {
+  right: calc(var(--node-size) + 14px);
+  --clip-in: inset(0 0 0 100% round var(--radius-m));
+  --slide-x: 18px;
+  --origin-x: 100%;
+}
+.down .card {
+  top: calc(var(--node-size) / 2);
+  --slide-y: -10px;
+  --origin-y: 0%;
+}
+.up .card {
+  bottom: calc(var(--node-size) / 2);
+  --slide-y: 10px;
+  --origin-y: 100%;
+}
+
+/* ---- What is inside it ---------------------------------------------------
+   The contents come up behind the wipe, one beat apart, in reading order —
+   the second half of the same movement rather than a separate flourish. They
+   lead by a hairline (90ms) and are all seated inside the card's own 620ms,
+   so the panel finishes as one thing.
+
+   On the way out they do NOT stagger: a dismissal is a cut, so everything
+   goes at once, faster than it came, and the delays are dropped. */
+.card > .cardTitle,
+.card > .list,
+.card > .cta,
+.card > .evidence,
+.card > .close {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 180ms var(--ease-in-out-quart),
+    transform 180ms var(--ease-in-out-quart);
+}
+
+/* The link keeps its own hover behaviour, which this selector would otherwise
+   outrank and drop. */
+.card > .cta {
+  transition:
+    opacity 180ms var(--ease-in-out-quart),
+    transform 180ms var(--ease-in-out-quart),
+    gap var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-fast) ease;
+}
+
+.isOpen .card > .cardTitle,
+.isOpen .card > .list,
+.isOpen .card > .cta,
+.isOpen .card > .evidence,
+.isOpen .card > .close {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 460ms var(--ease-out-quint) var(--step, 90ms),
+    transform 560ms var(--ease-out-expo) var(--step, 90ms),
+    gap var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-fast) ease;
+}
+
+.isOpen .card > .list {
+  --step: 150ms;
+}
+.isOpen .card > .cta {
+  --step: 205ms;
+}
+.isOpen .card > .evidence {
+  --step: 250ms;
+}
+.isOpen .card > .close {
+  --step: 285ms;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-4);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+}
+
+/* Drawn markers rather than list bullets, so they sit on the rose hairline
+   the rest of the page draws its rules in. */
+.list li {
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.75;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  color: var(--accent-rose);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: var(--hairline) solid transparent;
+  transition:
+    gap var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-fast) ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  gap: var(--space-3);
+  border-bottom-color: var(--accent-rose);
+}
+
+/* The caption. It says what is in frame under the pin, so it is set apart
+   from the claims above it rather than reading as one more of them. */
+.evidence {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--navy-line-soft);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.close {
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  color: var(--text-on-navy-muted);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.close:hover {
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+/* The node shrinks toward the bottom of the 28-36px band, and the card
+   centres itself on the pin instead of hanging off one side — at this width
+   there is not enough room beside a pin for a card to hang. */
+@media (max-width: 47.99rem) {
+  .pin {
+    --node-size: 28px;
+  }
+
+  .right .card,
+  .left .card {
+    left: 50%;
+    right: auto;
+    translate: -50% 0;
+    width: min(20rem, 80vw);
+  }
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+/* The card centres on the pin here rather than hanging off one side, so the
+   wipe follows it: it opens downward off the node instead of sideways. */
+@media (max-width: 47.99rem) {
+  .right .card,
+  .left .card {
+    --clip-in: inset(0 0 100% 0 round var(--radius-m));
+    --slide-x: 0px;
+    --slide-y: -12px;
+    --origin-x: 50%;
+    --origin-y: 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+    opacity: 0;
+  }
+  .dot,
+  .cta {
+    transition: none;
+  }
+
+  /* The card still has to appear and disappear — it just does it on the
+     frame it is asked to, with no wipe, no slide and no stagger. The
+     visibility delay goes too, or the closed card would stay on screen for
+     the length of an exit that is no longer running. */
+  .card,
+  .isOpen .card,
+  .card > .cardTitle,
+  .card > .list,
+  .card > .cta,
+  .card > .evidence,
+  .card > .close,
+  .isOpen .card > .cardTitle,
+  .isOpen .card > .list,
+  .isOpen .card > .cta,
+  .isOpen .card > .evidence,
+  .isOpen .card > .close {
+    transition: none;
+    transform: none;
+    clip-path: none;
+  }
+  .card {
+    opacity: 0;
+  }
+  .isOpen .card,
+  .isOpen .card > * {
+    opacity: 1;
+  }
+}

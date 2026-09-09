@@ -1,0 +1,101 @@
+/* ============================================================================
+   BrandStory — the practice's history, ruled onto the site's own field.
+
+   One twelve-column track, which is Responsibility's `.field` restated here
+   for the same reason it exists there: the frame, the type ranged against it
+   and the quote under both land on the same lines, so nothing in the band is
+   positioned against anything but the grid.
+   ========================================================================== */
+
+.field {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+  row-gap: clamp(var(--space-8), 5vw, var(--space-10));
+  align-items: start;
+}
+
+.figure {
+  grid-column: 1 / 7;
+  margin: 0;
+}
+
+.frame {
+  position: relative;
+  overflow: clip;
+  border-radius: var(--radius-m);
+  background: var(--navy-800);
+  aspect-ratio: 4 / 3;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Under its own frame, ranged on the frame's left edge — the same caption
+   the community band sets. */
+.caption {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--hairline) solid var(--navy-line);
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.copy {
+  grid-column: 8 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.para {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+  opacity: 0.88;
+}
+
+/* The sentence that covers the whole band, so it is ranged against the
+   field's far edge rather than set under either column — column 5, which is a
+   field line, not a max-width that happened to land near one. */
+.pullquote {
+  grid-column: 5 / -1;
+  margin: 0;
+  padding-top: var(--space-6);
+  border-top: var(--hairline) solid var(--navy-line);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-text);
+  text-wrap: balance;
+}
+
+/* ---- Motion start states ------------------------------------------------- */
+:global(.motion-on) .frame {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* A `transform`, not the `scale` property: GSAP settles it through `transform`
+   too, so the two compose rather than override. */
+:global(.motion-on) .image {
+  transform: scale(1.08);
+}
+
+/* ---- Narrow -------------------------------------------------------------
+   The counter-space cannot survive one column, so it is not faked: every
+   block takes the full field, in reading order. */
+@media (max-width: 63.99rem) {
+  .figure,
+  .copy,
+  .pullquote {
+    grid-column: 1 / -1;
+  }
+}

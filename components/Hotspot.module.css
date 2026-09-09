@@ -1,0 +1,240 @@
+.group {
+  --dot-size: 12px;
+  position: absolute;
+  z-index: var(--z-hotspot);
+  /* Vertically centred on the anchor; the half-dot pull below puts the
+     node exactly on it horizontally, whichever way the label runs. */
+  transform: translateY(-50%);
+}
+
+.right {
+  margin-left: calc(var(--dot-size) / -2);
+}
+
+.left {
+  margin-right: calc(var(--dot-size) / -2);
+}
+
+.group.isOpen {
+  z-index: calc(var(--z-hotspot) + 5);
+}
+
+/* ---- Trigger ------------------------------------------------------------ */
+.node {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--text-on-navy);
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.left .node {
+  flex-direction: row-reverse;
+}
+
+.node:focus-visible {
+  outline: none;
+}
+.node:focus-visible .dot {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 6px;
+}
+
+.dot {
+  position: relative;
+  flex: none;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: var(--accent-rose);
+  box-shadow: 0 2px 12px -2px rgba(228, 168, 161, 0.9);
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.node:hover .dot,
+.node:focus-visible .dot,
+.isOpen .dot {
+  transform: scale(1.35);
+}
+
+/* A slow breathing ring — the only looping motion on the page, and it stops
+   the moment the visitor engages with the node. */
+.pulse {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--accent-rose);
+  border-radius: 50%;
+  opacity: 0;
+  animation: pulse 3.4s var(--ease-out-expo) infinite;
+}
+
+.node:hover .pulse,
+.node:focus-visible .pulse,
+.isOpen .pulse {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.7);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+/* Leader line, drawn out from the node the way a dimension is called out on
+   a plan. It extends on hover rather than appearing. */
+.leader {
+  flex: none;
+  width: clamp(20px, 3vw, 42px);
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.55;
+  transform-origin: left center;
+  transition:
+    width var(--dur-slow) var(--ease-out-expo),
+    opacity var(--dur-base) ease;
+}
+
+.left .leader {
+  transform-origin: right center;
+}
+
+.node:hover .leader,
+.node:focus-visible .leader,
+.isOpen .leader {
+  width: clamp(28px, 4.5vw, 62px);
+  opacity: 1;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  padding-inline: 0.7em;
+  white-space: nowrap;
+}
+
+.left .figure {
+  text-align: right;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-on-navy);
+  text-shadow: 0 2px 18px rgba(9, 13, 33, 0.85);
+}
+
+.unit {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+  text-shadow: 0 1px 12px rgba(9, 13, 33, 0.9);
+}
+
+/* ---- Panel -------------------------------------------------------------- */
+.panel {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  width: min(19rem, 62vw);
+  padding: var(--space-5);
+  background: rgba(12, 18, 48, 0.94);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-l);
+  color: var(--text-on-navy);
+}
+
+.right .panel {
+  left: 0;
+}
+.left .panel {
+  right: 0;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panelTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-3);
+}
+
+.panelBody {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+}
+
+.close {
+  margin-top: var(--space-5);
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  color: var(--text-on-navy-muted);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease;
+}
+
+.close:hover {
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+/* Below the breakpoint an anchored panel would run off the scene, so it
+   docks to the bottom of the viewport instead. */
+@media (max-width: 47.99rem) {
+  .leader {
+    width: 16px;
+  }
+  .node:hover .leader,
+  .node:focus-visible .leader,
+  .isOpen .leader {
+    width: 22px;
+  }
+  .panel {
+    position: fixed;
+    inset: auto var(--space-4) var(--space-4) var(--space-4);
+    width: auto;
+    top: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+    opacity: 0;
+  }
+  .dot,
+  .leader {
+    transition: none;
+  }
+}
