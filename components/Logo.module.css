@@ -1,7 +1,11 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
+  /* Measured against the mark rather than taken from the spacing scale. Both
+     assets are cropped to their own artwork now, so this gap is the ONLY air
+     between the mark and the V — a fixed step would read as tight at header
+     size and loose at footer size. */
+  gap: calc(var(--logo-size, 40px) * 0.3);
   color: var(--accent-text);
   text-decoration: none;
 }
@@ -15,9 +19,17 @@
 .mark {
   flex: none;
   color: inherit;
-  /* Carried here rather than inline, so a mark left unsized by its caller and
-     scaled from CSS still keeps its aspect ratio. */
+  /* The asset is 263×264 of drawing and nothing else, so a square box is very
+     nearly its true ratio — this only guards the half-pixel. */
   object-fit: contain;
+}
+
+/* The mark, sized from the lockup's own variable rather than from an inline
+   width — an inline width is the one thing a stylesheet cannot answer, and
+   the masthead has to step down on a phone. */
+.markSized {
+  width: var(--logo-size, 40px);
+  height: var(--logo-size, 40px);
 }
 
 .wordmarkGroup {
@@ -26,16 +38,26 @@
   gap: 0.35em;
 }
 
-.stacked .wordmarkGroup {
+.stacked /* The mark, sized from the lockup's own variable rather than from an inline
+   width — an inline width is the one thing a stylesheet cannot answer, and
+   the masthead has to step down on a phone. */
+.markSized {
+  width: var(--logo-size, 40px);
+  height: var(--logo-size, 40px);
+}
+
+.wordmarkGroup {
   align-items: center;
 }
 
-/* The guide's own wordmark, as artwork. It is a wide plate (858 x 144), so it
-   is driven from its height and left to take whatever width that asks for —
+/* The guide's own wordmark, as artwork, cropped to its letterforms — so this
+   height IS the cap height, and 0.54 is a real mark-to-cap ratio rather than a
+   number tuned against a transparent margin. It is a wide plate (800 × 99), so
+   it is driven from its height and left to take whatever width that asks for;
    a width-first rule would make it tower over the mark beside it. */
 .wordmark {
   display: block;
-  height: calc(var(--logo-size, 40px) * 0.62);
+  height: calc(var(--logo-size, 40px) * 0.54);
   width: auto;
   object-fit: contain;
   /* The plate carries its own rose-to-silver gradient and is drawn for the
@@ -44,7 +66,7 @@
 }
 
 .stacked .wordmark {
-  height: clamp(1.75rem, 5.5vw, 3.25rem);
+  height: clamp(1.2rem, 3.8vw, 2.25rem);
 }
 
 .tagline {

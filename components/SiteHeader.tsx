@@ -59,7 +59,13 @@ export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
           className={styles.brand}
           aria-label="Vakratunda, home"
         >
-          <Logo size={34} />
+          {/* Sized from CSS, not from a pixel count: 40px of mark on a phone,
+              48px from about a tablet up. The wordmark is measured against it,
+              so one value moves the whole lockup. */}
+          <Logo
+            size="clamp(2.5rem, 5.2vw, 3rem)"
+            markClassName={styles.brandMark}
+          />
         </Link>
 
         <nav className={styles.nav} aria-label="Sections">
