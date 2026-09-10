@@ -54,7 +54,7 @@ export function FinalCTA({
       className={styles.section}
       aria-labelledby="contact-title"
     >
-      <LogoMark className={styles.watermark} size={780} />
+      <LogoMark className={styles.watermark} size={286} />
 
       <div className={`u-shell ${styles.inner}`}>
         <h2 id="contact-title" className={styles.quote}>
@@ -101,7 +101,7 @@ export function FinalCTA({
       <footer className={styles.footer}>
 
         <div className={`u-shell ${styles.footerInner}`}>
-          <Logo layout="inline" size={44} className={styles.footerLogo} />
+          <Logo layout="inline" size={40} className={styles.footerLogo} />
 
           <address className={styles.contact}>
             <a className={styles.email} href={`mailto:${content.contact.email}`}>

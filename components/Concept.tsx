@@ -20,10 +20,11 @@ import styles from "./Concept.module.css";
  * simply the shape of this section's top, so there is no separate wipe element
  * and nothing to keep in sync — the arc IS the section arriving.
  *
- * WHAT LANDS IN IT is the mark, not a sentence: the wordmark split around the
- * brand mark, a hairline dropped from it, and one two-line promise under that
- * — three boxes on a single axis, at one repeated interval, on an otherwise
- * empty field of cream. The section's prose starts below the dome instead.
+ * WHAT LANDS IN IT is the mark, not a sentence: the brand mark with the name
+ * set under it, a hairline dropped from that, and one two-line promise under
+ * the hairline — three boxes on a single axis, at one repeated interval, on an
+ * otherwise empty field of cream. The section's prose starts below the dome
+ * instead.
  *
  * Riding the crest of that arc is one line of type, set on a circle that is
  * concentric with the dome: same centre, radius a fixed inset inside it. It
@@ -276,22 +277,19 @@ export function Concept({ content }: { content: ConceptContent }) {
             </svg>
 
             {/* The lockup, not a headline. Three boxes on one axis, evenly
-                spaced: the wordmark split around the mark, the rule dropped
-                from it, and the promise the rule is pointing at. They are
-                also the three children the opening timeline staggers. */}
+                spaced: the mark with the name under it, the rule dropped from
+                that, and the promise the rule is pointing at. They are also
+                the three children the opening timeline staggers, which is why
+                the mark and the name are ONE box — they are one mark, and a
+                fourth child would both break the interval and stagger the
+                lockup apart from itself. */}
             <div className={styles.lede}>
-              {/* aria-label rather than the concatenated spans: the mark sits
-                  BETWEEN the two halves, and the accessible name has to read
-                  "Vakratunda Group" rather than run the halves together. It
-                  matches the visible words exactly. */}
-              <h2
-                id="story-title"
-                className={styles.lockup}
-                aria-label={`${content.lockup.before} ${content.lockup.after}`}
-              >
-                <span className={styles.word}>{content.lockup.before}</span>
+              {/* No aria-label. The heading's own text is the name, exactly as
+                  it is set, and the mark above it is decorative — so the
+                  accessible name is right without being overridden. */}
+              <h2 id="story-title" className={styles.lockup}>
                 <LogoMark className={styles.lockupMark} />
-                <span className={styles.word}>{content.lockup.after}</span>
+                <span className={styles.word}>{content.lockup.wordmark}</span>
               </h2>
 
               <span className={styles.rule} aria-hidden="true" />

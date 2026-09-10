@@ -134,10 +134,11 @@
   --head-gap: clamp(3rem, 6vw, 4.5rem);
 
   /* The fixed header's own height, so the sections that have to clear it can
-     derive their padding instead of guessing at it. Its tallest content is
-     the 44px menu button, plus the header's own 16px above and below; the
-     desktop row measures 74.3px, so this clears both by construction. */
-  --header-h: 4.75rem;
+     derive their padding instead of guessing at it. The header now SETS this
+     on its row rather than adding up to it, so it is exact at every viewport
+     rather than a value that had to clear the tallest child. 80px holds the
+     48px brand mark, and the 44px menu button on a phone, with 16px of air. */
+  --header-h: 5rem;
 
   --space-3xl: var(--section-pad);
 

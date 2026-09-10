@@ -335,7 +335,7 @@ export function Journey({ hero }: Props) {
       style={{ "--backdrop-span": BACKDROP_SPAN } as CSSProperties}
     >
       <div className={styles.viewport}>
-        {/* The one continuous photograph — /public/images/Main hero image.png,
+        {/* The one continuous photograph — /public/images/mainheroimage.png,
             sky at the top where the lockup sits, the terrace and the city at
             the bottom where the figures land. `travel` carries the long
             descent, `push` the hero's camera move, so the two transforms
@@ -392,8 +392,8 @@ export function Journey({ hero }: Props) {
           {/* The brand guide bleeds the petal mark off two opposite corners
               of the cover (CP_Final p.1). Same device, made to move. */}
           <div className={styles.watermarks} aria-hidden="true">
-            <LogoMark className={styles.watermarkTop} size={620} />
-            <LogoMark className={styles.watermarkBottom} size={720} />
+            <LogoMark className={styles.watermarkTop} size={227} />
+            <LogoMark className={styles.watermarkBottom} size={264} />
           </div>
 
           {/* The scroll invitation, on the left edge of the frame rather than
@@ -410,7 +410,7 @@ export function Journey({ hero }: Props) {
 
           <div className={styles.heroInner}>
             <div className={styles.lockup}>
-              <LogoMark className={styles.mark} size={88} />
+              <LogoMark className={styles.mark} size={32} />
 
               {/* One heading, drawn in three parts: `before` and `after` are
                   the roman lines, `swash` nests between them, larger and in

@@ -38,6 +38,7 @@ export function ConceptShowcase({
   const { heading, slides } = content;
   const count = slides.length;
 
+
   const root = useRef<HTMLDivElement | null>(null);
   const frame = useRef<HTMLDivElement | null>(null);
   const seam = useRef<HTMLSpanElement | null>(null);
@@ -118,7 +119,10 @@ export function ConceptShowcase({
             className={styles.dot}
             data-active={i === index}
             aria-current={i === index ? "true" : undefined}
-            aria-label={`Frame ${i + 1} of ${count}`}
+            /* The project, not the ordinal. "Frame 2 of 3" tells a screen
+               reader where the control is in the row and nothing about what
+               pressing it does; the count is already carried by the group. */
+            aria-label={slide.name}
             onClick={() => go(i)}
           >
             <span className={styles.dotMark} aria-hidden="true" />
