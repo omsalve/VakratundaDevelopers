@@ -120,6 +120,13 @@ export interface ImmersiveContent {
 /** One frame of the showcase at the foot of the story section. */
 export interface ConceptSlide {
   image: ImageAsset;
+  /**
+   * The project this frame is of. It is not drawn — the caption below is what
+   * the visitor reads — but it names the frame's own control, so the dots stop
+   * announcing themselves as "Frame 2 of 3" to a screen reader and start
+   * announcing the project they select.
+   */
+  name: string;
   /** Runs under the frame, and changes with it. Keep it to one line. */
   caption: string;
 }
@@ -168,16 +175,18 @@ export interface LegacyContent {
 /**
  * The mark lockup the story section opens on, in place of a headline.
  *
- * Read top to bottom it is: the wordmark split around the brand mark, a
- * hairline dropped from it, and the promise the hairline is pointing at. The
- * two wordmark halves are separate strings because the mark is set BETWEEN
- * them — "Vakratunda ✦ Group" — rather than beside the pair.
+ * Read top to bottom it is: the brand mark, the name under it, a hairline
+ * dropped from that, and the promise the hairline is pointing at.
+ *
+ * IT IS ONE WORD. It used to be two, split either side of the mark —
+ * "Vakratunda ✦ Group" — which is why this was a pair of strings. The name is
+ * Vakratunda, so the mark has nothing to sit between any more and the lockup
+ * stacks instead: mark over word, on the axis the rule and the promise below
+ * already stand on.
  */
 export interface ConceptLockup {
-  /** Wordmark, left of the mark. */
-  before: string;
-  /** Wordmark, right of the mark. */
-  after: string;
+  /** The name, set under the mark. One word. */
+  wordmark: string;
   /**
    * The line under the rule, pre-broken. Each entry is one line and is set as
    * written: the break is composed, not left to the wrap.
@@ -215,6 +224,12 @@ export interface GalleryContent {
   heading: SwashHeading;
   standfirst: string;
   slides: ProjectSlide[];
+  /**
+   * The way out of the section and on to the whole portfolio. The landing
+   * page shows the work; /projects is where it can be filtered and read at
+   * length, and the section is not finished without a door to it.
+   */
+  cta: Cta;
 }
 
 /* --------------------------------------------------------------- practice */
@@ -600,75 +615,118 @@ export const siteContent: SiteContent = {
     // so the cue shipped with an empty label.
     scrollCue: "Scroll",
     background: {
-      src: "/images/Main hero image.png",
+      src: "/images/mainheroimage.png",
       alt: "",
-      width: 2880,
-      height: 3240,
+      width: 1182,
+      height: 1330,
     },
-    // AUTHORED. Coordinates are percentages of the photograph's own frame,
-    // measured against the 1820 x 2048 render of the same crop, so they carry
-    // over to the 2880 x 3240 file unchanged. pin1 and pin5 are as supplied.
-    // pin3 and pin4 were supplied sitting in open sky above the rooftop and
-    // have been brought down onto the subjects their evidence lines describe:
-    // pin3 onto the planting by the lounge, pin4 onto the lit city skyline
-    // beyond the parapet. ("pin2", Signature Architecture, was the third of
-    // those and has been dropped.)
+    // AUTHORED. Coordinates are percentages of the photograph's own frame —
+    // 1182 x 1330, the same 0.889 aspect the previous file carried, so the
+    // cover box Journey measures is unchanged and only the subjects moved.
+    // Each pin was placed by measuring the render itself, and each sits ON
+    // the thing its evidence line names: pavilion on the lit beam, lounge on
+    // the seating cluster, deck on a daybed, pool in open water, skyline on
+    // the lit city beyond the coping, green on the planted strip.
+    //
+    // THE COPY IS NOT A SPEC SHEET, AND THAT IS THE POINT. The picture is a
+    // render — an unbuilt terrace standing in for the practice, not a
+    // property on sale — so a pin that sold the decking would be selling
+    // something that does not exist. Each one instead reads its subject as a
+    // figure for Vakratunda: the frame for the founding, the seating for the
+    // trust redevelopment runs on, the loungers for the families, the
+    // vanishing edge for building past today, the skyline for the line on
+    // CP_Final p.4 ("shaping not just skylines, but lives"), the planting for
+    // what the work owes back. Every figure quoted is one already carried by
+    // `immersive.hotspots` or `story.legacy`, so the metaphor never invents a
+    // claim — it only gives a real one somewhere to stand.
+    //
+    // `evidence` keeps its job through all of it: it names what is actually
+    // in frame. That is the hinge the metaphor turns on, and without it the
+    // copy floats free of the picture it is pinned to.
     pins: [
       {
-        id: "pin1",
-        x: 12.1,
-        y: 80.6,
-        title: "Curated Social Lounge",
+        id: "pavilion",
+        x: 10.5,
+        y: 62.2,
+        title: "Rooted in Purpose",
         body: [
-          "Designer-led communal layout for conversation and small events.",
-          "Ambient integrated lighting, comfortable seating and durable materials.",
-          "Configured for year-round use — covered + weather-aware areas.",
+          "Vakratunda began in 1973 as a single vision, and has been family-led ever since.",
+          "Second generation now, on the same footing the first one set.",
+          "Everything that followed was arranged inside that frame.",
         ],
-        cta: { label: "View amenities", href: "#projects" },
+        cta: { label: "The practice", href: "#practice" },
         evidence:
-          "Shown: rooftop lounge, seating clusters and warm ambient lighting.",
+          "Shown: the open pavilion frame — built before the room it holds.",
       },
       {
-        id: "pin3",
-        x: 37.0,
-        y: 79.0,
-        title: "Intentional Landscaping",
+        id: "lounge",
+        x: 10.0,
+        y: 84.0,
+        title: "Trust, Handed Over",
         body: [
-          "Integrated planters and vertical greenery for privacy and year-round interest.",
-          "Low-maintenance irrigation and species chosen for performance.",
-          "Improves microclimate and reduces heat gain — wellness-focused design.",
+          "33(7) society and cluster schemes redeveloped through MCGM and MHADA.",
+          "Each one began with people handing over the place they already called home.",
+          "That decision, not the drawing, is what the work is built on.",
         ],
-        cta: { label: "Sustainability details", href: "#story" },
+        cta: { label: "Redevelopment", href: "#practice" },
         evidence:
-          "Shown: vertical planting and built-in planters near the seating area.",
+          "Shown: the seating turned in on itself — a circle for talking, not a row for looking.",
       },
       {
-        id: "pin4",
-        x: 75.3,
-        y: 85.0,
-        title: "Panoramic City Views",
+        id: "deck",
+        x: 40.0,
+        y: 83.0,
+        title: "Where Dreams Find an Address",
         body: [
-          "Unobstructed skyline view — premium resident amenity and selling point.",
-          "Rooftop programmed around vistas (sunset gatherings, events).",
-          "Safety lighting and railing designed to preserve the view.",
+          "2,500+ families have moved into a Vakratunda home and stayed.",
+          "An address rather than a unit — the number the practice measures itself by.",
+          "A run of places, and every one of them somebody’s.",
         ],
-        cta: { label: "View-facing residences", href: "#projects" },
+        cta: { label: "Our projects", href: "#projects" },
         evidence:
-          "Shown: residents looking out over the city skyline at sunset.",
+          "Shown: the loungers in a run along the water, each one lit on its own.",
       },
       {
-        id: "pin5",
-        x: 45.0,
-        y: 89.1,
-        title: "Premium Finishes",
+        id: "pool",
+        x: 64.0,
+        y: 84.5,
+        title: "Built for Tomorrow",
         body: [
-          "Durable, weather-resistant decking and fixtures chosen for longevity.",
-          "Tight tolerances at joints/edges — evidence of quality oversight.",
-          "Materials selected to age gracefully with minimal upkeep.",
+          "The promise on the first page: we don’t just build for today.",
+          "Fifty years in, the measure is what still stands and is still lived in.",
+          "The edge is where the built stops — and the reason to keep going.",
         ],
-        cta: { label: "Material specs", href: "#story" },
+        cta: { label: "The Vakratunda Impact", href: "#impact" },
         evidence:
-          "Shown: close-up of wood-look decking, edge trim and recessed lighting.",
+          "Shown: the infinity edge, where the water runs out and the city begins.",
+      },
+      {
+        id: "skyline",
+        x: 84.0,
+        y: 75.0,
+        title: "Skylines, and Then Lives",
+        body: [
+          "2.1 million sq. ft. across the island city, both suburbs and Thane.",
+          "Residential, commercial and redevelopment — with Godrej Properties and Shapoorji Pallonji among the partners.",
+          "The skyline is the part you can see. It was never the point.",
+        ],
+        cta: { label: "The Vakratunda Impact", href: "#impact" },
+        evidence:
+          "Shown: the lit city beyond the coping — the visible half of the work.",
+      },
+      {
+        id: "green",
+        x: 76.0,
+        y: 88.0,
+        title: "What the Ground Is Owed",
+        body: [
+          "Aligned with IGBC and LEED guidelines, to build a greener tomorrow.",
+          "Two schools established by the group, Vihaa International in Badlapur among them.",
+          "The work is measured twice: by what it gives, and by what it asks.",
+        ],
+        cta: { label: "Responsibility", href: "#responsibility" },
+        evidence:
+          "Shown: the planting that runs the full length of the terrace, holding its edge.",
       },
     ],
   },
@@ -730,14 +788,11 @@ export const siteContent: SiteContent = {
   },
 
   concept: {
-    // The section opens on the mark rather than on a phrase. The wordmark is
-    // split so the mark sits between its halves, as the guide sets it on the
-    // cover (CP_Final p.1).
+    // The section opens on the mark rather than on a phrase: the mark, and the
+    // name under it (CP_Final p.1).
     lockup: {
-      // CP_Final p.1 — the wordmark, split so the brand mark sits between its
-      // halves rather than beside the pair.
-      before: "Vakratunda",
-      after: "Group",
+      // CP_Final p.1. The name only — the mark above it carries the rest.
+      wordmark: "Vakratunda",
       // AUTHORED, from the promise on CP_Final p.4: "to deliver more than
       // structures, to deliver belonging."
       caption: ["More than structures —", "a place to belong"],
@@ -805,39 +860,56 @@ export const siteContent: SiteContent = {
     showcase: {
       // AUTHORED — from CP_Final p.4, "shaping not just skylines, but lives".
       heading: { before: "Enclaves ", swash: "Living." },
-      // Fifty years in three frames: what stands, what is going up, and the
-      // one the section's own photograph speaks for. The first is the frame
-      // the `home` global's Photograph field edits; see getSiteContent.ts.
+      // THE THREE FLAGSHIPS, and only those three. The set used to be a
+      // sampler — one stock tower, one delivered building, one under
+      // construction — which made the plate a slideshow of the practice. It is
+      // the shortlist now, so each frame has a name and the dots below name it
+      // too.
+      //
+      // The captions are name and locality and nothing else. Every other line
+      // on this page that makes a claim can point at a page of CP_Final; these
+      // three cannot yet, so they claim nothing.
       slides: [
         {
+          name: "Anantaraa",
           image: {
-            src: "/images/jv/shapoorji.png",
-            alt: "A Vakratunda residential tower lit at night, seen from the street corner",
+            src: "/images/anantaraa/anantaraa.jpeg",
+            alt: "Anantaraa at dusk: a slender residential tower lit floor by floor above a glazed retail podium, seen from the arterial road at its foot",
+            width: 1600,
+            height: 1600,
+          },
+          // ⚠️ The locality is the one fact missing from the repo for this
+          // project. Add it here — "Anantaraa, <locality>" — to match the two
+          // captions below.
+          caption: "Anantaraa",
+        },
+        {
+          name: "Vihaa Gardens",
+          // ⚠️ REPLACE ART. The group's own Badlapur render, standing in until
+          // the Vihaa Gardens frame arrives. Everything under
+          // public/images/projects is generated placeholder art — the real
+          // photography on this site is in hero/, jv/ and anantaraa/ — so a
+          // stand-in has to be picked from those, not from the name that
+          // matches.
+          image: {
+            src: "/images/jv/skygardens.png",
+            alt: "A residential cluster at Badlapur photographed at blue hour, its apartments lit above planted grounds and a lit arterial road",
             width: 941,
             height: 1672,
           },
-          // CP_Final p.4.
-          caption: "Legacy-built, future-focused and human-first.",
+          caption: "Vihaa Gardens, Badlapur",
         },
         {
-          image: {
-            src: "/images/hero/dilkhush.png",
-            alt: "Vakratunda Dilkhush, a white residential building in Andheri",
-            width: 1537,
-            height: 1023,
-          },
-          // AUTHORED — factual, from the projects list.
-          caption: "Dilkhush, Andheri — completed, and lived in ever since.",
-        },
-        {
+          name: "Vedanta",
+          // ⚠️ REPLACE ART. The group's own Bandra tower, standing in until the
+          // Vedanta frame arrives. See the note above.
           image: {
             src: "/images/hero/bkc-28.png",
-            alt: "BKC 28, a slender residential tower in Bandra, illuminated at night",
+            alt: "A slender residential tower in Bandra at sunset, seen from the road at its foot",
             width: 1672,
             height: 941,
           },
-          // AUTHORED — factual, from the projects list.
-          caption: "BKC 28, Bandra East.",
+          caption: "Vedanta, Bandra",
         },
       ],
     },
@@ -849,6 +921,9 @@ export const siteContent: SiteContent = {
     // AUTHORED — factual summary of pp.9-12.
     standfirst:
       "Fourteen addresses across the city, from delivered redevelopment in Bandra to a twenty-acre township in Badlapur.",
+    // The section shows the portfolio; /projects is where it can be filtered,
+    // sorted and read at length. Same array, more room.
+    cta: { label: "View all projects", href: "/projects" },
     slides: [
       // Ongoing — CP_Final p.9.
       {

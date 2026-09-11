@@ -197,11 +197,10 @@ async function readSiteContent(): Promise<SiteContent> {
       lockup: {
         // Each half falls back on its own: clearing one input must not take
         // the other half of the wordmark down with it.
-        before: text(
-          home.concept?.lockup?.before,
-          fallback.concept.lockup.before,
+        wordmark: text(
+          home.concept?.lockup?.wordmark,
+          fallback.concept.lockup.wordmark,
         ),
-        after: text(home.concept?.lockup?.after, fallback.concept.lockup.after),
         caption: lines(
           home.concept?.lockup?.caption,
           fallback.concept.lockup.caption,
@@ -225,6 +224,9 @@ async function readSiteContent(): Promise<SiteContent> {
         slides: fallback.concept.showcase.slides.map((slide, index) =>
           index === 0
             ? {
+                // The name is not editable: it labels the frame's control, and
+                // an empty one would leave that button unnamed.
+                name: slide.name,
                 image: image(home.concept?.image, slide.image),
                 caption: text(home.concept?.imageCaption, slide.caption),
               }
@@ -236,6 +238,12 @@ async function readSiteContent(): Promise<SiteContent> {
     gallery: {
       heading: heading(home.gallery?.heading, fallback.gallery.heading),
       standfirst: text(home.gallery?.standfirst, fallback.gallery.standfirst),
+      // Shipped copy: the label names a route this app owns, and the href is
+      // that route. Handing either to the CMS would let an editor point the
+      // section's one way out at a page that does not exist. When it needs an
+      // editor, add `ctaLabel` / `ctaHref` to the global's `gallery` group and
+      // merge them here with `text()`, as the nav and hero CTAs are merged.
+      cta: fallback.gallery.cta,
       slides,
     },
 

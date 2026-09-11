@@ -220,25 +220,17 @@ export const Home: GlobalConfig = {
                   label: "Opening lockup",
                   admin: {
                     description:
-                      "The section opens on the brand mark rather than on a headline. The two wordmark parts are set either side of the mark, and the caption runs under the hairline below it.",
+                      "The section opens on the brand mark rather than on a headline. The name is set under the mark, and the caption runs under the hairline below it.",
                   },
                   fields: [
                     {
-                      type: "row",
-                      fields: [
-                        {
-                          name: "before",
-                          type: "text",
-                          label: "Wordmark — left of the mark",
-                          admin: { width: "50%" },
-                        },
-                        {
-                          name: "after",
-                          type: "text",
-                          label: "Wordmark — right of the mark",
-                          admin: { width: "50%" },
-                        },
-                      ],
+                      name: "wordmark",
+                      type: "text",
+                      label: "Name — under the mark",
+                      admin: {
+                        description:
+                          "One word. It is set in small caps at display size and has to hold one line on a phone.",
+                      },
                     },
                     textLines("caption", "Caption under the rule", {
                       description:

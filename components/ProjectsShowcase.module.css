@@ -152,6 +152,61 @@
   opacity: 0.72;
 }
 
+/* ---- The way out -------------------------------------------------------- */
+/* Ranged on the same left edge as the head and the grid, and set on the
+   shell's own measure so it lines up with the first card above it rather
+   than with the viewport. */
+.action {
+  display: flex;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: var(--space-9) auto 0;
+  padding-inline: var(--gutter);
+}
+
+/* QUIETER THAN THE PAGE'S CTA, deliberately. FinalCTA's solid rose pill is
+   the one action the page is asking for; this is a way further into the work,
+   and a second solid rose pill a few screens above it would make the two read
+   as equals. An outline in the same rose says the same thing at the right
+   volume — and fills to the solid form on hover, so the relationship between
+   them is legible rather than accidental. */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: var(--space-4) var(--space-7);
+  border: var(--hairline) solid var(--accent-rose);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--accent-text);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  text-decoration: none;
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) ease,
+    color var(--dur-base) ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-2px);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  box-shadow: 0 18px 44px -14px rgba(228, 168, 161, 0.5);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon {
+  transform: translateX(4px);
+}
+
 /* ============================================================================
    The motion layout
    ========================================================================== */
@@ -413,6 +468,48 @@
   :global(.motion-on) .index {
     display: none;
   }
+
+  /* ---- The way out, placed ------------------------------------------------
+     At the foot of the stage and centred, on the axis the wordmark left by
+     and the standfirst sat on before it — one column down the middle of the
+     frame, so the link lands where the section has already taught the eye to
+     look. Above the pins (z-4) so it is never buried by an open panel; the
+     panels are kept off it from the other side too, by the deeper `bottom` in
+     the layer's safe area.
+
+     The placer takes no pointer: it is a full-width bar and the only thing in
+     it that should be clickable is the link. */
+  :global(.motion-on) .action {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 7svh;
+    justify-content: center;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    z-index: 5;
+    pointer-events: none;
+    /* GSAP raises this on the way in and takes it out with the picture on the
+       way out — autoAlpha, so an invisible link is unfocusable as well. */
+    will-change: transform, opacity;
+  }
+
+  /* On a photograph rather than on navy, so the outline needs a ground of its
+     own — the same blurred navy the map's panels are drawn on, which is what
+     keeps the two reading as one set of controls on one picture. */
+  :global(.motion-on) .cta {
+    pointer-events: auto;
+    background: rgba(11, 16, 42, 0.42);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 14px 40px -18px rgba(9, 13, 33, 0.85);
+  }
+
+  :global(.motion-on) .cta:hover,
+  :global(.motion-on) .cta:focus-visible {
+    background: var(--accent-rose);
+  }
 }
 
 /* Belt and braces: `motion-on` is never set under reduced motion, so this
@@ -420,7 +517,8 @@
 @media (prefers-reduced-motion: reduce) {
   .pane,
   .shot,
-  .pins {
+  .pins,
+  .action {
     will-change: auto;
   }
 }

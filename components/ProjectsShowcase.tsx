@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import clsx from "clsx";
 import { ARC_RUN } from "@/lib/arc";
 import type { GalleryContent } from "@/lib/content";
@@ -20,7 +21,8 @@ import styles from "./ProjectsShowcase.module.css";
  *
  *   · DEFAULT (no JS, reduced motion, or under 60rem). An ordinary navy
  *     section: heading, standfirst, and every project as a card in a grid.
- *     Nothing is sticky, nothing is hidden, and the section is complete.
+ *     Nothing is sticky, nothing is hidden, and the section is complete —
+ *     the link to /projects included, at the foot of the grid.
  *
  *   · `.motion-on`, 60rem and up. The section grows to `--span` viewports and
  *     its stage goes sticky. The scroll then runs the demo's sequence:
@@ -41,8 +43,12 @@ import styles from "./ProjectsShowcase.module.css";
  *          the long settled hold — there is nothing to aim at while the
  *          picture is still travelling, and nothing to read a panel against
  *          while 22rem of cream serif is lying across the map.
- *       5. RAIL. The bar fills across the whole section while the counter
- *          walks 01 → the project count.
+ *       5. RAIL, and the WAY OUT. The bar fills across the whole section
+ *          while the counter walks 01 → the project count; and at the foot
+ *          of the frame, on the same scroll the map goes live on, the link
+ *          to /projects rises — the one thing on the stage the visitor can
+ *          operate besides a pin, and the only route from the section to the
+ *          whole portfolio.
  *       6. HAND-OFF. The sequence lands on a still, full-bleed photograph —
  *          and the stage then stays pinned for the ARC_RUN viewports the
  *          page's second arc opens across, while the picture withdraws under
@@ -108,6 +114,18 @@ const SEQUENCE = {
      a pin is only ever offered while the picture is completely still, with
      nothing lying over it and nothing yet opening across it. */
   pins: { from: 0.6, to: 0.88 },
+
+  /* (5) THE WAY OUT, offered on the same frame the map is. It rises with the
+     pins rather than before them: while the wordmark is still lying across
+     the picture there is nothing to leave the section FOR yet, and a button
+     under a title that is announcing the section reads as a caption on it.
+
+     It is `autoAlpha`, not `opacity`, throughout — GSAP takes `visibility`
+     with it, so a link that cannot be seen cannot be tabbed to or clicked
+     either, and the beat needs no React state to keep the two in step. In
+     the default layout GSAP never touches it and it is simply a link at the
+     foot of the grid. */
+  cta: { at: 0.62, settle: 0.08, from: 20 },
 
   /* (6) The hand-off, which now plays ACROSS THE HOLD rather than before it.
      The lift raises the picture off the foot of the stage, and the navy it
@@ -177,6 +195,10 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
       const title = q(`.${styles.title}`)[0];
       const standfirst = q(`.${styles.standfirst}`)[0];
       const fill = q(`.${styles.railFill}`)[0];
+      // The WRAPPER, not the link. GSAP writes an inline transform on whatever
+      // it tweens, and an inline transform on the link would beat the hover
+      // lift declared for it in the stylesheet. Placer moves, button hovers.
+      const cta = q(`.${styles.action}`)[0];
       const veil = q(`.${styles.veil}`)[0];
       const frame = q(`.${styles.frame}`)[0];
       if (!frame) return;
@@ -289,6 +311,23 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           SEQUENCE.title.out,
         )
 
+        /* (5) The way out rises from the foot of the frame as the map opens.
+           `fromTo` renders its start state the moment the timeline is built,
+           so the link is hidden — and unfocusable, via autoAlpha's
+           `visibility` — from the first paint of the motion layout, with no
+           flash of a button sitting on the split panes. */
+        .fromTo(
+          cta,
+          { autoAlpha: 0, y: SEQUENCE.cta.from },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: SEQUENCE.cta.settle,
+            ease: "power2.out",
+          },
+          SEQUENCE.cta.at,
+        )
+
         /* (6) THE HAND-OFF, ACROSS THE HOLD. All three are positioned at 1 —
            the instant the sequence lands, which is also the instant the arc's
            runway starts — and run for exactly its length, so the picture is
@@ -312,6 +351,20 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
         .to(
           frame,
           { y: SEQUENCE.exit.lift, duration: TAIL, ease: "power1.out" },
+          1,
+        )
+        /* The link goes with the picture it belongs to. It is the only thing
+           on the stage the visitor can operate, so leaving it lit over a
+           withdrawing photograph would make it the last thing on the screen
+           — a button floating on the cream the arc has just opened. */
+        .to(
+          cta,
+          {
+            autoAlpha: 0,
+            y: -SEQUENCE.cta.from,
+            duration: TAIL,
+            ease: "power1.out",
+          },
           1,
         );
 
@@ -389,8 +442,17 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
             /* Clear of the fixed header at the top and the progress rail on
                the left. Generous on the other two edges as well: the layer is
                scaled 1.04 with the photograph, so a panel flush to its
-               measured edge lands just outside the stage, which clips. */
-            safeArea={{ top: 96, right: 72, bottom: 72, left: 132 }}
+               measured edge lands just outside the stage, which clips.
+
+               THE FOOT IS THE DEEPEST OF THE FOUR because the link out of the
+               section sits in it, live across exactly the scroll the pins
+               are. A panel is placed once and stays until it is dismissed, so
+               one landing across that band would leave the only button on the
+               stage unclickable underneath it — and the solver has no notion
+               of it, since it only knows about pins. Reserving the band is
+               what keeps the two out of each other's way; it costs a panel
+               nothing but a nudge upward. */
+            safeArea={{ top: 96, right: 72, bottom: 150, left: 132 }}
             label="Vakratunda projects across the Mumbai metropolitan region"
           />
         </div>
@@ -444,6 +506,30 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
             </li>
           ))}
         </ol>
+
+        {/* The way out. At the foot of the grid in the default layout, and
+            at the foot of the stage in the motion one — the same element,
+            placed twice, so the section has exactly one door out of it and
+            neither layout is missing it. */}
+        <div className={styles.action}>
+          <Link className={styles.cta} href={content.cta.href}>
+            <span>{content.cta.label}</span>
+            <svg
+              className={styles.ctaIcon}
+              viewBox="0 0 24 24"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
   );

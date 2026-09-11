@@ -519,11 +519,13 @@ export interface Home {
   };
   concept?: {
     /**
-     * The section opens on the brand mark rather than on a headline. The two wordmark parts are set either side of the mark, and the caption runs under the hairline below it.
+     * The section opens on the brand mark rather than on a headline. The name is set under the mark, and the caption runs under the hairline below it.
      */
     lockup?: {
-      before?: string | null;
-      after?: string | null;
+      /**
+       * One word. It is set in small caps at display size and has to hold one line on a phone.
+       */
+      wordmark?: string | null;
       /**
        * One entry per line. The break is set here, not by the layout — two short lines read best.
        */
@@ -742,8 +744,7 @@ export interface HomeSelect<T extends boolean = true> {
         lockup?:
           | T
           | {
-              before?: T;
-              after?: T;
+              wordmark?: T;
               caption?:
                 | T
                 | {
