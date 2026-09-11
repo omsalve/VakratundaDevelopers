@@ -42,11 +42,20 @@ export const MUMBAI_PLACES: Record<string, { x: number; y: number }> = {
 };
 
 /**
+ * How many project photographs a panel's picture strip carries. Three across
+ * a 20rem panel are still photographs; a fourth is a texture. A locality with
+ * more sends its first three and the list underneath names the rest.
+ */
+const PANEL_SHOTS = 3;
+
+/**
  * The project list, folded into one pin per locality.
  *
  * One pin per address, not per project: three towers in the BKC corridor are
  * three names at one point on a map of this scale, and three overlapping pins
- * would be a worse map and a worse target. The panel carries the names.
+ * would be a worse map and a worse target. The panel carries the names — and
+ * a strip of their photographs above them, so a point on the map is answered
+ * with the building rather than only with its name.
  */
 export function projectMapPoints(slides: ProjectSlide[]): MapPoint[] {
   const byPlace = new Map<string, ProjectSlide[]>();
@@ -74,6 +83,19 @@ export function projectMapPoints(slides: ProjectSlide[]): MapPoint[] {
         // A single project has a line of its own worth reading. A locality
         // with several does not, and the list below says it better.
         description: group.length === 1 ? group[0].blurb : undefined,
+        // A slide whose card image never resolved carries an empty src, and
+        // an empty box is worse than a shorter strip — so it is dropped here
+        // rather than reserved for.
+        media: group
+          .filter((slide) => Boolean(slide.image.src))
+          .slice(0, PANEL_SHOTS)
+          .map((slide) => ({
+            id: slide.id,
+            src: slide.image.src,
+            alt: slide.image.alt,
+            width: slide.image.width,
+            height: slide.image.height,
+          })),
         items: group.map((slide) => ({
           // Two projects can share a name (a delivered phase and its
           // successor); the slide id is what is actually unique.

@@ -44,6 +44,14 @@ import styles from "./LocationMap.module.css";
  * transformed ancestor — ProjectsShowcase scales the map as it scrolls, and
  * the untransformed box is the one the geometry is defined against.
  *
+ * PICTURES, NOT ONLY WORDS. A panel takes an optional strip of up to three
+ * thumbnails under its description — what is at the point, not only its name.
+ * The files are fetched the first time the panel is opened and never again:
+ * every panel stays mounted so it can be measured, and a strip that loaded
+ * eagerly would pull every point's pictures down for a panel nobody opens.
+ * The boxes are always in the markup and hold their own aspect ratio, so the
+ * measured height is the real one from the first open.
+ *
  * CLICK, NOT HOVER. A panel opens when its pin is clicked and stays open
  * until something dismisses it: the same pin again, a different pin, a click
  * off the map, or Escape. Hover only lights the pin, and moving the pointer
@@ -71,6 +79,8 @@ import styles from "./LocationMap.module.css";
  *   points={[
  *     { id: "bandra", x: 30.8, y: 59.6, title: "Bandra",
  *       description: "Three addresses in the BKC corridor.",
+ *       media: [{ id: "bkc-9", src: "/images/projects/bkc-9.jpg",
+ *                 alt: "BKC 9 at dusk", width: 1200, height: 1500 }],
  *       meta: [{ label: "Possession", value: "2027" }],
  *       items: [{ id: "bkc-9", label: "BKC 9", note: "Ongoing" }] },
  *   ]}
@@ -100,6 +110,16 @@ export interface MapImage extends MapImageGeometry {
   alt: string;
 }
 
+/** A thumbnail in a panel's picture strip. */
+export interface MapThumbnail {
+  id: string;
+  src: string;
+  alt: string;
+  /** Intrinsic pixel size of the source file, for next/image. */
+  width: number;
+  height: number;
+}
+
 /** One pin, and what opens off it. */
 export interface MapPoint {
   id: string;
@@ -111,6 +131,14 @@ export interface MapPoint {
   title: string;
   /** One or two sentences. Anything longer belongs on a page. */
   description?: string;
+  /**
+   * A strip of small pictures under the description — what is actually at
+   * this point, rather than only its name. Three at most: the panel is 20rem
+   * wide, and a fourth thumbnail in that width is a texture, not a picture.
+   * A caller with more should send the best three and let the page carry the
+   * rest.
+   */
+  media?: MapThumbnail[];
   /** Spec pairs, set side by side: possession dates, unit types, areas. */
   meta?: { label: string; value: string }[];
   /** A list under the rule — the addresses at this point, say. */
@@ -385,6 +413,19 @@ export function MapPinLayer({
   const [openId, setOpenId] = useState<string | null>(null);
   const [placement, setPlacement] = useState<Placement | null>(null);
 
+  /**
+   * Which panels have ever been opened — and therefore whose thumbnails are
+   * worth fetching. Every panel stays mounted so it can be measured, so a
+   * picture strip rendered eagerly would pull every point's images down on
+   * page load for a panel nobody may open. The BOXES are always in the
+   * markup, sized by their aspect ratio, so the measurement the placement
+   * solver takes is the panel's real height from the first open; only the
+   * files wait. A point is never un-revealed, so re-opening is instant.
+   */
+  const [revealed, setRevealed] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+
   const box = useElementBox(layerRef);
 
   /* ---- Geometry --------------------------------------------------------- */
@@ -466,6 +507,9 @@ export function MapPinLayer({
    */
   const toggle = useCallback((id: string) => {
     setOpenId((current) => (current === id ? null : id));
+    setRevealed((current) =>
+      current.has(id) ? current : new Set(current).add(id),
+    );
   }, []);
 
   useEffect(() => {
@@ -634,6 +678,32 @@ export function MapPinLayer({
                 <p className={styles.title}>{point.title}</p>
                 {point.description && (
                   <p className={styles.description}>{point.description}</p>
+                )}
+
+                {/* The picture strip. One thumbnail runs wide; two or three
+                    share the width as squares — the grid decides, so the
+                    caller only sends pictures. The <li> is the box and holds
+                    its own aspect ratio, so the panel measures the same
+                    height whether the file has arrived or not. */}
+                {point.media && point.media.length > 0 && (
+                  <ul className={styles.media} data-count={point.media.length}>
+                    {point.media.map((shot) => (
+                      <li key={shot.id} className={styles.mediaItem}>
+                        {revealed.has(point.id) && (
+                          <Image
+                            src={shot.src}
+                            alt={shot.alt}
+                            width={shot.width}
+                            height={shot.height}
+                            sizes="180px"
+                            quality={70}
+                            loading="lazy"
+                            className={styles.mediaImage}
+                          />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 )}
 
                 {(point.meta?.length || point.items?.length) && (
