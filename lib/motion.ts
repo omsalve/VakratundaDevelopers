@@ -86,3 +86,30 @@ export function revealOnEnter(
     },
   });
 }
+
+/**
+ * A timeline on its own trigger, measured the instant it is built.
+ *
+ * GSAP defers the first refresh of a timeline-attached ScrollTrigger by a tick,
+ * because a timeline is usually still empty at the moment its trigger is
+ * created. A trigger waiting like that has no start/end yet, so the next
+ * trigger created in the same tick force-refreshes it from inside the loop it
+ * runs over its predecessors — and a `once` trigger that is already scrolled
+ * past kills itself there, shortening the very array that loop is walking.
+ * Two or three of those in one pass (a grid of cards, then the copy reveal
+ * over them) and the loop reads past the end of it and throws.
+ *
+ * So the timeline is populated by `build` and refreshed here, before control
+ * returns: every trigger is measured before the next one is born, and nothing
+ * is ever force-refreshed mid-loop. The refresh happens after `build` for the
+ * same reason GSAP defers it — an empty timeline measures as nothing.
+ */
+export function timelineOnEnter(
+  vars: ScrollTrigger.Vars,
+  build: (timeline: gsap.core.Timeline) => void,
+): gsap.core.Timeline {
+  const timeline = gsap.timeline({ scrollTrigger: vars });
+  build(timeline);
+  timeline.scrollTrigger?.refresh();
+  return timeline;
+}

@@ -1,43 +1,68 @@
 /* ============================================================================
-   Responsibility — two obligations, ruled in two unequal bands.
+   Responsibility — five compositions, ruled across one horizon.
 
-   THE PROPORTION IS THE ARGUMENT. The section used to run the two obligations
-   as two columns either side of one vertical rule, and the environment half
-   was the wider of the two — which said the practices outweighed the schools.
-   They do not. So the field is now ruled ACROSS instead of down: a community
-   band that takes the section, and an environment footing that takes a fifth
-   of it. Same ledger, honest weighting.
+   THE HORIZON IS THE WHOLE STYLESHEET. `--sky` is the one figure the section
+   is built from: the fraction of the frame that sits ABOVE the ground line.
+   The line itself is drawn at `top: var(--sky)` of the frame; every slide is a
+   grid of `var(--sky) minmax(0, 1fr)`; and anything that straddles the line —
+   a photograph and its caption, a drawing and its name — spans both rows and
+   RESTATES that same template rather than restating the number. Every one of
+   those elements is the same height as the frame, so the percentages resolve
+   against the same box and the edges land on the same pixel. Change 63% here
+   and the ground, the photographs, the four drawings and the pen all move
+   together; nothing anywhere else needs an edit.
 
-   THE ONLY CONTAINERS ARE HAIRLINES. Nothing here has a background, a border
-   box or a radius. Two rose rubric rules open the two bands; quiet navy rules
-   carry the entries under them. Two weights, two jobs, and no third — the
-   photographs are the only filled shapes in the section, which is what makes
-   them read as evidence rather than as decoration.
+   TWO LAYOUTS, FROM ONE SET OF MARKUP — the house pattern:
 
-   EVERY EDGE IS ON ONE GRID. `.field` is a twelve-column track shared by the
-   plate, the environment band and the coda, so the frames, the type ranged
-   against them and the rules under them all land on the same lines. That is
-   deliberate: the previous version aligned its icon captions with a hard 22px
-   padding and closed two of its gaps with negative margins, so nothing in it
-   sat on a line that anything else knew about.
+     · DEFAULT. Everything above the `@media (min-width: 64rem)` block. Five
+       cream blocks stacked in document order, each complete, with no stage,
+       no clip, no horizon, no pen and no index. This is what a visitor with no
+       JavaScript sees, what a visitor who has asked for reduced motion sees,
+       and what every narrow window sees.
 
-   THE SECTION IS DRAFTED. The rubric rules are ruled open, the photographs
-   are cut in from their foot, and the four drawings are inked last. Every
-   start state lives in CSS under `.motion-on`, so with no JS — and under
-   reduced motion — the drawing is already finished.
+     · MOTION. Everything inside that block, and only when `.motion-on` is also
+       set — which the <head> script does before first paint, and never for a
+       visitor who has asked for reduced motion. Strip that one class and the
+       default section above is what is left, at every width.
+
+   THE ONLY CONTAINERS ARE HAIRLINES, as before. No card, no panel, no radius,
+   no fill. The photographs are the section's only filled shapes, which is what
+   makes them read as evidence — and on the fourth slide the four practices
+   carry NO rule of their own at all, because the section's own ground line is
+   already ruling them. That is the whole reason the horizon is there.
+
+   THE SECTION'S HEIGHT IS DERIVED, not chosen. `--span` is set inline from the
+   one sum in Responsibility.tsx.
    ========================================================================== */
 
 .section {
   position: relative;
-  /* It follows the ventures on the same cream. Its top interval matches that
-     section's bottom one, and it closes on the interval JointVentures used to
-     hand to FinalCTA, so the cadence into the close is unchanged. */
   padding-block: var(--section-pad);
+
+  /* THE GROUND LINE, as a fraction of the frame. Everything above it is what
+     was built; everything below it is what is written about what was built. */
+  --sky: 63%;
+
+  /* THE SHELL, RESTATED AS PADDING. `u-shell` centres itself with two auto
+     margins, which an absolutely positioned slide cannot have. This resolves
+     to exactly the same left edge, so the type in a stacked slide and the type
+     in a stuck one range on the same line as every other section on the
+     page. */
+  --shell-pad: max(
+    var(--gutter),
+    calc((100% - var(--maxw)) / 2 + var(--gutter))
+  );
+
+  /* What a photograph has to clear at the top of the frame so the band's
+     rubric can be ruled above it. */
+  --rubric-clear: calc(var(--space-8) + 0.9rem);
+
+  --drawing: clamp(3.5rem, 7vw, 8rem);
 }
 
-/* The drawn rule that separates it from the ventures above — the guide's rose
-   line-work, ranged on the shell rather than bled to the window, exactly as
-   JointVentures draws its own. */
+/* The drawn rule that separates the section from the ventures above — the
+   guide's rose line-work, ranged on the shell rather than bled to the window,
+   exactly as JointVentures draws its own. */
 .section::before {
   content: "";
   position: absolute;
@@ -50,24 +75,36 @@
   opacity: 0.5;
 }
 
-.head {
-  /* `u-head` carries the rest; the measures are on the type, not the block. */
-  max-width: var(--maxw);
+.stage {
+  position: relative;
 }
 
-/* ---- The shared field ---------------------------------------------------
-   One twelve-column track, three times. Nothing in this section is positioned
-   against anything but these lines. */
-.field {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ---- The rubric rules ---------------------------------------------------
+.slide {
+  position: relative;
+  padding-inline: var(--shell-pad);
+}
+
+.slide + .slide {
+  margin-top: var(--section-pad);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- The rubric ---------------------------------------------------------
    A band opens with its name set into a rule that runs out to the field's far
-   edge. The rule is a real element rather than a pseudo so it can be ruled
-   open by the same kind of clip the old vertical divider used. */
+   edge — the one mark kept unchanged from the ruled version of this section,
+   because it is the page's grammar for "a heading over a band" and this is
+   still that. */
 .rubric {
   display: flex;
   align-items: center;
@@ -85,84 +122,47 @@
   opacity: 0.55;
 }
 
-/* ---- The community band -------------------------------------------------
-   Two frames stepped against each other, and the type in the counter-space of
-   each. Photograph left and name right, then entry left and photograph right:
-   the second row is the first row turned over, which is what holds the band
-   together without a container around either half.
+/* ---- 1 · The ledger ----------------------------------------------------- */
+.headline {
+  max-width: 14ch;
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
 
-   The frames share the field's outer edges — the first opens on column 1, the
-   second closes on column 12 — so the step reads as one composition rather
-   than as two images that happen to be near each other. */
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+/* ---- 2 & 3 · The schools ------------------------------------------------
+   `--cream-300` under the picture means the reserved box is part of the ground
+   before the file arrives, and `overflow: hidden` is what lets the plate be
+   cut in from its foot in the standing layout and hold the image's push in
+   the stuck one. */
+.figure {
+  margin: 0;
+}
+
 .plate {
-  margin-top: clamp(var(--space-6), 3.5vw, var(--space-8));
-  row-gap: clamp(var(--space-7), 4.5vw, var(--space-10));
-}
-
-.leadFigure {
-  grid-column: 1 / span 8;
-  grid-row: 1;
-  margin: 0;
-}
-
-.school {
-  grid-column: 9 / -1;
-  grid-row: 1;
-  /* Ranged to the foot of the frame beside it, so the name and the frame
-     finish on one line instead of both starting on one. */
-  align-self: end;
-  display: grid;
-  gap: var(--space-4);
-}
-
-.courtFigure {
-  grid-column: 5 / -1;
-  grid-row: 2;
-  margin: 0;
-}
-
-/* Ranged from the TOP of the second frame, so its rule and the frame's top
-   edge are the same line. Hung from the bottom instead it left a hole above
-   itself, and empty space above type reads as a mistake where the same space
-   below it reads as air — everything else on this page hangs from a top edge
-   too. */
-.also {
-  grid-column: 1 / span 4;
-  grid-row: 2;
-  align-self: start;
-  padding-top: var(--space-5);
-  border-top: var(--hairline) solid var(--cream-line);
-}
-
-/* ---- The photographs ----------------------------------------------------
-   Same grammar as the ventures frame: the picture is cut in from its foot and
-   eases off a small push, the mask finishing first and the push a beat after
-   it, so the frame settles rather than stopping. `--cream-300` under it means
-   the reserved box is part of the ground before the file arrives. */
-.frame {
+  display: block;
   position: relative;
   overflow: hidden;
   background: var(--cream-300);
-}
-
-.leadFigure .frame {
   aspect-ratio: 3 / 2;
 }
 
-/* Wider than the frame above it: the court is a long room, and the crop is
-   what keeps the second frame from reading as a repeat of the first. */
-.courtFigure .frame {
-  aspect-ratio: 16 / 9;
-}
-
-.image {
+.plateImage {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Under its own frame, ranged on the frame's left edge — which is a field
-   line, so the captions range with the type in the opposite counter-space. */
+/* Ranged on the picture's own left edge, which is a field line — so captions
+   range with the type in the opposite counter-space. */
 .caption {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
@@ -174,8 +174,7 @@
   color: var(--accent-deep);
 }
 
-/* ---- The school, named --------------------------------------------------- */
-.schoolName {
+.name {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 1.05rem + 1.5vw, 2.5rem);
   line-height: var(--lh-heading);
@@ -184,8 +183,21 @@
   text-wrap: balance;
 }
 
-/* The place, in the swash italic — the brand's own way of qualifying a name. */
-.schoolPlace {
+/* The earlier school's name is four words longer and stands in a narrower
+   counter-space, so it is set a step down. That is also honest: it is the
+   secondary entry of the two, and it should look like one. */
+.earlier .name {
+  font-size: clamp(1.25rem, 0.95rem + 1vw, 1.875rem);
+}
+
+.entry {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* The place, in the swash italic — the brand's own way of qualifying a
+   name. */
+.place {
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--fs-lead);
@@ -193,102 +205,54 @@
   color: var(--accent-deep);
 }
 
-.schoolNote {
+.note {
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--text-on-cream-muted);
   max-width: 34ch;
+  text-wrap: pretty;
 }
 
-/* ---- The earlier school, as one ruled entry ----------------------------- */
-.alsoName {
+/* ---- 4 · The ground ----------------------------------------------------- */
+.standard {
   font-family: var(--font-display);
-  font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.3125rem);
+  font-style: italic;
+  font-size: clamp(1.25rem, 1rem + 1.15vw, 2.125rem);
   line-height: var(--lh-heading);
   letter-spacing: var(--tracking-heading);
   color: var(--text-on-cream);
+  max-width: 20ch;
+  text-wrap: pretty;
 }
 
-.alsoPlace {
-  margin-top: var(--space-2);
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: var(--fs-small);
-  line-height: var(--lh-caption);
-  color: var(--accent-deep);
-}
-
-.alsoNote {
-  margin-top: var(--space-3);
-  font-size: var(--fs-small);
-  line-height: var(--lh-body);
-  color: var(--text-on-cream-muted);
-}
-
-/* ---- The environment footing -------------------------------------------
-   A fifth of the section, and it looks like a fifth: the standard on four
-   columns, the four practices in two pairs on the remaining eight. It is a
-   footing under the band above, not a second band of equal standing. */
-.environment {
-  margin-top: clamp(var(--space-9), 7vw, var(--space-11));
-}
-
-.envBody {
-  margin-top: clamp(var(--space-5), 2.5vw, var(--space-6));
-  row-gap: var(--space-6);
-}
-
-.envLead {
-  grid-column: 1 / span 4;
-  font-size: var(--fs-small);
-  line-height: var(--lh-body);
-  color: var(--text-on-cream-muted);
-}
-
-/* Two by two across the eight columns, not four across. Four abreast gave
-   each practice about 175px, which wrapped every one of the four titles onto
-   two lines and its detail onto three — a footing should be quiet, not
-   cramped. In pairs each entry gets a little over 380px, so the titles sit on
-   one line and the band reads as the fifth of the section it is. */
-.commitments {
-  grid-column: 5 / -1;
+.practices {
   display: grid;
+  gap: var(--space-6) clamp(var(--space-5), 2.4vw, var(--space-7));
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(var(--space-6), 3vw, var(--space-8));
-  row-gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* The drawing and the two lines of type sit in two real tracks, so the detail
-   ranges on the title's own left edge with nothing measured. This replaces a
-   `padding-left: calc(22px + var(--space-3))` that restated the icon's width
-   as a number and drifted the moment either changed. */
-.commitment {
-  --icon-size: 22px;
+.practice {
   display: grid;
-  grid-template-columns: var(--icon-size) minmax(0, 1fr);
-  column-gap: var(--space-3);
-  row-gap: var(--space-2);
+  gap: var(--space-3);
   align-content: start;
-  padding-top: var(--space-5);
-  border-top: var(--hairline) solid var(--cream-line);
 }
 
-.icon {
-  grid-column: 1;
-  grid-row: 1;
+.drawing {
   display: block;
-  width: var(--icon-size);
+  width: var(--drawing);
   color: var(--accent-deep);
 }
 
-.icon svg {
+.drawing svg {
+  display: block;
   width: 100%;
   height: auto;
 }
 
-.commitmentTitle {
-  grid-column: 2;
-  grid-row: 1;
+.practiceTitle {
   font-family: var(--font-body);
   font-size: var(--fs-small);
   font-weight: 500;
@@ -298,153 +262,572 @@
   text-wrap: pretty;
 }
 
-/* At --fs-caption this sat at 12-13px, which is a footnote inside a footing.
-   The band is quiet enough by proportion; the line itself should be read. */
-.commitmentDetail {
-  grid-column: 2;
-  grid-row: 2;
+.practiceDetail {
   font-size: var(--fs-small);
   line-height: var(--lh-body);
   color: var(--text-on-cream-muted);
+  text-wrap: pretty;
 }
 
-/* ---- The coda -----------------------------------------------------------
-   The one sentence that covers both bands, so it is ranged against the
-   field's far edge rather than set under either of them. Its left edge is a
-   field line — column 7 — rather than a `max-width` that happened to land
-   near one. */
-.codaRow {
-  margin-top: clamp(var(--space-9), 6vw, var(--space-11));
-}
-
-/* The counter-space the coda leaves: columns 1–6, ranged to the field's near
-   edge and sitting on the coda's last line rather than above it. */
-.onward {
-  grid-column: 1 / 7;
-  justify-self: start;
-  align-self: end;
-}
-
+/* ---- 5 · In closing ----------------------------------------------------- */
 .coda {
-  grid-column: 7 / -1;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: var(--fs-lead);
-  line-height: var(--lh-lead);
+  font-size: clamp(1.375rem, 1rem + 1.5vw, 2.5rem);
+  line-height: var(--lh-heading);
   letter-spacing: var(--tracking-heading);
   color: var(--text-on-cream);
-  text-align: right;
+  max-width: 22ch;
   text-wrap: balance;
 }
 
-/* ---- Motion start states ------------------------------------------------
+.onward {
+  justify-self: start;
+}
+
+/* ---- The stack, at a width it was not designed for ----------------------
+   A visitor who has asked for reduced motion gets the standing layout AT
+   DESKTOP WIDTH — no stage, no frame, one column 1216px across. Unconstrained
+   that makes the two photographs 810px tall and sets a 15px practice detail
+   across half a screen, which is not a quieter version of this section, it is
+   a worse one. So the two elements that would otherwise take the whole field
+   are given a measure of their own.
+
+   Scoped to `html:not(.motion-on)`, which is the only state where the stack
+   and a wide window occur together: with `motion-on` set, the layout above
+   64rem is the stuck one and these caps would fight its grid at windows wider
+   than the shell. Below 64rem `min()` resolves to 100% and they do nothing.
+   ---------------------------------------------------------------------- */
+:global(html:not(.motion-on)) .figure {
+  max-width: min(100%, 46rem);
+}
+
+:global(html:not(.motion-on)) .practices {
+  max-width: min(100%, 52rem);
+}
+
+/* ---- The parts that belong to the ruling -------------------------------
+   None of them is rendered where there is no ruling. A ground line, a pen and
+   an index for five blocks that are all already on the page are three elements
+   lying over a section for no reason at all. */
+.horizon,
+.nib,
+.index {
+  display: none;
+}
+
+/* ---- Motion start states -----------------------------------------------
    `.motion-on` is set in <head> before first paint and only when the visitor
    has not asked for reduced motion, so everything below is additive: with no
-   JS the rules are ruled, the frames are open and the drawings are inked. */
-:global(.motion-on) .rubricRule {
-  clip-path: inset(0 100% 0 0);
-}
+   JS the drawings are inked and every plate is open.
 
-:global(.motion-on) .frame {
-  clip-path: inset(100% 0 0 0);
-}
-
-/* The push is written as a `transform`, not as the `scale` property, because
-   GSAP settles it through `transform` too — the two compose rather than
-   override, so a CSS `scale: 1.08` here would never reach 1. */
-:global(.motion-on) .image {
-  transform: scale(1.08);
-}
-
-/* Every stroked element in the drawings carries `pathLength="1"`, so its
-   outline is one unit long whatever its geometry — which is what lets these
-   two declarations hold all four undrawn with no measurement anywhere. */
-:global(.motion-on) .icon path {
+   Every stroked element in the four drawings carries `pathLength="1"`, so its
+   outline is one unit long whatever its real geometry — which is what lets
+   these two declarations hold all four undrawn with no measurement anywhere,
+   and lets one tween per drawing ink it. */
+:global(.motion-on) .drawing path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
 
-/* ---- Narrow -------------------------------------------------------------
-   The step cannot survive one column, so it is not faked: the plate becomes a
-   single stack in reading order — frame, name, frame, earlier entry — and the
-   environment footing puts its four practices in two rows under its standard.
-   The frames keep their two different crops, which is what keeps the stack
-   from reading as a list of equal pictures. */
-@media (max-width: 63.99rem) {
-  .plate,
-  .envBody,
-  .codaRow {
-    grid-template-columns: minmax(0, 1fr);
+/* ============================================================================
+   MOTION. One frame, one ground line, and the scroll rules a pen across it.
+   ========================================================================== */
+@media (min-width: 64rem) {
+  :global(.motion-on) .section {
+    /* One screen for the stage, and `--span` screens of travel to run the
+       sequence across. Responsibility.tsx maps its timeline onto exactly that
+       range: `start: "top top"`, `end: "bottom bottom"`. */
+    min-height: calc((1 + var(--span)) * 100svh);
+    padding-block: 0;
   }
 
-  .plate {
-    row-gap: clamp(var(--space-6), 4vw, var(--space-8));
+  :global(.motion-on) .stage {
+    position: sticky;
+    top: 0;
+    display: grid;
+    /* The frame takes what is left; the index is as tall as it needs to be.
+       `minmax(0, 1fr)` rather than `1fr`, or a slide's content could push the
+       row past the viewport it is supposed to fit inside — and the ground line
+       would go with it. */
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100svh;
+    /* Stuck under the fixed header for its whole range, so it clears the
+       header itself rather than relying on section padding it has just given
+       up. */
+    padding-top: calc(var(--header-h) + var(--space-6));
+    padding-bottom: var(--space-7);
   }
 
-  .leadFigure,
-  .school,
-  .courtFigure,
-  .also {
-    grid-column: 1;
-    align-self: start;
+  :global(.motion-on) .frame {
+    display: block;
+    position: relative;
+    /* The outgoing composition drifts and blurs while it is overtaken, and the
+       pen trails ink off its own left edge. Neither may bleed onto the index
+       below or up under the header. */
+    overflow: hidden;
   }
 
-  .leadFigure {
+  /* ---- The ground -------------------------------------------------------
+     THE ONE ELEMENT THAT SURVIVES EVERY CHANGE OF SLIDE. It is drawn once, on
+     arrival, and then never moves again for the length of the section.
+
+     IT IS THE ONLY THING HERE THAT BLEEDS. Every other mark in this section is
+     ranged on the shell; the ground runs out past both edges of the window,
+     which is what makes it read as the ground the compositions are standing on
+     rather than as a divider between two of them.
+
+     UNDER the slides, deliberately: a photograph standing on the line has to
+     occlude it, or it is a picture with a rule drawn across it. */
+  :global(.motion-on) .horizon {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--sky);
+    z-index: 0;
+    height: var(--hairline);
+    background: var(--cream-line-rose);
+    /* Ruled open on arrival — the section's first gesture, and the one that
+       teaches what the line is for. */
+    clip-path: inset(0% 100% 0% 0%);
+  }
+
+  /* ---- The slides -------------------------------------------------------
+     Each is a full-frame box clipped to ONE SIDE of the pen: the composition
+     being ruled out is kept to the right of it, the one being ruled in to the
+     left. `.slide ~ .slide` rather than a class on four of the five, so the
+     first composition is open from first paint and nothing can be stranded
+     invisible between hydration and the timeline being built. */
+  :global(.motion-on) .slide {
+    position: absolute;
+    inset: 0;
+    padding-inline: var(--shell-pad);
+  }
+
+  :global(.motion-on) .slide ~ .slide {
+    clip-path: inset(0% 100% 0% 0%);
+  }
+
+  :global(.motion-on) .slide + .slide {
+    margin-top: 0;
+  }
+
+  /* Promoted for the range the rulings actually run in, and no longer — five
+     full-frame layers kept composited for the rest of the page is the wasteful
+     version of this effect. Responsibility.tsx sets the attribute from the
+     ScrollTrigger's own active range. */
+  :global(.motion-on) .section[data-ruling="on"] .slide {
+    will-change: clip-path;
+  }
+
+  /* `filter` as well: the outgoing composition racks out of focus as it is
+     overtaken, and an un-promoted blur is re-rasterised from scratch on every
+     frame of it. */
+  :global(.motion-on) .section[data-ruling="on"] .body {
+    will-change: transform, filter;
+  }
+
+  /* ---- The field --------------------------------------------------------
+     Twelve columns, and two rows divided by the ground. `.body` rather than
+     `.slide` carries the grid because the slide owns the clip and the body
+     owns the parallax — one transform owner per element, and a clip that never
+     moves with the thing it is clipping. */
+  :global(.motion-on) .body {
+    position: relative;
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: var(--sky) minmax(0, 1fr);
+    gap: 0 clamp(var(--space-5), 2.4vw, var(--space-7));
+  }
+
+  /* Out of the field entirely: the rubric is a caption on the frame, not an
+     entry in the composition, and it must not push the sky down. */
+  :global(.motion-on) .rubric {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  /* ---- 1 · The ledger ---------------------------------------------------
+     The heading ranged to the ground line and the standfirst set under it in
+     the opposite counter-space: one diagonal across the field, which is the
+     section announcing itself rather than a head sitting on top of it. */
+  :global(.motion-on) .ledger .headline {
+    grid-column: 1 / 10;
     grid-row: 1;
+    align-self: end;
   }
-  .school {
+
+  :global(.motion-on) .ledger .standfirst {
+    grid-column: 7 / -1;
     grid-row: 2;
+    align-self: start;
+    padding-top: var(--space-7);
   }
-  .courtFigure {
+
+  /* ---- 2 & 3 · The schools ---------------------------------------------
+     The figure STRADDLES the line: it spans both rows and restates the row
+     template, so the picture's foot lands exactly on the ground and its
+     caption is written underneath it — one `<figure>`, one `<figcaption>`, and
+     no number written twice. */
+  :global(.motion-on) .figure {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: var(--sky) minmax(0, 1fr);
+  }
+
+  :global(.motion-on) .plate {
+    grid-row: 1;
+    /* The band's rubric is ruled across the top of the frame; this is what the
+       picture clears to leave it room. */
+    margin-top: var(--rubric-clear);
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  :global(.motion-on) .caption {
+    grid-row: 2;
+    align-self: start;
+    margin-top: 0;
+    padding-top: var(--space-5);
+    border-top: 0;
+  }
+
+  :global(.motion-on) .school .figure {
+    grid-column: 1 / 8;
+  }
+
+  :global(.motion-on) .school .name {
+    grid-column: 9 / -1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  :global(.motion-on) .school .entry {
+    grid-column: 9 / -1;
+    grid-row: 2;
+    align-self: start;
+    padding-top: var(--space-6);
+  }
+
+  /* The second row of the ruled version, turned over: the picture takes the
+     far edge and the entry takes the near one. Two schools, two compositions,
+     and the reversal is what keeps the second from reading as a repeat. */
+  :global(.motion-on) .earlier .figure {
+    grid-column: 6 / -1;
+  }
+
+  :global(.motion-on) .earlier .name {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  :global(.motion-on) .earlier .entry {
+    grid-column: 1 / 5;
+    grid-row: 2;
+    align-self: start;
+    padding-top: var(--space-6);
+  }
+
+  /* ---- 4 · The ground ---------------------------------------------------
+     THE SLIDE THE HORIZON WAS BUILT FOR. Four drawings standing on the
+     section's own ground line, four names written under it, and not one rule,
+     box or border between them — the line is already doing that job.
+
+     The drawings are dropped by 10.9375% of their own height so that the
+     ground line INSIDE the drawing (`M3.5 28.5h25`, at 28.5 of a 32-unit
+     field) lands on the ground line across the section. Both figures come from
+     ResponsibilityIcons.tsx and neither is a guess. */
+  :global(.motion-on) .ground .standard {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  :global(.motion-on) .ground .practices {
+    grid-column: 5 / -1;
+    grid-row: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 clamp(var(--space-4), 1.8vw, var(--space-6));
+  }
+
+  :global(.motion-on) .ground .practice {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: var(--sky) auto minmax(0, 1fr);
+    gap: 0;
+  }
+
+  :global(.motion-on) .ground .drawing {
+    grid-row: 1;
+    align-self: end;
+    margin-bottom: calc(var(--drawing) * -0.109375);
+  }
+
+  /* TWO LINES' WORTH, WHETHER OR NOT IT USES THEM. Each practice is its own
+     grid, so an `auto` title row is as tall as that title alone — and one of
+     the four wraps, which would start its detail a line below the other
+     three. The four are read across, so they have to begin on one line. */
+  :global(.motion-on) .ground .practiceTitle {
+    grid-row: 2;
+    padding-top: var(--space-5);
+    /* Border-box, so the clearance above it is part of the figure. */
+    min-height: calc(var(--space-5) + 2em * var(--lh-heading));
+  }
+
+  :global(.motion-on) .ground .practiceDetail {
     grid-row: 3;
-  }
-  .also {
-    grid-row: 4;
+    padding-top: var(--space-3);
   }
 
-  .schoolNote {
-    max-width: var(--measure-narrow);
-  }
-
-  .envLead,
-  .commitments,
-  .coda,
-  .onward {
-    grid-column: 1;
-  }
-
-  /* One column, and the sentence still comes before the way out of it. */
-  .coda {
+  /* ---- 5 · In closing --------------------------------------------------- */
+  :global(.motion-on) .closing .coda {
+    grid-column: 1 / 10;
     grid-row: 1;
-  }
-  .onward {
-    grid-row: 2;
-    margin-top: var(--space-6);
-    align-self: start;
+    align-self: end;
+    max-width: 24ch;
   }
 
-  .envLead {
+  :global(.motion-on) .closing .onward {
+    grid-column: 1 / 7;
+    grid-row: 2;
+    align-self: start;
+    margin-top: var(--space-7);
+  }
+
+  /* ---- The pen ----------------------------------------------------------
+     WHAT CARRIES EVERY CHANGE, and the reason this section needs no covering
+     plane: the two compositions either side of it are clipped to the same
+     percentage of the same box, so they meet on one edge and never overlap.
+     The mark rides that edge. It is the join, so there is nothing to hide.
+
+     THE GEOMETRY, because both numbers in it are load-bearing:
+
+       · The element is the WHOLE FRAME, and the mark is drawn at its left
+         edge. `xPercent: 0` therefore puts the mark on the frame's left edge
+         and `xPercent: 100` puts it on the right one — the same 0-to-100 the
+         two clip-paths run on, which is what keeps all three in step with no
+         viewport figure anywhere.
+
+       · The mark is LIT ALONG ITS LENGTH rather than drawn flat: transparent
+         at the top and bottom of the frame, solid at `--sky`. It is brightest
+         exactly where it is touching the line it is ruling, which is what
+         makes a 1.5px rose rule read as a pen rather than as a curtain rod.
+
+     It casts to the RIGHT, onto the composition it is taking — the one place
+     in this section where an element is physically above another. */
+  :global(.motion-on) .nib {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    will-change: transform;
+  }
+
+  :global(.motion-on) .nib::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      rgba(168, 87, 76, 0.14) 0%,
+      rgba(168, 87, 76, 0.62) calc(var(--sky) - 24%),
+      var(--accent-deep) var(--sky),
+      rgba(168, 87, 76, 0.58) calc(var(--sky) + 18%),
+      rgba(168, 87, 76, 0.12) 100%
+    );
+    box-shadow: 10px 0 44px -8px rgba(15, 20, 48, 0.42);
+  }
+
+  /* THE INK IT LEAVES. A short segment trailing along the ground line behind
+     the mark, fading out — the line being drawn, rather than a bar being
+     pushed across a page. `right: 100%` hangs it off the mark's own edge, so
+     it needs no position of its own and the frame's overflow trims it. */
+  :global(.motion-on) .nib::after {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: var(--sky);
+    width: clamp(6rem, 12vw, 14rem);
+    height: 2px;
+    background: linear-gradient(
+      to left,
+      var(--accent-deep),
+      rgba(168, 87, 76, 0)
+    );
+  }
+
+  /* THE CONTACT POINT — where the pen is touching the ground. The one filled
+     shape in the transition, and a stake rather than a dot: the team
+     slideshow's rail is made of circles, and two sections of this page should
+     not share a mark. */
+  :global(.motion-on) .stake {
+    position: absolute;
+    left: 0;
+    top: var(--sky);
+    width: 9px;
+    height: 9px;
+    background: var(--accent-deep);
+    translate: -50% -50%;
+    rotate: 45deg;
+  }
+
+  /* ---- The index --------------------------------------------------------
+     NOT A RAIL. The team section measures its set with a survey line — a rule,
+     a node per slide, a fill that tracks the scroll — and running the same
+     device here would make two sections of one page read as one idea used
+     twice. So the control is typographic: five names ranged along the foot,
+     and ONE short rose rule that travels between them.
+
+     The rule is measured off the live label rather than declared per stop, so
+     it is exactly as long as the name it is under at any window. It is drawn
+     1px wide and scaled to that width, so what moves between slides is a
+     transform and never a layout. */
+  :global(.motion-on) .index {
+    display: block;
+    position: relative;
+    padding-inline: var(--shell-pad);
+    padding-top: var(--space-6);
+  }
+
+  :global(.motion-on) .indexList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(var(--space-5), 2.6vw, var(--space-8));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.motion-on) .indexButton {
+    display: block;
+    padding: 0 0 var(--space-3);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--text-on-cream-muted);
+    -webkit-tap-highlight-color: transparent;
+    transition: color var(--dur-base) ease;
+  }
+
+  :global(.motion-on) .indexButton:hover,
+  :global(.motion-on) .indexButton:focus-visible {
+    color: var(--text-on-cream);
+  }
+
+  :global(.motion-on) .indexButton[aria-current="true"] {
+    color: var(--accent-deep);
+  }
+
+  :global(.motion-on) .indexRule {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 2px;
+    background: var(--accent-deep);
+    transform-origin: 0 50%;
+    transform: translateX(var(--ix, 0px)) scaleX(var(--iw, 0));
+    transition: transform var(--dur-slow) var(--ease-out-expo);
+  }
+
+  /* ---- The establishing entrance ---------------------------------------
+     The first composition does not arrive on a ruling — there is nothing yet
+     to rule it out of. It GROWS OUT OF THE LINE instead: the heading is
+     clipped from its own foot, which is the ground, and rises; the standfirst
+     is clipped from its own head, which is the same ground, and settles under
+     it. One gesture, opposite directions, and the line is visibly the thing
+     they both came from — which is the whole section explained before a word
+     of it is read. */
+  :global(.motion-on) [data-rise] {
+    clip-path: inset(100% 0% 0% 0%);
+    transform: translate3d(0, 26px, 0);
+  }
+
+  :global(.motion-on) [data-settle] {
+    clip-path: inset(0% 0% 100% 0%);
+    transform: translate3d(0, -16px, 0);
+  }
+}
+
+/* ============================================================================
+   STANDING. Below the motion layout's width, and for every visitor who never
+   gets it: five blocks, in order, complete.
+   ========================================================================== */
+@media (max-width: 63.99rem) {
+  /* The frames are cut in from their foot, as every photograph on the site
+     is — the one piece of the ruled version's grammar that survives into the
+     stack, because a photograph arriving is not a slideshow. */
+  :global(.motion-on) .plate {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+
+  .note,
+  .standard,
+  .coda {
     max-width: var(--measure-narrow);
   }
 
-  .commitments {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: var(--space-5);
-  }
-
-  .coda {
-    text-align: left;
+  .practices {
+    gap: var(--space-6) var(--space-6);
   }
 }
 
 @media (max-width: 34rem) {
-  /* The court crop is too long to hold a subject at phone width; it takes the
-     lead frame's proportion so both stay readable. */
-  .courtFigure .frame {
-    aspect-ratio: 3 / 2;
+  .practices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================================
+   REDUCED MOTION. Belt and braces: `motion-on` is never set for this visitor,
+   so the stage is never built and nothing is ever clipped. This only matters
+   if the preference is changed after load.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    position: relative !important;
+    inset: auto !important;
+    clip-path: none !important;
+    opacity: 1 !important;
   }
 
-  .commitments {
-    grid-template-columns: minmax(0, 1fr);
+  .body,
+  .plate,
+  .headline,
+  .standfirst {
+    clip-path: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .drawing path {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .horizon,
+  .nib {
+    display: none !important;
+  }
+
+  .indexButton,
+  .indexRule {
+    transition: none;
   }
 }
