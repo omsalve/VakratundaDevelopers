@@ -1,7 +1,7 @@
 import ArcTransition from "@/components/ArcTransition";
 import Atmosphere from "@/components/Atmosphere";
 import Concept from "@/components/Concept";
-import FinalCTA from "@/components/FinalCTA";
+import EnclosureFooter from "@/components/EnclosureFooter";
 import JointVentures from "@/components/JointVentures";
 import Journey from "@/components/Journey";
 import ProjectsShowcase from "@/components/ProjectsShowcase";
@@ -52,7 +52,11 @@ export default async function HomePage() {
 
       <SiteHeader links={content.nav.links} cta={content.nav.cta} />
 
-      <main id="top">
+      {/* `data-enclose-page` is the handle EnclosureFooter closes around —
+          see the header comment in components/EnclosureFooter.tsx. Anything
+          `position: fixed` inside this element must portal to <body>, as
+          Lightbox already does. */}
+      <main id="top" data-enclose-page>
         {/* The brand line, then the photograph on its own with the pins
             staked out on it. One section, one continuous photograph. */}
         <Journey hero={content.hero} />
@@ -103,12 +107,19 @@ export default async function HomePage() {
 
             IT DOES NOT CHANGE THE GROUND. The page still changes ground twice
             and only twice; this section takes the ventures' cream and hands
-            the same cream to FinalCTA, which cuts it to navy exactly where it
-            always did. */}
+            the same cream to the shell below, which closes over it in navy —
+            the same cut to navy the close always made, now made by the thing
+            that encloses the page rather than by its last section. */}
         <Responsibility content={content.responsibility} />
-
-        <FinalCTA content={content.finalCta} legal={content.legal} />
       </main>
+
+      {/* Outside <main>: the shell closes AROUND the page, and is the page's
+          contentinfo landmark rather than the tail of a section. */}
+      <EnclosureFooter
+        content={content.finalCta}
+        legal={content.legal}
+        topHref="#top"
+      />
     </>
   );
 }

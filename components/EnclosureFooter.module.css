@@ -1,0 +1,639 @@
+/* ============================================================================
+   EnclosureFooter — the shell that closes the page.
+
+   THREE MOVING PARTS, and only two of them are inside this component:
+
+     1. the panel   — the footer itself, which rises and tips flat as it lands
+     2. the dim     — one fixed veil over the page, under the panel
+     3. the page    — whatever element carries `data-enclose-page`, which pulls
+                      in, rounds its corners and sinks under the panel's lip
+
+   (3) is a sibling of this footer, not a child, so its rules are written as
+   `:global(...)` here rather than living in styles/global.css. The whole
+   effect is therefore two files, and a page opts in with one attribute.
+
+   THE STATE LIVES ON <html>, as three attributes set by the component:
+
+     data-enclose-ready   JS is running and IntersectionObserver exists, so
+                          the pre-state (panel dropped, columns down) is safe
+                          to apply. Never set without JS: nothing can be
+                          stranded invisible.
+     data-enclose-armed   the footer is within ~1.6 viewports. Promotion
+                          (`will-change`) and the backdrop filter switch on
+                          here, ahead of the transition, and off again when
+                          the visitor scrolls away — so neither is paid for
+                          over the other 95% of the page.
+     data-enclosed        engaged. Everything below keys off this one.
+
+   ONLY transform, opacity and clip-path are transitioned. The colour swap
+   underneath the page (--navy-700 to --navy-900) is instantaneous and
+   invisible, because at the moment it happens the gap it shows through is
+   still 0px wide.
+   ========================================================================== */
+
+/* ---- Tunables -----------------------------------------------------------
+   On :root because the page and the dim are outside this subtree. Every one
+   of them is re-pointed by the narrow and reduced-motion blocks at the foot
+   of the file, which is the whole of the responsive and motion story. */
+:global(:root) {
+  --enc-drop: 56px; /* where the panel waits, below its resting line */
+  --enc-lift: 26px; /* how far the panel laps OVER the page when landed */
+  --enc-tip: 4deg; /* the tip-back of the panel's far edge */
+  --enc-scale: 0.985; /* the page's inset */
+  --enc-radius: var(--radius-l);
+  --enc-dim: 0.44;
+  --enc-blur: 5px;
+  --enc-dur: 720ms;
+  --enc-dur-page: 860ms;
+}
+
+/* ---- The page being enclosed -------------------------------------------- */
+/* Held at the bottom edge, so the page's last line stays welded to the
+   footer's lip while its sides draw in. */
+:global([data-enclose-page]) {
+  transform-origin: 50% 100%;
+  transition:
+    transform var(--enc-dur-page) var(--ease-out-expo),
+    border-radius var(--enc-dur-page) var(--ease-out-expo);
+}
+
+/* Armed, still off-screen: promote, and put the ground and the shadow in
+   place while there is nothing to see. Both are static once set — the shadow
+   is never transitioned, and the ground swap is one paint. */
+:global(html[data-enclose-armed] [data-enclose-page]) {
+  will-change: transform;
+  background-color: var(--navy-700);
+  box-shadow:
+    0 -1px 0 0 var(--navy-line-soft),
+    0 26px 56px -26px rgba(5, 8, 24, 0.92),
+    0 84px 120px -58px rgba(5, 8, 24, 0.7);
+}
+
+:global(html[data-enclose-armed] body) {
+  background-color: var(--navy-900);
+}
+
+:global(html[data-enclosed] [data-enclose-page]) {
+  transform: scale(var(--enc-scale));
+  border-radius: var(--enc-radius);
+  /* `clip`, not `hidden`: it rounds the corners without turning the page into
+     a scroll container, so sticky and pinned sections are untouched. */
+  overflow: clip;
+}
+
+/* ---- The footer ---------------------------------------------------------- */
+.root {
+  position: relative;
+  /* Above the page (which becomes a stacking context once it is scaled) and
+     above the grain, below the masthead. */
+  z-index: 2;
+  background: var(--navy-900);
+  color: var(--text-on-navy);
+  /* Absorbs the panel's drop, so waiting below the resting line cannot add
+     scrollable overflow to the document. Same colour as the panel, so those
+     pixels are simply more footer. */
+  padding-bottom: var(--enc-drop);
+}
+
+/* ---- The dim ------------------------------------------------------------- */
+/* One fixed veil. Costs nothing until armed — `visibility` keeps it out of
+   compositing entirely, and the filter is not declared until then. */
+.dim {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 13, 33, 0.06),
+    rgba(9, 13, 33, var(--enc-dim))
+  );
+  transition: opacity var(--enc-dur) var(--ease-out-quint);
+}
+
+:global(html[data-enclose-armed]) .dim {
+  visibility: visible;
+}
+
+:global(html[data-enclosed]) .dim {
+  opacity: 1;
+}
+
+/* Desktop only, and only while armed. The veil sits UNDER the panel and under
+   the masthead, so neither the footer's own type nor the navigation is ever
+   blurred — only the page receding behind them. */
+@supports (backdrop-filter: blur(1px)) {
+  @media (min-width: 60rem) {
+    :global(html[data-enclose-armed]) .dim {
+      backdrop-filter: blur(var(--enc-blur)) saturate(0.94);
+      -webkit-backdrop-filter: blur(var(--enc-blur)) saturate(0.94);
+    }
+  }
+}
+
+/* Dropped wholesale where the visitor has asked for less transparency, with
+   the veil darkened to carry the separation on its own. Engines that do not
+   know the query drop this block instead and keep the blur. */
+@media (prefers-reduced-transparency: reduce) {
+  :global(html[data-enclose-armed]) .dim {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    --enc-dim: 0.6;
+  }
+}
+
+/* ---- The panel ----------------------------------------------------------- */
+/* Every state below writes the same three functions in the same order, so the
+   browser interpolates one matrix rather than falling back to a discrete
+   swap. The resting state is the no-JS state: flat, in place, legible. */
+.panel {
+  position: relative;
+  z-index: 1;
+  transform: perspective(1400px) translate3d(0, 0, 0) rotateX(0deg);
+  /* Hinged on the bottom edge: the far edge tips back and comes level, and
+     the panel never travels below the document it sits in. */
+  transform-origin: 50% 100%;
+  border-radius: var(--enc-radius) var(--enc-radius) 0 0;
+  background: var(--navy-900);
+  /* Holds the watermark inside the rounded lip. `clip`, not `hidden`: no
+     scroll container, nothing to scroll. */
+  overflow: clip;
+  transition: transform var(--enc-dur) var(--ease-out-expo);
+}
+
+:global(html[data-enclose-ready]) .panel {
+  transform: perspective(1400px) translate3d(0, var(--enc-drop), 0)
+    rotateX(var(--enc-tip));
+}
+
+:global(html[data-enclose-armed]) .panel {
+  will-change: transform;
+}
+
+:global(html[data-enclosed]) .panel,
+.root:focus-within .panel {
+  transform: perspective(1400px) translate3d(0, calc(var(--enc-lift) * -1), 0)
+    rotateX(0deg);
+}
+
+/* ---- The rim ------------------------------------------------------------- */
+/* The lip that reads as the enclosure: a rose hairline along the panel's
+   rounded top edge with a soft bloom under it, wiped open from the centre.
+   Decorative, and announced as such. */
+.rim {
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(64px, 9vh, 112px);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    120% 150% at 50% 0%,
+    rgba(228, 168, 161, 0.17),
+    rgba(228, 168, 161, 0) 64%
+  );
+  box-shadow: inset 0 1px 0 0 var(--navy-line);
+  clip-path: inset(0 46% 0 46% round var(--enc-radius) var(--enc-radius) 0 0);
+  transition:
+    clip-path var(--enc-dur) var(--ease-out-quint),
+    opacity var(--enc-dur) var(--ease-out-quint);
+}
+
+:global(html[data-enclosed]) .rim,
+.root:focus-within .rim {
+  opacity: 1;
+  clip-path: inset(0 0 0 0 round var(--enc-radius) var(--enc-radius) 0 0);
+}
+
+.handle {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 76px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    rgba(228, 168, 161, 0),
+    var(--accent-rose),
+    rgba(228, 168, 161, 0)
+  );
+  opacity: 0;
+  transform: translateX(-50%) scaleX(0.2);
+  transition:
+    transform var(--enc-dur) var(--ease-out-expo),
+    opacity var(--enc-dur) var(--ease-out-quint);
+}
+
+:global(html[data-enclosed]) .handle,
+.root:focus-within .handle {
+  opacity: 0.6;
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* ---- The close ----------------------------------------------------------
+   The brand guide's last line, the three proofs under it, and the one action
+   worth taking. It used to be a section inside <main>; it is the head of the
+   shell now, which is why it carries the panel's top padding and the rim sits
+   over it. */
+.close {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(3rem, 7vh, 4.5rem);
+  padding-block: clamp(5rem, 13vh, 8.5rem) clamp(3.5rem, 9vh, 6rem);
+  text-align: center;
+}
+
+/* The mark behind the quote. Turned with the `rotate` property rather than
+   inside `transform`, so the centring translate and the rotation animate
+   independently and neither has to restate the other. */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  translate: -50% -58%;
+  rotate: -16deg;
+  color: var(--accent-rose);
+  opacity: 0.07;
+  pointer-events: none;
+  transition: rotate 1600ms var(--ease-out-expo);
+}
+
+:global(html[data-enclosed]) .watermark {
+  rotate: 8deg;
+}
+
+.quote {
+  position: relative;
+  margin-inline: auto;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.75rem, 4.6vw, 4rem);
+  line-height: 1.16;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.quoteMark {
+  color: var(--accent-rose);
+  opacity: 0.7;
+}
+
+/* Three columns of text divided by hairlines — not three cards. The rule
+   carries the division; a container around each would be noise. */
+.proofs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2rem, 4vw, 4rem);
+  width: 100%;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.proof {
+  position: relative;
+  padding-top: var(--space-5);
+  border-top: var(--hairline) solid var(--navy-line);
+}
+
+.proofTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-3);
+  text-wrap: balance;
+}
+
+.proofBody {
+  max-width: 34ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  /* On top of the flex gap: the action is the shell's purpose, and gets the
+     one interval here that is larger than the others. */
+  margin-top: clamp(1rem, 3vh, 2rem);
+}
+
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: var(--space-4) var(--space-7);
+  border-radius: var(--radius-pill);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  text-decoration: none;
+  box-shadow: var(--shadow-rose);
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) ease;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  transform: translateY(-2px);
+  background: var(--accent-rose-bright);
+  box-shadow: 0 18px 44px -14px rgba(228, 168, 161, 0.55);
+}
+
+.ctaIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover .ctaIcon {
+  transform: translateX(4px);
+}
+
+.attribution {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The map and the address --------------------------------------------- */
+.inner {
+  display: grid;
+  gap: var(--space-9) var(--gutter);
+  grid-template-columns: minmax(16rem, 1fr) minmax(0, 2.1fr);
+  padding-block: clamp(3rem, 7vh, 4.5rem) var(--space-6);
+  border-top: var(--hairline) solid var(--navy-line-soft);
+}
+
+/* The one animated group. Rise and fade, staggered by --i, and nothing else
+   in the footer moves — so a keyboard visitor who arrives out of order (the
+   :focus-within branch on each rule) sees the finished thing, not a wipe. */
+.block {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition:
+    transform var(--enc-dur) var(--ease-out-expo),
+    opacity var(--enc-dur) var(--ease-out-quint);
+  /* 0 here, staggered only in the engaged state below. The delay that runs is
+     always the destination state's, so the columns arrive one after another
+     and retract together — a reverse stagger on the way out reads as lag. */
+  transition-delay: 0ms;
+}
+
+:global(html[data-enclose-ready]) .block {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+}
+
+:global(html[data-enclosed]) .block,
+.root:focus-within .block {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(var(--i, 0) * 55ms);
+}
+
+.lede {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-style: normal;
+}
+
+.email {
+  align-self: flex-start;
+  color: var(--accent-text);
+  text-decoration: none;
+  border-bottom: var(--hairline) solid var(--navy-line);
+  padding-bottom: 2px;
+  transition: border-color var(--dur-base) var(--ease-out-expo);
+}
+
+.email:hover {
+  border-bottom-color: var(--accent-rose);
+}
+
+.addressLine {
+  font-size: var(--fs-small);
+  color: var(--text-on-navy-muted);
+  line-height: var(--lh-caption);
+}
+
+/* ---- The map ------------------------------------------------------------- */
+.map {
+  display: grid;
+  gap: var(--space-7) var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  align-content: start;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.groupLabel {
+  color: var(--text-on-navy-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Fifteen underlined items read as a hedge of rules rather than as a map, so
+   nothing is underlined until it is pointed at. */
+.link {
+  font-size: var(--fs-small);
+  text-decoration: none;
+  color: var(--text-on-navy);
+  transition: color var(--dur-fast) var(--ease-out-expo);
+}
+
+.link:hover {
+  color: var(--accent-text);
+  text-decoration: underline;
+}
+
+.isCurrent {
+  color: var(--accent-text);
+}
+
+/* The tick in the margin of the page you are on. */
+.isCurrent::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: var(--hairline);
+  margin-right: var(--space-2);
+  vertical-align: middle;
+  background: currentColor;
+}
+
+/* ---- The base line ------------------------------------------------------- */
+.base {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-5) clamp(1.5rem, 4vh, 2.5rem);
+  border-top: var(--hairline) solid var(--navy-line-soft);
+}
+
+.legal {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+  max-width: 52ch;
+}
+
+.toTop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--text-on-navy);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo);
+}
+
+.toTop:hover {
+  background: var(--accent-wash);
+  border-color: var(--accent-rose);
+}
+
+.toTopIcon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.toTop:hover .toTopIcon {
+  transform: translateY(-2px);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+/* The proofs break one step earlier than everything else: three columns of
+   prose stop working well before the map does. */
+@media (max-width: 63.99rem) {
+  .proofs {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 34rem;
+    gap: 0;
+  }
+  .proofBody {
+    max-width: none;
+  }
+  .proof {
+    padding-block: var(--space-5);
+  }
+  .proof:last-child {
+    border-bottom: var(--hairline) solid var(--navy-line);
+  }
+}
+
+/* Shorter throws, shorter durations, no tip, and no blur (the blur is gated
+   on min-width above). The enclosure still reads: the page still insets, the
+   rim still opens, the panel still laps over it. */
+@media (max-width: 56rem) {
+  :global(:root) {
+    --enc-drop: 34px;
+    --enc-lift: 16px;
+    --enc-tip: 0deg;
+    --enc-scale: 0.99;
+    --enc-radius: var(--radius-m);
+    --enc-dim: 0.32;
+    --enc-dur: 420ms;
+    --enc-dur-page: 520ms;
+  }
+
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .map {
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  }
+
+  .base {
+    justify-content: flex-start;
+  }
+
+  .watermark {
+    opacity: 0.05;
+  }
+}
+
+/* ---- Reduced motion ------------------------------------------------------
+   Nothing travels. The page does not scale, the panel does not rise, the
+   columns never leave their final position — the enclosure is expressed as
+   the veil and the rim arriving, which the global reduced-motion block has
+   already collapsed to an instant change. */
+@media (prefers-reduced-motion: reduce) {
+  :global(:root) {
+    --enc-drop: 0px;
+    --enc-lift: 0px;
+    --enc-tip: 0deg;
+    --enc-scale: 1;
+    --enc-blur: 0px;
+    --enc-dim: 0.34;
+  }
+
+  .panel {
+    transform: none !important;
+  }
+
+  .block {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-delay: 0ms !important;
+  }
+
+  .handle {
+    transform: translateX(-50%) !important;
+  }
+
+  .rim {
+    clip-path: inset(0 0 0 0 round var(--enc-radius) var(--enc-radius) 0 0)
+      !important;
+  }
+
+  /* Pinned: a decorative mark that snaps 24 degrees the instant the shell
+     engages is the jump the reduced-motion request is asking us not to make. */
+  .watermark {
+    rotate: -6deg !important;
+  }
+}
