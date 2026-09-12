@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import CardGrid from "@/components/CardGrid";
-import FinalCTA from "@/components/FinalCTA";
 import LedgerList from "@/components/LedgerList";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
@@ -33,7 +32,10 @@ export default async function InvestorsPage() {
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero content={page.hero} />
 
       <PageSection id="record" label="The record">
@@ -74,8 +76,6 @@ export default async function InvestorsPage() {
           />
         </div>
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

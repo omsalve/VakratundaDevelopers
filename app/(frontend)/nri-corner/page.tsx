@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import CardGrid from "@/components/CardGrid";
 import FaqList from "@/components/FaqList";
-import FinalCTA from "@/components/FinalCTA";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
@@ -36,7 +35,10 @@ export default async function NriCornerPage() {
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero content={page.hero} />
 
       <PageSection
@@ -63,8 +65,6 @@ export default async function NriCornerPage() {
           <SectionCoda text={page.disclaimer} cta={page.cta} />
         </div>
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

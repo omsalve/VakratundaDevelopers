@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
-import FinalCTA from "@/components/FinalCTA";
 import LedgerList from "@/components/LedgerList";
 import OfficePanel from "@/components/OfficePanel";
 import PageHero from "@/components/PageHero";
@@ -40,7 +39,10 @@ export default async function ContactPage() {
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero content={page.hero} />
 
       <PageSection
@@ -80,8 +82,6 @@ export default async function ContactPage() {
           email={content.finalCta.contact.email}
         />
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

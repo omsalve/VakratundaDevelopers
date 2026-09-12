@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import FinalCTA from "@/components/FinalCTA";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
@@ -60,7 +59,10 @@ export default async function ArticlePage({
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero
         content={{
           label: `${post.category} · ${post.readingTime}`,
@@ -83,8 +85,6 @@ export default async function ArticlePage({
           updatedLabel="Published"
         />
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

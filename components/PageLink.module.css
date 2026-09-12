@@ -1,27 +1,31 @@
 /* ============================================================================
    PageLink — the mark that leaves the page
-   Built from two marks the page already makes: the rubric's drawn rose
-   hairline, and the ghost pill's travelling arrow. No plate, no border, no
-   radius — the photographs are still the only filled shapes on this site.
+
+   A ruled row, terminated by a ring. The track is every rubric's hairline and
+   the arrow is the ghost pill's; only the ring is new, and a ring is line-work
+   rather than a plate — the photographs are still the only filled shapes on
+   this site until the pointer arrives and floods one.
    ========================================================================== */
 
 .mark {
-  /* The rule's box is always --rule-far; --rule-drawn is how much of it is
-     inked at rest. Hovering inks the remainder.
+  /* The ring's diameter, and the arrow inside it. Set in rem rather than in
+     em: the two sizes below are a third apart in type, and a ring scaled with
+     the type would drop the `sm` pair under the 44px a thumb needs. */
+  --node: 2.875rem;
+  --arrow: 1.25rem;
+  /* How much of the track's hairline is inked before anyone touches it. High
+     enough to read as a drawn rule at a glance, which is the whole point of
+     the mark: it has to look like a control while nothing is happening. */
+  --track-rest: 0.55;
+  /* The ground the arrow inverts to once the ring floods. Re-pointed under
+     .on-cream below — the one colour on the mark that is not already carried
+     by the semantic tokens. */
+  --mark-ground: var(--navy-900);
 
-     THE SCALE IS WHY THE BOX IS FIXED. An earlier pass transitioned the
-     rule's `width`, which carried the label along with it and read beautifully
-     — and was the one layout animation in a codebase that is otherwise
-     scrupulous about never writing to anything but transform. So the label is
-     now the FIXED POINT and the two marks open away from it: the rule
-     lengthens into the gap, the arrow steps off the end. Nothing reflows. */
-  --rule-far: 3.5rem;
-  --rule-drawn: 0.57;
-
+  position: relative;
   display: inline-flex;
-  /* Ranged to the top, not centred: a label that wraps to two lines must not
-     drag the rule down to sit between them. */
-  align-items: start;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--space-3);
   max-width: 100%;
   color: var(--text-on-navy);
@@ -41,51 +45,129 @@
 
 .sm {
   font-size: var(--fs-lead);
-  gap: var(--space-2);
-  --rule-far: 2.75rem;
-  --rule-drawn: 0.55;
+  --node: 2.75rem;
+  --arrow: 1.125rem;
 }
 
-/* ---- The rule -----------------------------------------------------------
-   Ruled open on arrival exactly as a rubric's is — clip from the left, expo
-   out — then it is the thing the hover lengthens. */
-.rule {
-  flex: none;
-  /* Half the first line's box, so the rule is on the type's midline however
-     many lines the label runs to. */
-  margin-top: calc(var(--lh-heading) * 0.5em);
-  width: var(--rule-far);
-  height: var(--hairline);
-  background: var(--accent-text);
-  transform: scaleX(var(--rule-drawn));
-  transform-origin: left center;
-  transition: transform var(--dur-base) var(--ease-out-expo);
+/* ---- The row ------------------------------------------------------------
+   Centred, not top-ranged: the ring is taller than a line of the label, and a
+   label that wraps to two lines should hand the ring the middle of the block
+   rather than strand it against the first line. */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  min-width: 0;
 }
 
 .label {
   min-width: 0;
+  /* Short enough that a label never runs past two lines on a phone, which is
+     where the ring's vertical centring stays honest. */
+  max-width: 22ch;
 }
 
-/* The last word and the arrow, as one word. */
-.tail {
-  white-space: nowrap;
-}
-
-/* Sized in em, not in pixels: the label is display face at two different
-   sizes, and an arrow fixed at 16px would read as a footnote against the
-   larger one. Inline, so it sits at the end of the sentence rather than at
-   the end of the box. */
-.arrow {
-  display: inline-block;
-  vertical-align: middle;
-  width: 0.66em;
-  height: 0.66em;
-  margin-left: 0.55em;
-  /* Off the optical centre of the lowercase, which is where a cap-height box
-     centred on the line does not land. */
-  margin-bottom: 0.1em;
+/* The ring pushes to the far end of the row so the row reads as a control
+   with a terminal, rather than as a sentence with a bullet after it. `auto`
+   rather than `space-between`, so a one-word label still keeps its gap. */
+.node {
+  flex: none;
+  margin-left: auto;
+  position: relative;
+  width: var(--node);
+  height: var(--node);
+  border: var(--hairline) solid var(--accent-text);
+  border-radius: var(--radius-pill);
   color: var(--accent-text);
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* ---- The halo -----------------------------------------------------------
+   A second ring, outside the first, opening and fading on a long cycle. It is
+   the mark's only resting motion and it is the reason the mark reads as a
+   control from across the page. Runs only while `.live` — i.e. while the mark
+   is actually on screen — and only under `motion-on`. */
+.halo {
+  position: absolute;
+  /* Outside the ring's own stroke, so the pulse leaves it rather than
+     crossing it. */
+  inset: calc(-1 * var(--hairline));
+  border: var(--hairline) solid var(--accent-text);
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The ring's inside, and the only thing that clips. The arrows travel across
+   the ring's own edge and are cut by it; the halo, which has to leave the
+   ring, is a sibling of this rather than a child. */
+.iris {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+/* ---- The flood ----------------------------------------------------------
+   The ring's fill, opened from the centre on hover. A scaled disc rather than
+   a background-colour transition: it arrives as a movement, which is what
+   makes the ring read as something that can be pressed. */
+.flood {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-text);
+  transform: scale(0);
   transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+/* ---- The arrows ---------------------------------------------------------
+   Two, always present, one of them parked off the left edge. The swap is the
+   payoff of the whole mark, and the ring is the one shape on this site
+   allowed to cut another. */
+.arrow {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--arrow);
+  height: var(--arrow);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.arrowIn {
+  transform: translate3d(-180%, 0, 0);
+}
+
+/* ---- The track ----------------------------------------------------------
+   The floor of the row: where the control ends. Its box is fixed at the
+   thickest the rule ever gets and the two rules inside it are scaled, so the
+   row's height is the same before, during and after the pointer. */
+.track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+}
+
+.trackRest,
+.trackInk {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--hairline);
+  background: var(--accent-text);
+  transform-origin: left bottom;
+}
+
+.trackRest {
+  opacity: var(--track-rest);
+}
+
+/* Inks from the left AND thickens as it goes, as one transform. The rule the
+   pointer leaves behind is twice the rule it found. */
+.trackInk {
+  transform: scale3d(0, 1, 1);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
 }
 
 /* ---- The advance -------------------------------------------------------- */
@@ -94,30 +176,63 @@
   color: var(--accent-text);
 }
 
-.mark:hover .rule,
-.mark:focus-visible .rule {
-  transform: scaleX(1);
+.mark:hover .trackInk,
+.mark:focus-visible .trackInk {
+  transform: scale3d(1, 2, 1);
 }
 
-/* The other half of the same opening. Far enough to read as a step rather
-   than a wobble, since it is now the only thing moving on the right. */
-.mark:hover .arrow,
-.mark:focus-visible .arrow {
-  transform: translateX(7px);
+.mark:hover .flood,
+.mark:focus-visible .flood {
+  transform: scale(1);
+}
+
+.mark:hover .node,
+.mark:focus-visible .node {
+  color: var(--mark-ground);
+}
+
+.mark:hover .arrowOut,
+.mark:focus-visible .arrowOut {
+  transform: translate3d(180%, 0, 0);
+}
+
+.mark:hover .arrowIn,
+.mark:focus-visible .arrowIn {
+  transform: translate3d(0, 0, 0);
+}
+
+/* The invitation withdraws once it has been taken. */
+.mark:hover .halo,
+.mark:focus-visible .halo {
+  animation: none;
+  opacity: 0;
+}
+
+/* A control that gives under the finger. The only press state on the site,
+   and it belongs on the one mark people were not sure they could press. */
+.mark:active .node {
+  transform: scale(0.93);
+  transition: transform var(--dur-fast) var(--ease-out-quint);
 }
 
 .mark:focus-visible {
-  outline-offset: 6px;
+  outline-offset: 8px;
+}
+
+/* On cream the ring floods with the deep rose, so the arrow inside it goes to
+   the cream rather than to the navy. */
+:global(.on-cream) .mark {
+  --mark-ground: var(--cream-100);
 }
 
 /* ---- Entrance -----------------------------------------------------------
-   Only under .motion-on: with no JavaScript the mark is already ruled, inked
+   Only under .motion-on: with no JavaScript the mark is already ruled, ringed
    and readable, which is the state the scope animates back to.
 
-   The draw is a clip rather than a second scale, so it composes with the
-   hover's scaleX instead of overwriting it — clip-path is resolved in the
-   element's own box, before the transform is applied. */
-:global(.motion-on) .rule {
+   The draw is a clip rather than a third scale, so it composes with the
+   track's own transforms instead of overwriting them — clip-path is resolved
+   in the element's box, before the transform is applied. */
+:global(.motion-on) .track {
   clip-path: inset(0% 100% 0% 0%);
 }
 
@@ -126,10 +241,51 @@
   transform: translate3d(0, 14px, 0);
 }
 
+/* `.live` is toggled by ScrollTrigger while the mark is on screen. */
+:global(.motion-on) .live .halo {
+  animation: halo 3.6s var(--ease-out-quint) var(--ping-delay, 0s) infinite;
+}
+
+@keyframes halo {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  /* Opens into visibility rather than switching on, so the cycle has no
+     readable start. */
+  16% {
+    opacity: 0.75;
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mark,
-  .rule,
-  .arrow {
+  .node,
+  .flood,
+  .arrow,
+  .trackInk {
     transition-duration: var(--dur-fast);
+  }
+}
+
+/* ---- Narrow -------------------------------------------------------------
+   The ring keeps its size — it is the touch target — and the row closes up
+   around it. */
+@media (max-width: 30rem) {
+  .mark {
+    --node: 2.75rem;
+  }
+
+  .row {
+    gap: var(--space-4);
+  }
+
+  .label {
+    max-width: none;
   }
 }

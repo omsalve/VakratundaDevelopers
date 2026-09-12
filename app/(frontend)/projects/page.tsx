@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import FinalCTA from "@/components/FinalCTA";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
@@ -33,7 +32,10 @@ export default async function ProjectsPage() {
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero content={projectsPage.hero} />
 
       <PageSection id="projects" ground="cream" size="lg">
@@ -45,8 +47,6 @@ export default async function ProjectsPage() {
           note={projectsPage.note}
         />
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

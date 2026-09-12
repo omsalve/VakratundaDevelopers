@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import CardGrid from "@/components/CardGrid";
 import FigureRow from "@/components/FigureRow";
-import FinalCTA from "@/components/FinalCTA";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
@@ -24,7 +23,7 @@ import { sustainabilityPage as page } from "@/lib/pages";
  * rather than being made the footing of a page it is half of.
  *
  * ONE GROUND CHANGE: the environment ledger takes the cream, as the drawings
- * do on the landing page; the community ledger stays on it; FinalCTA cuts back
+ * do on the landing page; the community ledger stays on it; the shell cuts back
  * to navy where it always does.
  */
 
@@ -41,7 +40,10 @@ export default async function SustainabilityPage() {
   const content = await getSiteContent();
 
   return (
-    <PageShell nav={content.nav}>
+    <PageShell
+      nav={content.nav}
+      close={{ content: content.finalCta, legal: content.legal }}
+    >
       <PageHero content={page.hero} />
 
       <PageSection
@@ -79,8 +81,6 @@ export default async function SustainabilityPage() {
           <SectionCoda text={page.coda} cta={page.cta} />
         </div>
       </PageSection>
-
-      <FinalCTA content={content.finalCta} legal={content.legal} />
     </PageShell>
   );
 }

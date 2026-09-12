@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import type { Cta, NavLink } from "@/lib/content";
+import type { Cta, FinalCtaContent, NavLink } from "@/lib/content";
+import EnclosureFooter from "./EnclosureFooter";
 import SiteHeader from "./SiteHeader";
 import SmoothScroll from "./SmoothScroll";
 
@@ -16,9 +17,12 @@ import SmoothScroll from "./SmoothScroll";
 
 export function PageShell({
   nav,
+  close,
   children,
 }: {
   nav: { links: NavLink[]; cta: Cta };
+  /** The close: the quote, the proofs, the action, the address, the legal line. */
+  close: { content: FinalCtaContent; legal: string };
   children: ReactNode;
 }) {
   return (
@@ -33,7 +37,18 @@ export function PageShell({
 
       <SiteHeader links={nav.links} cta={nav.cta} />
 
-      <main id="main">{children}</main>
+      {/* `data-enclose-page` is the handle EnclosureFooter closes around.
+          While enclosed this element carries a transform and `overflow: clip`,
+          which makes it the containing block for any `position: fixed`
+          descendant and then clips one — which is why Lightbox portals to
+          <body>, and why anything else fixed inside a page must too. */}
+      <main id="main" data-enclose-page>
+        {children}
+      </main>
+
+      {/* Outside <main>, so it is the page's contentinfo landmark and so the
+          shell can close around the content rather than sit inside it. */}
+      <EnclosureFooter content={close.content} legal={close.legal} />
     </>
   );
 }
