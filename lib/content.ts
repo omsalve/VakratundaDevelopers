@@ -557,15 +557,19 @@ export interface ResponsibilityContent {
   coda: string;
 }
 
+/** The address the site publishes: the line a visitor can act on, then the
+    lines they cannot. Shared by the close and the footer. */
+export interface Contact {
+  email: string;
+  addressLines: string[];
+}
+
 export interface FinalCtaContent {
   quote: SwashHeading;
   attribution: string;
   proofs: { title: string; body: string }[];
   primaryCta: Cta;
-  contact: {
-    email: string;
-    addressLines: string[];
-  };
+  contact: Contact;
 }
 
 export interface SiteContent {
@@ -851,10 +855,10 @@ export const siteContent: SiteContent = {
         },
       ],
       image: {
-        src: "/images/skygarden6.png",
-        alt: "The roof of Godrej Skygarden at dusk: planted terraces, a lit timber deck and a sculpture above the top floor of apartments",
-        width: 2000,
-        height: 1088,
+        src: "/images/herosection2.png",
+        alt: "Two Vakratunda residential towers rising over a glazed retail and office podium, with the city and its treeline behind",
+        width: 3238,
+        height: 2371,
       },
     },
     showcase: {
