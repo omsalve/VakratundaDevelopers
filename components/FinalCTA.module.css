@@ -270,6 +270,14 @@
   transform: translate3d(0, 30px, 0);
 }
 
+/* A shorter travel than the blocks above: these are four small columns, and
+   the 30px the quote rises through would read as a different gesture on
+   them rather than as the same one. */
+:global(.motion-on) .sitemapGroup {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+
 /* ---- Responsive --------------------------------------------------------- */
 @media (max-width: 63.99rem) {
   .proofs {
@@ -310,9 +318,12 @@
     opacity: 0.05;
   }
 
+  /* Two, not one: fifteen entries in a single column is eight hundred pixels
+     of footer before the address, and every label here is short enough to
+     hold half a phone. */
   .sitemap {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-7);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(var(--space-6), 5vw, var(--space-8)) var(--space-5);
   }
 }
 

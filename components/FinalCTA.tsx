@@ -1,8 +1,12 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 import type { FinalCtaContent } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import { footerGroups } from "@/lib/navigation";
 import { Logo, LogoMark } from "./Logo";
 import Swash from "./Swash";
 import styles from "./FinalCTA.module.css";
@@ -14,6 +18,18 @@ import styles from "./FinalCTA.module.css";
  *
  * The mark behind the quote turns very slowly as the section passes — the
  * page's last piece of motion, and the quietest.
+ *
+ * IT ALSO CARRIES THE SITE MAP, and it is the only place that does. The
+ * masthead holds the four routes a visitor arrives looking for; the other
+ * eleven are grouped here, where a visitor goes once they already know what
+ * they want. The groups come from lib/navigation.ts rather than from Payload
+ * — a map an editor can reorder is a map that outlives a renamed route.
+ *
+ * This section closes every page on the site, so the map is on every page,
+ * and the entry for the route you are on is marked: plain links with a rose
+ * tick in the margin of the current one. Fifteen underlined items would read
+ * as a hedge of rules rather than as a map, so nothing is underlined until it
+ * is pointed at.
  */
 
 export function FinalCTA({
@@ -24,6 +40,7 @@ export function FinalCTA({
   legal: string;
 }) {
   const root = useRef<HTMLElement | null>(null);
+  const pathname = usePathname();
 
   useGsapScope(root, () => {
     if (!root.current) return;
@@ -34,6 +51,14 @@ export function FinalCTA({
       stagger: 0.12,
     });
     revealOnEnter(`.${styles.action}`, root.current, { start: "top 58%" });
+
+    /* The map arrives column by column, on the same entrance as everything
+       above it — late, because the footer is well below the fold of the
+       quote and one trigger for the whole section would fire it unseen. */
+    revealOnEnter(`.${styles.sitemapGroup}`, root.current, {
+      start: "top 94%",
+      stagger: 0.07,
+    });
 
     gsap.to(`.${styles.watermark}`, {
       rotate: 42,
@@ -99,6 +124,34 @@ export function FinalCTA({
       </div>
 
       <footer className={styles.footer}>
+        <nav className={`u-shell ${styles.sitemap}`} aria-label="Site map">
+          {footerGroups.map((group) => (
+            <div key={group.label} className={styles.sitemapGroup}>
+              <h3 className={`u-label ${styles.sitemapLabel}`}>
+                {group.label}
+              </h3>
+              <ul className={styles.sitemapList}>
+                {group.links.map((link) => {
+                  const current = pathname === link.href;
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        className={clsx(
+                          styles.sitemapLink,
+                          current && styles.isCurrent,
+                        )}
+                        href={link.href}
+                        aria-current={current ? "page" : undefined}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </nav>
 
         <div className={`u-shell ${styles.footerInner}`}>
           <Logo layout="inline" size={40} className={styles.footerLogo} />
