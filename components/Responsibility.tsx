@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import type { ResponsibilityContent } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import PageLink from "./PageLink";
 import ResponsibilityIcons from "./ResponsibilityIcons";
 import Swash from "./Swash";
 import styles from "./Responsibility.module.css";
@@ -233,7 +234,18 @@ export function Responsibility({ content }: { content: ResponsibilityContent }) 
         </div>
       </div>
 
+      {/* The last line of the section, and the way into the long version of
+          both bands — the sustainability page carries the same two ledgers,
+          the schools and the ground, at length. The mark takes the six
+          columns the coda leaves empty, so the row reads across the field
+          rather than stacking two closing gestures on the same edge. */}
       <div className={`u-shell ${styles.field} ${styles.codaRow}`}>
+        <PageLink
+          className={styles.onward}
+          size="sm"
+          href="/sustainability"
+          label="Both ledgers, in full"
+        />
         <p className={styles.coda} data-reveal="up">
           {content.coda}
         </p>

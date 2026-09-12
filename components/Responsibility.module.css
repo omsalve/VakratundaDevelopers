@@ -317,6 +317,14 @@
   margin-top: clamp(var(--space-9), 6vw, var(--space-11));
 }
 
+/* The counter-space the coda leaves: columns 1–6, ranged to the field's near
+   edge and sitting on the coda's last line rather than above it. */
+.onward {
+  grid-column: 1 / 7;
+  justify-self: start;
+  align-self: end;
+}
+
 .coda {
   grid-column: 7 / -1;
   font-family: var(--font-display);
@@ -400,8 +408,19 @@
 
   .envLead,
   .commitments,
-  .coda {
+  .coda,
+  .onward {
     grid-column: 1;
+  }
+
+  /* One column, and the sentence still comes before the way out of it. */
+  .coda {
+    grid-row: 1;
+  }
+  .onward {
+    grid-row: 2;
+    margin-top: var(--space-6);
+    align-self: start;
   }
 
   .envLead {

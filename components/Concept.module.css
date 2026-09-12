@@ -201,6 +201,13 @@
   color: var(--text-on-cream-muted);
 }
 
+/* The mark that leaves for /about. `.shell` centres its children, so it is
+   set on the same axis the prose above it is — the one line of display face
+   under a block of body copy, which is all it needs to be seen. */
+.onward {
+  margin-top: clamp(var(--space-7), 5vw, var(--space-9));
+}
+
 /* ---- The #story landing point ------------------------------------------- */
 .anchor {
   position: absolute;

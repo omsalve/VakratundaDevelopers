@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import type { AtmosphereContent, AtmospherePlate } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import PageLink from "./PageLink";
 import Swash from "./Swash";
 import styles from "./Atmosphere.module.css";
 
@@ -308,6 +309,26 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
             <p className={styles.coda} data-reveal="up">
               {content.coda}
             </p>
+
+            {/* The two pages this section is the summary of, taken from
+                opposite ends of the same subject: what the rooms are like to
+                live in, and what the group does with the parts of a building
+                that are not rooms to live in. They sit in the coda's own
+                cell, so they travel on the copy layer's parallax with it and
+                the canvas keeps its squares — rows 52–56 are the last
+                placement on the grid and grow to take them. */}
+            <div className={styles.onward}>
+              <PageLink
+                size="sm"
+                href="/experiences"
+                label="A day in one of these homes"
+              />
+              <PageLink
+                size="sm"
+                href="/hospitality"
+                label="The parts that are not homes"
+              />
+            </div>
           </div>
         </div>
       </div>

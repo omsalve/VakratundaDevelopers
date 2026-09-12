@@ -6,6 +6,7 @@ import clsx from "clsx";
 import type { VenturesContent } from "@/lib/content";
 import { revealOnEnter, useGsapScope } from "@/lib/motion";
 import Swash from "./Swash";
+import PageLink from "./PageLink";
 import styles from "./JointVentures.module.css";
 
 /**
@@ -195,6 +196,21 @@ export function JointVentures({ content }: { content: VenturesContent }) {
           <Chevron direction="right" />
           <span className="u-visually-hidden">Next venture</span>
         </button>
+      </div>
+
+      {/* The section is about who puts money alongside the group's, so the two
+          pages written for people considering exactly that close it. Below the
+          controls rather than inside a slide: they belong to the whole set,
+          and a link that changes with the carousel is a link nobody trusts. */}
+      <div className="u-shell">
+        <div className={styles.onward}>
+          <PageLink
+            size="sm"
+            href="/investors"
+            label="The record a partner asks for"
+          />
+          <PageLink size="sm" href="/nri-corner" label="Buying from abroad" />
+        </div>
       </div>
     </section>
   );

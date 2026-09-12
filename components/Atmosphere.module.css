@@ -177,6 +177,18 @@
   text-wrap: pretty;
 }
 
+/* The two ways out, stacked under the coda and ranged to its left edge — the
+   coda is the section's last SENTENCE, and these are what it is a summary of.
+   Set at `sm` so the pair reads as a pair rather than as two more headings.
+   ========================================================================== */
+.onward {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: var(--space-4);
+  margin-top: clamp(var(--space-6), 3.2cqw, var(--space-8));
+}
+
 /* ==========================================================================
    Frames
    ========================================================================== */

@@ -257,6 +257,29 @@
   color: var(--cream-100);
 }
 
+/* ---- The ways out -------------------------------------------------------
+   Centred, because the controls directly above them are: the foot of this
+   section is the one axis on the page the visitor already has their eye on.
+   They wrap to a column before they ever crowd each other. */
+.onward {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-5) clamp(var(--space-7), 6vw, var(--space-10));
+  margin-top: clamp(var(--space-7), 5vw, var(--space-9));
+}
+
+/* Stacked, the two marks share a left edge and the PAIR is what is centred —
+   centring each of them separately staggers two rules that are meant to be
+   read as one gesture. */
+@media (max-width: 47.99rem) {
+  .onward {
+    flex-direction: column;
+    align-items: start;
+    width: fit-content;
+    margin-inline: auto;
+  }
+}
+
 /* ---- The controls ------------------------------------------------------- */
 .controls {
   display: flex;

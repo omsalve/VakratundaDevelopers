@@ -6,6 +6,7 @@ import type { ConceptContent } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
 import ConceptShowcase from "./ConceptShowcase";
 import Legacy from "./Legacy";
+import PageLink from "./PageLink";
 import { LogoMark } from "./Logo";
 import styles from "./Concept.module.css";
 
@@ -318,6 +319,18 @@ export function Concept({ content }: { content: ConceptContent }) {
               </p>
             ))}
           </div>
+
+          {/* The way out of the prose and into the long version of it. Placed
+              here rather than under Legacy because THIS is the paragraph it
+              answers: the section closes on the proof, and an offer to read
+              more set after the proof reads as a doubt about it. Outside
+              `.stack` on purpose — the stack's entrance staggers its own
+              children, and the mark brings its own. */}
+          <PageLink
+            className={styles.onward}
+            href="/about"
+            label="The practice, in full"
+          />
         </div>
 
         {/* Outside the 44rem measure the paragraphs are set to: the showcase's
