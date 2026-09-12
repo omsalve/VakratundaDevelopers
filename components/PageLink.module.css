@@ -1,0 +1,135 @@
+/* ============================================================================
+   PageLink — the mark that leaves the page
+   Built from two marks the page already makes: the rubric's drawn rose
+   hairline, and the ghost pill's travelling arrow. No plate, no border, no
+   radius — the photographs are still the only filled shapes on this site.
+   ========================================================================== */
+
+.mark {
+  /* The rule's box is always --rule-far; --rule-drawn is how much of it is
+     inked at rest. Hovering inks the remainder.
+
+     THE SCALE IS WHY THE BOX IS FIXED. An earlier pass transitioned the
+     rule's `width`, which carried the label along with it and read beautifully
+     — and was the one layout animation in a codebase that is otherwise
+     scrupulous about never writing to anything but transform. So the label is
+     now the FIXED POINT and the two marks open away from it: the rule
+     lengthens into the gap, the arrow steps off the end. Nothing reflows. */
+  --rule-far: 3.5rem;
+  --rule-drawn: 0.57;
+
+  display: inline-flex;
+  /* Ranged to the top, not centred: a label that wraps to two lines must not
+     drag the rule down to sit between them. */
+  align-items: start;
+  gap: var(--space-3);
+  max-width: 100%;
+  color: var(--text-on-navy);
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  text-decoration: none;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* Two sizes, one mark. `lead` closes a section on its own; `sm` is for the
+   rows of two, where the pair has to read as a pair rather than as two
+   headings that happen to be adjacent. */
+.lead {
+  font-size: var(--fs-h3);
+}
+
+.sm {
+  font-size: var(--fs-lead);
+  gap: var(--space-2);
+  --rule-far: 2.75rem;
+  --rule-drawn: 0.55;
+}
+
+/* ---- The rule -----------------------------------------------------------
+   Ruled open on arrival exactly as a rubric's is — clip from the left, expo
+   out — then it is the thing the hover lengthens. */
+.rule {
+  flex: none;
+  /* Half the first line's box, so the rule is on the type's midline however
+     many lines the label runs to. */
+  margin-top: calc(var(--lh-heading) * 0.5em);
+  width: var(--rule-far);
+  height: var(--hairline);
+  background: var(--accent-text);
+  transform: scaleX(var(--rule-drawn));
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.label {
+  min-width: 0;
+}
+
+/* The last word and the arrow, as one word. */
+.tail {
+  white-space: nowrap;
+}
+
+/* Sized in em, not in pixels: the label is display face at two different
+   sizes, and an arrow fixed at 16px would read as a footnote against the
+   larger one. Inline, so it sits at the end of the sentence rather than at
+   the end of the box. */
+.arrow {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.66em;
+  height: 0.66em;
+  margin-left: 0.55em;
+  /* Off the optical centre of the lowercase, which is where a cap-height box
+     centred on the line does not land. */
+  margin-bottom: 0.1em;
+  color: var(--accent-text);
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+/* ---- The advance -------------------------------------------------------- */
+.mark:hover,
+.mark:focus-visible {
+  color: var(--accent-text);
+}
+
+.mark:hover .rule,
+.mark:focus-visible .rule {
+  transform: scaleX(1);
+}
+
+/* The other half of the same opening. Far enough to read as a step rather
+   than a wobble, since it is now the only thing moving on the right. */
+.mark:hover .arrow,
+.mark:focus-visible .arrow {
+  transform: translateX(7px);
+}
+
+.mark:focus-visible {
+  outline-offset: 6px;
+}
+
+/* ---- Entrance -----------------------------------------------------------
+   Only under .motion-on: with no JavaScript the mark is already ruled, inked
+   and readable, which is the state the scope animates back to.
+
+   The draw is a clip rather than a second scale, so it composes with the
+   hover's scaleX instead of overwriting it — clip-path is resolved in the
+   element's own box, before the transform is applied. */
+:global(.motion-on) .rule {
+  clip-path: inset(0% 100% 0% 0%);
+}
+
+:global(.motion-on) .ink {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark,
+  .rule,
+  .arrow {
+    transition-duration: var(--dur-fast);
+  }
+}
