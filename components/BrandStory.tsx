@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import type { AboutPageContent } from "@/lib/pages";
-import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import { revealOnEnter, timelineOnEnter, useGsapScope } from "@/lib/motion";
 import styles from "./BrandStory.module.css";
 
 /**
@@ -31,18 +31,20 @@ export function BrandStory({
     const rootEl = root.current;
     if (!rootEl) return;
 
-    const timeline = gsap.timeline({
-      scrollTrigger: { trigger: rootEl, start: "top 84%", once: true },
-    });
-    timeline.to(`.${styles.frame}`, {
-      clipPath: "inset(0% 0% 0% 0%)",
-      duration: 0.9,
-      ease: "expo.out",
-    });
-    timeline.to(
-      `.${styles.image}`,
-      { scale: 1, duration: 1.5, ease: "expo.out" },
-      0,
+    timelineOnEnter(
+      { trigger: rootEl, start: "top 84%", once: true },
+      (timeline) => {
+        timeline.to(`.${styles.frame}`, {
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: 0.9,
+          ease: "expo.out",
+        });
+        timeline.to(
+          `.${styles.image}`,
+          { scale: 1, duration: 1.5, ease: "expo.out" },
+          0,
+        );
+      },
     );
 
     revealOnEnter(`.${styles.copy} [data-reveal]`, rootEl, {

@@ -164,7 +164,7 @@
   padding-inline: var(--gutter);
 }
 
-/* QUIETER THAN THE PAGE'S CTA, deliberately. FinalCTA's solid rose pill is
+/* QUIETER THAN THE PAGE'S CTA, deliberately. The close's solid rose pill is
    the one action the page is asking for; this is a way further into the work,
    and a second solid rose pill a few screens above it would make the two read
    as equals. An outline in the same rose says the same thing at the right

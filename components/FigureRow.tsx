@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import type { ImageAsset } from "@/lib/content";
-import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import { revealOnEnter, timelineOnEnter, useGsapScope } from "@/lib/motion";
 import styles from "./FigureRow.module.css";
 
 /**
@@ -32,18 +32,20 @@ export function FigureRow({ figures }: { figures: ImageAsset[] }) {
     for (const frame of rootEl.querySelectorAll<HTMLElement>(
       `.${styles.frame}`,
     )) {
-      const timeline = gsap.timeline({
-        scrollTrigger: { trigger: frame, start: "top 85%", once: true },
-      });
-      timeline.to(frame, {
-        clipPath: "inset(0% 0% 0% 0%)",
-        duration: 0.9,
-        ease: "expo.out",
-      });
-      timeline.to(
-        frame.querySelector(`.${styles.image}`),
-        { scale: 1, duration: 1.5, ease: "expo.out" },
-        0,
+      timelineOnEnter(
+        { trigger: frame, start: "top 85%", once: true },
+        (timeline) => {
+          timeline.to(frame, {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 0.9,
+            ease: "expo.out",
+          });
+          timeline.to(
+            frame.querySelector(`.${styles.image}`),
+            { scale: 1, duration: 1.5, ease: "expo.out" },
+            0,
+          );
+        },
       );
     }
 

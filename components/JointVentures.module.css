@@ -262,21 +262,23 @@
    section is the one axis on the page the visitor already has their eye on.
    They wrap to a column before they ever crowd each other. */
 .onward {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-5) clamp(var(--space-7), 6vw, var(--space-10));
-  margin-top: clamp(var(--space-7), 5vw, var(--space-9));
+  /* A grid rather than a flex row, so the two marks are the same width at
+     every viewport: each is a ruled row terminated by a ring, and a pair of
+     those only reads as a pair when both rules end on the same line. */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) clamp(var(--space-7), 6vw, var(--space-10));
+  max-width: 60rem;
+  margin: clamp(var(--space-7), 5vw, var(--space-9)) auto 0;
 }
 
-/* Stacked, the two marks share a left edge and the PAIR is what is centred —
+/* Stacked, the two marks share both edges and the PAIR is what is centred —
    centring each of them separately staggers two rules that are meant to be
    read as one gesture. */
 @media (max-width: 47.99rem) {
   .onward {
-    flex-direction: column;
-    align-items: start;
-    width: fit-content;
-    margin-inline: auto;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 30rem;
   }
 }
 

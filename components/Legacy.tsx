@@ -373,6 +373,13 @@ export function Legacy({ content }: { content: LegacyContent }) {
       breathing.forEach((tween) => tween.play());
     });
 
+    /* Now that the assembly is built and its completion is wired, measure it.
+       `timelineOnEnter` does this for the shorter timelines on the site; this
+       one is assembled over too many lines to hand to a callback, but it needs
+       the same thing — a timeline-attached trigger left unmeasured is one the
+       next trigger created in this pass will force-refresh mid-loop. */
+    tl.scrollTrigger?.refresh();
+
     // The cluster alone drifts down the scroll, against a render that is
     // pinned — which is what keeps the two reading as two planes.
     gsap.fromTo(

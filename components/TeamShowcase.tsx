@@ -722,7 +722,7 @@ function LeaderCard({
   );
 }
 
-/** The house arrow, as FinalCTA sets it. */
+/** The house arrow, as the close sets it. */
 function Arrow() {
   return (
     <svg

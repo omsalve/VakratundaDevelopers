@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { BlogPost } from "@/lib/pages";
-import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import { revealOnEnter, timelineOnEnter, useGsapScope } from "@/lib/motion";
 import styles from "./PostGrid.module.css";
 
 /**
@@ -41,18 +41,20 @@ export function PostGrid({
       for (const card of rootEl.querySelectorAll<HTMLElement>(
         `.${styles.card}`,
       )) {
-        const timeline = gsap.timeline({
-          scrollTrigger: { trigger: card, start: "top 88%", once: true },
-        });
-        timeline.to(card.querySelector(`.${styles.frame}`), {
-          clipPath: "inset(0% 0% 0% 0%)",
-          duration: 0.9,
-          ease: "expo.out",
-        });
-        timeline.to(
-          card.querySelector(`.${styles.image}`),
-          { scale: 1, duration: 1.5, ease: "expo.out" },
-          0,
+        timelineOnEnter(
+          { trigger: card, start: "top 88%", once: true },
+          (timeline) => {
+            timeline.to(card.querySelector(`.${styles.frame}`), {
+              clipPath: "inset(0% 0% 0% 0%)",
+              duration: 0.9,
+              ease: "expo.out",
+            });
+            timeline.to(
+              card.querySelector(`.${styles.image}`),
+              { scale: 1, duration: 1.5, ease: "expo.out" },
+              0,
+            );
+          },
         );
       }
 

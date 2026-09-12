@@ -457,7 +457,7 @@ function Frames({ slides }: { slides: PracticeSlide[] }) {
   );
 }
 
-/** The house arrow, as FinalCTA and the team slides set it. */
+/** The house arrow, as the close and the team slides set it. */
 function ArrowRight({ className }: { className?: string }) {
   return (
     <svg

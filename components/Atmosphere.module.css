@@ -181,11 +181,15 @@
    coda is the section's last SENTENCE, and these are what it is a summary of.
    Set at `sm` so the pair reads as a pair rather than as two more headings.
    ========================================================================== */
+/* Stretched, not ranged: the two marks share a width, so their rings land on
+   one right edge and their tracks rule to one line. Two controls at two
+   different lengths read as two sentences; two at the same length read as a
+   menu, which is what they are. */
 .onward {
   display: flex;
   flex-direction: column;
-  align-items: start;
-  gap: var(--space-4);
+  align-items: stretch;
+  gap: var(--space-6);
   margin-top: clamp(var(--space-6), 3.2cqw, var(--space-8));
 }
 

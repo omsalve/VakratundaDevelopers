@@ -1,6 +1,5 @@
-import type { Cta, NavLink } from "@/lib/content";
+import type { Cta, FinalCtaContent, NavLink } from "@/lib/content";
 import type { LegalPageContent } from "@/lib/pages";
-import FinalCTA from "./FinalCTA";
 import PageHero from "./PageHero";
 import PageSection from "./PageSection";
 import PageShell from "./PageShell";
@@ -27,18 +26,16 @@ export function LegalPage({
 }: {
   content: LegalPageContent;
   nav: { links: NavLink[]; cta: Cta };
-  finalCta: React.ComponentProps<typeof FinalCTA>["content"];
+  finalCta: FinalCtaContent;
   legal: string;
 }) {
   return (
-    <PageShell nav={nav}>
+    <PageShell nav={nav} close={{ content: finalCta, legal }}>
       <PageHero content={content.hero} />
 
       <PageSection ground="cream" size="lg">
         <ProseDoc doc={content.doc} />
       </PageSection>
-
-      <FinalCTA content={finalCta} legal={legal} />
     </PageShell>
   );
 }

@@ -73,25 +73,34 @@
 
 /* ---- The render ---------------------------------------------------------- */
 
-/* The whole picture, with its own bottom-left corner set on the section's.
-   Flush left because the band is full width and this is not inside the shell;
-   flush bottom because the negative margin cancels the story section's
-   trailing padding, so the render meets the navy below it with no cream
-   between. No mask and no window — the picture is not cropped. */
+/* The whole picture, with its own bottom-RIGHT corner set on the section's.
+   Flush right because the render is wider than the band and the subject now
+   stands on the right of the frame: aligning the far edges spills the 7vw of
+   overflow off the LEFT, where the file holds nothing but treeline and ground,
+   instead of shearing the tower off the right. Flush bottom because the
+   negative margin cancels the story section's trailing padding, so the render
+   meets the navy below it with no cream between. No mask and no window — the
+   picture is not cropped. */
 .plate {
   position: relative;
   width: 100%;
-  /* Pulled up by a little less than the height of the file's own empty sky, so
-     the shell still sits over nothing but a clear band of sky is left between
-     the copy and the roofline. The figure is a fraction of `--render-width`
-     rather than a length, so the overlap stays proportional as the render
-     scales. The building's one piece of content up there is the slab at the
-     far left, which is clear of both the copy and the cluster. */
-  margin: calc(var(--render-width) * -0.15) 0 calc(var(--section-pad) * -1);
+  display: flex;
+  justify-content: flex-end;
+  /* No pull-up. The old render was sky across its whole top edge, so the shell
+     could sit 15% of `--render-width` down into it; this one puts the tower's
+     roofline 4.5% from the top of the file, and any overlap at all drives the
+     tower through the cluster. The file's own empty sky — 3.5vw at the current
+     render width — is the clear band between the copy and the roofline now,
+     which is what the overlap was buying in the first place. */
+  margin: 0 0 calc(var(--section-pad) * -1);
 }
 
-/* The entrance owns this element's transform, and nothing else does. */
+/* The entrance owns this element's transform, and nothing else does.
+   `flex: none` because the plate is a flex row now: without it the default
+   `flex-shrink: 1` would pull the render back to the band's own width and
+   quietly undo `--render-width`. */
 .plateInner {
+  flex: none;
   will-change: transform;
 }
 
