@@ -130,12 +130,19 @@ export function ArcTransition({ children, className, interstitial }: Props) {
     gsap
       .timeline({
         scrollTrigger: {
+          // Below 60rem there is no held frame above to open against, so the
+          // arc starts as soon as the runway enters from the bottom rather than
+          // once it has stuck — otherwise the stage scrolls in as a full screen
+          // of plain navy before anything happens on it.
           // The runway's own range: it sticks when its top reaches the top of
           // the window and releases when its bottom reaches the bottom, which
           // is exactly the ARC_RUN viewports the stage is held for. Stated
           // once, here, rather than restated as a number in the stylesheet.
           trigger: runway,
-          start: "top top",
+          start: () =>
+            window.matchMedia("(min-width: 60rem)").matches
+              ? "top top"
+              : "top bottom",
           end: "bottom bottom",
           // A long scrub. The arc lags the wheel by a beat and eases to rest
           // whenever scrolling stops, which is most of what reads as
@@ -169,30 +176,24 @@ export function ArcTransition({ children, className, interstitial }: Props) {
 
       /* THE SENTENCE, if there is one. It arrives only once the cream has
          taken most of the frame — a line fading up through a disc that is
-         still growing under it reads as a caption on the wipe — and it has
-         left before the runway ends, so the section below still rises into
-         an open field.
+         still growing under it reads as a caption on the wipe — and then it STAYS, riding the stage up and out of frame while the
+         section below rises in behind it. Fading it out first left a whole
+         screen of empty cream between the two.
 
-         BOTH BEATS ARE SLOW, and both are a quarter of the arc rather than a
-         tenth of it. The line is the only thing on the screen at that point;
-         a fast entrance on an empty cream field is the one place on the page
-         where haste has nowhere to hide. It settles out of a slight overscale
-         on `expo.out` — the ease every other entrance on the site uses — and
-         leaves on a sine, which has no attack at all.
+         THE ENTRANCE IS SLOW, a quarter of the arc rather than a tenth of it.
+         The line is the only thing on the screen at that point; a fast
+         entrance on an empty cream field is the one place on the page where
+         haste has nowhere to hide. It settles out of a slight overscale on
+         `expo.out` — the ease every other entrance on the site uses.
 
-         Both sit inside the arc's own 0.86, so the timeline is not one unit
-         longer than it was without them and the disc still opens across
+         It sits inside the arc's own 0.86, so the timeline is not one unit
+         longer than it was without it and the disc still opens across
          precisely the scroll it opened across before. */
       .fromTo(
         line.current,
         { opacity: 0, y: 44, scale: 1.045 },
         { opacity: 1, y: 0, scale: 1, duration: 0.22, ease: "expo.out" },
         0.44,
-      )
-      .to(
-        line.current,
-        { opacity: 0, y: -30, scale: 0.985, duration: 0.16, ease: "sine.in" },
-        0.7,
       );
 
     measure();

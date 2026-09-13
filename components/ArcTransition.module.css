@@ -98,6 +98,16 @@
   }
 }
 
+/* Below 60rem the runway opens on the page's own navy with nothing held
+   behind it, so the full span was two and a half screens of empty ground on
+   a phone. Two viewports is the whole runway there — one of arc, one of
+   stage — and the ScrollTrigger reads the box, so nothing else re-times. */
+@media (max-width: 59.99rem) {
+  :global(.motion-on) .reveal {
+    height: calc(min(var(--arc-span), 2) * 100svh);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Belt and braces: `motion-on` is never set under reduced motion, so none of
      the above applies in the first place. This only matters if the preference
@@ -141,8 +151,8 @@
    is driven by the SHORTER viewport axis so the tower is sized by the frame
    it has to fill rather than by the width alone — a wide, short window is
    exactly where a vw-only figure sets a five-line stack taller than the
-   screen. The 8rem ceiling holds it in reach of the type scale at the top
-   end; the 2.75rem floor is --fs-display's own.
+   screen. The 6rem ceiling is --fs-display's own, and 9.5vh keeps the whole
+   tower and its subtext inside the part of the stage the header leaves clear.
 
    `1lh` is not used anywhere here: the line box is set by --lh-tight and the
    words are single lines by construction, so there is nothing to derive. */
@@ -152,7 +162,7 @@
   align-items: center;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, min(11.5vw, 15.5vh), 8rem);
+  font-size: clamp(2.5rem, min(8vw, 9.5vh), 6rem);
   line-height: 0.92;
   color: var(--text-on-cream);
 }
@@ -174,10 +184,10 @@
 .lockupSwash {
   display: block;
   text-transform: none;
-  font-size: 1.34em;
+  font-size: 1.2em;
   line-height: 0.94;
   letter-spacing: -0.015em;
-  margin-block-start: -0.14em;
+  margin-block-start: -0.1em;
   /* The descenders of the italic — the 'p' and 'j' of "projects" — are what
      the subtext below has to clear. Padding, not margin, so the gap the shell
      sets is measured from the ink rather than from the em box. */
@@ -192,12 +202,12 @@
 }
 
 /* Quiet, and deliberately not a standfirst. The tower above it is the
-   statement; this is the line that says what the section below is. Set at
-   body size rather than lead size — a lead under a 8rem lockup is two
-   headlines. */
+   statement; this is the line that says what the section below is. At lead
+   size and wide enough to hold one line on a desktop: at body size under the
+   tower it read as a footnote, and broke into two ragged lines. */
 .interstitialSubtext {
-  max-width: 34ch;
-  font-size: var(--fs-body);
+  max-width: 46ch;
+  font-size: var(--fs-lead);
   line-height: var(--lh-lead);
   color: var(--text-on-cream-muted);
   text-wrap: pretty;
@@ -213,7 +223,9 @@
   inset: 0;
   display: grid;
   place-content: center;
-  padding-block: 0;
+  /* Centred in what the fixed header leaves visible, not in the whole stage,
+     or the tower's first word sits up under the header bar. */
+  padding-block: var(--header-h) 0;
   background: none;
   opacity: 0;
   pointer-events: none;
