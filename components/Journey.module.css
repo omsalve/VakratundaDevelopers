@@ -176,6 +176,10 @@
   grid-template-rows: 1fr auto;
   gap: var(--space-7);
   width: 100%;
+  /* The shell's content width, so the credentials band ends on the same two
+     lines as the header's brand mark and its Contact pill above it. */
+  max-width: calc(var(--maxw) - var(--gutter) * 2);
+  margin-inline: auto;
   /* A grid item's automatic minimum is the min-content width of what is in
      it, and the credentials do not wrap inside themselves. Without this the
      band sets the width of the whole panel on a phone and everything in the
@@ -202,12 +206,12 @@
   opacity: 0.9;
 }
 
-/* One heading, three parts. --fs-hero is deliberately well past the page's
-   --fs-display: this is the one place on the site where the type IS the
-   image, and at --fs-display it would read as a headline sitting on a
-   photograph instead. */
+/* One heading, three parts. --fs-hero is the brief's first-viewport figure,
+   clamp(2.75rem, 6.2vw, 6rem): the one place the type IS the image, held at
+   the display ceiling so the mark, standfirst, action and credentials band
+   share the frame in proportion instead of the title crowding them out. */
 .title {
-  --fs-hero: clamp(2.6rem, 7.4vw, 9rem);
+  --fs-hero: clamp(2.75rem, 6.2vw, 6rem);
   display: flex;
   flex-direction: column;
   align-items: center;

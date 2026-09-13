@@ -10,7 +10,7 @@
 .showcase {
   /* The plate's width, in one place: the frame is set from it and the caption
      is measured against it, so the two cannot drift apart. */
-  --plate-w: clamp(15rem, 20vw, 18rem);
+  --plate-w: clamp(16rem, 26vw, 24rem);
 
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@
 .heading {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(3.25rem, 1.5rem + 9vw, 8.5rem);
+  font-size: clamp(3rem, 1.4rem + 5.4vw, 6rem);
   line-height: 0.94;
   letter-spacing: -0.03em;
   font-weight: 400;
@@ -218,6 +218,7 @@
   .showcase {
     gap: var(--space-4);
     margin-top: var(--space-9);
+    --plate-w: 20rem;
   }
   .heading {
     font-size: clamp(2.75rem, 12vw, 4.5rem);

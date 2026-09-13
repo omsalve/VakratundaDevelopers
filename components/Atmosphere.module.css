@@ -26,7 +26,7 @@
   /* Opens on the field of cream the arc above has already cleared. It closes
      on nothing: the team below opens on --section-pad-lg of its own, and two
      intervals end to end would be a hole rather than a breath. */
-  padding-block: var(--section-pad-lg) 0;
+  padding-block: var(--section-pad) 0;
 }
 
 .shell {
@@ -86,7 +86,7 @@
 .headline {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6cqw, 4.75rem);
+  font-size: clamp(2.5rem, 5.2cqw, 4.5rem);
   line-height: 1.03;
   letter-spacing: var(--tracking-display);
   color: var(--text-on-cream);
@@ -367,10 +367,14 @@
      it is a crop — so the terrace now clears the lounge by a row, and every
      photograph in the section can still be seen as the thing it is. */
 
+  /* Sat on the headline's own shoulder, not three rows above it: a label
+     that floats a hand's width clear of the words it labels reads as a
+     separate thing. */
   .eyebrow {
-    grid-column: 1 / 5;
-    grid-row: 2 / 4;
-    align-self: start;
+    grid-column: 1 / 7;
+    grid-row: 4 / 5;
+    align-self: end;
+    padding-block-end: var(--space-5);
   }
 
   .deck {
@@ -466,22 +470,10 @@
     box-shadow: 0 34px 84px -34px rgba(15, 20, 48, 0.5);
   }
 
-  /* ---- The margin breaks ------------------------------------------------
-     FOUR, AND NONE OF THEM MORE THAN HALF A GUTTER. Enough to read as a
-     decision — the eye catches an edge that does not line up with the ones
-     above it — and not enough to reach the edge of the window at any width,
-     so a break here can never become a horizontal overflow. The two frames
-     that break right are the two on the right of the composition, and the
-     one that breaks left is the widest thing on the left. */
-  .deck,
-  .lounge,
-  .terraceNote {
-    margin-inline-end: calc(var(--gutter) * -0.5);
-  }
-
-  .glass {
-    margin-inline-start: calc(var(--gutter) * -0.5);
-  }
+  /* ---- No margin breaks ------------------------------------------------
+     Every plate and every block of type stands on the shell's own two edges,
+     the same lines the header, the section heads and the rails range on. A
+     half-gutter break read as a misalignment against those, not a decision. */
 
   /* ---- Frames on the canvas ---------------------------------------------
      The figure's box IS the plate here: the sway's widths are dropped, and
