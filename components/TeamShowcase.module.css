@@ -260,7 +260,7 @@
 }
 
 .personPlate {
-  width: clamp(5rem, 8vw, 7.25rem);
+  width: clamp(5.5rem, 9vw, 8rem);
   margin-bottom: var(--space-2);
 }
 
@@ -555,6 +555,13 @@
   /* The disclosure lies over its own column here; see the note on `.panel`.
      `.person` is already the panel's containing block — it is positioned in
      the base rule — so all this layer adds is the raise over its siblings. */
+  /* The motion `.panel` rule below sets `display: flex` at the same weight
+     as the base `.panel[hidden]`, and wins by coming later — so every bio
+     stood open over its card from the first frame. This outranks both. */
+  :global(.motion-on) .panel[hidden] {
+    display: none;
+  }
+
   :global(.motion-on) .isOpen {
     z-index: 5;
   }

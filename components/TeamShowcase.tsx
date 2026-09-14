@@ -208,7 +208,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
        one entrance both layouts share. */
     revealOnEnter(`.${styles.introReveal} > *`, section, {
       stagger: 0.09,
-      start: "top 42%",
+      start: "top 78%",
     });
 
     const mm = gsap.matchMedia();
