@@ -11,6 +11,11 @@ export function swashHeading(
   name: string,
   label: string,
   defaults?: { before?: string; swash?: string; after?: string },
+  /**
+   * `required: false` for globals whose every field falls back to shipped
+   * copy — a required italic word would block saving an unrelated tab.
+   */
+  options?: { required?: boolean },
 ): Field {
   return {
     name,
@@ -35,7 +40,7 @@ export function swashHeading(
             name: "swash",
             type: "text",
             label: "Italic word",
-            required: true,
+            required: options?.required ?? true,
             defaultValue: defaults?.swash,
             admin: { width: "32%" },
           },
@@ -56,12 +61,13 @@ export function swashHeading(
 export function textLines(
   name: string,
   label: string,
-  options?: { multiline?: boolean; description?: string },
+  options?: { multiline?: boolean; description?: string; minRows?: number },
 ): Field {
   return {
     name,
     type: "array",
     label,
+    minRows: options?.minRows,
     admin: { description: options?.description },
     // Split rather than a ternary on `type`: Field is a discriminated union,
     // so the tag has to be a literal for the rest of the shape to narrow.

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 
 import { swashHeading, textLines } from "../fields/swashHeading";
+import { revalidateCollection } from "../lib/cms/revalidate";
 
 /**
  * One document per address.
@@ -21,6 +22,8 @@ export const Projects: CollectionConfig = {
       "Every Vakratunda address. Order controls where a project sits in the home-page rail.",
   },
   defaultSort: "order",
+  // The home-page rail and the /projects field both read this collection.
+  hooks: revalidateCollection(() => [{ path: "/" }, { path: "/projects" }]),
   fields: [
     {
       type: "tabs",

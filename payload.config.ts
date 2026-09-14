@@ -8,8 +8,10 @@ import sharp from "sharp";
 
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
+import { Posts } from "./collections/Posts";
 import { Projects } from "./collections/Projects";
 import { Home } from "./globals/Home";
+import { pageGlobals } from "./globals/pages";
 import { cloudinaryAdapter } from "./lib/cloudinaryAdapter";
 
 const filename = fileURLToPath(import.meta.url);
@@ -22,8 +24,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Projects],
-  globals: [Home],
+  collections: [Users, Media, Projects, Posts],
+  globals: [Home, ...pageGlobals],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

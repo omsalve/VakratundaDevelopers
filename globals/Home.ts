@@ -1,6 +1,8 @@
 import type { GlobalConfig } from "payload";
 
+import { seoTab } from "../fields/pageFields";
 import { swashHeading, textLines } from "../fields/swashHeading";
+import { revalidateGlobal } from "../lib/cms/revalidate";
 
 /**
  * The home page, section by section.
@@ -21,6 +23,9 @@ export const Home: GlobalConfig = {
     description:
       "Leave any field blank to fall back to the copy shipped in lib/content.ts.",
   },
+  // The masthead and the close render on every page, so a save revalidates
+  // them all rather than only "/".
+  hooks: { afterChange: [revalidateGlobal({ path: "/", type: "layout" })] },
   fields: [
     {
       type: "tabs",
@@ -567,6 +572,12 @@ export const Home: GlobalConfig = {
             },
           ],
         },
+
+        /* ---------------------------------------------------------- SEO */
+        seoTab({
+          titleDescription:
+            "The home page's full title, used exactly as written — the site name is not appended to it.",
+        }),
       ],
     },
   ],
