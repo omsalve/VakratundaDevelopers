@@ -3,8 +3,8 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import PostGrid from "@/components/PostGrid";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { blogPage as page } from "@/lib/pages";
+import { getBlogPosts } from "@/lib/getBlogPosts";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Blogs.
@@ -13,30 +13,32 @@ import { blogPage as page } from "@/lib/pages";
  * date and category on the hairline under it, the title, the excerpt — the
  * same card the portfolio uses, on the same two-rate entrance.
  *
- * ⚠️ THE PHOTOGRAPHS ARE THE GROUP'S OWN PROJECTS, standing in as editorial
- * imagery for the subject each piece covers rather than illustrating a
- * specific claim in it. They are not stock. When the office supplies proper
- * article imagery, swap `image` on each post — one edit each, same fields.
+ * ⚠️ THE SHIPPED PHOTOGRAPHS ARE THE GROUP'S OWN PROJECTS, standing in as
+ * editorial imagery for the subject each piece covers rather than illustrating
+ * a specific claim in it. They are not stock. Articles published in /admin
+ * carry their own card photograph.
  *
- * Every card goes somewhere real, because /blogs/[slug] renders the same body.
+ * Content: the articles are the `posts` collection (lib/getBlogPosts.ts); the
+ * chrome around them is the `blog-page` global. Every card goes somewhere
+ * real, because /blogs/[slug] reads the same source.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Blogs",
-  description:
-    "Notes from Vakratunda's drawing office on society redevelopment, reading a RERA registration, and buying Indian property from abroad.",
-  alternates: { canonical: "/blogs" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("blog", "/blogs");
+}
 
 export default async function BlogsPage() {
-  const content = await getSiteContent();
+  const [{ site, page }, posts] = await Promise.all([
+    getStandingPage("blog"),
+    getBlogPosts(),
+  ]);
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 
@@ -44,12 +46,12 @@ export default async function BlogsPage() {
         id="articles"
         ground="cream"
         size="lg"
-        label="Writing"
-        heading={{ before: "Everything ", swash: "published", after: " so far" }}
-        standfirst="Three pieces, each answering a question the office is asked most weeks."
+        label={page.listing.label}
+        heading={page.listing.heading}
+        standfirst={page.listing.standfirst}
       >
         <div className="u-shell">
-          <PostGrid posts={page.posts} note={page.note} />
+          <PostGrid posts={posts} note={page.note} />
         </div>
       </PageSection>
     </PageShell>

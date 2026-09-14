@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     projects: Project;
+    posts: Post;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -91,9 +93,39 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     home: Home;
+    'about-page': AboutPage;
+    'projects-page': ProjectsPage;
+    'sustainability-page': SustainabilityPage;
+    'experiences-page': ExperiencesPage;
+    'hospitality-page': HospitalityPage;
+    'nri-page': NriPage;
+    'investors-page': InvestorsPage;
+    'press-page': PressPage;
+    'awards-page': AwardsPage;
+    'blog-page': BlogPage;
+    'careers-page': CareersPage;
+    'contact-page': ContactPage;
+    'terms-page': TermsPage;
+    'disclaimer-page': DisclaimerPage;
+    'grievance-page': GrievancePage;
   };
   globalsSelect: {
     home: HomeSelect<false> | HomeSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
+    'sustainability-page': SustainabilityPageSelect<false> | SustainabilityPageSelect<true>;
+    'experiences-page': ExperiencesPageSelect<false> | ExperiencesPageSelect<true>;
+    'hospitality-page': HospitalityPageSelect<false> | HospitalityPageSelect<true>;
+    'nri-page': NriPageSelect<false> | NriPageSelect<true>;
+    'investors-page': InvestorsPageSelect<false> | InvestorsPageSelect<true>;
+    'press-page': PressPageSelect<false> | PressPageSelect<true>;
+    'awards-page': AwardsPageSelect<false> | AwardsPageSelect<true>;
+    'blog-page': BlogPageSelect<false> | BlogPageSelect<true>;
+    'careers-page': CareersPageSelect<false> | CareersPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'terms-page': TermsPageSelect<false> | TermsPageSelect<true>;
+    'disclaimer-page': DisclaimerPageSelect<false> | DisclaimerPageSelect<true>;
+    'grievance-page': GrievancePageSelect<false> | GrievancePageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -235,6 +267,84 @@ export interface Project {
   createdAt: string;
 }
 /**
+ * Articles under /blogs, newest first by their publish date.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  /**
+   * As it reads on the listing card.
+   */
+  title: string;
+  /**
+   * The URL after /blogs/. Filled from the title if left empty.
+   */
+  slug: string;
+  /**
+   * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+   */
+  swashTitle: {
+    before?: string | null;
+    swash: string;
+    after?: string | null;
+  };
+  category: string;
+  readingTime: string;
+  publishedAt: string;
+  /**
+   * Two sentences. Shown on the card and under the article's headline.
+   */
+  excerpt: string;
+  /**
+   * Portrait, 4:5. 1600 × 2000 or larger.
+   */
+  image: number | Media;
+  /**
+   * Numbered in order. Each section takes paragraphs, a list of points, or both.
+   */
+  sections?:
+    | {
+        heading: string;
+        body?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        list?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * Leave blank to use the article's title. The site name is appended to it.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -269,6 +379,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -399,6 +513,55 @@ export interface ProjectsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  swashTitle?:
+    | T
+    | {
+        before?: T;
+        swash?: T;
+        after?: T;
+      };
+  category?: T;
+  readingTime?: T;
+  publishedAt?: T;
+  excerpt?: T;
+  image?: T;
+  sections?:
+    | T
+    | {
+        heading?: T;
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        list?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -672,6 +835,1663 @@ export interface Home {
       | null;
   };
   legal?: string | null;
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The home page's full title, used exactly as written — the site name is not appended to it.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /about page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  story?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Three paragraphs is what the band is set for.
+     */
+    body?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Portrait. Shown beside the paragraphs.
+     */
+    image?: (number | null) | Media;
+    imageCaption?: string | null;
+    /**
+     * The one sentence that closes the paragraphs.
+     */
+    pullquote?: string | null;
+  };
+  principles?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /projects page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page".
+ */
+export interface ProjectsPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  filterLabel?: string | null;
+  allLabel?: string | null;
+  emptyMessage?: string | null;
+  note?: string | null;
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /sustainability page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sustainability-page".
+ */
+export interface SustainabilityPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  environment?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    lead?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          icon?: ('green' | 'rainwater' | 'waste' | 'energy') | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  coda?: string | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /experiences page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences-page".
+ */
+export interface ExperiencesPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  day?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    figures?:
+      | {
+          image: number | Media;
+          caption?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  standard?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  coda?: string | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /hospitality page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hospitality-page".
+ */
+export interface HospitalityPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  story?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Three paragraphs is what the band is set for.
+     */
+    body?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Portrait. Shown beside the paragraphs.
+     */
+    image?: (number | null) | Media;
+    imageCaption?: string | null;
+    /**
+     * The one sentence that closes the paragraphs.
+     */
+    pullquote?: string | null;
+  };
+  offer?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Digits, with at most one decimal. Three or four read best.
+   */
+  stats?:
+    | {
+        value: string;
+        suffix?: string | null;
+        unit?: string | null;
+        note: string;
+        id?: string | null;
+      }[]
+    | null;
+  coda?: string | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /nri-corner page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nri-page".
+ */
+export interface NriPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  steps?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  faqs?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    items?:
+      | {
+          question: string;
+          answer?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  disclaimer?: string | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /investors page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "investors-page".
+ */
+export interface InvestorsPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  statsLabel?: string | null;
+  /**
+   * Digits, with at most one decimal. Three or four read best.
+   */
+  stats?:
+    | {
+        value: string;
+        suffix?: string | null;
+        unit?: string | null;
+        note: string;
+        id?: string | null;
+      }[]
+    | null;
+  governance?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  documents?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  coda?: string | null;
+  cta?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /press page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "press-page".
+ */
+export interface PressPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  coverage?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  enquiries?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /awards page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "awards-page".
+ */
+export interface AwardsPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  awards?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  certifications?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  coda?: string | null;
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /blogs page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page".
+ */
+export interface BlogPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  listing?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+  };
+  note?: string | null;
+  /**
+   * Shared by every article page.
+   */
+  article?: {
+    contentsLabel?: string | null;
+    updatedLabel?: string | null;
+    byline?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    backCta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /careers page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page".
+ */
+export interface CareersPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  culture?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Digits, with at most one decimal. Three or four read best.
+   */
+  stats?:
+    | {
+        value: string;
+        suffix?: string | null;
+        unit?: string | null;
+        note: string;
+        id?: string | null;
+      }[]
+    | null;
+  roles?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  process?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The eyebrow is the short line above the title — a place, a step number, a standard.
+     */
+    items?:
+      | {
+          eyebrow?: string | null;
+          title: string;
+          body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /contact page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  channels?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    entries?:
+      | {
+          meta: string;
+          title: string;
+          note?: string | null;
+          /**
+           * Leave empty for a row that is a statement of record rather than a link.
+           */
+          href?: string | null;
+          action?: string | null;
+          /**
+           * Shown in place of an action on a row with no link.
+           */
+          state?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  form?: {
+    label?: string | null;
+    heading?: string | null;
+    standfirst?: string | null;
+    note?: string | null;
+  };
+  office?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    addressLines?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    hours?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    image?: (number | null) | Media;
+    imageCaption?: string | null;
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /terms page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "terms-page".
+ */
+export interface TermsPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  doc?: {
+    /**
+     * Set this on the day the text below is approved — a date older than the text is worse than none.
+     */
+    updated?: string | null;
+    intro?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Numbered in order. Each section takes paragraphs, a list of points, or both.
+     */
+    clauses?:
+      | {
+          heading: string;
+          body?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          list?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    closing?: string | null;
+    cta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /disclaimer page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "disclaimer-page".
+ */
+export interface DisclaimerPage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  doc?: {
+    /**
+     * Set this on the day the text below is approved — a date older than the text is worse than none.
+     */
+    updated?: string | null;
+    intro?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Numbered in order. Each section takes paragraphs, a list of points, or both.
+     */
+    clauses?:
+      | {
+          heading: string;
+          body?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          list?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    closing?: string | null;
+    cta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The /grievance-redressal page. Leave any field blank to fall back to the copy shipped in lib/pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grievance-page".
+ */
+export interface GrievancePage {
+  id: number;
+  /**
+   * The rubric, headline, standfirst and credentials row at the top of the page.
+   */
+  hero?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Short items, dot-separated on the page. Three read best.
+     */
+    meta?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  doc?: {
+    /**
+     * Set this on the day the text below is approved — a date older than the text is worse than none.
+     */
+    updated?: string | null;
+    intro?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Numbered in order. Each section takes paragraphs, a list of points, or both.
+     */
+    clauses?:
+      | {
+          heading: string;
+          body?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          list?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    closing?: string | null;
+    cta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+  };
+  /**
+   * Leave any field blank to use the page's shipped title and description.
+   */
+  seo?: {
+    /**
+     * The page's own name. The site name is appended to it in the browser tab, search results and share cards.
+     */
+    title?: string | null;
+    /**
+     * Shown under the title in search results and on share cards. Around 150–160 characters.
+     */
+    description?: string | null;
+    /**
+     * 1200 × 630. Leave empty to use the site's default share card.
+     */
+    image?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -871,6 +2691,1231 @@ export interface HomeSelect<T extends boolean = true> {
             };
       };
   legal?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  story?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        imageCaption?: T;
+        pullquote?: T;
+      };
+  principles?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page_select".
+ */
+export interface ProjectsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  filterLabel?: T;
+  allLabel?: T;
+  emptyMessage?: T;
+  note?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sustainability-page_select".
+ */
+export interface SustainabilityPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  environment?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        lead?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              icon?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  coda?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experiences-page_select".
+ */
+export interface ExperiencesPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  day?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        figures?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              id?: T;
+            };
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  standard?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  coda?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hospitality-page_select".
+ */
+export interface HospitalityPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  story?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        imageCaption?: T;
+        pullquote?: T;
+      };
+  offer?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  stats?:
+    | T
+    | {
+        value?: T;
+        suffix?: T;
+        unit?: T;
+        note?: T;
+        id?: T;
+      };
+  coda?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nri-page_select".
+ */
+export interface NriPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  steps?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  faqs?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  disclaimer?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "investors-page_select".
+ */
+export interface InvestorsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  statsLabel?: T;
+  stats?:
+    | T
+    | {
+        value?: T;
+        suffix?: T;
+        unit?: T;
+        note?: T;
+        id?: T;
+      };
+  governance?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  documents?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  coda?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "press-page_select".
+ */
+export interface PressPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  coverage?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  enquiries?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "awards-page_select".
+ */
+export interface AwardsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  awards?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  certifications?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  coda?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-page_select".
+ */
+export interface BlogPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  listing?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+      };
+  note?: T;
+  article?:
+    | T
+    | {
+        contentsLabel?: T;
+        updatedLabel?: T;
+        byline?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        backCta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "careers-page_select".
+ */
+export interface CareersPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  culture?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  stats?:
+    | T
+    | {
+        value?: T;
+        suffix?: T;
+        unit?: T;
+        note?: T;
+        id?: T;
+      };
+  roles?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  process?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        items?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              body?: T;
+              id?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  channels?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        entries?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              note?: T;
+              href?: T;
+              action?: T;
+              state?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  form?:
+    | T
+    | {
+        label?: T;
+        heading?: T;
+        standfirst?: T;
+        note?: T;
+      };
+  office?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        addressLines?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        hours?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        image?: T;
+        imageCaption?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "terms-page_select".
+ */
+export interface TermsPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  doc?:
+    | T
+    | {
+        updated?: T;
+        intro?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        clauses?:
+          | T
+          | {
+              heading?: T;
+              body?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              list?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        closing?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "disclaimer-page_select".
+ */
+export interface DisclaimerPageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  doc?:
+    | T
+    | {
+        updated?: T;
+        intro?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        clauses?:
+          | T
+          | {
+              heading?: T;
+              body?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              list?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        closing?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grievance-page_select".
+ */
+export interface GrievancePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        meta?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+      };
+  doc?:
+    | T
+    | {
+        updated?: T;
+        intro?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        clauses?:
+          | T
+          | {
+              heading?: T;
+              body?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              list?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        closing?: T;
+        cta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

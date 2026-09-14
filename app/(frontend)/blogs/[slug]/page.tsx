@@ -4,8 +4,9 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import ProseDoc from "@/components/ProseDoc";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { blogPage } from "@/lib/pages";
+import { buildMetadata } from "@/lib/cms/metadata";
+import { getBlogPost, getBlogPosts } from "@/lib/getBlogPosts";
+import { getStandingPage } from "@/lib/getPageContent";
 
 /**
  * One article.
@@ -16,59 +17,55 @@ import { blogPage } from "@/lib/pages";
  * measure, an anchor per section, and no motion competing with the sentence
  * being read. The only difference is what the numbers are called.
  *
- * Every route is generated at build time from the same array the listing reads,
- * so a link on /blogs cannot point at an article that does not exist.
+ * Every article known at build time is prerendered from the same source the
+ * listing reads, so a link on /blogs cannot point at an article that does not
+ * exist. One published after the build renders on its first request and is
+ * cached from then on.
  */
 
 export const revalidate = 60;
 
-export function generateStaticParams() {
-  return blogPage.posts.map((post) => ({ slug: post.slug }));
+type Props = { params: Promise<{ slug: string }> };
+
+export async function generateStaticParams() {
+  const posts = await getBlogPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPage.posts.find((entry) => entry.slug === slug);
-  if (!post) return { title: "Not found" };
+  const post = await getBlogPost(slug);
+  if (!post) return { title: "Not found", robots: { index: false } };
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    alternates: { canonical: `/blogs/${post.slug}` },
-    openGraph: {
-      type: "article",
+  return buildMetadata(
+    post.seo ?? {
       title: post.title,
       description: post.excerpt,
+      image: post.image,
     },
-  };
+    { path: `/blogs/${post.slug}`, type: "article" },
+  );
 }
 
-export default async function ArticlePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const post = blogPage.posts.find((entry) => entry.slug === slug);
+  const [post, { site, page }] = await Promise.all([
+    getBlogPost(slug),
+    getStandingPage("blog"),
+  ]);
   if (!post) notFound();
-
-  const content = await getSiteContent();
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero
         content={{
           label: `${post.category} · ${post.readingTime}`,
           heading: post.swashTitle,
           standfirst: post.excerpt,
-          meta: [post.date, "Vakratunda Group", "Notes"],
+          meta: [post.date, ...page.article.byline].filter(Boolean),
         }}
       />
 
@@ -78,11 +75,11 @@ export default async function ArticlePage({
             updated: post.date,
             intro: [],
             clauses: post.body,
-            closing: blogPage.note,
-            cta: { label: "Read the other notes", href: "/blogs" },
+            closing: page.note,
+            cta: page.article.backCta,
           }}
-          contentsLabel="In this note"
-          updatedLabel="Published"
+          contentsLabel={page.article.contentsLabel}
+          updatedLabel={page.article.updatedLabel}
         />
       </PageSection>
     </PageShell>
