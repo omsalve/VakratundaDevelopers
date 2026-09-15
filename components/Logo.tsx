@@ -10,10 +10,11 @@ import styles from "./Logo.module.css";
  * `Brandmark.png` (858×144) — are plates: the artwork floats inside a much
  * larger transparent canvas. The mark's drawing is only 263×264 of that
  * 717×348 box, so a caller asking for a 34px mark got 12.5px of drawing and
- * 21.5px of nothing. `brand-mark.png` and `brand-wordmark.png` are those two
- * plates cropped to their own alpha bounds, so a size passed here is the size
- * that lands on the page. The originals are kept in `public/images` as the
- * source of record; nothing renders them.
+ * 21.5px of nothing. `brand-mark.png` is the mark cropped to its own alpha
+ * bounds, so a size passed here is the size that lands on the page. The
+ * originals are kept in `public/images` as the source of record; nothing
+ * renders them. The wordmark is no longer artwork: it is set in the display
+ * face, to match the hero's "find an address" line.
  *
  * ⚠️ PLACEHOLDER ART. The petal mandala is redrawn by hand from the brand
  * guide cover (CP_Final p.1). It is close, not exact. Replace it with the
@@ -29,9 +30,6 @@ import styles from "./Logo.module.css";
 
 /** The mark, cropped to its drawing. Very nearly square. */
 const MARK = { src: "/images/brand-mark.png", width: 263, height: 264 };
-
-/** The wordmark, cropped to its letterforms — so its height IS its cap height. */
-const WORDMARK = { src: "/images/brand-wordmark.png", width: 800, height: 99 };
 
 type MarkProps = {
   className?: string;
@@ -92,9 +90,8 @@ export function Logo({
   return (
     <span
       className={clsx(styles.logo, styles[layout], className)}
-      /* The wordmark is artwork now, so it cannot be sized off the inherited
-         font-size the way set type was. The mark's size is the one dimension
-         every call site already passes, so the plate is measured against it. */
+      /* The mark's size is the one dimension every call site already passes,
+         so the wordmark's type is measured against it. */
       style={
         {
           "--logo-size": typeof size === "number" ? `${size}px` : size,
@@ -105,16 +102,8 @@ export function Logo({
           whole lockup answers to one value that a media query can move. */}
       <LogoMark className={clsx(styles.markSized, markClassName)} />
       <span className={styles.wordmarkGroup}>
-        {/* The drawn wordmark from the brand guide, in place of the display
-            face set in small caps — the letterforms are the studio's own. */}
-        <img
-          className={styles.wordmark}
-          src={WORDMARK.src}
-          alt="Vakratunda"
-          width={WORDMARK.width}
-          height={WORDMARK.height}
-          draggable={false}
-        />
+        {/* Set type, in the same face as the hero's "find an address" line. */}
+        <span className={styles.wordmark}>Vakratunda</span>
         {withTagline && (
           // CP_Final p.1
           <span className={styles.tagline}>Where dreams find an address</span>

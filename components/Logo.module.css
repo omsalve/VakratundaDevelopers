@@ -50,23 +50,24 @@
   align-items: center;
 }
 
-/* The guide's own wordmark, as artwork, cropped to its letterforms — so this
-   height IS the cap height, and 0.54 is a real mark-to-cap ratio rather than a
-   number tuned against a transparent margin. It is a wide plate (800 × 99), so
-   it is driven from its height and left to take whatever width that asks for;
-   a width-first rule would make it tower over the mark beside it. */
+/* Set exactly as the hero's roman lines ("find an address"): the display face,
+   regular, uppercase, tracked in slightly. Sized off the mark so the caps land
+   at about half its height — the same ratio the old artwork plate held. */
 .wordmark {
   display: block;
-  height: calc(var(--logo-size, 40px) * 0.54);
-  width: auto;
-  object-fit: contain;
-  /* The plate carries its own rose-to-silver gradient and is drawn for the
-     navy ground both call sites stand on. */
   flex: none;
+  font-family: var(--font-display);
+  font-size: calc(var(--logo-size, 40px) * 0.7);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: inherit;
 }
 
 .stacked .wordmark {
-  height: clamp(1.2rem, 3.8vw, 2.25rem);
+  font-size: clamp(1.6rem, 5vw, 3rem);
 }
 
 .tagline {

@@ -119,18 +119,15 @@
 
 /* The name, alone. It carried label scale when it was one of two words
    flanking the mark; standing under the mark on an empty field of cream it is
-   the base the monument sits on, and it is set to be read as one — open
-   tracking, small caps, no more weight than the line-work above it. */
+   the base the monument sits on, and it is set to be read as one — in the
+   hero's face and case, no more weight than the line-work above it. */
 .word {
   font-family: var(--font-display);
-  font-size: clamp(1.05rem, 0.6rem + 1.6vw, 1.9rem);
+  font-size: clamp(1.5rem, 0.9rem + 2.4vw, 2.75rem);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.34em;
-  /* Tracking is added AFTER the last glyph too, so a centred word sits half a
-     step left of the axis it is supposed to stand on. The indent gives that
-     step back — the same correction `.captionLine` below makes. */
-  text-indent: 0.34em;
+  /* Matches the wordmark in Logo.module.css and the hero's roman lines. */
+  letter-spacing: -0.012em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -163,12 +160,14 @@
   color: var(--text-on-cream);
 }
 
+/* Set as the hero's roman lines ("find an address"): the display face,
+   regular, uppercase, tracked in slightly. */
 .captionLine {
   font-family: var(--font-display);
-  font-size: clamp(0.8125rem, 0.7rem + 0.5vw, 1.05rem);
-  line-height: 1.25;
-  letter-spacing: 0.22em;
-  text-indent: 0.22em;
+  font-size: clamp(1rem, 0.8rem + 0.8vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
   text-transform: uppercase;
 }
 
