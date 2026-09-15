@@ -9,10 +9,9 @@ import styles from "./LedgerList.module.css";
  * A ledger: rows ruled across the field, each one a date or a year in the
  * left-hand column and the thing it refers to in the right.
  *
- * IT IS THE SITE'S RULE, NOT A TABLE. The landing page's responsibility band
- * carries its second school as a single ruled entry rather than a card,
- * because a list of records is not a set of things to compare — it is a
- * sequence to read down. This is that entry, repeated: one hairline per row,
+ * IT IS THE SITE'S RULE, NOT A TABLE. A list of records is not a set of things
+ * to compare — it is a sequence to read down — so each record is a single
+ * ruled entry rather than a card, repeated: one hairline per row,
  * two columns, no zebra striping, no borders down the sides.
  *
  * A ROW WITH NO `href` IS NOT A DEAD LINK. Press cuttings that are not online,

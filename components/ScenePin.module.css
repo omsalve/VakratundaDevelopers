@@ -360,11 +360,13 @@
     --node-size: 28px;
   }
 
+  /* --nudge-x is measured on open (ScenePin.tsx): a pin carried to the edge
+     of the window by the tour would otherwise hang its card off the glass. */
   .right .card,
   .left .card {
     left: 50%;
     right: auto;
-    translate: -50% 0;
+    translate: calc(-50% + var(--nudge-x, 0px)) 0;
     width: min(20rem, 80vw);
   }
 }

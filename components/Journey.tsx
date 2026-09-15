@@ -124,6 +124,36 @@ const BACKDROP_TRAVEL = -(1 - 1 / BACKDROP_SPAN) * 100;
  */
 const BACKDROP_DESCENT = 3;
 
+/** The camera push-in the hero departure ends on. The tour reads it too. */
+const PUSH_SCALE = 1.06;
+
+/**
+ * THE TRACKING SHOT, for frames too narrow to hold every pin at once.
+ *
+ * The photograph is laid out BACKDROP_SPAN viewports tall and covered, so on
+ * a portrait window it is painted several windows wide and the crop throws
+ * away its sides — on a 390px phone only the middle quarter is on screen, and
+ * five of the six pins are standing on subjects nobody can see.
+ *
+ * So when the pins do not fit, the camera travels across the terrace as well
+ * as down it: on the hero's way out it turns toward the leftmost pins, holds
+ * there while the terrace arrives, and then tracks right until the last pin
+ * is in frame — just before the story dome starts closing over the foot of
+ * the picture. Every figure below is in viewports of scroll.
+ *
+ * Nothing about it is authored per device. Whether the tour runs, and how far
+ * it travels, are measured from the frame and the pins' own coordinates, so
+ * a desktop window that already holds every pin gets no pan at all and a
+ * tablet gets a short drift.
+ */
+/** The descent is quicker on a tour: the terrace has to arrive in time for it. */
+const TOUR_DESCENT = 1.6;
+/** Where the sweep from the leftmost pins to the rightmost starts and ends. */
+const TOUR_SWEEP_FROM = 1.6;
+const TOUR_SWEEP_TO = 2.7;
+/** How far inside the window an edge pin is brought, in px. */
+const PIN_MARGIN = 48;
+
 type Props = {
   hero: HeroContent;
 };
@@ -194,20 +224,89 @@ export function Journey({ hero }: Props) {
      */
     const vh = () => window.innerHeight;
 
+    // ---- The camera's reach across the picture ---------------------------
+    // Where the travel stacks have to sit, sideways, to bring the leftmost
+    // and the rightmost pins inside the window. Measured from the frame on
+    // every call, so it follows a resize or a rotation through the refresh.
+    const frame = section.querySelector<HTMLElement>(`.${styles.viewport}`);
+    const ratio = hero.background.width / hero.background.height;
+    const pinXs = hero.pins.map((pin) => pin.x / 100);
+
+    const camera = () => {
+      const width = frame?.clientWidth ?? window.innerWidth;
+      const height = frame?.clientHeight ?? vh();
+      const painted = Math.max(width, height * BACKDROP_SPAN * ratio);
+      // How far the picture can move before one of its edges shows.
+      const reach = Math.max(0, (painted * PUSH_SCALE - width) / 2);
+      if (!pinXs.length || reach === 0) return { from: 0, to: 0, tour: false };
+
+      const clamp = gsap.utils.clamp(-reach, reach);
+      const from = clamp(
+        PIN_MARGIN - width / 2 + PUSH_SCALE * (0.5 - Math.min(...pinXs)) * painted,
+      );
+      const to = clamp(
+        width / 2 - PIN_MARGIN - PUSH_SCALE * (Math.max(...pinXs) - 0.5) * painted,
+      );
+      // Every pin fits in one frame: no tour, just the smallest correction
+      // (almost always none) that keeps them all inside it.
+      if (to >= from) {
+        const x = gsap.utils.clamp(from, to, 0);
+        return { from: x, to: x, tour: false };
+      }
+      return { from, to, tour: true };
+    };
+
     // ---- The continuous backdrop -----------------------------------------
     // One tween across everything the section is looked at: top edge of the
     // photograph at the top of the scroll, bottom edge reached just as the
-    // story dome starts closing over it. See BACKDROP_DESCENT.
+    // story dome starts closing over it. See BACKDROP_DESCENT — and
+    // TOUR_DESCENT, which a narrow frame uses instead.
     gsap.to(`.${styles.travel}`, {
       yPercent: BACKDROP_TRAVEL,
       ease: "none",
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: () => `+=${vh() * BACKDROP_DESCENT}`,
+        end: () =>
+          `+=${vh() * (camera().tour ? TOUR_DESCENT : BACKDROP_DESCENT)}`,
         scrub: true,
       },
     });
+
+    // ---- The tracking shot -------------------------------------------------
+    // Sideways, on the same two stacks. The timeline is TOUR_SWEEP_TO long
+    // and scrubbed over that many viewports, so its positions ARE viewports.
+    // Where no tour is needed both ends resolve to the same place and this
+    // does nothing. See TOUR_DESCENT.
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${vh() * TOUR_SWEEP_TO}`,
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      })
+      // As the hero leaves, the camera turns toward the leftmost pins.
+      .fromTo(
+        `.${styles.travel}`,
+        { x: 0 },
+        { x: () => camera().from, duration: 1, ease: "sine.inOut" },
+        0,
+      )
+      // It holds while the terrace arrives, then tracks across it.
+      .fromTo(
+        `.${styles.travel}`,
+        { x: () => camera().from },
+        {
+          x: () => camera().to,
+          duration: TOUR_SWEEP_TO - TOUR_SWEEP_FROM,
+          ease: "sine.inOut",
+          immediateRender: false,
+        },
+        TOUR_SWEEP_FROM,
+      );
 
     // ---- 1. Hero entrance -------------------------------------------------
     // The lockup is the moment. The two roman lines rise out of their own
@@ -256,7 +355,7 @@ export function Journey({ hero }: Props) {
       // which is what makes the two halves read as one place.
       .to(`.${styles.hero}`, { yPercent: -100, ease: "none" }, 0)
       // The camera pushes in on the photograph while it travels.
-      .to(`.${styles.push}`, { scale: 1.06, ease: "none" }, 0)
+      .to(`.${styles.push}`, { scale: PUSH_SCALE, ease: "none" }, 0)
       // The two watermark petals counter-drift against each other.
       .to(`.${styles.watermarkTop}`, { yPercent: -22, ease: "none" }, 0)
       .to(`.${styles.watermarkBottom}`, { yPercent: 16, ease: "none" }, 0)
@@ -332,7 +431,12 @@ export function Journey({ hero }: Props) {
       className={styles.journey}
       aria-labelledby="hero-title"
       data-phase="hero"
-      style={{ "--backdrop-span": BACKDROP_SPAN } as CSSProperties}
+      style={
+        {
+          "--backdrop-span": BACKDROP_SPAN,
+          "--backdrop-ratio": hero.background.width / hero.background.height,
+        } as CSSProperties
+      }
     >
       <div className={styles.viewport}>
         {/* The one continuous photograph — /public/images/mainheroimage.png,

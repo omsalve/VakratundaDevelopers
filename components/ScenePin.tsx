@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useState } from "react";
+import { useCallback, useId, useRef, useState, type CSSProperties } from "react";
 import clsx from "clsx";
 import type { ScenePin as ScenePinData } from "@/lib/content";
 import { usePopover } from "@/lib/usePopover";
@@ -47,19 +47,28 @@ type Props = {
 /** Breathing room left between the card and the edge it opens toward. */
 const EDGE = 24;
 
+/** Side margin a centred card keeps from the window on a phone, in px. */
+const GUTTER = 16;
+
+/** The stylesheet's small-screen breakpoint, where the card centres on the pin. */
+const SMALL = "(max-width: 47.99rem)";
+
 type Placement = {
   side: "left" | "right";
   drop: "up" | "down";
   /** Cap, in the card's own unscaled px. Undefined until first measured. */
   maxHeight?: number;
+  /** Sideways correction for a centred card, in its own unscaled px. */
+  nudge?: number;
 };
 
 export function ScenePin({ data }: Props) {
   const { open, toggle, close, groupRef, triggerRef } =
     usePopover<HTMLDivElement, HTMLButtonElement>();
+  const cardRef = useRef<HTMLDivElement | null>(null);
   const cardId = `pin-${useId().replace(/:/g, "")}`;
 
-  const [{ side, drop, maxHeight }, setPlacement] = useState<Placement>({
+  const [{ side, drop, maxHeight, nudge }, setPlacement] = useState<Placement>({
     side: data.x > 62 ? "left" : "right",
     drop: "down",
   });
@@ -70,16 +79,38 @@ export function ScenePin({ data }: Props) {
     // hidden and re-placing it would move it as it goes.
     if (node && !open) {
       const rect = node.getBoundingClientRect();
-      const above = rect.top - EDGE;
+      /* The masthead is fixed over the top of the window, so the room above a
+         pin ends at its foot, not at the top of the glass. */
+      const root = getComputedStyle(document.documentElement);
+      const header =
+        parseFloat(root.getPropertyValue("--header-h")) * parseFloat(root.fontSize) || 0;
+      const above = rect.top - header - EDGE;
       const below = window.innerHeight - rect.bottom - EDGE;
       /* The pin layer is scaled by the hero's camera push, so the rect is in
          painted pixels while the cap is applied in the card's own. Recover
          the factor from the node rather than hard-coding it. */
-      const scale = node.offsetWidth ? rect.width / node.offsetWidth : 1;
+      const scale = (node.offsetWidth ? rect.width / node.offsetWidth : 1) || 1;
+
+      /* On a phone the card centres on its pin, and the tour carries pins
+         right up to the edges of the window — so a card opened on one would
+         hang half off the glass. Measure where it would land and slide it back
+         inside, keeping it on the pin's side. */
+      let shift = 0;
+      const card = cardRef.current;
+      if (card && window.matchMedia(SMALL).matches) {
+        const centre = rect.left + rect.width / 2;
+        const half = (card.offsetWidth * scale) / 2;
+        const overLeft = GUTTER - (centre - half);
+        const overRight = centre + half - (window.innerWidth - GUTTER);
+        if (overLeft > 0) shift = overLeft;
+        else if (overRight > 0) shift = -overRight;
+      }
+
       setPlacement({
         side: rect.left > window.innerWidth * 0.58 ? "left" : "right",
         drop: below >= above ? "down" : "up",
-        maxHeight: Math.max(160, Math.floor(Math.max(above, below) / (scale || 1))),
+        maxHeight: Math.max(160, Math.floor(Math.max(above, below) / scale)),
+        nudge: Math.round(shift / scale),
       });
     }
     toggle();
@@ -109,8 +140,14 @@ export function ScenePin({ data }: Props) {
         id={cardId}
         role="dialog"
         aria-label={data.title}
+        ref={cardRef}
         className={styles.card}
-        style={maxHeight ? { maxHeight } : undefined}
+        style={
+          {
+            maxHeight,
+            "--nudge-x": nudge ? `${nudge}px` : undefined,
+          } as CSSProperties
+        }
         /* NOT the `hidden` attribute. The card animates open and shut, and a
            display:none default has no state to animate out of — so the closed
            state is `visibility: hidden` in the stylesheet, which takes it out

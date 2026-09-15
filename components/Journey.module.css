@@ -481,9 +481,22 @@
   height: 100svh;
 }
 
+/* At least as wide as the photograph is painted. `object-fit: cover` crops
+   INSIDE the image's own box, so a box the width of the window would throw
+   the sides of the picture away before the camera could pan to them. Sized to
+   the cover rectangle instead, the crop is done by .viewport, and a tour (see
+   Journey.tsx) can move across the whole picture. On a window that already
+   holds the full width this resolves to 100% and nothing changes. Centred
+   with `translate`, because GSAP owns `transform` here. */
 :global(.motion-on) .travel {
-  inset: auto 0 auto 0;
+  inset: auto;
   top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: max(
+    100%,
+    calc(var(--backdrop-span, 2) * 100svh * var(--backdrop-ratio, 1))
+  );
   height: calc(var(--backdrop-span, 2) * 100%);
 }
 

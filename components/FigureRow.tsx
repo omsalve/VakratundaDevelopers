@@ -14,8 +14,8 @@ import styles from "./FigureRow.module.css";
  * component rather than a copy: the mask is cut in from the frame's foot, the
  * picture eases off a small push a beat behind it, and each frame carries its
  * own trigger so a row that is taller than the window does not open its last
- * frame before it is in view. That is Responsibility's community band, stated
- * once for anything that needs it.
+ * frame before it is in view. That is the grammar Responsibility's frames
+ * use, stated once for anything that needs it.
  *
  * THE STEP IS THE POINT. A row of equal frames on one baseline is a contact
  * sheet; offsetting the second by a third of its own height makes the pair a

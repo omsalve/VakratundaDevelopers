@@ -1,5 +1,5 @@
 /* ============================================================================
-   Responsibility — five compositions, ruled across one horizon.
+   Responsibility — three compositions, ruled across one horizon.
 
    THE HORIZON IS THE WHOLE STYLESHEET. `--sky` is the one figure the section
    is built from: the fraction of the frame that sits ABOVE the ground line.
@@ -14,7 +14,7 @@
 
    TWO LAYOUTS, FROM ONE SET OF MARKUP — the house pattern:
 
-     · DEFAULT. Everything above the `@media (min-width: 64rem)` block. Five
+     · DEFAULT. Everything above the `@media (min-width: 64rem)` block. Three
        cream blocks stacked in document order, each complete, with no stage,
        no clip, no horizon, no pen and no index. This is what a visitor with no
        JavaScript sees, what a visitor who has asked for reduced motion sees,
@@ -27,7 +27,7 @@
 
    THE ONLY CONTAINERS ARE HAIRLINES, as before. No card, no panel, no radius,
    no fill. The photographs are the section's only filled shapes, which is what
-   makes them read as evidence — and on the fourth slide the four practices
+   makes them read as evidence — and on the second slide the four practices
    carry NO rule of their own at all, because the section's own ground line is
    already ruling them. That is the whole reason the horizon is there.
 
@@ -60,7 +60,7 @@
   --drawing: clamp(3.5rem, 7vw, 8rem);
 }
 
-/* The drawn rule that separates the section from the ventures above — the
+/* The drawn rule that separates the section from the school above — the
    guide's rose line-work, ranged on the shell rather than bled to the window,
    exactly as JointVentures draws its own. */
 .section::before {
@@ -137,7 +137,7 @@
   text-wrap: pretty;
 }
 
-/* ---- 2 & 3 · The schools ------------------------------------------------
+/* ---- The photograph -----------------------------------------------------
    `--cream-300` under the picture means the reserved box is part of the ground
    before the file arrives, and `overflow: hidden` is what lets the plate be
    cut in from its foot in the standing layout and hold the image's push in
@@ -174,46 +174,7 @@
   color: var(--accent-deep);
 }
 
-.name {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 1.05rem + 1.5vw, 2.5rem);
-  line-height: var(--lh-heading);
-  letter-spacing: var(--tracking-heading);
-  color: var(--text-on-cream);
-  text-wrap: balance;
-}
-
-/* The earlier school's name is four words longer and stands in a narrower
-   counter-space, so it is set a step down. That is also honest: it is the
-   secondary entry of the two, and it should look like one. */
-.earlier .name {
-  font-size: clamp(1.25rem, 0.95rem + 1vw, 1.875rem);
-}
-
-.entry {
-  display: grid;
-  gap: var(--space-4);
-}
-
-/* The place, in the swash italic — the brand's own way of qualifying a
-   name. */
-.place {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: var(--fs-lead);
-  line-height: var(--lh-caption);
-  color: var(--accent-deep);
-}
-
-.note {
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  color: var(--text-on-cream-muted);
-  max-width: 34ch;
-  text-wrap: pretty;
-}
-
-/* ---- 4 · The ground ----------------------------------------------------- */
+/* ---- 2 · The ground ----------------------------------------------------- */
 .standard {
   font-family: var(--font-display);
   font-style: italic;
@@ -269,7 +230,7 @@
   text-wrap: pretty;
 }
 
-/* ---- 5 · In closing ----------------------------------------------------- */
+/* ---- 3 · In closing ----------------------------------------------------- */
 .coda {
   font-family: var(--font-display);
   font-style: italic;
@@ -308,7 +269,7 @@
 
 /* ---- The parts that belong to the ruling -------------------------------
    None of them is rendered where there is no ruling. A ground line, a pen and
-   an index for five blocks that are all already on the page are three elements
+   an index for three blocks that are all already on the page are three elements
    lying over a section for no reason at all. */
 .horizon,
 .nib,
@@ -396,7 +357,7 @@
   /* ---- The slides -------------------------------------------------------
      Each is a full-frame box clipped to ONE SIDE of the pen: the composition
      being ruled out is kept to the right of it, the one being ruled in to the
-     left. `.slide ~ .slide` rather than a class on four of the five, so the
+     left. `.slide ~ .slide` rather than a class on all but the first, so the
      first composition is open from first paint and nothing can be stranded
      invisible between hydration and the timeline being built. */
   :global(.motion-on) .slide {
@@ -413,7 +374,7 @@
     margin-top: 0;
   }
 
-  /* Promoted for the range the rulings actually run in, and no longer — five
+  /* Promoted for the range the rulings actually run in, and no longer — three
      full-frame layers kept composited for the rest of the page is the wasteful
      version of this effect. Responsibility.tsx sets the attribute from the
      ScrollTrigger's own active range. */
@@ -452,23 +413,47 @@
   }
 
   /* ---- 1 · The ledger ---------------------------------------------------
-     The heading ranged to the ground line and the standfirst set under it in
-     the opposite counter-space: one diagonal across the field, which is the
-     section announcing itself rather than a head sitting on top of it. */
+     The heading ranged to the ground line on the near side, the photograph
+     standing on the same line across the far side, and the standfirst written
+     under the heading — so the claim and the evidence for it stand side by
+     side on one ground before a second slide is reached. */
   :global(.motion-on) .ledger .headline {
-    grid-column: 1 / 10;
+    grid-column: 1 / 7;
     grid-row: 1;
     align-self: end;
+    /* Clear of the picture's edge: the heading's last word must never read as
+       touching the frame beside it. */
+    padding-right: var(--space-6);
+  }
+
+  :global(.motion-on) .ledger .cover {
+    grid-column: 7 / -1;
+  }
+
+  /* No rubric on this slide, so the picture takes the full height of the sky
+     rather than clearing a band name that is not there. */
+  :global(.motion-on) .ledger .plate {
+    margin-top: 0;
   }
 
   :global(.motion-on) .ledger .standfirst {
-    grid-column: 7 / -1;
+    grid-column: 1 / 6;
     grid-row: 2;
     align-self: start;
     padding-top: var(--space-7);
   }
 
-  /* ---- 2 & 3 · The schools ---------------------------------------------
+  /* The picture grows out of the line as the heading does — cut in from its
+     own foot, which is the ground — and its caption settles under it. */
+  :global(.motion-on) .ledger .plate {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+
+  :global(.motion-on) .ledger .caption {
+    clip-path: inset(0% 0% 100% 0%);
+  }
+
+  /* ---- The photograph ---------------------------------------------------
      The figure STRADDLES the line: it spans both rows and restates the row
      template, so the picture's foot lands exactly on the ground and its
      caption is written underneath it — one `<figure>`, one `<figcaption>`, and
@@ -496,44 +481,7 @@
     border-top: 0;
   }
 
-  :global(.motion-on) .school .figure {
-    grid-column: 1 / 8;
-  }
-
-  :global(.motion-on) .school .name {
-    grid-column: 9 / -1;
-    grid-row: 1;
-    align-self: end;
-  }
-
-  :global(.motion-on) .school .entry {
-    grid-column: 9 / -1;
-    grid-row: 2;
-    align-self: start;
-    padding-top: var(--space-6);
-  }
-
-  /* The second row of the ruled version, turned over: the picture takes the
-     far edge and the entry takes the near one. Two schools, two compositions,
-     and the reversal is what keeps the second from reading as a repeat. */
-  :global(.motion-on) .earlier .figure {
-    grid-column: 6 / -1;
-  }
-
-  :global(.motion-on) .earlier .name {
-    grid-column: 1 / 5;
-    grid-row: 1;
-    align-self: end;
-  }
-
-  :global(.motion-on) .earlier .entry {
-    grid-column: 1 / 5;
-    grid-row: 2;
-    align-self: start;
-    padding-top: var(--space-6);
-  }
-
-  /* ---- 4 · The ground ---------------------------------------------------
+  /* ---- 2 · The ground ---------------------------------------------------
      THE SLIDE THE HORIZON WAS BUILT FOR. Four drawings standing on the
      section's own ground line, four names written under it, and not one rule,
      box or border between them — the line is already doing that job.
@@ -584,7 +532,7 @@
     padding-top: var(--space-3);
   }
 
-  /* ---- 5 · In closing --------------------------------------------------- */
+  /* ---- 3 · In closing --------------------------------------------------- */
   :global(.motion-on) .closing .coda {
     grid-column: 1 / 10;
     grid-row: 1;
@@ -686,7 +634,7 @@
      NOT A RAIL. The team section measures its set with a survey line — a rule,
      a node per slide, a fill that tracks the scroll — and running the same
      device here would make two sections of one page read as one idea used
-     twice. So the control is typographic: five names ranged along the foot,
+     twice. So the control is typographic: three names ranged along the foot,
      and ONE short rose rule that travels between them.
 
      The rule is measured off the live label rather than declared per stop, so
@@ -768,7 +716,7 @@
 
 /* ============================================================================
    STANDING. Below the motion layout's width, and for every visitor who never
-   gets it: five blocks, in order, complete.
+   gets it: three blocks, in order, complete.
    ========================================================================== */
 @media (max-width: 63.99rem) {
   /* The frames are cut in from their foot, as every photograph on the site
@@ -778,7 +726,6 @@
     clip-path: inset(100% 0% 0% 0%);
   }
 
-  .note,
   .standard,
   .coda {
     max-width: var(--measure-narrow);
@@ -810,6 +757,7 @@
 
   .body,
   .plate,
+  .caption,
   .headline,
   .standfirst {
     clip-path: none !important;

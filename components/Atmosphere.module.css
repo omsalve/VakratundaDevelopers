@@ -43,9 +43,11 @@
      stylesheet the composition depends on. */
   --row: 4.16667cqw;
 
+  --flow-gap: clamp(var(--space-8), 7vw, var(--space-10));
+
   display: flex;
   flex-direction: column;
-  gap: clamp(var(--space-8), 7vw, var(--space-10));
+  gap: var(--flow-gap);
 }
 
 /* ==========================================================================
@@ -62,6 +64,13 @@
 .copyLayer,
 .noteLayer {
   min-width: 0;
+}
+
+/* A note belongs to the frame above it, so it does not take the interval
+   that separates one thing in the column from the next: it is pulled back
+   up to a caption's distance from the tag it follows. */
+.noteLayer {
+  margin-block-start: calc(var(--space-5) - var(--flow-gap));
 }
 
 /* ==========================================================================
@@ -390,11 +399,22 @@
     z-index: 4;
   }
 
+  /* EVERY NOTE IS ANCHORED TO AN EDGE OF ITS OWN FRAME, a caption's distance
+     from it, and never floated rows or columns away in the open cream — a
+     note set that far off stops reading as belonging to anything. The flow
+     layout's pull-up does not apply on the canvas, where placement alone
+     decides the distance. */
+  .noteLayer {
+    margin-block-start: 0;
+  }
+
+  /* Hung from the deck's bottom edge: starts on the row the deck ends on. */
   .deckNote {
     grid-column: 8 / 12;
-    grid-row: 9 / 12;
+    grid-row: 7 / 10;
     align-self: start;
     z-index: 4;
+    padding-block-start: var(--space-5);
   }
 
   .glass {
@@ -411,14 +431,15 @@
     z-index: 3;
   }
 
+  /* Level with the terrace's top edge, in the strip beside it. */
   .terraceNote {
     grid-column: 11 / 13;
-    grid-row: 21 / 27;
+    grid-row: 18 / 24;
     align-self: start;
     z-index: 4;
     /* The canvas has no column gap — a plate and the column beside it share
-       an edge. This is the one block of type placed hard against a
-       photograph, so it carries the gutter the grid does not. */
+       an edge. Both notes placed beside a photograph carry the gutter the
+       grid does not. */
     padding-inline-start: var(--space-5);
   }
 
@@ -435,11 +456,22 @@
     z-index: 1;
   }
 
+  /* The terrace note's mirror: its cell runs right up to the garden's left
+     edge, and the note is ranged to that edge — rule and all — and sat on
+     the garden's bottom line, so it reads off the photograph rather than off
+     the margin. */
   .gardenNote {
-    grid-column: 1 / 5;
+    grid-column: 1 / 6;
     grid-row: 45 / 49;
-    align-self: start;
+    align-self: end;
+    justify-self: end;
     z-index: 4;
+    padding-inline-end: var(--space-5);
+    text-align: end;
+  }
+
+  .gardenNote .note::before {
+    margin-inline-start: auto;
   }
 
   .garden {

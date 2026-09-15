@@ -11,8 +11,8 @@ import Swash from "./Swash";
 import styles from "./Responsibility.module.css";
 
 /**
- * What the group owes — the community it builds among, and the ground it
- * builds on — as five compositions ruled across one horizon.
+ * What the group owes the ground it builds on, as three compositions ruled
+ * across one horizon.
  *
  * ============================================================================
  * THE HORIZON IS THE SECTION
@@ -29,11 +29,11 @@ import styles from "./Responsibility.module.css";
  * That is not decoration, it is the argument. This is a builder's account of
  * what it owes, and the thing a builder is finally answerable to is the ground
  * it put the building on. So the ground is drawn once, at the top of the
- * section, and then held while five different claims are made on it.
+ * section, and then held while three different claims are made on it.
  *
  * THE FOUR SUSTAINABILITY DRAWINGS STAND ON IT LITERALLY. Three of the four in
  * ResponsibilityIcons.tsx carry the same ground line — `M3.5 28.5h25`, at
- * 89.06% of their own 32-unit field — so the fourth slide drops each drawing
+ * 89.06% of their own 32-unit field — so the second slide drops each drawing
  * by the remaining 10.94% of its height and the line inside the drawing lands
  * exactly on the line across the section. Energy has no ground line (it is a
  * facade fragment, not a thing standing on a site) and is left where the same
@@ -88,10 +88,10 @@ import styles from "./Responsibility.module.css";
  * TWO LAYOUTS, FROM ONE SET OF MARKUP — the house pattern
  * ============================================================================
  *
- *   · DEFAULT (no JS, reduced motion, or under 64rem). Five ordinary cream
- *     blocks, stacked, in document order, each complete: the head, the school
- *     and its yard, the court and the earlier school, the four practices, and
- *     the closing line with the way into the long version. No horizon, no nib,
+ *   · DEFAULT (no JS, reduced motion, or under 64rem). Three ordinary cream
+ *     blocks, stacked, in document order, each complete: the head and the
+ *     planted ground, the four practices, and the closing line with the way
+ *     into the long version. No horizon, no nib,
  *     no index — there is nothing to rule across when every slide is already
  *     on the page. THE SECTION IS COMPLETE. This is also, with no second code
  *     path, the reduced-motion fallback: `motion-on` is never set for that
@@ -104,7 +104,7 @@ import styles from "./Responsibility.module.css";
  * THE INDEX IS NOT A RAIL. The team section measures its set with a survey
  * line — a rule, a node per slide, a fill that tracks the scroll. Repeating
  * that here would make the two sections read as one device used twice. So the
- * control is typographic instead: five names ranged along the foot, and a
+ * control is typographic instead: three names ranged along the foot, and a
  * single short rose rule that TRAVELS between them — measured off the live
  * label rather than stepped between fixed stops, which is the same gesture as
  * the nib above it, one register quieter.
@@ -117,12 +117,10 @@ import styles from "./Responsibility.module.css";
    needing to be re-tuned to match.
    ========================================================================== */
 
-/** The five compositions, in order. The labels are the index's, and the
+/** The three compositions, in order. The labels are the index's, and the
  *  accessible names of the slides themselves. */
 const SLIDES = [
   { id: "ledger", label: "The ledger" },
-  { id: "school", label: "The school" },
-  { id: "earlier", label: "The earlier school" },
   { id: "ground", label: "The ground" },
   { id: "closing", label: "In closing" },
 ] as const;
@@ -287,6 +285,34 @@ export function Responsibility({
         scrollTrigger: { trigger: section, start: "top 68%", once: true },
       });
 
+      /* The opening photograph comes up out of the same line a beat behind
+         the heading — the frame cut in from its foot, the picture easing off
+         a push inside it, the caption settling under the ground. Same release
+         as above: handed back unclipped once it has arrived. */
+      const cover = q(
+        `.${styles.ledger} .${styles.plate}, .${styles.ledger} .${styles.caption}`,
+      );
+      gsap.to(cover, {
+        clipPath: CLIP_OPEN,
+        duration: 1.3,
+        ease: "expo.out",
+        stagger: 0.22,
+        delay: 0.34,
+        onComplete: () => gsap.set(cover, { clipPath: "none" }),
+        scrollTrigger: { trigger: section, start: "top 68%", once: true },
+      });
+      gsap.fromTo(
+        q(`.${styles.ledger} .${styles.plateImage}`),
+        { scale: 1.12 },
+        {
+          scale: 1,
+          duration: 1.9,
+          ease: "expo.out",
+          delay: 0.34,
+          scrollTrigger: { trigger: section, start: "top 68%", once: true },
+        },
+      );
+
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -427,7 +453,7 @@ export function Responsibility({
           );
 
         /* (5) THE PHOTOGRAPHS ease off a small push, over longer again. Off
-           the chain because two of the five slides are type and drawings
+           the chain because two of the three slides are type and drawings
            alone, and every position above is absolute, so adding them last
            still lands them on the units they belong to. */
         const plates = to.querySelectorAll(`.${styles.plateImage}`);
@@ -446,7 +472,7 @@ export function Responsibility({
         }
 
         /* (6) THE DRAWINGS ARE INKED AS THE PEN REACHES THEM. The four stand
-           across the right two thirds of the fourth composition, so each one
+           across the right two thirds of the second composition, so each one
            starts drawing at the fraction of the ruling at which the nib
            actually arrives at its column — derived from where the four stand
            in the field, not guessed — and each is finished about four tenths
@@ -493,7 +519,7 @@ export function Responsibility({
       };
     });
 
-    /* ---- Narrow: five blocks, and the page scrolls them ----------------- */
+    /* ---- Narrow: three blocks, and the page scrolls them ----------------- */
     mm.add(STANDING_QUERY, () => {
       const q = gsap.utils.selector(section);
 
@@ -527,8 +553,7 @@ export function Responsibility({
     return () => mm.revert();
   }, []);
 
-  const { community, environment } = content;
-  const [yard, court] = community.school.images;
+  const { environment } = content;
 
   return (
     <section
@@ -556,40 +581,19 @@ export function Responsibility({
               >
                 <Swash heading={content.heading} />
               </h2>
+              {/* The one photograph on the opening slide: people, before any
+                  claim about them is read. Standing on the ground line in
+                  the far counter-space, so the heading and the picture make
+                  one diagonal with the standfirst under it. */}
+              <Plate image={content.image} className={styles.cover} />
               <p className={styles.standfirst} data-settle>
                 {content.standfirst}
               </p>
             </div>
           </Slide>
 
-          {/* ------------------------------------------- 2 · the school */}
+          {/* ------------------------------------------- 2 · the ground */}
           <Slide index={1} held={held} stacked={stacked} onMount={holdSlide}>
-            <div className={clsx(styles.body, styles.school)} data-reveal="up">
-              <Rubric label={community.label} />
-              <Plate image={yard} className={styles.yard} />
-              <h3 className={styles.name}>{community.school.name}</h3>
-              <div className={styles.entry}>
-                <p className={styles.place}>{community.school.place}</p>
-                <p className={styles.note}>{community.school.note}</p>
-              </div>
-            </div>
-          </Slide>
-
-          {/* ------------------------------------ 3 · the earlier school */}
-          <Slide index={2} held={held} stacked={stacked} onMount={holdSlide}>
-            <div className={clsx(styles.body, styles.earlier)} data-reveal="up">
-              <Rubric label={community.label} />
-              <Plate image={court} className={styles.court} />
-              <h3 className={styles.name}>{community.also.name}</h3>
-              <div className={styles.entry}>
-                <p className={styles.place}>{community.also.place}</p>
-                <p className={styles.note}>{community.also.note}</p>
-              </div>
-            </div>
-          </Slide>
-
-          {/* ------------------------------------------- 4 · the ground */}
-          <Slide index={3} held={held} stacked={stacked} onMount={holdSlide}>
             <div className={clsx(styles.body, styles.ground)} data-reveal="up">
               <Rubric label={environment.label} />
               <p className={styles.standard}>{environment.lead}</p>
@@ -611,8 +615,8 @@ export function Responsibility({
             </div>
           </Slide>
 
-          {/* ------------------------------------------ 5 · in closing */}
-          <Slide index={4} held={held} stacked={stacked} onMount={holdSlide}>
+          {/* ------------------------------------------ 3 · in closing */}
+          <Slide index={2} held={held} stacked={stacked} onMount={holdSlide}>
             <div className={clsx(styles.body, styles.closing)} data-reveal="up">
               <p className={styles.coda}>{content.coda}</p>
               <PageLink
@@ -633,7 +637,7 @@ export function Responsibility({
         </div>
 
         {/* ---- The index -------------------------------------------------
-            Five names and one travelling rule. NOT the team section's survey
+            Three names and one travelling rule. NOT the team section's survey
             line: no track, no stops, no fill — the only mark is the rule under
             the live name, and it is measured off that name and moves to the
             next one, which is the nib's own gesture one register quieter. */}
@@ -668,8 +672,8 @@ export function Responsibility({
  * never resolve the wrong way round at the edge. Harmless in the standing
  * layout, where nothing overlaps anything.
  *
- * `inert` ONLY in the stacked layout, and only off the slide being held: four
- * clipped slides lying over each other are four slides a keyboard must not be
+ * `inert` ONLY in the stacked layout, and only off the slide being held: three
+ * clipped slides lying over each other are slides a keyboard must not be
  * able to tab into. In the standing layout every one of them is a real block
  * on the page and none may be made unreachable.
  */
