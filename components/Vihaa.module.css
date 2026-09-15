@@ -1,0 +1,313 @@
+/* ============================================================================
+   Vihaa — a joint venture, named as the partners are.
+
+   TWO PARTS. The COVER is the ventures' slide restated at shell width: one
+   photograph, dissolving into the cream at its foot, with the name set in
+   capitals across the join. The FIELD is twelve columns: the copy sticky in
+   the near five, the school's photographs in two columns across the far six.
+
+   THE ONLY FILLED SHAPES ARE PHOTOGRAPHS, as everywhere on this site. The two
+   facts are ruled, not boxed; the captions hang under a hairline.
+
+   TWO LAYOUTS, FROM ONE SET OF MARKUP — the house pattern. Everything outside
+   the `min-width: 64rem` block is the stacked section every narrow window, and
+   every visitor without motion, gets complete.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* The drawn rule that separates it from the ventures above — ranged on the
+   shell, exactly as JointVentures and Responsibility draw their own. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw) - var(--gutter) * 2);
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.5;
+}
+
+/* ---- The cover ----------------------------------------------------------- */
+.cover {
+  display: grid;
+}
+
+/* 2:1 on the shell. The class stands in the lower two thirds of the frame, so
+   the crop takes the wall above them and holds the yard. */
+.coverFrame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2 / 1;
+  background: var(--cream-300);
+}
+
+.coverImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 78%;
+}
+
+/* The ventures' dissolve, kept shallow: it has to carry the name's first
+   quarter without reaching the faces above it. */
+.coverFrame::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 22%;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(246, 245, 242, 0.96) 6%,
+    rgba(246, 245, 242, 0.58) 48%,
+    rgba(246, 245, 242, 0) 100%
+  );
+}
+
+/* ---- The name -------------------------------------------------------------
+   The partners' treatment, to the value: the display face in capitals at the
+   ventures' own size, pulled up so the letters stand across the frame's foot
+   rather than under it. */
+.name {
+  position: relative;
+  z-index: var(--z-raised);
+  display: grid;
+  justify-items: center;
+  margin-top: -0.42em;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 9vw, 6rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-on-cream);
+}
+
+.nameMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.nameInk {
+  display: block;
+}
+
+.nameRest {
+  display: block;
+  margin-top: var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-text);
+}
+
+/* ---- The field ----------------------------------------------------------- */
+.field {
+  display: grid;
+  gap: var(--space-9);
+  margin-top: var(--head-gap);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.statement {
+  max-width: 14ch;
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
+
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+  max-width: 30rem;
+  margin: var(--space-3) 0 0;
+}
+
+.fact {
+  padding-top: var(--space-4);
+  border-top: var(--hairline) solid var(--cream-line-rose);
+}
+
+.factLabel {
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.factValue {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+/* The group's own sentence about the school, in the swash italic the site
+   captions in — a line quoted, not a claim argued. */
+.note {
+  max-width: 34ch;
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+  text-wrap: pretty;
+}
+
+/* ---- The moments ---------------------------------------------------------
+   Two columns, the second stepped down by most of a frame. A pair of equal
+   columns on one baseline is a contact sheet; the step is what makes it a
+   spread, and the drift in Vihaa.tsx only moves a step that is already
+   there. */
+.moments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 0 clamp(var(--space-4), 2.4vw, var(--space-7));
+}
+
+.column {
+  display: grid;
+  gap: clamp(var(--space-6), 4vw, var(--space-9));
+}
+
+.column + .column {
+  padding-top: clamp(var(--space-9), 12vw, 11rem);
+}
+
+.moment {
+  margin: 0;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--cream-300);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.caption {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--hairline) solid var(--cream-line);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--accent-deep);
+  text-wrap: pretty;
+}
+
+/* ---- Motion start states -------------------------------------------------
+   Additive, under `.motion-on` only: with no JS every frame is open and the
+   name is standing. */
+:global(.motion-on) .coverFrame,
+:global(.motion-on) .frame {
+  clip-path: inset(100% 0% 0% 0%);
+}
+
+:global(.motion-on) .coverImage,
+:global(.motion-on) .image {
+  transform: scale(1.1);
+}
+
+:global(.motion-on) .nameInk {
+  transform: translate3d(0, 108%, 0);
+}
+
+/* ============================================================================
+   WIDE. The copy holds still in the near columns and the day goes past it.
+   ========================================================================== */
+@media (min-width: 64rem) {
+  .field {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 0 clamp(var(--space-5), 2.4vw, var(--space-7));
+    margin-top: var(--section-pad);
+  }
+
+  /* Sticky, not pinned: it is held for exactly as long as the photographs
+     beside it are passing, and lets go with them. */
+  .copy {
+    grid-column: 1 / 6;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-7));
+  }
+
+  .moments {
+    grid-column: 7 / -1;
+  }
+}
+
+/* ============================================================================
+   NARROW. The cover takes a deeper crop, so the class is not a strip.
+   ========================================================================== */
+@media (max-width: 47.99rem) {
+  .coverFrame {
+    aspect-ratio: 4 / 3;
+  }
+
+  .coverImage {
+    object-position: 50% 72%;
+  }
+
+  .coverFrame::after {
+    height: 18%;
+  }
+
+  .caption {
+    font-size: var(--fs-caption);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coverFrame,
+  .frame,
+  .coverImage,
+  .image,
+  .nameInk {
+    clip-path: none !important;
+    transform: none !important;
+  }
+
+  .column {
+    transform: none !important;
+  }
+}
