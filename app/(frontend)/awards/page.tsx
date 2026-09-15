@@ -5,8 +5,7 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import SectionCoda from "@/components/SectionCoda";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { awardsPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Awards.
@@ -19,24 +18,23 @@ import { awardsPage as page } from "@/lib/pages";
  * The award entries are placeholders and carry no `href`; see the notice at the
  * head of lib/pages/newsroom.ts. If they were deleted tomorrow this page would
  * still stand up, which is the test the arrangement was built to pass.
+ *
+ * Content: the `awards-page` global over lib/pages/newsroom.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Awards",
-  description:
-    "Vakratunda Group holds ISO 9001:2015, 14001:2015 and 45001:2018 certification and builds as an MCHI-CREDAI member, alongside recognition for its residential, redevelopment and community work.",
-  alternates: { canonical: "/awards" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("awards", "/awards");
+}
 
 export default async function AwardsPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("awards");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 

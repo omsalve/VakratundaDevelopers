@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import {
+  DEFAULT_SHARE_IMAGE,
+  SITE_NAME,
+  TITLE_TEMPLATE,
+} from "@/lib/cms/metadata";
+import { siteContent } from "@/lib/content";
 
 // Order matters: tokens first, then the rules that consume them.
 import "@/styles/vars.css";
@@ -34,21 +40,25 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * Site-wide defaults only. Every route builds its own title, description and
+ * share cards from CMS content (lib/cms/metadata.ts); these apply to a route
+ * that does not — a 404, for instance.
+ */
 export const metadata: Metadata = {
   metadataBase: new URL("https://vakratundagroup.com"),
   title: {
-    default: "Vakratunda — Where dreams find an address",
-    template: "%s · Vakratunda",
+    default: siteContent.seo.title,
+    template: TITLE_TEMPLATE,
   },
-  description:
-    "Vakratunda Group has been building in Mumbai since 1973 — 2.1 million sq. ft. delivered, 2,500+ families moved in, and joint ventures with Godrej Properties and Shapoorji Pallonji.",
+  description: siteContent.seo.description,
   openGraph: {
     type: "website",
-    siteName: "Vakratunda Group",
-    title: "Vakratunda — Where dreams find an address",
+    siteName: SITE_NAME,
+    title: siteContent.seo.title,
     description:
       "Fifty years of residential, commercial and redevelopment work across Mumbai, the suburbs and Thane.",
-    images: [{ url: "/images/og.jpg", width: 1200, height: 630 }],
+    images: [DEFAULT_SHARE_IMAGE],
   },
   robots: { index: true, follow: true },
 };

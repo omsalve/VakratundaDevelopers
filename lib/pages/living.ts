@@ -25,6 +25,12 @@ import type {
 } from "./types";
 
 export const experiencesPage: ExperiencesPageContent = {
+  seo: {
+    title: "Experiences",
+    description:
+      "What living in a Vakratunda development is actually like — the morning walk out, the hour after school, the terrace at eight, and what is standard in every scheme.",
+  },
+
   hero: {
     label: "Experiences",
     heading: { before: "The hours a ", swash: "home", after: " is actually for" },
@@ -134,6 +140,12 @@ export const experiencesPage: ExperiencesPageContent = {
 };
 
 export const hospitalityPage: HospitalityPageContent = {
+  seo: {
+    title: "Hospitality",
+    description:
+      "Food and beverage space inside Vakratunda's own developments — designed into the podium at structural stage and run to the standard of the building above it.",
+  },
+
   hero: {
     label: "Hospitality",
     heading: { before: "The ground floor is a ", swash: "public", after: " room" },
@@ -143,6 +155,7 @@ export const hospitalityPage: HospitalityPageContent = {
   },
 
   story: {
+    label: "The practice",
     heading: { before: "A building the neighbourhood can ", swash: "enter" },
     standfirst:
       "Commercial ground floors are usually let and forgotten. The group treats them as part of the address, because they are the part of it the city actually sees.",

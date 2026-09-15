@@ -32,6 +32,12 @@ const OFFICE_EMAIL = "info@vakratundagroup.com";
 const UPDATED = "9 September 2026";
 
 export const termsPage: LegalPageContent = {
+  seo: {
+    title: "Terms & Conditions",
+    description:
+      "The terms on which the Vakratunda Group website is made available, including use, content, intellectual property and governing law.",
+  },
+
   hero: {
     label: "Legal",
     heading: { before: "Terms & ", swash: "Conditions" },
@@ -129,6 +135,12 @@ export const termsPage: LegalPageContent = {
 };
 
 export const disclaimerPage: LegalPageContent = {
+  seo: {
+    title: "Disclaimer",
+    description:
+      "What the material on the Vakratunda Group website is and is not — RERA registration, indicative renders and plans, areas, timelines and joint ventures.",
+  },
+
   hero: {
     label: "Legal",
     heading: { before: "", swash: "Disclaimer" },
@@ -208,6 +220,12 @@ export const disclaimerPage: LegalPageContent = {
 };
 
 export const grievancePage: LegalPageContent = {
+  seo: {
+    title: "Grievance Redressal",
+    description:
+      "How to raise a complaint with Vakratunda Group about a project, a society redevelopment or this website — who receives it, and the timeline for a response.",
+  },
+
   hero: {
     label: "Legal",
     heading: { before: "Grievance ", swash: "Redressal" },

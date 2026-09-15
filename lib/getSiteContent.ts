@@ -1,14 +1,14 @@
-import config from "@payload-config";
-import { getPayload } from "payload";
+import { cache } from "react";
 
-import type { Media, Project } from "@/payload-types";
+import type { Project } from "@/payload-types";
+import { heading, image, lines, text } from "./cms/merge";
+import { getPayloadClient, readWithFallback } from "./cms/read";
+import { mergeSeo } from "./cms/shapes";
 import {
   siteContent,
-  type ImageAsset,
   type ProjectSlide,
   type ProjectStatus,
   type SiteContent,
-  type SwashHeading,
 } from "./content";
 
 /**
@@ -19,60 +19,9 @@ import {
  * value falls back independently, so a half-filled global renders a complete
  * page and an editor can never blank a section by clearing one input. It also
  * means the site runs on a fresh database with no `home` row at all — useful
- * for local work and for the first deploy.
+ * for local work and for the first deploy. The primitives live in
+ * lib/cms/merge.ts and are shared with every standing page.
  */
-
-/* ------------------------------------------------------------- utilities */
-
-/** Payload returns "" for cleared text fields; treat that as absent. */
-function text(value: unknown, fallback: string): string {
-  return typeof value === "string" && value.trim() !== "" ? value : fallback;
-}
-
-function lines(
-  value: { text?: string | null }[] | null | undefined,
-  fallback: string[],
-): string[] {
-  const filled = (value ?? [])
-    .map((row) => row?.text?.trim())
-    .filter((row): row is string => Boolean(row));
-  return filled.length > 0 ? filled : fallback;
-}
-
-function heading(
-  value:
-    | { before?: string | null; swash?: string | null; after?: string | null }
-    | null
-    | undefined,
-  fallback: SwashHeading,
-): SwashHeading {
-  if (!value?.swash) return fallback;
-  return {
-    before: value.before ?? undefined,
-    swash: value.swash,
-    after: value.after ?? undefined,
-  };
-}
-
-/**
- * An upload field arrives as an id string when `depth` is 0, and as the Media
- * document when it has been populated. Only the populated, sized case can
- * replace the fallback — next/image needs real intrinsic dimensions.
- */
-function image(
-  media: Media | number | string | null | undefined,
-  fallback: ImageAsset,
-): ImageAsset {
-  if (!media || typeof media !== "object") return fallback;
-  if (!media.url || !media.width || !media.height) return fallback;
-  return {
-    src: media.url,
-    alt: media.alt || fallback.alt,
-    width: media.width,
-    height: media.height,
-    caption: fallback.caption,
-  };
-}
 
 function isProject(value: unknown): value is Project {
   return typeof value === "object" && value !== null && "name" in value;
@@ -94,28 +43,18 @@ function toSlide(project: Project, index: number): ProjectSlide {
 /* ------------------------------------------------------------------ read */
 
 /**
- * Never let the CMS take the marketing page down.
- *
- * A missing table, an unreachable database, or a cold start mid-migration all
- * resolve to the shipped copy plus a server-side warning, rather than a 500 on
- * the page a prospective client is looking at. Every string and image this
- * page needs already exists in content.ts; Payload is an override layer, not a
- * hard dependency.
+ * Every route reads this — the landing page for all of it, the standing pages
+ * for the masthead and the close — and a route that also builds its metadata
+ * from it reads it twice in one render. `cache` makes that one database round
+ * trip per request. Failure policy: lib/cms/read.ts.
  */
-export async function getSiteContent(): Promise<SiteContent> {
-  try {
-    return await readSiteContent();
-  } catch (error) {
-    console.warn(
-      "[getSiteContent] Falling back to lib/content.ts — Payload read failed:",
-      error instanceof Error ? error.message : error,
-    );
-    return siteContent;
-  }
-}
+export const getSiteContent = cache(
+  (): Promise<SiteContent> =>
+    readWithFallback("home", readSiteContent, siteContent),
+);
 
 async function readSiteContent(): Promise<SiteContent> {
-  const payload = await getPayload({ config });
+  const payload = await getPayloadClient();
 
   // depth 2 so relationship → upload chains (a stop's projects, and each of
   // those projects' card image) come back populated in one round trip.
@@ -351,11 +290,16 @@ async function readSiteContent(): Promise<SiteContent> {
        the way `gallery` and `team` are merged above. */
     ventures: fallback.ventures,
 
+    /* ---- Vihaa -----------------------------------------------------------
+       Shipped copy only, as `ventures` is. The facts are a fixed pair and the
+       photographs are dealt into two columns by position, so an editor would
+       need both constrained before this can be opened up. */
+    vihaa: fallback.vihaa,
+
     /* ---- Responsibility --------------------------------------------------
-       Shipped copy only, as `ventures` is. Both halves are fixed in number —
-       two initiatives, four commitments — and each commitment is bound to a
-       drawing that exists; an editor would need the same select the team
-       roles use before this can be opened up. */
+       Shipped copy only, as `ventures` is. The four commitments are fixed in
+       number and each is bound to a drawing that exists; an editor would need
+       the same select the team roles use before this can be opened up. */
     responsibility: fallback.responsibility,
 
     finalCta: {
@@ -388,5 +332,7 @@ async function readSiteContent(): Promise<SiteContent> {
     },
 
     legal: text(home.legal, fallback.legal),
+
+    seo: mergeSeo(home.seo, fallback.seo),
   };
 }

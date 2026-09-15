@@ -5,8 +5,7 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import SectionCoda from "@/components/SectionCoda";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { experiencesPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Experiences.
@@ -19,24 +18,23 @@ import { experiencesPage as page } from "@/lib/pages";
  * The second band has no photographs and takes none. What is standard in every
  * scheme is a set of decisions, not a set of rooms — and this site's rule is
  * that a filled shape is evidence, so a band with no evidence shows none.
+ *
+ * Content: the `experiences-page` global over lib/pages/living.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Experiences",
-  description:
-    "What living in a Vakratunda development is actually like — the morning walk out, the hour after school, the terrace at eight, and what is standard in every scheme.",
-  alternates: { canonical: "/experiences" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("experiences", "/experiences");
+}
 
 export default async function ExperiencesPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("experiences");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 

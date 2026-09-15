@@ -4,8 +4,7 @@ import CardGrid from "@/components/CardGrid";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { aboutPage } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * About Us.
@@ -17,48 +16,46 @@ import { aboutPage } from "@/lib/pages";
  * event. The shell closes over it in navy exactly where the close always
  * did.
  *
- * A Server Component: `getSiteContent` supplies the masthead and the close, so
- * a nav link or a contact address edited in /admin changes here too, and none
- * of it is written twice.
+ * A Server Component: the page reads the `about-page` global over the copy in
+ * lib/pages/standing.ts, and the masthead and the close from `home`, so a nav
+ * link or a contact address edited in /admin changes here too, and none of it
+ * is written twice.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "Vakratunda Group has built in Mumbai since 1973 — 2.1 million sq. ft. delivered, 2,500+ families moved in, and a second generation still signing the drawings.",
-  alternates: { canonical: "/about" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("about", "/about");
+}
 
 export default async function AboutPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("about");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={aboutPage.hero} />
+      <PageHero content={page.hero} />
 
       <PageSection
         id="story"
-        label="The practice"
-        heading={aboutPage.story.heading}
-        standfirst={aboutPage.story.standfirst}
+        label={page.story.label}
+        heading={page.story.heading}
+        standfirst={page.story.standfirst}
       >
-        <BrandStory content={aboutPage.story} />
+        <BrandStory content={page.story} />
       </PageSection>
 
       <PageSection
         id="principles"
         ground="cream"
         size="lg"
-        heading={aboutPage.principles.heading}
-        standfirst={aboutPage.principles.standfirst}
+        heading={page.principles.heading}
+        standfirst={page.principles.standfirst}
       >
         <div className="u-shell">
-          <CardGrid items={aboutPage.principles.items} columns={2} />
+          <CardGrid items={page.principles.items} columns={2} />
         </div>
       </PageSection>
     </PageShell>

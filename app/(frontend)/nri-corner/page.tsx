@@ -5,8 +5,7 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import SectionCoda from "@/components/SectionCoda";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { nriPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * NRI Corner.
@@ -20,24 +19,23 @@ import { nriPage as page } from "@/lib/pages";
  * questions band on the same rule as any other coda, because on a page about
  * money moving between two countries "this is not advice" is a load-bearing
  * sentence rather than small print.
+ *
+ * Content: the `nri-page` global over lib/pages/investing.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "NRI Corner",
-  description:
-    "Buying property in Mumbai as a non-resident: the four stages of the process, what genuinely needs you present, and how the group works with buyers abroad.",
-  alternates: { canonical: "/nri-corner" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("nri", "/nri-corner");
+}
 
 export default async function NriCornerPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("nri");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 

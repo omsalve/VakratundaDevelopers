@@ -20,6 +20,14 @@ html {
   /* Firefox scrollbar, themed from the palette rather than left to the UA. */
   scrollbar-color: var(--accent-rose) var(--navy-900);
   scrollbar-width: thin;
+  /* On the ROOT, not only on body. A phone sizes its layout viewport to the
+     widest thing on the page, and `clip` on body does not stop that: a few
+     scaled plates overhanging by 10–14px were enough to make the page 404px
+     on a 390px screen, with the fixed header and every centred composition
+     stretched to match and sitting visibly off the middle of the glass.
+     `clip` rather than `hidden`, so the root never becomes a scroll
+     container and sticky frames and Lenis behave exactly as before. */
+  overflow-x: clip;
 }
 
 /* Lenis owns the scroll position when smooth scrolling is enabled; native
@@ -124,6 +132,22 @@ a {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-deep);
+}
+
+/* Not on a phone. A styled scrollbar is a classic one, so it takes its 10px
+   out of the layout instead of overlaying it — and every centred composition
+   on the page sits visibly left of the glass. Touch scrolling needs no
+   drawn affordance. `scrollbar-width` is here as well as the pseudo-element
+   because Chromium lets the standard property win over ::-webkit-scrollbar. */
+@media (max-width: 47.99rem) {
+  html {
+    scrollbar-width: none;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 :focus-visible {

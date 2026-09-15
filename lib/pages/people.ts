@@ -26,6 +26,12 @@ import type { CareersPageContent, ContactPageContent } from "./types";
 const OFFICE_EMAIL = "info@vakratundagroup.com";
 
 export const careersPage: CareersPageContent = {
+  seo: {
+    title: "Careers",
+    description:
+      "Working at Vakratunda Group — a second-generation Mumbai practice where the person who drew a detail is the person who answers for it on site.",
+  },
+
   hero: {
     label: "Careers",
     heading: { before: "A practice small enough to ", swash: "sign", after: " your own work" },
@@ -168,6 +174,12 @@ export const careersPage: CareersPageContent = {
 };
 
 export const contactPage: ContactPageContent = {
+  seo: {
+    title: "Contact Us",
+    description:
+      "Reach Vakratunda Group's office in Bandra East — enquiries about buying, society redevelopment, land and joint development, or working with the group.",
+  },
+
   hero: {
     label: "Contact Us",
     heading: { before: "Write to the ", swash: "office", after: ", not to a queue" },

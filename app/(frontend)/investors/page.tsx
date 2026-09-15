@@ -6,8 +6,7 @@ import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import SectionCoda from "@/components/SectionCoda";
 import StatRow from "@/components/StatRow";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { investorsPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Investor Relations.
@@ -17,28 +16,27 @@ import { investorsPage as page } from "@/lib/pages";
  * document row carries a state — on request, under NDA — instead of an `href`
  * pointing at a PDF that does not exist, which is what an investor page for a
  * private company usually does.
+ *
+ * Content: the `investors-page` global over lib/pages/investing.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Investor Relations",
-  description:
-    "Vakratunda Group's delivery record, governance and joint venture standing — 2.1 million sq. ft. delivered since 1973, triple ISO certified, MCHI-CREDAI member.",
-  alternates: { canonical: "/investors" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("investors", "/investors");
+}
 
 export default async function InvestorsPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("investors");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 
-      <PageSection id="record" label="The record">
+      <PageSection id="record" label={page.statsLabel}>
         <div className="u-shell">
           <StatRow stats={page.stats} />
         </div>
@@ -70,10 +68,7 @@ export default async function InvestorsPage() {
             entries={page.documents.entries}
             note={page.documents.note}
           />
-          <SectionCoda
-            text="Everything above is supplied by a named person, in a conversation, with the assumptions attached to it."
-            cta={page.cta}
-          />
+          <SectionCoda text={page.coda} cta={page.cta} />
         </div>
       </PageSection>
     </PageShell>

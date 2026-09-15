@@ -12,12 +12,18 @@
  *   FaqItem        — a question and its answer, in a disclosure.
  *   Stat           — one figure, its unit and what it counts.
  *   ProseDoc       — a document: clauses, in order, at a reading measure.
+ *
+ * CMS: each page type below is also the field tree of its Payload global
+ * (globals/pages), built from the matching builders in fields/pageFields.ts
+ * and merged back by lib/getPageContent.ts. The values in the sibling content
+ * files are the shipped fallback for every field.
  */
 
 import type {
   CommitmentIcon,
   Cta,
   ImageAsset,
+  SeoContent,
   SwashHeading,
 } from "../content";
 
@@ -47,9 +53,10 @@ export interface CardItem {
   body: string;
 }
 
-/** A rubric-led band: a label ruled across the field, a lead, then its cards. */
+/** A rubric-led band: a label ruled across the field, a heading, a lead, then its cards. */
 export interface CardBand {
   label: string;
+  heading: SwashHeading;
   lead: string;
   items: CardItem[];
   /**
@@ -63,6 +70,8 @@ export interface CardBand {
 
 /** A photograph, the paragraphs beside it, and the line that closes them. */
 export interface StoryContent {
+  /** The rubric over the band. */
+  label: string;
   heading: SwashHeading;
   standfirst: string;
   body: string[];
@@ -138,6 +147,7 @@ export interface ProseDoc {
 /* ---------------------------------------------------------------- pages */
 
 export interface AboutPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   story: StoryContent;
   /**
@@ -157,6 +167,7 @@ export interface AboutPageContent {
  * source for both surfaces; what lives here is only the chrome around it.
  */
 export interface ProjectsPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   /** The rubric over the status filter. */
   filterLabel: string;
@@ -169,15 +180,16 @@ export interface ProjectsPageContent {
 }
 
 export interface SustainabilityPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   environment: CardBand;
-  social: CardBand;
-  /** The one sentence that covers both ledgers, so it closes the second. */
+  /** The sentence the landing page's responsibility band closes on. */
   coda: string;
   cta: Cta;
 }
 
 export interface ExperiencesPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   day: {
     label: string;
@@ -197,6 +209,7 @@ export interface ExperiencesPageContent {
 }
 
 export interface HospitalityPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   story: StoryContent;
   offer: {
@@ -211,6 +224,7 @@ export interface HospitalityPageContent {
 }
 
 export interface PressPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   coverage: LedgerBand;
   enquiries: {
@@ -221,6 +235,7 @@ export interface PressPageContent {
 }
 
 export interface AwardsPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   awards: LedgerBand;
   certifications: {
@@ -249,15 +264,37 @@ export interface BlogPost {
   /** The article itself, reused by /blogs/[slug]. */
   body: ProseClause[];
   readingTime: string;
+  /** Set by the CMS. Without it the title, excerpt and image stand in. */
+  seo?: SeoContent;
 }
 
+/**
+ * The chrome around the articles. The articles themselves are the `posts`
+ * collection, with `blogPosts` in newsroom.ts as their shipped fallback.
+ */
 export interface BlogPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
-  posts: BlogPost[];
+  /** The head of the field of cards on /blogs. */
+  listing: {
+    label: string;
+    heading: SwashHeading;
+    standfirst: string;
+  };
+  /** Under the cards on /blogs, and closing every article. */
   note: string;
+  /** What every /blogs/[slug] page sets around the article. */
+  article: {
+    contentsLabel: string;
+    updatedLabel: string;
+    /** The credentials row, after the article's own date. */
+    byline: string[];
+    backCta: Cta;
+  };
 }
 
 export interface NriPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   steps: {
     label: string;
@@ -276,7 +313,10 @@ export interface NriPageContent {
 }
 
 export interface InvestorsPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
+  /** The rubric over the figures. */
+  statsLabel: string;
   stats: Stat[];
   governance: {
     label: string;
@@ -285,10 +325,13 @@ export interface InvestorsPageContent {
     items: CardItem[];
   };
   documents: LedgerBand;
+  /** The line that closes the documents band. */
+  coda: string;
   cta: Cta;
 }
 
 export interface CareersPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   culture: {
     label: string;
@@ -307,6 +350,7 @@ export interface CareersPageContent {
 }
 
 export interface ContactPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   channels: LedgerBand;
   /** The composed-enquiry band. See components/ContactForm.tsx. */
@@ -328,6 +372,7 @@ export interface ContactPageContent {
 }
 
 export interface LegalPageContent {
+  seo: SeoContent;
   hero: PageHeroContent;
   doc: ProseDoc;
 }

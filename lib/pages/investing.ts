@@ -20,6 +20,12 @@
 import type { InvestorsPageContent, NriPageContent } from "./types";
 
 export const nriPage: NriPageContent = {
+  seo: {
+    title: "NRI Corner",
+    description:
+      "Buying property in Mumbai as a non-resident: the four stages of the process, what genuinely needs you present, and how the group works with buyers abroad.",
+  },
+
   hero: {
     label: "NRI Corner",
     heading: { before: "Buying from ", swash: "abroad", after: ", without guesswork" },
@@ -108,6 +114,12 @@ export const nriPage: NriPageContent = {
 };
 
 export const investorsPage: InvestorsPageContent = {
+  seo: {
+    title: "Investor Relations",
+    description:
+      "Vakratunda Group's delivery record, governance and joint venture standing — 2.1 million sq. ft. delivered since 1973, triple ISO certified, MCHI-CREDAI member.",
+  },
+
   hero: {
     label: "Investor Relations",
     heading: { before: "Fifty years of ", swash: "delivering", after: " what was drawn" },
@@ -115,6 +127,8 @@ export const investorsPage: InvestorsPageContent = {
       "The group is privately held. What follows is the record a landowner, a joint venture partner or a lender asks for before the first meeting.",
     meta: ["Privately held", "Established 1973", "MCHI-CREDAI"],
   },
+
+  statsLabel: "The record",
 
   stats: [
     {
@@ -223,5 +237,6 @@ export const investorsPage: InvestorsPageContent = {
     note: "No projection, valuation or return is published on this site. Anything of that kind reaches you through a named person, under an agreement, and with the assumptions attached to it.",
   },
 
+  coda: "Everything above is supplied by a named person, in a conversation, with the assumptions attached to it.",
   cta: { label: "Open a conversation", href: "/contact" },
 };

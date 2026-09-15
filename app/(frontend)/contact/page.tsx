@@ -5,8 +5,7 @@ import OfficePanel from "@/components/OfficePanel";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { contactPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Contact Us.
@@ -21,27 +20,26 @@ import { contactPage as page } from "@/lib/pages";
  * components/ContactForm.tsx. Wiring a real one is a Payload collection and a
  * server action, and it should happen before launch.
  *
- * The office email comes from `content.finalCta.contact`, which is the same
+ * The office email comes from `site.finalCta.contact`, which is the same
  * address the footer publishes and is editable in /admin — so the page cannot
  * end up offering a different address from the one the site closes on.
+ *
+ * Content: the `contact-page` global over lib/pages/people.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description:
-    "Reach Vakratunda Group's office in Bandra East — enquiries about buying, society redevelopment, land and joint development, or working with the group.",
-  alternates: { canonical: "/contact" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("contact", "/contact");
+}
 
 export default async function ContactPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("contact");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 
@@ -61,7 +59,7 @@ export default async function ContactPage() {
 
       <PageSection id="enquiry" ground="cream" size="lg">
         <ContactForm
-          email={content.finalCta.contact.email}
+          email={site.finalCta.contact.email}
           label={page.form.label}
           heading={page.form.heading}
           standfirst={page.form.standfirst}
@@ -79,7 +77,7 @@ export default async function ContactPage() {
       >
         <OfficePanel
           office={page.office}
-          email={content.finalCta.contact.email}
+          email={site.finalCta.contact.email}
         />
       </PageSection>
     </PageShell>

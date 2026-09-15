@@ -6,8 +6,7 @@ import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import SectionCoda from "@/components/SectionCoda";
 import StatRow from "@/components/StatRow";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { hospitalityPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Hospitality.
@@ -16,28 +15,27 @@ import { hospitalityPage as page } from "@/lib/pages";
  * the order the landing page makes every argument in. BrandStory carries the
  * first, because this is a page about a practice rather than a portfolio, and
  * a practice is a story with one photograph, not a grid.
+ *
+ * Content: the `hospitality-page` global over lib/pages/living.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Hospitality",
-  description:
-    "Food and beverage space inside Vakratunda's own developments — designed into the podium at structural stage and run to the standard of the building above it.",
-  alternates: { canonical: "/hospitality" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("hospitality", "/hospitality");
+}
 
 export default async function HospitalityPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("hospitality");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 
-      <PageSection id="practice" label="The practice">
+      <PageSection id="practice" label={page.story.label}>
         <BrandStory content={page.story} />
       </PageSection>
 

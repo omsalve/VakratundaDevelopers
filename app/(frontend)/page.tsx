@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import ArcTransition from "@/components/ArcTransition";
 import Atmosphere from "@/components/Atmosphere";
 import Concept from "@/components/Concept";
@@ -9,6 +10,8 @@ import Responsibility from "@/components/Responsibility";
 import SiteHeader from "@/components/SiteHeader";
 import SmoothScroll from "@/components/SmoothScroll";
 import TeamShowcase from "@/components/TeamShowcase";
+import Vihaa from "@/components/Vihaa";
+import { buildMetadata } from "@/lib/cms/metadata";
 import { getSiteContent } from "@/lib/getSiteContent";
 
 /**
@@ -36,6 +39,11 @@ import { getSiteContent } from "@/lib/getSiteContent";
  */
 
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSiteContent();
+  return buildMetadata(content.seo, { path: "/", absoluteTitle: true });
+}
 
 export default async function HomePage() {
   const content = await getSiteContent();
@@ -99,9 +107,16 @@ export default async function HomePage() {
             operates. It closes the case the team opened: who trusts them. */}
         <JointVentures content={content.ventures} />
 
-        {/* What the group owes, on the same cream, ruled into two columns:
-            the community it builds among and the ground it builds on. It is
-            the last thing said before the close and the smallest section on
+        {/* The venture that is not a building. Vihaa International School is
+            a joint venture, so it follows the partnerships directly and is
+            named in their grammar — a stake the group holds, set out beside
+            the others, rather than a line in what it owes. Same cream; the
+            sticky copy and drifting columns are read, not driven, so the page
+            does not gain a third scroll set piece. */}
+        <Vihaa content={content.vihaa} />
+
+        {/* What the group owes the ground it builds on, on the same cream. It
+            is the last thing said before the close and the smallest section on
             the page, which is the right proportion for it — a claim about
             conduct that runs long stops being a claim about conduct.
 

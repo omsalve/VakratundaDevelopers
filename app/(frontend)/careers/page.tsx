@@ -5,8 +5,7 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import StatRow from "@/components/StatRow";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { careersPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Careers.
@@ -19,24 +18,23 @@ import { careersPage as page } from "@/lib/pages";
  * The disciplines are placeholders standing in for live vacancies, and each
  * one routes to a real address at the office rather than to a tracking system
  * the group does not run — see the notice at the head of lib/pages/people.ts.
+ *
+ * Content: the `careers-page` global over lib/pages/people.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Careers",
-  description:
-    "Working at Vakratunda Group — a second-generation Mumbai practice where the person who drew a detail is the person who answers for it on site.",
-  alternates: { canonical: "/careers" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("careers", "/careers");
+}
 
 export default async function CareersPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("careers");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 

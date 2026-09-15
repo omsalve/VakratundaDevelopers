@@ -3,16 +3,15 @@ import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
 import ProjectGrid from "@/components/ProjectGrid";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { projectsPage } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Our Projects.
  *
- * THE SAME ARRAY THE LANDING PAGE SCROLLS THROUGH. `content.gallery.slides` is
+ * THE SAME ARRAY THE LANDING PAGE SCROLLS THROUGH. `site.gallery.slides` is
  * read here unchanged, so the `projects` collection is the single source for
  * both surfaces and a project added in /admin appears on each without being
- * entered twice.
+ * entered twice. The chrome around it is the `projects-page` global.
  *
  * The field is on cream: fourteen photographs on navy would be fourteen lit
  * rectangles on a dark ground with no relief between them, and the landing
@@ -21,30 +20,27 @@ import { projectsPage } from "@/lib/pages";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Our Projects",
-  description:
-    "Fourteen Vakratunda addresses across Mumbai, the suburbs and Thane — delivered, under construction and upcoming.",
-  alternates: { canonical: "/projects" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("projects", "/projects");
+}
 
 export default async function ProjectsPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("projects");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={projectsPage.hero} />
+      <PageHero content={page.hero} />
 
       <PageSection id="projects" ground="cream" size="lg">
         <ProjectGrid
-          slides={content.gallery.slides}
-          filterLabel={projectsPage.filterLabel}
-          allLabel={projectsPage.allLabel}
-          emptyMessage={projectsPage.emptyMessage}
-          note={projectsPage.note}
+          slides={site.gallery.slides}
+          filterLabel={page.filterLabel}
+          allLabel={page.allLabel}
+          emptyMessage={page.emptyMessage}
+          note={page.note}
         />
       </PageSection>
     </PageShell>

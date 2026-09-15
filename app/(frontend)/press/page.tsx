@@ -3,8 +3,7 @@ import LedgerList from "@/components/LedgerList";
 import PageHero from "@/components/PageHero";
 import PageSection from "@/components/PageSection";
 import PageShell from "@/components/PageShell";
-import { getSiteContent } from "@/lib/getSiteContent";
-import { pressPage as page } from "@/lib/pages";
+import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
  * Press Room.
@@ -16,24 +15,23 @@ import { pressPage as page } from "@/lib/pages";
  *
  * The coverage entries are placeholders and carry no `href`; see the notice at
  * the head of lib/pages/newsroom.ts.
+ *
+ * Content: the `press-page` global over lib/pages/newsroom.ts.
  */
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Press Room",
-  description:
-    "Coverage of Vakratunda Group's projects, joint ventures and community work, and direct contacts for media enquiries.",
-  alternates: { canonical: "/press" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata("press", "/press");
+}
 
 export default async function PressRoomPage() {
-  const content = await getSiteContent();
+  const { site, page } = await getStandingPage("press");
 
   return (
     <PageShell
-      nav={content.nav}
-      close={{ content: content.finalCta, legal: content.legal }}
+      nav={site.nav}
+      close={{ content: site.finalCta, legal: site.legal }}
     >
       <PageHero content={page.hero} />
 

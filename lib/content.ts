@@ -48,6 +48,19 @@ export interface NavLink {
 }
 
 /**
+ * A page's search and sharing fields, merged from the CMS's SEO tab over the
+ * shipped values. lib/cms/metadata.ts turns it into route metadata.
+ */
+export interface SeoContent {
+  /** The page's own name; the layout's title template appends the brand. */
+  title: string;
+  description: string;
+  /** The share card. Absent means the site's default card. */
+  image?: ImageAsset;
+  noIndex?: boolean;
+}
+
+/**
  * One annotation glued to a point IN THE PHOTOGRAPH.
  *
  * `x` and `y` are percentages of the picture, not of the frame it is seen
@@ -480,50 +493,55 @@ export interface VenturesContent {
   slides: VentureSlide[];
 }
 
+/* ------------------------------------------------------------------ vihaa */
+/*
+ * VIHAA INTERNATIONAL SCHOOL — a joint venture, not an initiative.
+ *
+ * It used to be modelled as the community half of the responsibility ledger:
+ * a thing built for somebody else's benefit. It is a venture the group holds
+ * a stake in, so it is modelled beside `ventures` instead, and it borrows
+ * that section's shapes — a name set across a photograph, and a pair of
+ * label-over-value facts — so the page records it the way it records every
+ * other partnership.
+ *
+ * THE PARTNER IS NOT NAMED. The site says "joint venture" and nothing more
+ * about who with; add a fact here when that is published.
+ */
+
+export interface VihaaContent {
+  /** Set across the foot of the cover. `mark` in capitals, at the ventures'
+   *  partner size; `rest` in the wide-tracked label under it. */
+  name: { mark: string; rest: string };
+  /** The display sentence at the head of the sticky copy. */
+  heading: SwashHeading;
+  standfirst: string;
+  /** Exactly two, as a venture slide has. */
+  facts: [VentureStat, VentureStat];
+  /** The group's own published sentence about the school. */
+  note: string;
+  /** The whole class — the frame the name stands across. */
+  cover: ImageAsset;
+  /** The day, in portraits. Dealt into two columns in order: left, right. */
+  moments: ImageAsset[];
+}
+
 /* --------------------------------------------------------- responsibility */
 /*
- * THE LEDGER — what the group owes, ruled in two unequal bands.
+ * THE LEDGER — what the group owes the ground it stands on.
  *
- * Two obligations, not one section with two topics: what a builder owes the
- * people it builds among, and what it owes the ground it stands on. They are
- * modelled as two bands rather than as two columns because the layout IS the
- * argument, and the argument is a PROPORTION — the community band takes the
- * field, the environment band takes a footing under it. A pair of equal
- * halves said the two obligations were equal in weight; they are not, and the
- * ledger should not claim they are.
+ * ONE OBLIGATION. This section used to carry a community band built around
+ * Vihaa International School; the school is a joint venture and now has its
+ * own section (see `vihaa` above), so what is left here is the environmental
+ * ledger alone, which is also what /sustainability sets out at length.
  *
- * ONE SCHOOL CARRIES THE BAND. Vihaa International is the group's own
- * institution and the only entry here with photographs, so it is modelled as
- * a named subject with a fixed pair of frames rather than as one row of a
- * list. The earlier school is the same shape without the frames — one ruled
- * entry set into the counter-space of the second photograph. A third would
- * join it there; a third *with* photographs would need a different section.
+ * THE OPENING CARRIES ONE PHOTOGRAPH. The heading alone was a slide of type,
+ * so the ledger opens on planted ground, standing on the section's ground line
+ * beside the claim it illustrates.
  *
- * THE COMMUNITY BAND IS PHOTOGRAPHED, THE ENVIRONMENT BAND IS DRAWN. A school
- * is a place that exists and can be walked into, so it carries its name in
- * the display face and two photographs of itself; a commitment is a practice
- * that holds on every site, so it carries a line drawing in the same hand as
- * LegacyIcons and TeamIcons and no name beyond what it does.
+ * THE PRACTICES ARE DRAWN. A commitment is a practice that holds on every
+ * site, so it carries a line drawing in the same hand as LegacyIcons and
+ * TeamIcons and no name beyond what it does.
  */
-
-/** One thing the group has built for somebody else's benefit. */
-export interface Initiative {
-  /** The institution, as it is actually called. Set in the display face. */
-  name: string;
-  /** Where it stands, or what it is. A short phrase, not a sentence. */
-  place: string;
-  /** What it changes, in one line. */
-  note: string;
-}
-
-/**
- * The initiative the band is built around: an Initiative that can be shown.
- * Exactly two frames — the plate is drawn for a pair and steps them against
- * each other, so a third has nowhere to stand and one leaves a hole.
- */
-export interface ShownInitiative extends Initiative {
-  images: [ImageAsset, ImageAsset];
-}
 
 /** `icon` selects a drawing in ResponsibilityIcons.tsx. */
 export type CommitmentIcon = "green" | "rainwater" | "waste" | "energy";
@@ -538,15 +556,10 @@ export interface Commitment {
 export interface ResponsibilityContent {
   heading: SwashHeading;
   standfirst: string;
-  community: {
-    /** Wide-tracked rubric set into the rule that opens the band. */
-    label: string;
-    /** The school the band is built around, and the only one shown. */
-    school: ShownInitiative;
-    /** The earlier school, as one ruled entry beside the second frame. */
-    also: Initiative;
-  };
+  /** The one photograph on the opening slide, standing beside the heading. */
+  image: ImageAsset;
   environment: {
+    /** Wide-tracked rubric set into the rule that opens the band. */
     label: string;
     /** The standard the practices are measured against. */
     lead: string;
@@ -582,9 +595,12 @@ export interface SiteContent {
   practice: PracticeContent;
   team: TeamContent;
   ventures: VenturesContent;
+  vihaa: VihaaContent;
   responsibility: ResponsibilityContent;
   finalCta: FinalCtaContent;
   legal: string;
+  /** The home page's own metadata. Its title is used whole, not templated. */
+  seo: SeoContent;
 }
 
 /* ---------------------------------------------------------------- content */
@@ -725,7 +741,7 @@ export const siteContent: SiteContent = {
         title: "What the Ground Is Owed",
         body: [
           "Aligned with IGBC and LEED guidelines, to build a greener tomorrow.",
-          "Two schools established by the group, Vihaa International in Badlapur among them.",
+          "Rainwater, waste and energy, specified into the drawings rather than added after.",
           "The work is measured twice: by what it gives, and by what it asks.",
         ],
         cta: { label: "Responsibility", href: "#responsibility" },
@@ -1541,50 +1557,96 @@ export const siteContent: SiteContent = {
     ],
   },
 
-  /* CP_Final — the CSR spread ("Our other group initiative: Vihaa
-     International School, Badlapur") and the sustainability spread, held
-     together as one section. Every sentence below is quoted from those two
-     pages or is a factual restatement of them; the two marked AUTHORED are
-     new writing in the guide's voice and are listed in README.md under
-     "Copy to approve". */
-  responsibility: {
-    // AUTHORED, from the spread's own opening line: "we believe our
-    // responsibility goes beyond building homes, it's about building lives."
-    heading: { before: "Building ", swash: "lives", after: ", not only homes" },
+  /* ---- Vihaa International School ---------------------------------------
+     A joint venture. The note is CP_Final verbatim; everything marked
+     AUTHORED is new writing in the guide's voice and wants approving. The
+     partner is deliberately not named, and nothing here states a figure —
+     a year, a board, a roll — the group has not published.
+     Photographed on site; captions describe what is in the frame and claim
+     nothing beyond it. */
+  vihaa: {
+    name: { mark: "Vihaa", rest: "International School" },
+    // AUTHORED.
+    heading: { before: "A school the group has a ", swash: "stake", after: " in" },
+    // AUTHORED.
     standfirst:
-      "Fifty years in, the work is measured twice — by what it gives the towns it goes up in, and by what it asks of the ground it stands on.",
+      "Vihaa International School in Badlapur is a joint venture, held the way the group holds every address that carries its name — built to a standard, and answered for long after the opening day.",
+    facts: [
+      { label: "Structure", value: "Joint venture" },
+      { label: "Town", value: "Badlapur" },
+    ],
+    // CP_Final, verbatim.
+    note: "A state-of-the-art institution designed to give young learners an environment worth arriving at.",
+    cover: {
+      src: "/images/vihaa/children.jpg",
+      alt: "A class of Vihaa International School pupils in blue uniform, laughing and making peace signs on the painted play surface of the school yard.",
+      width: 2560,
+      height: 1707,
+    },
+    moments: [
+      {
+        src: "/images/vihaa/vihaa-3174.jpg",
+        alt: "A pupil laughing as she holds a picture book up at arm's length in a bright classroom.",
+        width: 1707,
+        height: 2560,
+        caption: "A picture book, held up to be read.",
+      },
+      {
+        src: "/images/vihaa/vihaa-2883.jpg",
+        alt: "A pupil jumping a row of yellow training hurdles in the school yard, classmates queued behind her.",
+        width: 1704,
+        height: 2560,
+        caption: "Hurdles in the yard.",
+      },
+      {
+        src: "/images/vihaa/vihaa-3080.jpg",
+        alt: "A boy fitting wooden letter pegs into an alphabet puzzle board at a classroom table.",
+        width: 1707,
+        height: 2560,
+        caption: "Letters, a peg at a time.",
+      },
+      {
+        src: "/images/vihaa/vihaa-3057.jpg",
+        alt: "Pupils kneeling at a raised bed, pressing soil around young plants.",
+        width: 1707,
+        height: 2560,
+        caption: "Planting out a bed.",
+      },
+      {
+        src: "/images/vihaa/vihaa-3198.jpg",
+        alt: "Two pupils at a play kitchen, one smiling across at the other over a set of steel pots.",
+        width: 1707,
+        height: 2560,
+        caption: "The play kitchen.",
+      },
+      {
+        src: "/images/vihaa/vihaa-3145.jpg",
+        alt: "A girl kneeling on a foam play mat, laughing as she holds up a tower of red, blue and white blocks.",
+        width: 1707,
+        height: 2560,
+        caption: "A tower, held up for inspection.",
+      },
+    ],
+  },
 
-    community: {
-      label: "Community",
-      school: {
-        // CP_Final, CSR spread.
-        name: "Vihaa International School",
-        place: "Badlapur",
-        note: "A state-of-the-art institution designed to give young learners an environment worth arriving at.",
-        // AUTHORED. Photographed on site; captions describe what is in the
-        // frame and claim nothing beyond it.
-        images: [
-          {
-            src: "/images/vihaa/children.jpg",
-            alt: "Kindergarten pupils in Vihaa International School uniform, gathered together on the painted play surface of the school yard.",
-            width: 2560,
-            height: 1707,
-            caption: "The kindergarten yard.",
-          },
-          {
-            src: "/images/vihaa/court.jpg",
-            alt: "A pupil striking at goal on Vihaa International School's covered sports court, beneath a painted mural of athletes.",
-            width: 2560,
-            height: 1707,
-            caption: "The covered sports court.",
-          },
-        ],
-      },
-      also: {
-        name: "Ravji Jethabhai Makhecha High School",
-        place: "Established by the group",
-        note: "An investment in education, giving children the chance to dream bigger and achieve more.",
-      },
+  /* CP_Final — the sustainability spread. Every sentence below is quoted from
+     it or is a factual restatement of it; the lines marked AUTHORED are new
+     writing in the guide's voice. */
+  responsibility: {
+    // AUTHORED — the concept pin's own title, "What the Ground Is Owed", so
+    // the pin and the section it links to say the same thing.
+    heading: { before: "What the ground is ", swash: "owed", after: "" },
+    // AUTHORED.
+    standfirst:
+      "Fifty years in, the work is also measured by what it asks of the ground it stands on — and that is answered in the drawings, where it is still cheap to get right.",
+
+    // A render of a Vakratunda garden podium, so the caption says so.
+    image: {
+      src: "/images/gallery/outdoor.png",
+      alt: "The landscaped garden at the foot of the tower at sunset, with lit stone seating, a lawn and a timber deck",
+      width: 1672,
+      height: 941,
+      caption: "Planted ground at the foot of the tower, as rendered.",
     },
 
     environment: {
@@ -1615,7 +1677,7 @@ export const siteContent: SiteContent = {
       ],
     },
 
-    // CP_Final, CSR spread, verbatim.
+    // CP_Final, verbatim.
     coda: "Every initiative reflects our belief that true prosperity lies in stronger, healthier and more self-reliant communities.",
   },
 
@@ -1656,4 +1718,12 @@ export const siteContent: SiteContent = {
   },
 
   legal: "© Vakratunda Group. All rights reserved.",
+
+  // The site's shipped title and description, editable from the Home global's
+  // SEO tab. Used whole: the home page's title is not templated.
+  seo: {
+    title: "Vakratunda — Where dreams find an address",
+    description:
+      "Vakratunda Group has been building in Mumbai since 1973 — 2.1 million sq. ft. delivered, 2,500+ families moved in, and joint ventures with Godrej Properties and Shapoorji Pallonji.",
+  },
 };

@@ -8,9 +8,9 @@
  *
  * COPY: AUTHORED, and deliberately narrow. Nothing below states a figure that
  * is not already in lib/content.ts — the fifty years, the 2.1 million sq. ft.,
- * the 2,500+ families, the four environmental commitments and the two schools
- * are all read off the landing page, so there is exactly one place to correct
- * any of them. Where this page wants a fact the group has not published — an
+ * the 2,500+ families, the four environmental commitments and the joint
+ * ventures are all read off the landing page, so there is exactly one place to
+ * correct any of them. Where this page wants a fact the group has not published — an
  * IGBC rating on a named building, a spend, a headcount — it says the thing it
  * can stand behind instead of reaching for a number.
  *
@@ -21,9 +21,8 @@
  *
  * PHOTOGRAPHS ARE THE LIBRARY WE HAVE — the same note living.ts carries. The
  * story frame is the concept photograph, cropped to the portrait the band
- * wants; the two figures on Sustainability are the Vihaa frames the landing
- * page's community band already uses, because they are the only photographs
- * in the repo that are evidence of the thing that section claims.
+ * wants. Sustainability carries no photographs: its four practices are drawn,
+ * and the library has no frame that is evidence of any one of them.
  */
 
 import type {
@@ -35,6 +34,12 @@ import type {
 /* ------------------------------------------------------------------ about */
 
 export const aboutPage: AboutPageContent = {
+  seo: {
+    title: "About",
+    description:
+      "Vakratunda Group has built in Mumbai since 1973 — 2.1 million sq. ft. delivered, 2,500+ families moved in, and a second generation still signing the drawings.",
+  },
+
   hero: {
     label: "About us",
     // The landing page's own framing: a legacy of shaping not just skylines
@@ -46,6 +51,7 @@ export const aboutPage: AboutPageContent = {
   },
 
   story: {
+    label: "The practice",
     heading: { before: "A single vision, ", swash: "rooted", after: " in purpose" },
     standfirst:
       "The group began with one address and a view about what an address ought to be worth to the people living at it. That view has not moved; the portfolio around it has.",
@@ -94,10 +100,12 @@ export const aboutPage: AboutPageContent = {
         body: "Green building practice, rainwater harvesting, waste management and energy-efficient design are specified into the work rather than added to it. The full ledger is set out on the sustainability page.",
       },
       {
-        id: "community",
-        eyebrow: "Responsibility",
-        title: "Building lives, not only homes",
-        body: "The group runs two schools in the towns it builds in — Vihaa International School at Badlapur, and the Ravji Jethabhai Makhecha High School. Both are investments in the same place the buildings stand.",
+        // AUTHORED. Vihaa's standing as a joint venture, stated beside the
+        // two partners content.ts already names.
+        id: "ventures",
+        eyebrow: "Joint ventures",
+        title: "Partnerships that hold",
+        body: "The group builds alongside partners it can be measured against — Godrej Properties and Shapoorji Pallonji Real Estate among them — and not only in housing: Vihaa International School in Badlapur is a joint venture too, held to the standard of any address that carries the group's name.",
       },
     ],
   },
@@ -106,6 +114,12 @@ export const aboutPage: AboutPageContent = {
 /* --------------------------------------------------------------- projects */
 
 export const projectsPage: ProjectsPageContent = {
+  seo: {
+    title: "Our Projects",
+    description:
+      "Fourteen Vakratunda addresses across Mumbai, the suburbs and Thane — delivered, under construction and upcoming.",
+  },
+
   hero: {
     label: "Our projects",
     heading: { before: "Every address the group has ", swash: "signed", after: "" },
@@ -125,16 +139,25 @@ export const projectsPage: ProjectsPageContent = {
 /* --------------------------------------------------------- sustainability */
 
 export const sustainabilityPage: SustainabilityPageContent = {
+  seo: {
+    title: "Sustainability",
+    description:
+      "IGBC and LEED-aligned building practice — green building, rainwater harvesting, waste management and energy-efficient design, specified into every Vakratunda Group scheme.",
+  },
+
   hero: {
     label: "Sustainability",
-    heading: { before: "Measured ", swash: "twice", after: " — by the town, and by the ground" },
+    // AUTHORED, from the environment lead below: specified into the drawings
+    // rather than added to a finished building.
+    heading: { before: "Specified in, not ", swash: "added", after: " on" },
     standfirst:
-      "Fifty years in, the work is measured twice: by what it gives the towns it goes up in, and by what it asks of the ground it stands on. Both ledgers are below, and the environmental one is answered first.",
-    meta: ["IGBC · LEED aligned", "Two schools", "Mumbai · MMR"],
+      "Fifty years in, the work is also measured by what it asks of the ground it stands on. Four practices answer that, and each is decided at the drawing stage — where it is still cheap to get right.",
+    meta: ["IGBC · LEED aligned", "Four practices", "Mumbai · MMR"],
   },
 
   environment: {
     label: "Environment",
+    heading: { before: "The ground it ", swash: "stands", after: " on" },
     // content.ts `responsibility.environment.lead`, verbatim.
     lead: "Aligned with IGBC and LEED guidelines, to minimise carbon footprint and build a greener tomorrow. The four commitments below are specified into the drawings rather than added to a finished building.",
     items: [
@@ -165,45 +188,7 @@ export const sustainabilityPage: SustainabilityPageContent = {
     ],
   },
 
-  social: {
-    label: "Community",
-    lead: "Two schools, in the towns the group builds in. Both are the same investment the buildings are — made in a place the group expects to still be standing in.",
-    // The only photographs in the library that are evidence of this band's
-    // claim: the school, on site.
-    figures: [
-      {
-        src: "/images/vihaa/children.jpg",
-        alt: "Kindergarten pupils in Vihaa International School uniform, gathered together on the painted play surface of the school yard.",
-        width: 2560,
-        height: 1707,
-        caption: "The kindergarten yard, Vihaa International School.",
-      },
-      {
-        src: "/images/vihaa/court.jpg",
-        alt: "A pupil striking at goal on Vihaa International School's covered sports court, beneath a painted mural of athletes.",
-        width: 2560,
-        height: 1707,
-        caption: "The covered sports court.",
-      },
-    ],
-    items: [
-      {
-        id: "vihaa",
-        eyebrow: "Badlapur",
-        title: "Vihaa International School",
-        body: "A state-of-the-art institution designed to give young learners an environment worth arriving at — the yard and the covered court above are its own, photographed on site.",
-      },
-      {
-        id: "makhecha",
-        eyebrow: "Established by the group",
-        title: "Ravji Jethabhai Makhecha High School",
-        body: "An investment in education, giving children the chance to dream bigger and achieve more.",
-      },
-    ],
-  },
-
-  // content.ts `responsibility.coda`, verbatim — the sentence that covers
-  // both ledgers rather than sitting inside the second.
+  // content.ts `responsibility.coda`, verbatim.
   coda: "Every initiative reflects our belief that true prosperity lies in stronger, healthier and more self-reliant communities.",
   cta: { label: "Talk to the team", href: "/contact" },
 };
