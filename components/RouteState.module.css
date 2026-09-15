@@ -1,0 +1,108 @@
+.frame {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding-block: calc(var(--header-h) + var(--section-pad)) var(--section-pad-lg);
+  background: var(--navy-700);
+  color: var(--text-on-navy);
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+.label {
+  color: var(--accent-text);
+}
+
+.heading {
+  max-width: var(--measure-heading);
+}
+
+.body {
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+}
+
+.rule {
+  display: block;
+  width: min(12rem, 40vw);
+  height: var(--hairline);
+  background: var(--accent-rose);
+  transform-origin: left center;
+}
+
+.rule[data-busy] {
+  animation: draw 1.6s var(--ease-in-out-quart) infinite;
+}
+
+@keyframes draw {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  50% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+  50.01% {
+    transform: scaleX(1);
+    transform-origin: right center;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rule[data-busy] {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  border: var(--hairline) solid var(--accent-rose);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-on-navy);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out-quint),
+    color var(--dur-fast) var(--ease-out-quint);
+}
+
+.button:hover {
+  background: var(--accent-wash);
+}
+
+.primary {
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  letter-spacing: var(--tracking-ui-solid);
+}
+
+.primary:hover {
+  background: var(--accent-rose-bright);
+}
