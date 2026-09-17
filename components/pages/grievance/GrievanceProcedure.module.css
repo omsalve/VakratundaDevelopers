@@ -1,0 +1,282 @@
+/* /grievance-redressal — the procedure. See GrievanceProcedure.tsx. */
+
+.section {
+  padding-block: var(--section-pad) var(--section-pad-lg);
+}
+
+/* ---- The clause index ---------------------------------------------------- */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.railLabel {
+  color: var(--text-on-cream-muted);
+  padding-block-end: var(--space-3);
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.railList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.railLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  text-decoration: none;
+  color: var(--text-on-cream-muted);
+  border-inline-start: 2px solid transparent;
+  padding-inline-start: var(--space-3);
+  transition:
+    color var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo);
+}
+
+.railLink:hover {
+  color: var(--text-on-cream);
+}
+
+/* The clause under the reading line. A drawn mark on the left edge and full
+   strength type — the same lit state the stations on /about take, and for the
+   same reason: the reader should be able to see where they are without
+   hunting for it. */
+.railLink[data-current="true"] {
+  color: var(--text-on-cream);
+  border-inline-start-color: var(--accent-deep);
+}
+
+.railNumber {
+  font-size: var(--fs-caption);
+  color: var(--accent-deep);
+  opacity: 0.7;
+}
+
+.railText {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+}
+
+/* ---- The document -------------------------------------------------------- */
+
+.document {
+  min-width: 0;
+  /* A strict measure. This is the one page on the site whose only job is
+     reading, so the column is narrower than --measure rather than wider. */
+  max-width: 44rem;
+}
+
+/* ---- The progress rule --------------------------------------------------- */
+
+.progress {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 2;
+  height: 2px;
+  background: var(--page-rule);
+  margin-bottom: var(--space-7);
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--accent-deep);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ---- The intro ----------------------------------------------------------- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream);
+  padding-block-end: var(--space-8);
+}
+
+/* ---- The clauses --------------------------------------------------------- */
+
+.clauses {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.clause {
+  position: relative;
+  padding-block: var(--space-8);
+}
+
+.clauseRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.clauseHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: baseline;
+  margin-bottom: var(--space-5);
+}
+
+/* The numeral hangs in the margin rather than sitting in the heading, so the
+   headings all start on one vertical and the document can be scanned down its
+   own left edge. */
+.clauseNumber {
+  font-size: var(--fs-h3);
+  color: var(--accent-deep);
+  opacity: 0.45;
+}
+
+.clauseHeading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.clauseBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  /* Aligned under the heading, clear of the hung numeral. */
+  padding-inline-start: calc(2ch + var(--space-5));
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list > li {
+  position: relative;
+  padding-inline-start: var(--space-5);
+}
+
+/* A drawn rule as the bullet, not a disc. */
+.list > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.72em;
+  width: var(--space-3);
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--page-rule);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .document {
+    max-width: none;
+  }
+
+  /* The rail is no longer sticky (identity.css), so it becomes the document's
+     own table of contents, ruled off above the text. */
+  .railList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0 var(--space-6);
+  }
+
+  .railLink {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+    border-block-end: var(--hairline) solid var(--page-rule);
+  }
+
+  .railLink[data-current="true"] {
+    border-inline-start: 0;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .clauseHead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .clauseBody {
+    padding-inline-start: 0;
+  }
+
+  .clauseNumber {
+    font-size: var(--fs-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .railLink,
+  .cta {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The rule is filled by a scrubbed tween, and no tween runs for a visitor
+     who has asked for less motion — so it would sit permanently empty. It is
+     decorative and already `aria-hidden`; an empty gauge tells nobody
+     anything, so it is simply not drawn. */
+  .progress {
+    display: none;
+  }
+}

@@ -67,7 +67,8 @@ export function pageHero(): Field {
 
 /* ----------------------------------------------------------------- cards */
 
-const commitmentIcon: Field = {
+/** The four environmental practices, each bound to a drawing that exists. */
+export const commitmentIcon: Field = {
   name: "icon",
   type: "select",
   label: "Drawing",
@@ -331,11 +332,16 @@ export function cta(name = "cta", label = "Button"): Field {
   };
 }
 
-export function figures(name = "figures", label = "Photographs"): Field {
+export function figures(
+  name = "figures",
+  label = "Photographs",
+  description?: string,
+): Field {
   return {
     name,
     type: "array",
     label,
+    admin: { description },
     fields: [
       { name: "image", type: "upload", relationTo: "media", required: true },
       { name: "caption", type: "text" },
@@ -433,7 +439,7 @@ export function seoTab({
             label: "Share image",
             admin: {
               description:
-                "1200 × 630. Leave empty to use the site's default share card.",
+                "1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.",
             },
           },
           {

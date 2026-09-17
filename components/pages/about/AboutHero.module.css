@@ -1,0 +1,153 @@
+/* /about — the opening frame. See AboutHero.tsx for the reasoning. */
+
+.section {
+  position: relative;
+  /* Holds a screen, minus the masthead it has to clear. The landing page's
+     hero is the only other thing on the site that takes a full viewport; this
+     one earns it because the line has to be seen ARRIVING from above the fold
+     for the rest of the page to read as one continuous thread. */
+  min-height: clamp(34rem, calc(100svh - var(--header-h)), 54rem);
+  display: flex;
+  align-items: flex-end;
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+  overflow: hidden;
+}
+
+/* ---- The line ------------------------------------------------------------ */
+
+.thread {
+  position: absolute;
+  inset-block: 0;
+  /* Sits on the same vertical axis every spine on the site runs down, so the
+     line in the hero and the line through the sections below are one line. */
+  inset-inline-start: calc(var(--spine-inset) + var(--gutter));
+  width: 2px;
+  height: 100%;
+  color: var(--accent-rose);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.threadPath {
+  /* Measured and animated by drawOnEnter; the resting state is fully drawn,
+     so with no JS the line is simply there. */
+  stroke-linecap: butt;
+}
+
+/* ---- The founding year --------------------------------------------------- */
+
+.year {
+  position: absolute;
+  /* Bleeds off the right edge: the year is older than the frame. */
+  inset-inline-end: -0.12em;
+  inset-block-start: 8%;
+  font-size: clamp(9rem, 30vw, 26rem);
+  color: var(--accent-rose);
+  opacity: 0.07;
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
+  line-height: 0.78;
+}
+
+/* ---- The stack ----------------------------------------------------------- */
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Clears the line and sits ON it rather than beside it. */
+  padding-inline-start: calc(var(--spine-inset) + var(--space-6));
+  max-width: 60rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+  position: relative;
+}
+
+/* The rubric is tied back to the line with a short leader, the way the brand
+   guide ties a caption to what it captions. */
+.label::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-6) * -1);
+  inset-block-start: 50%;
+  width: var(--space-5);
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.55;
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-7);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  align-items: baseline;
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+/* A rose dot between the credentials, not a slash. */
+.metaItem + .metaItem::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-rose);
+  margin-inline-start: calc(var(--space-5) * -1 + 1px);
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + var(--space-7)) var(--section-pad);
+  }
+
+  .thread {
+    inset-inline-start: calc(var(--gutter) * 0.5);
+  }
+
+  .stack {
+    padding-inline-start: var(--space-6);
+  }
+
+  .year {
+    inset-block-start: 2%;
+    opacity: 0.05;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .year {
+    will-change: auto;
+  }
+}

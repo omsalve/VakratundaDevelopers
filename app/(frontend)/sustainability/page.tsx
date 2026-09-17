@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import CardGrid from "@/components/CardGrid";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import SustainabilityHero from "@/components/pages/sustainability/SustainabilityHero";
+import SustainabilityStem from "@/components/pages/sustainability/SustainabilityStem";
 import PageShell from "@/components/PageShell";
-import SectionCoda from "@/components/SectionCoda";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Sustainability.
+ * Sustainability — WHAT GROWS.
  *
- * The landing page's responsibility band, given its full length: the four
- * practices the group builds to, each opened out from its one line into what
- * it actually changes on a site, and the same coda closing them.
+ * The page's identity is a stem. It breaks the hero's ground line, runs down
+ * the centre of the field, and puts out a curved branch to each of the four
+ * practices in turn. Nothing else on this site curves: /about rules a straight
+ * line down its left edge and /nri-corner rules a straight border down its
+ * middle, because a rope and a border are drawn with a straightedge. A stem is
+ * not, and that single difference in how the line is drawn is what separates
+ * this page from the two it would otherwise most resemble.
  *
- * ONE LEDGER, NOT TWO. This page used to carry a community ledger beside the
- * environmental one, built around Vihaa International School. The school is a
- * joint venture, and it has its own section on the landing page after the
- * ventures; a stake the group holds is not a line in what it owes, so it is
- * not restated here.
+ * IT IS ALSO THE ONLY PAGE ON THE SITE THAT IS SYMMETRICAL. The head is
+ * centred, the practices alternate about the stem. Every other page on the
+ * site ranges left.
  *
- * Content: the `sustainability-page` global over lib/pages/standing.ts.
+ * LIT, NOT DARK. identity.css gives this page cream from the first pixel, and
+ * the landing page's rule that a change of ground is an event is kept: the
+ * event is arriving here at all.
+ *
+ * Content: the `sustainability-page` global over lib/pages/standing.ts, with
+ * the CardBand shape in lib/pages/types.ts untouched.
  */
 
 export const revalidate = 60;
@@ -33,26 +38,20 @@ export default async function SustainabilityPage() {
 
   return (
     <PageShell
+      page="sustainability"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <SustainabilityHero content={page.hero} />
 
-      <PageSection
-        id="environment"
-        ground="cream"
-        size="lg"
+      <SustainabilityStem
         label={page.environment.label}
         heading={page.environment.heading}
-        standfirst={page.environment.lead}
-      >
-        <div className="u-shell">
-          <CardGrid items={page.environment.items} columns={2} />
-
-          {/* The same coda the landing page's responsibility band ends on. */}
-          <SectionCoda text={page.coda} cta={page.cta} />
-        </div>
-      </PageSection>
+        lead={page.environment.lead}
+        items={page.environment.items}
+        coda={page.coda}
+        cta={page.cta}
+      />
     </PageShell>
   );
 }

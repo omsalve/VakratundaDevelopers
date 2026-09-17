@@ -10,6 +10,7 @@ import { siteContent } from "@/lib/content";
 // Order matters: tokens first, then the rules that consume them.
 import "@/styles/vars.css";
 import "@/styles/global.css";
+import "@/styles/identity.css";
 
 /**
  * Root layout for the public site.

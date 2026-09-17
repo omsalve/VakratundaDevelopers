@@ -1,0 +1,166 @@
+/* /careers — the staircase. See CareersAscent.tsx. */
+
+.section {
+  padding-block: var(--section-pad-lg);
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  max-width: 44rem;
+  margin-bottom: calc(var(--head-gap) * 1.1);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The staircase ------------------------------------------------------- */
+
+.stair {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vh, 4.5rem);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Each tread steps across by its own index. `--step` is set per item and the
+   indent is derived from it, so the flight is one declaration rather than a
+   rule per position. */
+.tread {
+  position: relative;
+  margin-inline-start: calc(var(--step, 0) * clamp(1.5rem, 6vw, 5.5rem));
+  max-width: 42rem;
+}
+
+.connector {
+  position: absolute;
+  /* Sits in the corner the step turns: up and to the left of the tread. */
+  inset-inline-start: calc(clamp(1.5rem, 6vw, 5.5rem) * -1);
+  inset-block-start: calc(clamp(2.5rem, 6vh, 4.5rem) * -1);
+  width: clamp(1.5rem, 6vw, 5.5rem);
+  height: calc(clamp(2.5rem, 6vh, 4.5rem) + 1.1em);
+  color: var(--accent-rose);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.treadBody {
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 2px solid var(--navy-line);
+  padding-inline-start: var(--space-6);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+  max-width: 56ch;
+}
+
+/* ---- The figures, as a rail ---------------------------------------------- */
+
+.rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-6) var(--space-7);
+  margin-block-start: clamp(4rem, 9vh, 6.5rem);
+  padding-block-start: var(--space-6);
+}
+
+.railRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.4;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.statValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+/* Deliberately modest — see the note in the component. */
+.value {
+  font-size: var(--fs-h2);
+  color: var(--text-on-navy);
+  line-height: 1;
+}
+
+.suffix {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  color: var(--accent-rose);
+  align-self: flex-start;
+}
+
+.unit {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-body);
+  color: var(--accent-rose);
+}
+
+.statNote {
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+  max-width: 22ch;
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  /* The flight collapses to a column: a staircase needs horizontal room, and
+     four steps of indent on a phone leaves the last tread at about 18
+     characters. The ruled left edge keeps the treads reading as a set. */
+  .tread {
+    margin-inline-start: 0;
+  }
+
+  .connector {
+    display: none;
+  }
+
+  .treadBody {
+    padding-inline-start: var(--space-5);
+  }
+
+  .rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

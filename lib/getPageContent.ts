@@ -264,10 +264,22 @@ export async function getStandingPage<K extends PageKey>(key: K) {
   return { site, page };
 }
 
+/**
+ * A standing page's metadata.
+ *
+ * Reads the site as well as the page, for one field: the share card. A page
+ * that has not set its own falls back to the Home global's, so the card the
+ * whole site shares is uploaded once in /admin rather than being a file in
+ * the repository. Both reads are request-cached, so this is still no extra
+ * round trip — the page itself reads the same two.
+ */
 export async function getPageMetadata(
   key: PageKey,
   path: string,
 ): Promise<Metadata> {
-  const { seo } = await getPageContent(key);
-  return buildMetadata(seo, { path });
+  const [{ seo }, site] = await Promise.all([
+    getPageContent(key),
+    getSiteContent(),
+  ]);
+  return buildMetadata(seo, { path, siteImage: site.seo.image });
 }

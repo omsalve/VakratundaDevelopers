@@ -1,21 +1,29 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import ProjectsField from "@/components/pages/projects/ProjectsField";
+import ProjectsIndexHero from "@/components/pages/projects/ProjectsIndexHero";
 import PageShell from "@/components/PageShell";
-import ProjectGrid from "@/components/ProjectGrid";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Our Projects.
+ * Our Projects — THE INDEX.
  *
- * THE SAME ARRAY THE LANDING PAGE SCROLLS THROUGH. `site.gallery.slides` is
- * read here unchanged, so the `projects` collection is the single source for
- * both surfaces and a project added in /admin appears on each without being
- * entered twice. The chrome around it is the `projects-page` global.
+ * The page's identity is a catalogue: lit from the first pixel, its contents
+ * tallied above the fold, its entries set in a four-beat editorial rhythm
+ * against a status rail that never scrolls away. It is the only page on the
+ * site with a horizontal axis — the contact sheet leafs sideways as the page
+ * scrolls down — and the only one that opens on cream with no hero frame at
+ * all.
  *
- * The field is on cream: fourteen photographs on navy would be fourteen lit
- * rectangles on a dark ground with no relief between them, and the landing
- * page already establishes cream as the ground the work is examined on.
+ * WHY: /about has to argue that fifty years were continuous, so it is a line.
+ * This page has to let somebody find one address among many, so it is an
+ * index. Neither argument survives being put in the other's layout, which is
+ * what the old shared `PageHero` + `PageSection` template did to both.
+ *
+ * THE SAME ARRAY THE LANDING PAGE SCROLLS. `site.gallery.slides` is read here
+ * unchanged, so the `projects` collection is the single source for both
+ * surfaces and a project added in /admin appears on each without being entered
+ * twice. The chrome around it is still the `projects-page` global, and the
+ * shape of both is untouched.
  */
 
 export const revalidate = 60;
@@ -29,20 +37,19 @@ export default async function ProjectsPage() {
 
   return (
     <PageShell
+      page="projects"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <ProjectsIndexHero content={page.hero} slides={site.gallery.slides} />
 
-      <PageSection id="projects" ground="cream" size="lg">
-        <ProjectGrid
-          slides={site.gallery.slides}
-          filterLabel={page.filterLabel}
-          allLabel={page.allLabel}
-          emptyMessage={page.emptyMessage}
-          note={page.note}
-        />
-      </PageSection>
+      <ProjectsField
+        slides={site.gallery.slides}
+        filterLabel={page.filterLabel}
+        allLabel={page.allLabel}
+        emptyMessage={page.emptyMessage}
+        note={page.note}
+      />
     </PageShell>
   );
 }

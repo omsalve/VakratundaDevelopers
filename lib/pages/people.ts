@@ -29,46 +29,46 @@ export const careersPage: CareersPageContent = {
   seo: {
     title: "Careers",
     description:
-      "Working at Vakratunda Group — a second-generation Mumbai practice where the person who drew a detail is the person who answers for it on site.",
+      "Build your future with Vakratunda Group — a second-generation Mumbai legacy where the person who draws a detail answers for it on site.",
   },
 
   hero: {
     label: "Careers",
-    heading: { before: "A practice small enough to ", swash: "sign", after: " your own work" },
+    heading: { before: "Build a legacy you can ", swash: "sign", after: " your name to" },
     standfirst:
-      "Fifty years, two generations, and a drawing office where the person who drew a detail is still the person who answers for it on site.",
+      "Five decades, two generations, and a team guided by family values — where the person who draws a detail still answers for it on site.",
     meta: ["Mumbai · MMR", "Second generation", "Triple ISO certified"],
   },
 
   culture: {
-    label: "How it works here",
-    heading: { before: "What the ", swash: "job", after: " is actually like" },
+    label: "Life at Vakratunda",
+    heading: { before: "More than a ", swash: "job", after: " — it’s devotion" },
     standfirst:
-      "Four things that are true of working here, including the ones that will not suit everybody.",
+      "Four truths about building with us — including the ones that will not suit everybody.",
     items: [
       {
         id: "ownership",
         eyebrow: "Ownership",
         title: "You will be named on your work",
-        body: "Teams are small and projects are long. Nobody here hands a drawing to a department and stops thinking about it — the same office answers for a detail at design stage and at handover, years later.",
+        body: "Teams are small and projects are long. Nobody here hands a drawing to a department and moves on — the same people answer for a detail at design stage and at handover, years later.",
       },
       {
         id: "site",
         eyebrow: "Site",
         title: "The office and the site are the same job",
-        body: "Everyone who draws goes to site, and regularly. A practice where the drawing office and the site team argue by email produces buildings that show it.",
+        body: "Everyone who draws goes to site, and often. Great buildings come from great teamwork, and it shows in every floor we hand over.",
       },
       {
         id: "pace",
         eyebrow: "Pace",
         title: "Long projects, and a real handover date",
-        body: "Redevelopment runs for years and the date at the end of it is a commitment to families who have moved out of their homes. That is the pressure the work carries — and it is the reason the schedule is taken seriously rather than the reason corners get cut.",
+        body: "Redevelopment runs for years, and the date at the end of it is a promise to families who have moved out of their homes. That is the weight the work carries — and why we treat every timeline with unwavering respect, never as a reason to cut corners.",
       },
       {
         id: "scale",
         eyebrow: "Scale",
         title: "A private company, not a listed one",
-        body: "Decisions are made in the building, quickly, by people you will meet in your first week. There is no quarterly cycle here, and no layer between a good idea and the person who can approve it.",
+        body: "Decisions are made in the building, quickly, by people you will meet in your first week. We are guided by family values, with no layer between a good idea and the person who can approve it.",
       },
     ],
   },
@@ -77,28 +77,28 @@ export const careersPage: CareersPageContent = {
     {
       id: "since",
       value: "1973",
-      note: "Continuously building in Mumbai, now under the second generation.",
+      note: "Building futures in Mumbai, now led by the second generation.",
     },
     {
       id: "delivered",
       value: "2.1",
       unit: "M sq. ft.",
-      note: "Delivered — the work you would be joining the next phase of.",
+      note: "Developed so far — and the next chapter could carry your name.",
     },
     {
       id: "families",
       value: "2500",
       suffix: "+",
       unit: "families",
-      note: "Living in buildings this office drew and handed over.",
+      note: "Now at home in buildings our team designed and handed over.",
     },
   ],
 
   roles: {
     label: "Disciplines",
-    heading: { before: "Where the group ", swash: "hires" },
+    heading: { before: "Where you could ", swash: "belong" },
     standfirst:
-      "The functions the practice runs in-house. Write to us against any of them and the letter is read, whether or not a post is open that week.",
+      "The teams we run in-house. Write to us about any of them and your letter is read, whether or not a post is open that week.",
     // ⚠️ PLACEHOLDER — see the notice at the head of this file.
     entries: [
       {
@@ -129,7 +129,7 @@ export const careersPage: CareersPageContent = {
         id: "role-sales",
         meta: "Sales",
         title: "Sales and society relations",
-        note: "Redevelopment work means sitting with a society's committee for years. This is the role that does that, and it is not a closing job.",
+        note: "Redevelopment means walking with a society's committee for years. This role builds that lifelong trust — it is not a closing job.",
         href: `mailto:${OFFICE_EMAIL}?subject=Careers%20%E2%80%94%20Sales`,
         action: "Apply",
       },
@@ -177,14 +177,14 @@ export const contactPage: ContactPageContent = {
   seo: {
     title: "Contact Us",
     description:
-      "Reach Vakratunda Group's office in Bandra East — enquiries about buying, society redevelopment, land and joint development, or working with the group.",
+      "Begin your journey with Vakratunda Group in Bandra East — enquiries about buying, society redevelopment, land and joint development, or joining our team.",
   },
 
   hero: {
     label: "Contact Us",
-    heading: { before: "Write to the ", swash: "office", after: ", not to a queue" },
+    heading: { before: "Let’s build your ", swash: "future", after: ", together" },
     standfirst:
-      "Every enquiry below reaches the group's own office in Bandra East. Choose the line that fits and it opens addressed to the person who can answer it.",
+      "Every enquiry below reaches our own office in Bandra East, not a call centre. Choose the line that fits, and it opens addressed to the person who can help.",
     meta: ["Bandra East", "Mumbai — 400 051", "MCHI-CREDAI"],
   },
 
@@ -192,12 +192,12 @@ export const contactPage: ContactPageContent = {
     label: "Channels",
     heading: { before: "Pick the ", swash: "line", after: " that fits" },
     standfirst:
-      "Each of these opens an email to the office with its subject already set, so it lands with the right person rather than in a general inbox.",
+      "Each of these opens an email to our team with its subject already set, so it reaches the right person, not a general inbox.",
     entries: [
       {
         id: "buy",
         meta: "Buying",
-        title: "A home, or commercial space",
+        title: "A dream home, or commercial space",
         note: "Availability, floor plates, specification and the approved plan for a specific unit.",
         href: `mailto:${OFFICE_EMAIL}?subject=Enquiry%20%E2%80%94%20Buying`,
         action: "Write",
@@ -205,7 +205,7 @@ export const contactPage: ContactPageContent = {
       {
         id: "redevelopment",
         meta: "Societies",
-        title: "Redevelopment of your society",
+        title: "A new address for your society",
         note: "For committees at any stage, including the one before a general body meeting has resolved anything.",
         href: `mailto:${OFFICE_EMAIL}?subject=Enquiry%20%E2%80%94%20Society%20redevelopment`,
         action: "Write",
@@ -221,7 +221,7 @@ export const contactPage: ContactPageContent = {
       {
         id: "nri",
         meta: "From abroad",
-        title: "Buying as a non-resident",
+        title: "Your Mumbai home, from abroad",
         note: "Documents, timing and the parts of the process that need you present.",
         href: `mailto:${OFFICE_EMAIL}?subject=Enquiry%20%E2%80%94%20NRI%20purchase`,
         action: "Write",
@@ -229,7 +229,7 @@ export const contactPage: ContactPageContent = {
       {
         id: "careers",
         meta: "Careers",
-        title: "Working here",
+        title: "Building with us",
         note: "CVs and portfolios, to the discipline you want to work in.",
         href: "/careers",
         action: "Open",
@@ -238,14 +238,14 @@ export const contactPage: ContactPageContent = {
         id: "press",
         meta: "Media",
         title: "Press and interview requests",
-        note: "Handled directly by the group rather than through an agency.",
+        note: "Handled directly by our team, not through an agency.",
         href: `mailto:${OFFICE_EMAIL}?subject=Press%20enquiry`,
         action: "Write",
       },
       {
         id: "grievance",
         meta: "Complaints",
-        title: "A grievance about the group or this site",
+        title: "A concern about us or this site",
         note: "The procedure, the officer it goes to, and what happens after it is logged.",
         href: "/grievance-redressal",
         action: "Read",
@@ -256,7 +256,7 @@ export const contactPage: ContactPageContent = {
 
   form: {
     label: "Or write it here",
-    heading: "Tell us what you need, in your own words",
+    heading: "Tell us your story, in your own words",
     standfirst:
       "The same office, reached the other way round: fill this in and it is laid out into an email for you, addressed and titled, ready to send.",
     note: "The form does not send anything by itself. It opens the enquiry in your own mail client, so you keep a copy of exactly what you sent and we reply to an address you already use.",
@@ -266,7 +266,7 @@ export const contactPage: ContactPageContent = {
     label: "The office",
     heading: { before: "Bandra ", swash: "East" },
     standfirst:
-      "The group has one office and it is where the drawings are. Visitors are welcome by appointment — write first and we will confirm a time.",
+      "We have one office, and it is where every blueprint begins. Visitors are welcome by appointment — write first and we will confirm a time.",
     addressLines: [
       "Vakratunda Group",
       "Vakratunda CHS Ltd, Bandra East",
@@ -282,7 +282,7 @@ export const contactPage: ContactPageContent = {
       alt: "A map of the Mumbai Metropolitan Region marking the localities the group has built in, from the island city through the western and eastern suburbs to Thane and Badlapur.",
       width: 3344,
       height: 1880,
-      caption: "Where the group has built.",
+      caption: "Where our addresses stand.",
     },
   },
 

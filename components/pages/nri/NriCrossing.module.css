@@ -1,0 +1,204 @@
+/* /nri-corner — the crossing. See NriCrossing.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+}
+
+/* ---- The meridian, continued --------------------------------------------- */
+
+.meridian {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  width: 2px;
+  height: 100%;
+  color: var(--accent-rose);
+  pointer-events: none;
+}
+
+.meridianSvg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- The head, still on the departure side ------------------------------- */
+
+.head {
+  max-width: min(36rem, 46%);
+  margin-bottom: calc(var(--head-gap) * 1.1);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The stages ---------------------------------------------------------- */
+
+.stages {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 8vh, 6rem);
+}
+
+.stageItem {
+  position: relative;
+  display: flex;
+}
+
+/* The two sides of the line. Each stage takes just under half the shell and
+   is pressed against the meridian from its own side, so the gutter down the
+   middle of the page is the border itself. */
+.stageItem[data-side="near"] {
+  justify-content: flex-start;
+}
+
+.stageItem[data-side="far"] {
+  justify-content: flex-end;
+}
+
+.stage {
+  position: relative;
+  width: min(34rem, 46%);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- The leader out to the meridian -------------------------------------- */
+
+.leader {
+  position: absolute;
+  inset-block-start: 1.6em;
+  width: clamp(1.5rem, 4vw, 3.5rem);
+  height: 2px;
+  color: var(--accent-rose);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Reaches from the stage toward the line, from whichever side it is on. */
+.stageItem[data-side="near"] .leader {
+  inset-inline-end: calc(clamp(1.5rem, 4vw, 3.5rem) * -1);
+}
+
+.stageItem[data-side="far"] .leader {
+  inset-inline-start: calc(clamp(1.5rem, 4vw, 3.5rem) * -1);
+}
+
+/* ---- The crossing mark --------------------------------------------------- */
+
+.cross {
+  position: absolute;
+  /* On the line, above the stage that first sits on the far side. */
+  inset-inline-start: 50%;
+  inset-block-start: clamp(-3rem, -4vh, -2rem);
+  translate: -50% -100%;
+  width: 40px;
+  height: 40px;
+  color: var(--accent-rose);
+}
+
+.crossRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent-rose);
+  opacity: 0.5;
+}
+
+.crossSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- The stage's own type ------------------------------------------------ */
+
+.number {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  color: var(--accent-rose);
+  opacity: 0.4;
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  /* The meridian moves to the right edge, as it does in the hero, and every
+     stage sits against it. The crossing survives as a change of INDENT rather
+     than of side: the far-side stages step in toward the line, which is the
+     same gesture at a width that cannot hold two columns. */
+  .meridian {
+    inset-inline-start: auto;
+    inset-inline-end: var(--gutter);
+    translate: none;
+  }
+
+  .head {
+    max-width: none;
+    padding-inline-end: var(--space-8);
+  }
+
+  .stageItem[data-side="near"],
+  .stageItem[data-side="far"] {
+    justify-content: flex-start;
+  }
+
+  .stage {
+    width: 100%;
+    padding-inline-end: var(--space-8);
+  }
+
+  .stageItem[data-side="far"] .stage {
+    padding-inline-start: var(--space-6);
+  }
+
+  .leader {
+    display: none;
+  }
+
+  .cross {
+    inset-inline-start: auto;
+    inset-inline-end: calc(var(--gutter) - 19px);
+    translate: 0 -100%;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .stages {
+    gap: var(--space-9);
+  }
+
+  .number {
+    font-size: 1.75rem;
+  }
+}

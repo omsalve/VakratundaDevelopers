@@ -1,0 +1,167 @@
+/* /projects — the catalogue masthead. See ProjectsIndexHero.tsx. */
+
+.section {
+  position: relative;
+  padding-block-start: calc(var(--header-h) + var(--space-9));
+  padding-block-end: var(--space-9);
+  overflow: hidden;
+}
+
+/* ---- The masthead -------------------------------------------------------- */
+
+.masthead {
+  display: grid;
+  /* The tally takes a fixed, narrow column: it is a reference table, and a
+     reference table that reflows with the headline is unreadable. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+  gap: var(--space-9);
+  align-items: end;
+  margin-bottom: var(--space-9);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 14ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The tally ----------------------------------------------------------- */
+
+.tally {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  /* Ruled off the field below, the way an index is ruled off its contents. */
+  border-block-start: var(--hairline) solid var(--page-rule);
+  padding-block-start: var(--space-5);
+}
+
+.tallyRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.motion-on .tallyRow {
+  opacity: 0;
+}
+
+.tallyTerm {
+  color: var(--text-on-cream-muted);
+}
+
+.tallyValue {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.tallyCount {
+  font-size: var(--fs-h3);
+  color: var(--text-on-cream);
+  /* Fixed width so the bars all start on the same vertical, however many
+     digits a count runs to. */
+  min-width: 2.5ch;
+}
+
+/* The proportional rule. `--share` is set per row from the largest count. */
+.tallyBar {
+  flex: 1;
+  height: 2px;
+  background: var(--accent-deep);
+  opacity: 0.55;
+  transform: scaleX(var(--share, 1));
+  transform-origin: left center;
+}
+
+/* ---- The contact sheet --------------------------------------------------- */
+
+.sheet {
+  /* Full-bleed: the strip runs edge to edge, out of the shell. */
+  width: 100%;
+  overflow: hidden;
+  border-block: var(--hairline) solid var(--page-rule);
+  padding-block: var(--space-4);
+  background: var(--page-figure);
+}
+
+.track {
+  display: flex;
+  gap: var(--space-3);
+  /* Starts inset by the gutter so the first frame lines up with the headline
+     above it, then travels left out of that alignment. */
+  padding-inline-start: var(--gutter);
+  width: max-content;
+  will-change: transform;
+}
+
+.thumb {
+  display: block;
+  flex: none;
+  width: clamp(7rem, 13vw, 11rem);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: var(--cream-300);
+}
+
+.thumbImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The strip is a reference, not the work itself: it sits back until the
+     field below shows each frame properly. */
+  filter: saturate(0.7);
+  opacity: 0.8;
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .masthead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  .tally {
+    /* Across rather than down once it is under the headline: three short rows
+       stacked under a display heading read as an afterthought. */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+  }
+
+  .tallyRow {
+    flex: 1 1 7rem;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    will-change: auto;
+  }
+}

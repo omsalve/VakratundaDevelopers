@@ -1,0 +1,116 @@
+/* /awards — the case of seals. See AwardsCabinet.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+}
+
+.inner {
+  position: relative;
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  max-width: 44rem;
+  margin-bottom: calc(var(--head-gap) * 1.1);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The case ------------------------------------------------------------ */
+
+.case {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-9) var(--space-7);
+}
+
+.standing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-5);
+}
+
+/* ---- The seal ------------------------------------------------------------ */
+
+.seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(7rem, 12vw, 9.5rem);
+  aspect-ratio: 1;
+  color: var(--accent-rose);
+}
+
+.sealRings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The standard's number, inside its ring. Broken onto two lines at the colon
+   so "ISO 9001:2015" is never set as one long line inside a circle. */
+.sealText {
+  position: relative;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.08em;
+  color: var(--accent-rose);
+  max-width: 6ch;
+  line-height: 1.35;
+  /* Breaks after the colon and between words without a hyphen. */
+  overflow-wrap: break-word;
+}
+
+.sealBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 32ch;
+}
+
+.title {
+  font-size: var(--fs-h3);
+}
+
+.body {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  /* Two per row down to the smallest screens: four seals in a single column
+     is a very long page for four short paragraphs, and the seal is legible
+     small. */
+  .case {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-5);
+  }
+
+  .seal {
+    width: clamp(5rem, 26vw, 7rem);
+  }
+
+  .title {
+    font-size: var(--fs-body);
+  }
+}

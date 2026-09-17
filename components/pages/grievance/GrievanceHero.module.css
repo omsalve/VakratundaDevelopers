@@ -1,0 +1,86 @@
+/* /grievance-redressal — the head of a filed instrument. See GrievanceHero.tsx. */
+
+.section {
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--space-9);
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+  gap: var(--space-9);
+  align-items: end;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+/* `u-h1`, not `u-display`. See the note in the component. */
+.heading {
+  max-width: 16ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The register -------------------------------------------------------- */
+
+.register {
+  display: flex;
+  flex-direction: column;
+  border-block-start: var(--hairline) solid var(--page-rule);
+}
+
+.registerRow {
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.registerTerm {
+  font-size: var(--fs-caption);
+  color: var(--accent-deep);
+  letter-spacing: var(--tracking-label);
+}
+
+.registerValue {
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-cream);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    align-items: start;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .registerRow {
+    grid-template-columns: minmax(0, 5.5rem) minmax(0, 1fr);
+  }
+}

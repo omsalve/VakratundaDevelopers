@@ -6,7 +6,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ARC_RUN } from "@/lib/arc";
 import type { GalleryContent } from "@/lib/content";
-import { MUMBAI_MAP, projectMapPoints } from "@/lib/mapPoints";
+import { projectMapPoints } from "@/lib/mapPoints";
 import { gsap, useGsapScope } from "@/lib/motion";
 import { MapPinLayer } from "./LocationMap";
 import styles from "./ProjectsShowcase.module.css";
@@ -392,10 +392,10 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
         <figure className={styles.frame} aria-hidden="true">
           <div className={clsx(styles.pane, styles.paneLeft)}>
             <Image
-              src={MUMBAI_MAP.src}
+              src={content.map.src}
               alt=""
-              width={MUMBAI_MAP.width}
-              height={MUMBAI_MAP.height}
+              width={content.map.width}
+              height={content.map.height}
               sizes="100vw"
               quality={82}
               priority
@@ -405,10 +405,10 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           </div>
           <div className={clsx(styles.pane, styles.paneRight)}>
             <Image
-              src={MUMBAI_MAP.src}
+              src={content.map.src}
               alt=""
-              width={MUMBAI_MAP.width}
-              height={MUMBAI_MAP.height}
+              width={content.map.width}
+              height={content.map.height}
               sizes="100vw"
               quality={82}
               priority
@@ -431,8 +431,8 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           <MapPinLayer
             // Must match how .shot is painted in the stylesheet.
             image={{
-              width: MUMBAI_MAP.width,
-              height: MUMBAI_MAP.height,
+              width: content.map.width,
+              height: content.map.height,
               fit: "cover",
               focalX: 50,
               focalY: 38,

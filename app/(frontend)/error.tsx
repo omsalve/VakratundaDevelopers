@@ -30,8 +30,8 @@ export default function FrontendError({
   return (
     <RouteState
       label="Something went wrong"
-      heading="This page did not load"
-      body="It failed while it was being put together. Trying again usually fixes it."
+      heading="This page lost its address"
+      body="Something slipped while it was being built. Trying again usually sets it right."
     >
       <div className={styles.actions}>
         <button

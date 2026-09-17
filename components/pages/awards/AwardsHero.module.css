@@ -1,0 +1,111 @@
+/* /awards — the seal. See AwardsHero.tsx. */
+
+.section {
+  position: relative;
+  min-height: clamp(30rem, calc(100svh - var(--header-h)), 46rem);
+  display: flex;
+  align-items: center;
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+  overflow: hidden;
+}
+
+/* ---- The seal ------------------------------------------------------------ */
+
+.seal {
+  position: absolute;
+  /* Held off the right edge and sunk into the ground: it is the case's own
+     mark, not an illustration beside the text. */
+  inset-inline-end: clamp(-6rem, -4vw, -2rem);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  width: clamp(20rem, 42vw, 38rem);
+  aspect-ratio: 1;
+  color: var(--accent-rose);
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.seal svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sealSpin {
+  transform-origin: 50% 50%;
+}
+
+/* ---- The stack ----------------------------------------------------------- */
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: min(42rem, 62%);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 15ch;
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-7);
+}
+
+/* The standards, set as a ruled register rather than a run of dotted meta —
+   these are the page's evidence, not its credentials line. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  border-block-start: var(--hairline) solid var(--navy-line);
+  padding-block-start: var(--space-4);
+  width: 100%;
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .stack {
+    max-width: 100%;
+  }
+
+  .seal {
+    inset-block-start: auto;
+    inset-block-end: -18%;
+    inset-inline-end: -22%;
+    translate: none;
+    width: 28rem;
+    opacity: 0.14;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + var(--space-7)) var(--section-pad);
+  }
+}

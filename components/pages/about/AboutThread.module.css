@@ -1,0 +1,255 @@
+/* /about — the threaded story. See AboutThread.tsx for the reasoning. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* ---- The line, continued from the hero ----------------------------------- */
+
+.thread {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--spine-inset) + var(--gutter));
+  width: 2px;
+  height: 100%;
+  color: var(--accent-rose);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Everything on this page hangs the same distance off the line. */
+.head,
+.body {
+  padding-inline-start: calc(var(--spine-inset) + var(--space-6));
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.label::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-6) * -1);
+  inset-block-start: 50%;
+  width: var(--space-5);
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.55;
+}
+
+.heading {
+  max-width: 20ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The body: a pinned plate and prose that travels past it ------------- */
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: var(--space-9);
+  align-items: start;
+}
+
+.figure {
+  position: sticky;
+  /* Clears the masthead, and sits a little below it so the plate is never
+     tight against the chrome. */
+  top: calc(var(--header-h) + var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.plate {
+  /* Portrait: the photograph is a tower seen from the street. */
+  --plate-ratio: 4 / 5;
+  width: 100%;
+}
+
+.plateImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+  /* The parallax moves the image inside its frame, so it is oversized by
+     exactly the travel it is given and never reveals an edge. */
+  scale: 1.14;
+}
+
+.caption {
+  max-width: 34ch;
+}
+
+/* ---- The prose ----------------------------------------------------------- */
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  /* Buys the travel that makes the sticky plate read as pinned. Without it a
+     three-paragraph column is shorter than the plate and nothing ever
+     sticks. */
+  padding-block: var(--space-6) var(--space-10);
+}
+
+.para {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  max-width: var(--measure);
+}
+
+/* The drawn cap. Display face, rose, and optically aligned rather than
+   mechanically: a Playfair cap has a left sidebearing a sans does not. */
+.drop {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 3.4em;
+  line-height: 0.82;
+  color: var(--accent-text);
+  padding-inline-end: 0.08em;
+  margin-inline-start: -0.04em;
+  margin-block-start: 0.04em;
+}
+
+/* ---- The break in the line ----------------------------------------------- */
+
+.quote {
+  position: relative;
+  margin-block-start: var(--space-10);
+  padding-block: var(--section-pad);
+  display: flex;
+  align-items: center;
+}
+
+/* The gap. A band of the page's own ground, painted over the line, so the
+   line appears to stop and start rather than to pass behind a box. It is
+   scaled open from the centre as the quote arrives. */
+.quoteMask {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--spine-inset) + var(--gutter) - 6px);
+  width: 14px;
+  background: var(--page-ground);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.quoteInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.quoteText {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
+  line-height: 1.16;
+  letter-spacing: var(--tracking-heading);
+  font-style: italic;
+  color: var(--accent-text);
+  max-width: 24ch;
+  margin-inline: auto;
+  text-align: center;
+  /* The quotation marks are drawn, not typed: a real pair of quotes at this
+     size would sit in the measure and push the line. */
+  position: relative;
+}
+
+.quoteText::before,
+.quoteText::after {
+  content: "";
+  display: block;
+  width: var(--space-8);
+  height: 1px;
+  background: var(--accent-text);
+  opacity: 0.4;
+  margin-inline: auto;
+}
+
+.quoteText::before {
+  margin-bottom: var(--space-6);
+}
+
+.quoteText::after {
+  margin-top: var(--space-6);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+
+  /* Nothing to travel past on one column, so the plate stops sticking and
+     simply leads the prose. */
+  .figure {
+    position: static;
+  }
+
+  .plate {
+    --plate-ratio: 3 / 2;
+  }
+
+  .prose {
+    padding-block: 0;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .thread,
+  .quoteMask {
+    inset-inline-start: calc(var(--gutter) * 0.5);
+  }
+
+  .quoteMask {
+    inset-inline-start: calc(var(--gutter) * 0.5 - 6px);
+  }
+
+  .head,
+  .body {
+    padding-inline-start: var(--space-6);
+  }
+
+  .quoteText {
+    text-align: start;
+    margin-inline: 0;
+  }
+
+  .quoteText::before,
+  .quoteText::after {
+    margin-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plateImage {
+    will-change: auto;
+    scale: 1;
+  }
+}

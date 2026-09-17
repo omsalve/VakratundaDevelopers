@@ -1,0 +1,211 @@
+/* /disclaimer — the notices. See DisclaimerNotices.tsx. */
+
+.section {
+  padding-block: calc(var(--header-h) + var(--space-10)) var(--section-pad-lg);
+}
+
+/* ---- The opening --------------------------------------------------------- */
+
+.opening {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-9);
+}
+
+.mark {
+  display: block;
+  width: clamp(2.5rem, 5vw, 3.5rem);
+  aspect-ratio: 1;
+  color: var(--accent-deep);
+  opacity: 0.8;
+}
+
+.mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 44rem;
+}
+
+.label {
+  margin-bottom: var(--space-4);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  margin-bottom: var(--space-5);
+}
+
+.updated {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.updatedTerm {
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+/* ---- The intro ----------------------------------------------------------- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 46rem;
+  margin-inline: auto;
+  text-align: center;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+  padding-block-end: var(--space-9);
+  border-block-end: var(--hairline) solid var(--page-rule);
+  margin-block-end: var(--space-9);
+}
+
+/* ---- The notices --------------------------------------------------------- */
+
+/* A masonry-ish field rather than a column: `columns` lets notices of very
+   different lengths pack without leaving the ragged bottom edge a two-column
+   grid would, and it needs no measurement to do it. The reading order down
+   each column is the document order, which is fine here precisely because
+   these notices have no order to preserve. */
+.notices {
+  columns: 2;
+  column-gap: var(--space-6);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notice {
+  /* Stops a card being split across the column break. */
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  margin-block-end: var(--space-6);
+  border: var(--hairline) solid var(--page-rule);
+  border-radius: var(--radius-m);
+  background: var(--page-figure);
+  /* The rule that marks it as a notice: a drawn edge on the leading side. */
+  box-shadow: inset 2px 0 0 0 var(--accent-deep);
+}
+
+.noticeHeading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.noticeBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list > li {
+  position: relative;
+  padding-inline-start: var(--space-5);
+}
+
+.list > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.7em;
+  width: var(--space-3);
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-5);
+  max-width: 46rem;
+  margin-inline: auto;
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--page-rule);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .notices {
+    columns: 1;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-8));
+  }
+
+  .notice {
+    padding: var(--space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

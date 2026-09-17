@@ -1,0 +1,230 @@
+/* /careers — the roles and the process. See CareersEntry.tsx. */
+
+.section {
+  padding-block: var(--section-pad-lg);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-pad);
+}
+
+/* ---- Heads --------------------------------------------------------------- */
+
+.head {
+  max-width: 44rem;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The roles ----------------------------------------------------------- */
+
+.roles {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.role {
+  position: relative;
+}
+
+.roleRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.role:last-child::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.roleLink,
+.roleStatic {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-4) var(--space-7);
+  align-items: baseline;
+  padding-block: var(--space-6);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* A linked row steps in under the pointer; the travelled rose rule comes from
+   `.p-row` in identity.css, which every actionable row on the site shares. */
+.roleLink {
+  transition: padding-inline-start var(--dur-base) var(--ease-out-expo);
+}
+
+.roleLink:hover,
+.roleLink:focus-visible {
+  padding-inline-start: var(--space-4);
+}
+
+.roleMeta {
+  color: var(--accent-deep);
+}
+
+.roleMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* The roles are the only actionable thing on the page, so they are the only
+   thing set at heading scale here. */
+.roleTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.roleNote {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 52ch;
+}
+
+.roleAction {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  color: var(--accent-deep);
+  white-space: nowrap;
+}
+
+.roleState {
+  justify-self: end;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+  border: var(--hairline) solid var(--page-rule);
+  border-radius: var(--radius-s);
+  padding: var(--space-2) var(--space-4);
+  white-space: nowrap;
+}
+
+.note {
+  margin-block-start: var(--space-6);
+  max-width: var(--measure);
+}
+
+/* ---- The process, laid across ------------------------------------------- */
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-8) var(--space-6);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* The node and its run to the next one. */
+.stepMark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 2.5rem;
+}
+
+.stepNumber {
+  font-size: var(--fs-h3);
+  color: var(--accent-deep);
+  opacity: 0.55;
+  flex: none;
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  color: var(--accent-deep);
+  opacity: 0.35;
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.stepBody {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .roleLink,
+  .roleStatic {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3) var(--space-4);
+  }
+
+  /* The department moves above the title rather than taking half the row. */
+  .roleMeta {
+    grid-column: 1 / -1;
+  }
+
+  .roleAction,
+  .roleState {
+    align-self: center;
+  }
+
+  /* The stepper stacks, and its runs would then point sideways into nothing. */
+  .stepLine {
+    display: none;
+  }
+
+  .stepMark {
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleLink {
+    transition: none;
+  }
+}

@@ -35,14 +35,14 @@ export const pressPage: PressPageContent = {
   seo: {
     title: "Press Room",
     description:
-      "Coverage of Vakratunda Group's projects and joint ventures, Vihaa International School among them, and direct contacts for media enquiries.",
+      "Stories of Vakratunda Group's projects and partnerships, Vihaa International School among them — and direct contacts for media enquiries.",
   },
 
   hero: {
     label: "Press Room",
-    heading: { before: "The record, as it was ", swash: "printed" },
+    heading: { before: "Our legacy, as it was ", swash: "printed" },
     standfirst:
-      "Coverage of the group's work, and the fastest way for a journalist to reach someone who can answer.",
+      "Stories of our work, and the quickest way for a journalist to reach someone who knows the story first-hand.",
     meta: ["Media relations", "Mumbai · MMR", "MCHI-CREDAI"],
   },
 
@@ -50,7 +50,7 @@ export const pressPage: PressPageContent = {
     label: "Coverage",
     heading: { before: "What has been ", swash: "written" },
     standfirst:
-      "Selected coverage of the group's projects and joint ventures, Vihaa International School among them.",
+      "Selected stories of our projects and partnerships, Vihaa International School among them.",
     // ⚠️ PLACEHOLDER — see the notice at the head of this file.
     entries: [
       {
@@ -82,19 +82,19 @@ export const pressPage: PressPageContent = {
         state: "Print",
       },
     ],
-    note: "Cuttings are held at the group's Bandra East office and can be supplied on request.",
+    note: "Cuttings are kept at our Bandra East office and can be shared on request.",
   },
 
   enquiries: {
     heading: { before: "Talk to someone who can ", swash: "answer" },
     standfirst:
-      "Media enquiries are handled directly rather than through an agency, so the reply comes from someone who has read the drawings.",
+      "We handle media enquiries ourselves, not through an agency — so every reply comes from someone who has lived the project.",
     entries: [
       {
         id: "media",
         meta: "Media",
         title: "Press and interview requests",
-        note: "Project details, imagery, and interviews with the group's leadership.",
+        note: "Project details, imagery, and interviews with our leadership.",
         href: "mailto:info@vakratundagroup.com?subject=Press%20enquiry",
         action: "Write",
       },
@@ -110,7 +110,7 @@ export const pressPage: PressPageContent = {
         id: "sustainability",
         meta: "Sustainability",
         title: "Sustainability practice",
-        note: "The four practices the group builds to on site.",
+        note: "The four practices woven into every site we build.",
         href: "/sustainability",
         action: "Read",
       },
@@ -127,9 +127,9 @@ export const awardsPage: AwardsPageContent = {
 
   hero: {
     label: "Awards",
-    heading: { before: "Held to a ", swash: "standard", after: " somebody else set" },
+    heading: { before: "Not just badges, but a ", swash: "promise", after: " kept" },
     standfirst:
-      "Certification is the part of recognition that can be audited. The group holds three ISO standards and builds as a member of MCHI-CREDAI.",
+      "Quality isn't a milestone, it's the mindset behind every brick we lay. We hold three ISO standards and build as a member of MCHI-CREDAI.",
     meta: ["ISO 9001:2015", "ISO 14001:2015", "ISO 45001:2018"],
   },
 
@@ -137,7 +137,7 @@ export const awardsPage: AwardsPageContent = {
     label: "Recognition",
     heading: { before: "Awards and ", swash: "citations" },
     standfirst:
-      "Recognition received for the group's residential, redevelopment and community work.",
+      "Recognition for our residential, redevelopment and community work.",
     // ⚠️ PLACEHOLDER — see the notice at the head of this file.
     entries: [
       {
@@ -162,32 +162,32 @@ export const awardsPage: AwardsPageContent = {
         state: "Citation",
       },
     ],
-    note: "Citations are held at the group's Bandra East office and can be verified on request.",
+    note: "Citations are kept at our Bandra East office and can be verified on request.",
   },
 
   certifications: {
     label: "Certification",
     heading: { before: "The part that is ", swash: "audited" },
     standfirst:
-      "Four standings the group holds continuously, each of them checked by somebody outside it.",
+      "Four standings we hold continuously — ethically, safely and responsibly, and each one checked from outside.",
     items: [
       {
         id: "iso-9001",
         eyebrow: "ISO 9001:2015",
         title: "Quality management",
-        body: "The processes by which a drawing becomes a building, documented and audited — which is what stands behind a 100% record on project completion.",
+        body: "Standardised processes that turn a drawing into a building, documented and audited — the discipline behind our 100% record in project completion.",
       },
       {
         id: "iso-14001",
         eyebrow: "ISO 14001:2015",
         title: "Environmental management",
-        body: "The environmental side of site practice, aligned with the IGBC and LEED guidelines the group designs to.",
+        body: "Sustainable practices on every site, minimising environmental impact and aligned with the IGBC and LEED guidelines we design to.",
       },
       {
         id: "iso-45001",
         eyebrow: "ISO 45001:2018",
         title: "Occupational health & safety",
-        body: "Covering the contractors and site staff who spend more hours inside the work than anybody else.",
+        body: "Protecting people is non-negotiable — for every worker, visitor and staff member on our sites.",
       },
       {
         id: "mchi",
@@ -198,21 +198,21 @@ export const awardsPage: AwardsPageContent = {
     ],
   },
 
-  coda: "An award is somebody's opinion in a good year. A certificate is somebody's audit every year, which is the harder of the two to keep.",
+  coda: "An award celebrates a good year. A certificate is earned again every year — and that is the promise we would rather keep.",
 };
 
 export const blogPage: BlogPageContent = {
   seo: {
     title: "Blogs",
     description:
-      "Notes from Vakratunda's drawing office on society redevelopment, reading a RERA registration, and buying Indian property from abroad.",
+      "Stories and guidance from Vakratunda on society redevelopment, reading a RERA registration, and finding a home in India from abroad.",
   },
 
   hero: {
     label: "Blogs",
-    heading: { before: "Notes from the ", swash: "drawing", after: " office" },
+    heading: { before: "Notes from the ", swash: "drawing", after: " board" },
     standfirst:
-      "Explanations of the things people ask the group about most often — redevelopment, regulation, and buying from abroad — written plainly and without a sales pitch.",
+      "Answers to what families ask us most — redevelopment, regulation and buying from abroad — shared with the same transparency we build with.",
     meta: ["Redevelopment", "Regulation", "NRI buyers"],
   },
 
@@ -220,10 +220,10 @@ export const blogPage: BlogPageContent = {
     label: "Writing",
     heading: { before: "Everything ", swash: "published", after: " so far" },
     standfirst:
-      "Three pieces, each answering a question the office is asked most weeks.",
+      "Three pieces, each answering a question families bring to us most weeks.",
   },
 
-  note: "These notes are general explanation of process, written by the group's own team. They are not legal, tax or investment advice, and they are not a substitute for taking advice on your own circumstances.",
+  note: "These notes are general explanation of process, written by our own team. They are not legal, tax or investment advice, and they are not a substitute for taking advice on your own circumstances.",
 
   article: {
     contentsLabel: "In this note",
@@ -250,7 +250,7 @@ export const blogPosts: BlogPost[] = [
       after: " works",
     },
     excerpt:
-      "The sequence a housing society goes through from the first general body meeting to the day its members move back in — and the four points where it usually stalls.",
+      "The journey a housing society takes from its first general body meeting to the day its members come home — and the four points where it usually stalls.",
     image: {
       src: "/images/projects/dilbahar.jpg",
       alt:
@@ -264,7 +264,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Why a society redevelops at all",
         body: [
           "Most of the buildings being redeveloped in Mumbai today were built in an era of different structural codes, different services and, crucially, a different idea of how much space a family needs. They are not usually dangerous. They are usually expensive to keep standing, hard to insure, and impossible to upgrade one flat at a time.",
-          "Redevelopment converts that problem into an asset: the plot's unused development potential pays for a new building, and the existing members get a larger flat in it without writing a cheque. Everything difficult about the process follows from the fact that this is true but takes years.",
+          "Redevelopment turns that problem into a new beginning: the plot's unused development potential pays for a new building, and existing members get a larger home in it without writing a cheque. Everything difficult about the process follows from the fact that this is true, but takes years.",
         ],
       },
       {

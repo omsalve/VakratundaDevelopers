@@ -1,0 +1,304 @@
+/* /contact — the desk. See ContactDesk.tsx. */
+
+.section {
+  padding-block: var(--section-pad) var(--section-pad-lg);
+}
+
+.desk {
+  display: grid;
+  /* The working column and the office beside it. */
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* ---- The enquiry --------------------------------------------------------- */
+
+.working {
+  min-width: 0;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-wrap: balance;
+  max-width: 18ch;
+}
+
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+.note {
+  max-width: var(--measure);
+}
+
+/* ---- The field ----------------------------------------------------------- */
+/* NO PANEL, NO BOX, NO FILL — a label, a line of type and the hairline under
+   it, which is the same rule the ledgers and the cards keep. Carried over from
+   the component this replaces. */
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6) var(--space-6);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.rowWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.optional {
+  letter-spacing: var(--tracking-body);
+  text-transform: none;
+  opacity: 0.7;
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-block-end: var(--hairline) solid var(--navy-line);
+  border-radius: 0;
+  padding-block: var(--space-3);
+  color: var(--text-on-navy);
+  font-size: var(--fs-body);
+  transition: border-color var(--dur-base) var(--ease-out-expo);
+}
+
+.input:hover {
+  border-block-end-color: var(--accent-rose);
+}
+
+/* The rose marks focus here exactly as it marks an active control everywhere
+   else. The ring is suppressed because the underline IS the affordance, and
+   two marks on one field read as an error state. */
+.input:focus {
+  outline: none;
+  border-block-end-color: var(--accent-rose);
+  border-block-end-width: 2px;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+/* The select's own arrow, drawn rather than left to the UA. */
+.input:is(select) {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--accent-rose) 50%),
+    linear-gradient(135deg, var(--accent-rose) 50%, transparent 50%);
+  background-position:
+    calc(100% - 13px) calc(50% + 2px),
+    calc(100% - 8px) calc(50% + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-inline-end: var(--space-7);
+}
+
+/* The dropdown itself is painted by the OS, so its own colours have to be set
+   or a dark-navy option list renders as black-on-black in some engines. */
+.input:is(select) option {
+  background: var(--navy-800);
+  color: var(--text-on-navy);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 7rem;
+  line-height: var(--lh-body);
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui-solid);
+  cursor: pointer;
+  transition:
+    background var(--dur-base) var(--ease-out-expo),
+    gap var(--dur-base) var(--ease-out-expo);
+}
+
+.submit:hover {
+  background: var(--accent-rose-bright);
+  gap: var(--space-4);
+}
+
+.status {
+  flex: 1 1 14rem;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--accent-rose);
+  /* Holds its line whether or not it has anything to say, so the button does
+     not jump when the message appears. */
+  min-height: 1lh;
+}
+
+/* ---- The office ---------------------------------------------------------- */
+
+.office {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  background: var(--navy-800);
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: var(--navy-900);
+  aspect-ratio: 16 / 10;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.caption {
+  max-width: 34ch;
+}
+
+.officeBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.officeLabel {
+  color: var(--accent-rose);
+}
+
+.officeHeading {
+  max-width: 18ch;
+}
+
+.officeStandfirst {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* The address is the group's name and address, so it is set in the display
+   face rather than as a paragraph about them. */
+.address {
+  display: flex;
+  flex-direction: column;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  color: var(--text-on-navy);
+}
+
+.addressLine {
+  display: block;
+}
+
+.email {
+  color: var(--accent-rose);
+  font-size: var(--fs-small);
+  text-decoration: none;
+  border-block-end: var(--hairline) solid currentColor;
+  padding-block-end: 2px;
+  overflow-wrap: anywhere;
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block-start: var(--space-4);
+  border-block-start: var(--hairline) solid var(--navy-line);
+}
+
+.hoursLine {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .desk {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-9);
+  }
+
+  /* Nothing to hold it beside, so it stops following and closes the page. */
+  .office {
+    position: static;
+    order: 1;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .submit {
+    transition: none;
+  }
+}

@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import CardGrid from "@/components/CardGrid";
-import LedgerList from "@/components/LedgerList";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import CareersAscent from "@/components/pages/careers/CareersAscent";
+import CareersEntry from "@/components/pages/careers/CareersEntry";
+import CareersHero from "@/components/pages/careers/CareersHero";
 import PageShell from "@/components/PageShell";
-import StatRow from "@/components/StatRow";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Careers.
+ * Careers — THE ASCENT.
  *
- * WHAT THE JOB IS LIKE COMES BEFORE WHAT IS OPEN. A careers page that opens on
- * a vacancy list is written for the person already applying; this one is
- * written for the engineer who is good at their current job and has not
- * decided to leave it, which is the person worth reaching.
+ * A drawn arch to stand in, a staircase of principles that steps down and
+ * across, a slim rail of figures closing the flight, then the open roles and a
+ * stepper laid horizontally across the foot of the page.
  *
- * The disciplines are placeholders standing in for live vacancies, and each
- * one routes to a real address at the office rather than to a tracking system
- * the group does not run — see the notice at the head of lib/pages/people.ts.
+ * WHY IT IS NOT /investors. Under the old template these two were the same
+ * page: `PageHero`, `CardGrid`, `StatRow`, `LedgerList`, `CardGrid`. They now
+ * differ on the one axis that matters — what the reader came for. An investor
+ * came for the record, so /investors opens on figures set larger than its own
+ * title. Somebody considering a job came to picture themselves here, so this
+ * page opens on a doorway and keeps its figures deliberately small and late.
  *
- * Content: the `careers-page` global over lib/pages/people.ts.
+ * TWO FIGURES, IN ORDER: a vertical one for the climb, a horizontal one for
+ * the walk through the door. Every other set of steps on this site descends;
+ * the hiring process is the one that runs across, because it is short and
+ * finite and seeing all of it at once is the point.
+ *
+ * Content: the `careers-page` global over lib/pages/people.ts, shape untouched.
  */
 
 export const revalidate = 60;
@@ -33,53 +38,21 @@ export default async function CareersPage() {
 
   return (
     <PageShell
+      page="careers"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <CareersHero content={page.hero} />
 
-      <PageSection
-        id="culture"
+      <CareersAscent
         label={page.culture.label}
         heading={page.culture.heading}
         standfirst={page.culture.standfirst}
-      >
-        <div className="u-shell">
-          <CardGrid items={page.culture.items} columns={2} />
-        </div>
-      </PageSection>
+        items={page.culture.items}
+        stats={page.stats}
+      />
 
-      <PageSection id="scale" divider>
-        <div className="u-shell">
-          <StatRow stats={page.stats} />
-        </div>
-      </PageSection>
-
-      <PageSection
-        id="roles"
-        ground="cream"
-        size="lg"
-        label={page.roles.label}
-        heading={page.roles.heading}
-        standfirst={page.roles.standfirst}
-      >
-        <div className="u-shell">
-          <LedgerList entries={page.roles.entries} note={page.roles.note} />
-        </div>
-      </PageSection>
-
-      <PageSection
-        id="process"
-        ground="cream"
-        divider
-        label={page.process.label}
-        heading={page.process.heading}
-        standfirst={page.process.standfirst}
-      >
-        <div className="u-shell">
-          <CardGrid items={page.process.items} columns={3} />
-        </div>
-      </PageSection>
+      <CareersEntry roles={page.roles} process={page.process} />
     </PageShell>
   );
 }

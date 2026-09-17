@@ -1,0 +1,167 @@
+/* /awards — the citations. See AwardsLedger.tsx. */
+
+.section {
+  padding-block: var(--section-pad-lg);
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  max-width: 44rem;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The ledger ---------------------------------------------------------- */
+
+.ledger {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  /* The year takes a fixed column so every title starts on one vertical. */
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-5) var(--space-7);
+  align-items: baseline;
+  padding-block: var(--space-7);
+}
+
+.rowRule {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+  display: block;
+}
+
+/* The last row closes the ledger. */
+.row:last-child::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.year {
+  font-size: clamp(1.75rem, 1.2rem + 1.7vw, 2.75rem);
+  color: var(--accent-deep);
+  opacity: 0.55;
+  line-height: 1;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.note {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 52ch;
+}
+
+/* The standing, struck as a mark: ruled box, wide caps, no action. */
+.state {
+  justify-self: end;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: var(--radius-s);
+  padding: var(--space-2) var(--space-4);
+  white-space: nowrap;
+}
+
+.action {
+  justify-self: end;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  color: var(--text-on-cream);
+  text-decoration: none;
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  padding-block-end: var(--space-1);
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.close {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  margin-block-start: var(--space-7);
+}
+
+.ledgerNote {
+  max-width: var(--measure);
+}
+
+/* The page's closing argument, set in the display italic — it is the sentence
+   the whole arrangement was built around. */
+.coda {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--accent-deep);
+  max-width: 44ch;
+  padding-block-start: var(--space-6);
+  border-block-start: var(--hairline) solid var(--cream-line-rose);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-6);
+  }
+
+  /* The year moves up beside the standing mark, so the title keeps the full
+     measure instead of being squeezed into half of a phone screen. */
+  .year {
+    font-size: var(--fs-h3);
+  }
+
+  .main {
+    grid-column: 1 / -1;
+  }
+
+  .state {
+    justify-self: end;
+    align-self: center;
+  }
+}

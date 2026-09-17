@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import BlogArticle from "@/components/pages/blog/BlogArticle";
 import PageShell from "@/components/PageShell";
-import ProseDoc from "@/components/ProseDoc";
 import { buildMetadata } from "@/lib/cms/metadata";
 import { getBlogPost, getBlogPosts } from "@/lib/getBlogPosts";
 import { getStandingPage } from "@/lib/getPageContent";
@@ -11,11 +9,14 @@ import { getStandingPage } from "@/lib/getPageContent";
 /**
  * One article.
  *
- * IT REUSES ProseDoc, WHICH WAS WRITTEN FOR THE TERMS PAGE, and that is the
- * right way round rather than a compromise: a legal clause set and a long
- * explanatory article are the same problem — numbered sections, a reading
- * measure, an anchor per section, and no motion competing with the sentence
- * being read. The only difference is what the numbers are called.
+ * IT USED TO REUSE ProseDoc, the terms-page component, on the argument that a
+ * legal clause set and a long article are the same problem. Redesigning the
+ * three legal pages is what showed they are not: a clause set is SEARCHED —
+ * you arrive looking for clause 4, which is why /grievance-redressal keeps a
+ * sticky index beside a narrow column — while an article is READ, once,
+ * start to finish. So this is a single centred column with its contents
+ * stated once at the top and a reading-progress rule, and it belongs to the
+ * same cream reading room /blogs now is.
  *
  * Every article known at build time is prerendered from the same source the
  * listing reads, so a link on /blogs cannot point at an article that does not
@@ -57,31 +58,18 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <PageShell
+      page="blog"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero
-        content={{
-          label: `${post.category} · ${post.readingTime}`,
-          heading: post.swashTitle,
-          standfirst: post.excerpt,
-          meta: [post.date, ...page.article.byline].filter(Boolean),
-        }}
+      <BlogArticle
+        post={post}
+        contentsLabel={page.article.contentsLabel}
+        updatedLabel={page.article.updatedLabel}
+        byline={page.article.byline}
+        backCta={page.article.backCta}
+        note={page.note}
       />
-
-      <PageSection ground="cream" size="lg">
-        <ProseDoc
-          doc={{
-            updated: post.date,
-            intro: [],
-            clauses: post.body,
-            closing: page.note,
-            cta: page.article.backCta,
-          }}
-          contentsLabel={page.article.contentsLabel}
-          updatedLabel={page.article.updatedLabel}
-        />
-      </PageSection>
     </PageShell>
   );
 }

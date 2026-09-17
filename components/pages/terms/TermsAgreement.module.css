@@ -1,0 +1,311 @@
+/* /terms — the agreement. See TermsAgreement.tsx. */
+
+.section {
+  position: relative;
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad-lg);
+}
+
+/* ---- The progress rule --------------------------------------------------- */
+
+/* STICKY, NOT FIXED. This lives inside <main data-enclose-page>, which carries
+   a transform and `overflow: clip` while the footer closes around it — and a
+   transformed ancestor becomes the containing block for a fixed descendant and
+   then clips it. PageShell says so at the element itself; Lightbox portals to
+   <body> for the same reason. Sticky needs no portal: `overflow: clip` creates
+   no scroll container, so this still resolves against the page scroll. */
+.progress {
+  position: sticky;
+  inset-block-start: var(--header-h);
+  z-index: var(--z-raised);
+  height: 2px;
+  background: transparent;
+  pointer-events: none;
+  /* Pulled out of flow's way: it must not add 2px above the opening. */
+  margin-block-end: -2px;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--accent-deep);
+  opacity: 0.8;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ---- The opening --------------------------------------------------------- */
+
+.opening {
+  padding-block-end: var(--space-9);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 46rem;
+  margin-bottom: var(--space-9);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+  margin-bottom: var(--space-6);
+}
+
+.updated {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.updatedTerm {
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.updatedValue {
+  color: var(--text-on-cream);
+}
+
+/* ---- The contents -------------------------------------------------------- */
+
+.contentsLabel {
+  color: var(--text-on-cream-muted);
+  margin-bottom: var(--space-3);
+}
+
+.contentsRule {
+  display: block;
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.45;
+  margin-bottom: var(--space-5);
+}
+
+/* Across the full width, in as many columns as fit. The whole agreement is
+   visible before the first clause is read. */
+.contentsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0 var(--space-7);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contentsItem {
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.contentsLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  text-decoration: none;
+  color: var(--text-on-cream-muted);
+  transition:
+    color var(--dur-base) var(--ease-out-expo),
+    padding-inline-start var(--dur-base) var(--ease-out-expo);
+}
+
+.contentsLink:hover {
+  color: var(--text-on-cream);
+  padding-inline-start: var(--space-2);
+}
+
+.contentsNumber {
+  font-size: var(--fs-caption);
+  color: var(--accent-deep);
+  opacity: 0.7;
+}
+
+.contentsText {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+}
+
+/* ---- The intro ----------------------------------------------------------- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream);
+  max-width: 48rem;
+  padding-block-end: var(--space-8);
+}
+
+/* ---- The clauses --------------------------------------------------------- */
+
+.clauses {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Two columns: the heading holds on the left, the body runs on the right. */
+.clause {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  gap: var(--space-8);
+  padding-block: var(--space-9);
+  align-items: start;
+}
+
+.clauseRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+/* Sticky within its own clause. Because the sticky element is a grid child
+   whose containing block is the <li>, it releases at the clause boundary by
+   itself — no script decides when a heading stops following the reader. */
+.clauseHead {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-7));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.clauseNumber {
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  color: var(--accent-deep);
+  opacity: 0.4;
+}
+
+.clauseHeading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.clauseBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: var(--measure);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list > li {
+  position: relative;
+  padding-inline-start: var(--space-5);
+}
+
+.list > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.72em;
+  width: var(--space-3);
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--page-rule);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+  max-width: var(--measure);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .clause {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+    padding-block: var(--space-8);
+  }
+
+  /* A heading that sticks in a single column would sit on top of its own
+     body, so it simply leads it. */
+  .clauseHead {
+    position: static;
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  .clauseNumber {
+    font-size: var(--fs-h3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contentsLink,
+  .cta {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The rule is filled by a scrubbed tween, and no tween runs for a visitor
+     who has asked for less motion — so it would sit permanently empty. It is
+     decorative and already `aria-hidden`; an empty gauge tells nobody
+     anything, so it is simply not drawn. */
+  .progress {
+    display: none;
+  }
+}

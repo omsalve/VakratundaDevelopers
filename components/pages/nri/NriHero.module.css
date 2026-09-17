@@ -1,0 +1,136 @@
+/* /nri-corner — the departure side. See NriHero.tsx. */
+
+.section {
+  position: relative;
+  min-height: clamp(32rem, calc(100svh - var(--header-h)), 50rem);
+  display: flex;
+  align-items: center;
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+  overflow: hidden;
+}
+
+/* ---- The meridian -------------------------------------------------------- */
+
+.meridian {
+  position: absolute;
+  inset-block: 0;
+  /* Dead centre of the viewport, not of the shell: it is a line of longitude,
+     and it belongs to the screen rather than to the text column. */
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  width: 2px;
+  height: 100%;
+  color: var(--accent-rose);
+  pointer-events: none;
+}
+
+.meridianSvg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+/* The destination, set on the line itself and reading up it — the label of a
+   meridian on a chart, which is where the device comes from. */
+.marker {
+  position: absolute;
+  inset-inline-start: var(--space-4);
+  inset-block-end: var(--space-10);
+  white-space: nowrap;
+  color: var(--accent-rose);
+  opacity: 0.75;
+  writing-mode: vertical-rl;
+  letter-spacing: var(--tracking-label);
+}
+
+.motion-on .marker {
+  opacity: 0;
+}
+
+.markerEnd::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-4) * -1 - 3px);
+  inset-block-start: calc(var(--space-5) * -1);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-rose);
+  background: var(--navy-700);
+}
+
+/* ---- The stack, on the near side of the line ----------------------------- */
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Held clear of the meridian: the copy is on THIS side of the border and
+     never touches it. */
+  max-width: min(36rem, 46%);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-7);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  /* The meridian moves off centre and the copy takes the full measure. A
+     border down the middle of a 400px screen leaves two columns of nothing,
+     so it becomes an edge the content is pressed against instead — the same
+     idea, at a width that can hold it. */
+  .meridian {
+    inset-inline-start: auto;
+    inset-inline-end: var(--gutter);
+    translate: none;
+  }
+
+  .stack {
+    max-width: min(100%, 34rem);
+    padding-inline-end: var(--space-7);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + var(--space-7)) var(--section-pad);
+  }
+
+  .marker {
+    inset-block-end: var(--space-7);
+  }
+}

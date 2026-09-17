@@ -1,0 +1,217 @@
+/* /experiences — the hours. See ExperiencesHours.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+  background: var(--navy-900);
+  /* Written by scrubProgress. At rest the band keeps the opening's night
+     ground, which is the correct no-JS state. */
+  --day: 0;
+}
+
+/* The light climbing through the day and falling away again. `sin`-like by
+   construction: the wash peaks at noon because the gradient's own stop moves
+   with --day and its opacity is highest in the middle of the run. */
+.wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--navy-600) calc(var(--day) * 100%),
+    transparent
+  );
+  opacity: calc(0.35 + var(--day) * 0.35);
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  position: relative;
+  z-index: 1;
+  max-width: 46rem;
+  margin-bottom: calc(var(--head-gap) * 1.2);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The hours ----------------------------------------------------------- */
+
+.hours {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4rem, 11vh, 8rem);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hour {
+  display: grid;
+  /* The frame runs wider than the shell and the panel hangs off it, so the
+     day reads as a sequence of frames rather than a column of cards. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  gap: var(--space-7);
+  align-items: end;
+  padding-inline: var(--gutter);
+}
+
+.hour[data-side="right"] {
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+}
+
+.hour[data-side="right"] .figure {
+  order: 2;
+}
+
+/* A moment with no photograph is a typographic band, held to the shell. */
+.hour[data-bare="true"] {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  width: 100%;
+}
+
+/* ---- The frame ----------------------------------------------------------- */
+
+/* The <figure> is the positioning context; `.frame` is the clipped box inside
+   it and the caption is its SIBLING. Keeping those two apart is what lets the
+   caption move from over the photograph to under it at a narrow width without
+   the scrim and the hour re-anchoring to a box that has grown a caption. */
+.figure {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--navy-800);
+  aspect-ratio: 16 / 10;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Oversized by the parallax travel so no edge is ever revealed. */
+  scale: 1.16;
+}
+
+/* Keeps the hour legible over any frame. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(12, 18, 48, 0.78),
+    rgba(12, 18, 48, 0.18) 55%,
+    transparent
+  );
+}
+
+/* THE ONE PLACE ON THE SITE WHERE TYPE SITS OVER A PHOTOGRAPH. */
+.time {
+  position: absolute;
+  inset-inline-start: clamp(var(--space-5), 3vw, var(--space-8));
+  inset-block-end: clamp(var(--space-5), 3vw, var(--space-8));
+  font-size: clamp(2.5rem, 1.4rem + 4.4vw, 5.5rem);
+  line-height: 1;
+  color: var(--cream-100);
+  text-shadow: 0 2px 24px rgba(12, 18, 48, 0.5);
+}
+
+.caption {
+  position: absolute;
+  inset-inline-end: clamp(var(--space-5), 3vw, var(--space-8));
+  inset-block-end: clamp(var(--space-5), 3vw, var(--space-8));
+  max-width: 24ch;
+  text-align: end;
+  color: rgba(244, 242, 239, 0.82);
+}
+
+/* ---- The panel ----------------------------------------------------------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding-block-end: var(--space-5);
+}
+
+/* The readable copy of the time. Small: the large one on the frame is the
+   image, this is the label. */
+.panelTime {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-rose);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .hour,
+  .hour[data-side="right"] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .hour[data-side="right"] .figure {
+    order: 0;
+  }
+
+  .frame {
+    aspect-ratio: 3 / 2;
+  }
+
+  .panel {
+    padding-block-end: 0;
+  }
+
+  /* The caption drops out from over the photograph to under it — it would
+     otherwise sit on top of the hour at this width. Because it is a sibling
+     of `.frame` and not inside it, the scrim and the hour keep anchoring to
+     the picture and nothing else moves. */
+  .caption {
+    position: static;
+    max-width: none;
+    text-align: start;
+    margin-block-start: var(--space-3);
+    color: var(--text-on-navy-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    scale: 1;
+  }
+}

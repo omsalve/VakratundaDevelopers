@@ -22,7 +22,7 @@ export interface NavGroup {
 
 export const footerGroups: NavGroup[] = [
   {
-    label: "The group",
+    label: "Our group",
     links: [
       { label: "About Us", href: "/about" },
       { label: "Awards", href: "/awards" },
@@ -32,7 +32,7 @@ export const footerGroups: NavGroup[] = [
     ],
   },
   {
-    label: "The work",
+    label: "Our work",
     links: [
       { label: "Our Projects", href: "/projects" },
       { label: "Experiences", href: "/experiences" },

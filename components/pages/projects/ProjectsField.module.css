@@ -1,0 +1,325 @@
+/* /projects — the field of work. See ProjectsField.tsx. */
+
+.field {
+  padding-block: var(--section-pad) var(--section-pad-lg);
+}
+
+/* ---- The rail ------------------------------------------------------------ */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.railLabel {
+  color: var(--text-on-cream-muted);
+}
+
+.railRule {
+  display: block;
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.4;
+}
+
+.stages {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A status is a ruled row, not a pill. Pills read as tags on the work; rows
+   read as an index of it, which is what this page is. */
+.stage {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  padding-block: var(--space-3);
+  background: none;
+  border: 0;
+  border-block-end: var(--hairline) solid var(--page-rule);
+  text-align: start;
+  cursor: pointer;
+  color: var(--text-on-cream-muted);
+  transition:
+    color var(--dur-base) var(--ease-out-expo),
+    padding-inline-start var(--dur-base) var(--ease-out-expo);
+}
+
+.stage:hover,
+.stage:focus-visible {
+  color: var(--text-on-cream);
+  /* The row steps in under the pointer. A travelled indent, not a fill. */
+  padding-inline-start: var(--space-3);
+}
+
+.stageName {
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+}
+
+.stageCount {
+  font-size: var(--fs-caption);
+  color: var(--text-on-cream-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The chosen status is marked by a drawn rose rule at its left edge and by
+   the type going to full strength — never by a filled background. */
+.isActive {
+  color: var(--text-on-cream);
+  padding-inline-start: var(--space-3);
+  box-shadow: inset 2px 0 0 0 var(--accent-deep);
+  font-weight: 500;
+}
+
+.isActive .stageCount {
+  color: var(--accent-deep);
+}
+
+.note {
+  margin-block-start: var(--space-4);
+  max-width: 28ch;
+}
+
+/* ---- The set ------------------------------------------------------------- */
+
+.setWrap {
+  min-width: 0;
+}
+
+.set {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--space-5);
+  row-gap: clamp(3rem, 7vh, 5.5rem);
+}
+
+.card {
+  /* Overridden per beat below. */
+  grid-column: span 12;
+  min-width: 0;
+}
+
+/* ---- The four-beat figure ------------------------------------------------
+   Four widths, alternating which edge the entry hangs off, so the eye travels
+   down the page in a zig-zag instead of scanning rows. The offsets are what
+   make it a drawing index rather than a masonry grid: entries do not fill the
+   row they are in, and the white space is part of the composition. */
+
+.card[data-beat="0"] {
+  grid-column: 1 / span 8;
+}
+
+.card[data-beat="1"] {
+  grid-column: 9 / span 4;
+  /* Dropped, so it sits against the foot of its neighbour rather than its
+     head — the offset that keeps two adjacent entries from reading as a row. */
+  margin-block-start: clamp(2rem, 7vh, 5rem);
+}
+
+.card[data-beat="2"] {
+  grid-column: 1 / span 5;
+}
+
+.card[data-beat="3"] {
+  grid-column: 7 / span 6;
+  margin-block-start: clamp(1rem, 4vh, 3rem);
+}
+
+/* The frames differ in shape as well as in width, so the rhythm survives even
+   where two entries happen to be the same size on screen. */
+.card[data-beat="0"] .frame {
+  aspect-ratio: 16 / 10;
+}
+
+.card[data-beat="1"] .frame {
+  aspect-ratio: 3 / 4;
+}
+
+.card[data-beat="2"] .frame {
+  aspect-ratio: 1 / 1;
+}
+
+.card[data-beat="3"] .frame {
+  aspect-ratio: 4 / 3;
+}
+
+/* ---- The entry ----------------------------------------------------------- */
+
+.cardInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-300);
+  border: var(--hairline) solid var(--page-rule);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--dur-slow) var(--ease-out-expo);
+}
+
+.cardInner:hover .image {
+  scale: 1.04;
+}
+
+/* ---- The caption --------------------------------------------------------- */
+
+.caption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.index {
+  font-size: var(--fs-caption);
+  color: var(--accent-deep);
+  opacity: 0.7;
+  padding-block-start: 0.35em;
+  letter-spacing: 0.08em;
+}
+
+.captionBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.status {
+  color: var(--accent-deep);
+}
+
+/* The dot between status and locality, drawn rather than typed. */
+.locality::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: middle;
+  margin-inline-end: var(--space-3);
+  opacity: 0.6;
+}
+
+.blurb {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 46ch;
+  margin-block-start: var(--space-1);
+}
+
+.empty {
+  font-size: var(--fs-lead);
+  color: var(--text-on-cream-muted);
+  padding-block: var(--space-9);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  /* The rail becomes a scrollable row above the set. It stops being sticky in
+     identity.css at this width, so it has to be reachable by other means:
+     it sits directly above the first entry and the whole set is one screen
+     of scrolling away. */
+  .stages {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .stage {
+    width: auto;
+    flex: 0 0 auto;
+    border-block-end: 0;
+    border-block-start: var(--hairline) solid var(--page-rule);
+    padding-block: var(--space-3) 0;
+  }
+
+  .stage:hover,
+  .stage:focus-visible,
+  .isActive {
+    padding-inline-start: 0;
+    box-shadow: none;
+  }
+
+  .isActive {
+    border-block-start-color: var(--accent-deep);
+    border-block-start-width: 2px;
+  }
+
+  .note {
+    max-width: var(--measure);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  /* One column, and the beats collapse to full width — the zig-zag needs two
+     columns to exist, and a forced offset on a phone is just a gap. */
+  .set {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-9);
+  }
+
+  .card[data-beat="0"],
+  .card[data-beat="1"],
+  .card[data-beat="2"],
+  .card[data-beat="3"] {
+    grid-column: 1 / -1;
+    margin-block-start: 0;
+  }
+
+  /* One shape on a phone, so the column reads as a set rather than as four
+     unrelated crops. */
+  .card[data-beat="0"] .frame,
+  .card[data-beat="1"] .frame,
+  .card[data-beat="2"] .frame,
+  .card[data-beat="3"] .frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .stage {
+    transition: none;
+  }
+
+  .cardInner:hover .image {
+    scale: 1;
+  }
+}

@@ -26,9 +26,10 @@
      data-enclosed        engaged. Everything below keys off this one.
 
    ONLY transform, opacity and clip-path are transitioned. The colour swap
-   underneath the page (--navy-700 to --navy-900) is instantaneous and
+   underneath the page (the body, to --navy-900) is instantaneous and
    invisible, because at the moment it happens the gap it shows through is
-   still 0px wide.
+   still 0px wide. The page's OWN ground never swaps — see the note at the
+   armed rule.
    ========================================================================== */
 
 /* ---- Tunables -----------------------------------------------------------
@@ -59,10 +60,22 @@
 
 /* Armed, still off-screen: promote, and put the ground and the shadow in
    place while there is nothing to see. Both are static once set — the shadow
-   is never transitioned, and the ground swap is one paint. */
+   is never transitioned, and the ground swap is one paint.
+
+   THE GROUND IS THE PAGE'S OWN, NOT THE LANDING PAGE'S. This used to name
+   --navy-700 outright, which is the landing page's ground and nobody else's —
+   so arming the footer repainted every other route's field to it, and the
+   whole page changed colour about half a screen before the end: the deep
+   navy of /awards, /press and /hospitality lifted, and the cream of
+   /projects, /sustainability, /blogs and the three documents went dark. The
+   token is resolved on [data-page] itself (styles/identity.css), so for a
+   standing page this now restates the ground it already has and changes
+   nothing. The fallback is for the landing page, whose <main> carries no
+   `data-page` and no ground of its own — that is the one place --navy-700 was
+   ever the right answer. */
 :global(html[data-enclose-armed] [data-enclose-page]) {
   will-change: transform;
-  background-color: var(--navy-700);
+  background-color: var(--page-ground, var(--navy-700));
   box-shadow:
     0 -1px 0 0 var(--navy-line-soft),
     0 26px 56px -26px rgba(5, 8, 24, 0.92),

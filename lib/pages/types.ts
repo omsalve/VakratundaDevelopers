@@ -16,7 +16,9 @@
  * CMS: each page type below is also the field tree of its Payload global
  * (globals/pages), built from the matching builders in fields/pageFields.ts
  * and merged back by lib/getPageContent.ts. The values in the sibling content
- * files are the shipped fallback for every field.
+ * files are the shipped FALLBACK for every field, and nothing more: every one
+ * of them has been seeded into its global by `npm run seed`, so a filled field
+ * wins and a page is edited in /admin rather than here.
  */
 
 import type {

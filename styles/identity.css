@@ -1,0 +1,285 @@
+/* ============================================================================
+   Vakratunda — page identity
+   Imported from app/(frontend)/layout.tsx, after vars.css and global.css.
+   ============================================================================
+
+   WHY THIS FILE EXISTS
+
+   Every standing page used to be the same three shapes in a different order:
+   the navy hero, a navy band of cards, a cream band of cards. It read as one
+   template filled in fifteen times, because that is what it was — and
+   lib/pages/types.ts said so out loud ("every page is an arrangement of these
+   six shapes").
+
+   That rule is kept where it belongs and dropped where it does not. It stays
+   for CONTENT: the six shapes in types.ts are the CMS contract, they are
+   untouched, and no editor has to re-enter anything. It goes for LAYOUT: a
+   page now composes its own, because a ledger of press cuttings and a
+   procedural complaints document do not want the same page even when both
+   happen to be a list of rows.
+
+   So the thing holding the site together can no longer be the layout. It is
+   this file, and it holds exactly three things:
+
+     1. THE GROUND SEQUENCE. Each page declares which of the two grounds it
+        opens on and which it is mostly made of. That single choice does more
+        to make two pages feel different than any amount of component work,
+        and it stays inside the two-colour system the brand guide sets.
+     2. THE DEPTH AND THE RULE. A page picks how deep its navy goes and how
+        its line-work is drawn. Both are chosen FROM THE PALETTE — no page
+        introduces a hue that is not already in vars.css.
+     3. THE STRUCTURAL PRIMITIVES. The shared axis, the node, the index rail,
+        the plate, the actionable row and the numeral.
+
+        NOTE WHAT IS *NOT* HERE: the lines themselves. Six pages run a drawn
+        figure down or across them — /about's unbroken thread, /nri-corner's
+        meridian, /sustainability's stem and branches, /careers' staircase,
+        /press's column rule, /hospitality's corridor — and none of them is a
+        CSS border or pseudo-element, because a pseudo-element cannot be
+        DRAWN. The whole character of this brand's line-work is that a stroke
+        arrives by being drawn, which needs a real SVG path with a measurable
+        length (see `drawOnEnter` in lib/motion.ts). So each page owns its own
+        path, and what is shared is the AXIS those paths are hung on
+        (`--spine-inset`) and the node staked along them — which is why the
+        thread on /about and the clause rail on /grievance-redressal line up
+        with each other across two completely different layouts.
+
+   The test this file is built to pass: if you screenshot any two pages and put
+   them side by side, the layouts share no silhouette — and you can still tell
+   at a glance they are the same company.
+   ========================================================================== */
+
+/* ---- 1. The ground sequence ---------------------------------------------
+   `data-page` is stamped on <main> by PageShell. Each block below re-points
+   tokens that already exist; none of them invents a value. A page that
+   declares nothing gets the site default, which is the landing page's.
+
+   --page-ground      the field the page is mostly made of
+   --page-ink         text on that field
+   --page-rule        the hairline, at the weight this page draws it
+   --page-figure      the wash behind a plate or a figure on this page
+   -------------------------------------------------------------------------- */
+
+[data-page] {
+  --page-ground: var(--navy-700);
+  --page-ink: var(--text-on-navy);
+  --page-rule: var(--navy-line);
+  --page-figure: var(--accent-wash);
+  /* The vertical axis every drawn figure is hung on, inset from the shell edge.
+     The pages that run a spine all use this, so they all run it down the
+     same line and the site keeps one vertical axis across routes. */
+  --spine-inset: clamp(1.5rem, 5vw, 5.5rem);
+}
+
+/* THE DEEP PAGES. Navy, and further down into it than the landing page goes.
+   For the pages that are looked INTO rather than read across: the cabinet of
+   citations, the suite, the wire. */
+[data-page="awards"],
+[data-page="hospitality"],
+[data-page="press"] {
+  --page-ground: var(--navy-900);
+  --page-rule: var(--navy-line-soft);
+}
+
+/* THE LIT PAGES. Cream from the first screen — the inversion of the house
+   default, and the single loudest way one page differs from another here.
+   Reserved for the three that are examined rather than experienced: the work
+   itself, the environmental record, and the reading room.
+
+   THEY CARRY `.on-cream` TOO, added by PageShell from the same one list in
+   lib/pageIdentity.ts. That is deliberate: `.on-cream` already re-points every
+   semantic text token for a light ground (global.css), so the tokens below are
+   only the page's own — nothing here restates a rule that already exists, and
+   a component dropped onto a lit page needs no light-mode branch. */
+[data-page="projects"],
+[data-page="sustainability"],
+[data-page="blog"] {
+  --page-ground: var(--cream-200);
+  --page-figure: rgba(168, 87, 76, 0.06);
+}
+
+/* THE DOCUMENTS. Cream, and drawn in the deep rose so the line-work reads as
+   ruled rather than as a divider — these are pages of record, and the rule is
+   part of the record. */
+[data-page="terms"],
+[data-page="grievance"],
+[data-page="disclaimer"] {
+  --page-ground: var(--cream-100);
+  --page-rule: var(--cream-line-rose);
+  --page-figure: rgba(168, 87, 76, 0.05);
+}
+
+/* The document pages inherit `--page-ink` from `.on-cream`, which sets
+   `--text-on-navy` to the dark ink; `--page-ink` resolves through it. */
+[data-page].on-cream {
+  --page-ink: var(--text-on-cream);
+}
+
+/* Applied by the shell, so a page's ground is set once rather than by every
+   section inside it remembering to. */
+.p-page {
+  background: var(--page-ground);
+  color: var(--page-ink);
+}
+
+/* ---- 2. The shared section interval --------------------------------------
+   There is no class for this, deliberately. Pages compose their own layouts
+   and set their own padding, but every one of them sets it from `--section-pad`
+   and `--section-pad-lg` — the same two tokens the landing page uses — so the
+   interval between any two sections is the same interval across all fifteen
+   routes, and re-pacing the whole site is still one edit in vars.css.
+
+   A `.p-band` helper existed here and nothing used it: a section that also
+   carries a ground, an overflow rule and a sticky child wants to own its own
+   padding declaration rather than inherit one and then fight it.
+   -------------------------------------------------------------------------- */
+
+/* ---- 3. The structural primitives ---------------------------------------- */
+
+/* ---- 3a. The axis and the node ------------------------------------------
+   The vertical every drawn figure on the site is hung on. It is a token
+   rather than a rule because the lines themselves are SVG paths owned by each
+   page — see the note at the head of this file — and all they need to share
+   is where the axis sits.
+   -------------------------------------------------------------------------- */
+
+/* A node staked on the spine: the year, the step number, the clause number. */
+.p-node {
+  position: relative;
+}
+
+.p-node::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(
+    (var(--spine-inset) + var(--space-6)) * -1 + var(--spine-inset) - 3px
+  );
+  inset-block-start: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--page-ground);
+  border: 1px solid var(--accent-text);
+  transition: background var(--dur-base) var(--ease-out-expo);
+}
+
+/* The node fills when its section is the one being read. Set by trackSections
+   in lib/motion.ts, so every index on the site lights the same way. */
+.p-node[data-current="true"]::before {
+  background: var(--accent-text);
+}
+
+@media (max-width: 47.99rem) {
+  :root {
+    --spine-inset: 0.25rem;
+  }
+
+}
+
+/* ---- 3b. The index rail --------------------------------------------------
+   A sticky column that tracks what is being read. On the document pages it is
+   the clause list; on /projects it is the status filter; on an article it is
+   the contents. It sticks BELOW the masthead, never under it. */
+
+.p-rail {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-6));
+  align-self: start;
+  /* Its own scroller, for a rail longer than the screen — a twenty-clause
+     document on a laptop. `overscroll-behavior` keeps a flick inside the rail
+     from carrying on into the page behind it. */
+  max-height: calc(100svh - var(--header-h) - var(--space-10));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.p-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* The two-column reading layout the rail sits in. Collapses to one column
+   before the rail gets too narrow to hold a clause title on one line. */
+.p-withRail {
+  display: grid;
+  gap: var(--space-9) var(--space-8);
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+}
+
+@media (max-width: 61.99rem) {
+  .p-withRail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* A rail that is no longer beside the text has nothing to track against, so
+     it stops sticking rather than becoming a bar that follows the reader. */
+  .p-rail {
+    position: static;
+    max-height: none;
+  }
+}
+
+/* ---- 3c. The plate -------------------------------------------------------
+   A photograph, framed the way this site frames one: no rounding beyond the
+   house radius, a hairline, and the grain already over it from the shell.
+   `--plate-ratio` is the one thing a caller sets. */
+
+.p-plate {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  border: var(--hairline) solid var(--page-rule);
+  background: var(--page-figure);
+  aspect-ratio: var(--plate-ratio, 4 / 3);
+}
+
+.p-plate > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- 3d. The numeral -----------------------------------------------------
+   The figure at display scale, in the tabular lining set. Used wherever a
+   page counts something: the years on /about, the stats on /investors, the
+   clause numbers on the documents, the step numbers on /nri-corner. */
+
+.p-numeral {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+
+/* ---- 4. Focus and interaction -------------------------------------------- */
+
+/* Any interactive row on the redesigned pages. The hover is a RULE that
+   travels, not a background that appears — the site draws, it does not fill. */
+.p-row {
+  position: relative;
+  display: block;
+}
+
+.p-row::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 1px;
+  background: var(--accent-text);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.p-row:hover::after,
+.p-row:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p-row::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,244 @@
+/* /investors — governance and documents. See InvestorsRecord.tsx. */
+
+.section {
+  padding-block: var(--section-pad-lg);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-pad);
+}
+
+/* ---- Heads --------------------------------------------------------------- */
+
+.head {
+  max-width: 44rem;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The shared ruled row ------------------------------------------------ */
+
+.rowRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+/* ---- Governance: a schedule ---------------------------------------------- */
+
+.schedule {
+  display: flex;
+  flex-direction: column;
+}
+
+.schedule .row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+  gap: var(--space-5) var(--space-8);
+  align-items: start;
+  padding-block: var(--space-7);
+}
+
+.schedule .row:last-child {
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.term {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.termEyebrow {
+  color: var(--accent-deep);
+}
+
+.termTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.definition {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: var(--measure);
+}
+
+/* ---- Documents: a filing list -------------------------------------------- */
+
+.filing {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.filing .row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 6rem) minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-4) var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-5);
+}
+
+.filing .row:last-child {
+  border-block-end: var(--hairline) solid var(--page-rule);
+}
+
+.reference {
+  font-size: var(--fs-caption);
+  letter-spacing: 0.08em;
+  color: var(--accent-deep);
+  text-transform: uppercase;
+}
+
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.fileTitle {
+  font-size: var(--fs-body);
+  color: var(--text-on-cream);
+}
+
+.fileNote {
+  font-size: var(--fs-small);
+  color: var(--text-on-cream-muted);
+}
+
+/* The one ledger on the site where the action is the point — see the note in
+   the component — so it is a filled control rather than a quiet mark. */
+.download {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--accent-deep);
+  color: var(--cream-100);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui-solid);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur-base) var(--ease-out-expo);
+}
+
+.download:hover {
+  background: var(--text-dark);
+}
+
+.state {
+  justify-self: end;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+  border: var(--hairline) solid var(--page-rule);
+  border-radius: var(--radius-s);
+  padding: var(--space-2) var(--space-4);
+  white-space: nowrap;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.close {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  margin-block-start: var(--space-7);
+}
+
+.note {
+  max-width: var(--measure);
+}
+
+.coda {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--accent-deep);
+  max-width: 46ch;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .schedule .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .filing .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3) var(--space-4);
+  }
+
+  /* The reference moves above the name rather than squeezing it. */
+  .reference {
+    grid-column: 1 / -1;
+  }
+
+  .download,
+  .state {
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .download,
+  .cta {
+    transition: none;
+  }
+}

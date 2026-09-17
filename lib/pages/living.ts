@@ -28,14 +28,14 @@ export const experiencesPage: ExperiencesPageContent = {
   seo: {
     title: "Experiences",
     description:
-      "What living in a Vakratunda development is actually like — the morning walk out, the hour after school, the terrace at eight, and what is standard in every scheme.",
+      "Where homes don't just exist, they belong — the morning walk out, the hour after school, the terrace at eight, and what comes standard in every Vakratunda home.",
   },
 
   hero: {
     label: "Experiences",
-    heading: { before: "The hours a ", swash: "home", after: " is actually for" },
+    heading: { before: "The moments a ", swash: "home", after: " is built for" },
     standfirst:
-      "A building is judged on the ordinary evening, not the launch render. This is what the group draws for: the walk in, the hour after school, the terrace at eight.",
+      "A home isn't measured by its launch render, but by its ordinary evenings. This is what we design for: the walk in, the hour after school, the terrace at eight.",
     meta: ["Residential", "Mumbai · MMR", "Since 1973"],
   },
 
@@ -43,35 +43,35 @@ export const experiencesPage: ExperiencesPageContent = {
     label: "A day, in order",
     heading: { before: "From the ", swash: "morning", after: " walk to the last light" },
     standfirst:
-      "Four moments the drawing office plans for by name, because they are the ones a family measures a home by once the novelty has worn off.",
+      "Four moments we design for by name, because long after the keys are handed over, these are the moments a family measures home by.",
     figures: [
       {
         src: "/images/gallery/outdoor.png",
         alt: "The landscaped deck of a Vakratunda development in the late afternoon, with seating under mature planting.",
         width: 1672,
         height: 941,
-        caption: "The deck, late afternoon.",
+        caption: "The deck, as afternoon slows.",
       },
       {
         src: "/images/gallery/kids.png",
         alt: "Children playing on the shaded play surface of a Vakratunda residential development.",
         width: 1537,
         height: 1023,
-        caption: "The play surface.",
+        caption: "Room to play, safely.",
       },
       {
         src: "/images/skydeck.jpg",
         alt: "A rooftop sky deck looking out across the Mumbai skyline at dusk.",
         width: 4096,
         height: 2160,
-        caption: "The sky deck at dusk.",
+        caption: "The sky deck, at golden hour.",
       },
       {
         src: "/images/skygarden6.png",
         alt: "A landscaped sky garden between residential wings, planted along its full length.",
         width: 2000,
         height: 1088,
-        caption: "The sky garden.",
+        caption: "A garden in the sky.",
       },
     ],
     items: [
@@ -79,131 +79,131 @@ export const experiencesPage: ExperiencesPageContent = {
         id: "arrival",
         eyebrow: "07:40",
         title: "The walk out",
-        body: "A lobby that is a room rather than a corridor, lifts sized for the tower's real morning peak instead of its average, and a drop-off that does not put a school run and a delivery van on the same line.",
+        body: "A lobby that welcomes rather than merely connects, lifts sized for the tower's real morning rush, and a drop-off where the school run and a delivery van never share the same line.",
       },
       {
         id: "afternoon",
         eyebrow: "16:15",
         title: "The hour after school",
-        body: "Play space in sight of the flats that overlook it, shaded through the hottest part of the afternoon, and surfaced so a fall is a fall rather than an injury.",
+        body: "Play space within sight of the homes above it, shaded through the hottest hours, and surfaced so a fall is only a fall — child-safe by design.",
       },
       {
         id: "evening",
         eyebrow: "20:00",
         title: "The terrace at eight",
-        body: "The deck is planted to be used after dark, not only photographed at golden hour — lit low, screened from the road, and close enough to the lift core that a resident goes up without planning it.",
+        body: "The deck isn't just for golden-hour photographs, it's planted to be lived in after dark — lit low, screened from the road, and close enough to the lifts that going up needs no plan.",
       },
       {
         id: "weekend",
         eyebrow: "Saturday",
-        title: "The whole building, at once",
-        body: "Common space sized for the day the building is genuinely full — a society meeting, a festival, a birthday that spills out of a flat — because that is the day the plan is tested.",
+        title: "The whole community, together",
+        body: "Common spaces sized for the days a building truly comes alive — a society meeting, a festival, a birthday that spills out of a home — because that is when a community is made.",
       },
     ],
   },
 
   standard: {
-    label: "In every scheme",
+    label: "In every home",
     heading: { before: "What is ", swash: "standard", after: ", not optional" },
     standfirst:
-      "The parts of a development that are decided once, in the drawing office, and cannot be added afterwards.",
+      "The foundations of every home — decided once, at the drawing board, and built in so they never need adding later.",
     items: [
       {
         id: "light",
         eyebrow: "Orientation",
         title: "Daylight in every habitable room",
-        body: "Wings turned against the sun path and the monsoon wind rather than against the plot boundary, so a living room is lit without being heated.",
+        body: "Wings turned to the sun path and the monsoon wind, not the plot boundary, so every living room is filled with light, not heat.",
       },
       {
         id: "air",
         eyebrow: "Ventilation",
         title: "Cross-ventilation as a plan rule",
-        body: "Openings on two sides wherever the plan allows it, and lobbies that vent rather than trap — the cheapest cooling a building will ever get.",
+        body: "Openings on two sides wherever the plan allows, and lobbies that breathe rather than trap heat — the most natural cooling a home can have.",
       },
       {
         id: "landscape",
         eyebrow: "Landscape",
-        title: "Planting that is specified to survive",
-        body: "Species chosen for a Mumbai monsoon and a Mumbai April, with the irrigation and the soil depth drawn in at the podium stage rather than resolved on site.",
+        title: "Planting that is chosen to thrive",
+        body: "Species selected for a Mumbai monsoon and a Mumbai April, with irrigation and soil depth planned at the podium stage, so every garden takes root for good.",
       },
       {
         id: "safety",
         eyebrow: "Safety",
-        title: "Firefighting and access, drawn first",
-        body: "Tender access, refuge floors and hydrant runs are set before the flat layouts are optimised, because a plan that has to be re-cut for them late is a plan that loses rooms.",
+        title: "Safety, always — drawn first",
+        body: "Fire tender access, refuge floors and hydrant runs are set before the home layouts, in strict adherence to IS codes and NBC — safety is never an afterthought.",
       },
     ],
   },
 
-  coda: "Every one of these is easier to draw at the start than to add at handover, which is the only reason they are all still here fifty years in.",
-  cta: { label: "See the projects", href: "/projects" },
+  coda: "Built to last, designed for life — each of these is drawn in from the start, which is why our homes still feel right, five decades on.",
+  cta: { label: "Explore our addresses", href: "/projects" },
 };
 
 export const hospitalityPage: HospitalityPageContent = {
   seo: {
     title: "Hospitality",
     description:
-      "Food and beverage space inside Vakratunda's own developments — designed into the podium at structural stage and run to the standard of the building above it.",
+      "Food and beverage spaces inside Vakratunda's own developments — designed into the podium from the structural stage, and run with the same care as the homes above.",
   },
 
   hero: {
     label: "Hospitality",
-    heading: { before: "The ground floor is a ", swash: "public", after: " room" },
+    heading: { before: "A ground floor with ", swash: "open", after: " doors" },
     standfirst:
-      "Food and beverage space inside the group's own developments — run to the standard of the buildings above it, and to the same handover date.",
+      "Food and beverage spaces inside our own developments — run with the same care as the homes above them, and delivered on the same date.",
     meta: ["Food & beverage", "Retail podiums", "Mumbai · MMR"],
   },
 
   story: {
-    label: "The practice",
+    label: "Our approach",
     heading: { before: "A building the neighbourhood can ", swash: "enter" },
     standfirst:
-      "Commercial ground floors are usually let and forgotten. The group treats them as part of the address, because they are the part of it the city actually sees.",
+      "Commercial ground floors are too often let and forgotten. We treat them as part of the address, because they are the part the whole city gets to experience.",
     body: [
-      "A residential tower gives the street a wall and a gate. Its podium is the only part a passer-by will ever be inside, and it sets what the whole building is taken to be — which is why the group designs, fits and operates that floor rather than handing it over as a shell.",
-      "The work is deliberately narrow: dining and beverage space inside developments the group has built, where the services, the ventilation routes and the delivery access were drawn into the structure years before a tenant was found. A restaurant retrofitted into a podium that was never planned for one is a restaurant with a kitchen extract running up the front of the building.",
-      "It is also the part of the portfolio with the shortest feedback loop. A society sees whether the group can run a room to a standard long before it sees whether the group can hand over a tower on the date it promised.",
+      "A residential tower gives the street a wall and a gate. Its podium is the only part a passer-by will ever step inside, and it shapes how the whole building is remembered — which is why we design, fit and operate that floor rather than handing it over as a shell.",
+      "Our focus is deliberately narrow: dining and beverage spaces inside developments we have built, where services, ventilation routes and delivery access were planned into the structure years before a tenant arrived. A restaurant squeezed into a podium never planned for one is a restaurant with a kitchen extract running up the front of the building.",
+      "It is also where trust is earned fastest. A society sees whether we can run a single room with care long before it sees us hand over an entire tower on the date we promised.",
     ],
     image: {
       src: "/images/gallery/restaurant.png",
       alt: "The dining room of a restaurant in a Vakratunda development, laid for service under warm pendant lighting.",
       width: 941,
       height: 1672,
-      caption: "The dining room, before service.",
+      caption: "The dining room, set for its guests.",
     },
     pullquote:
-      "The ground floor is the only part of a building most of the city will ever stand in.",
+      "The ground floor is where a building doesn't just meet the street — it welcomes the city.",
   },
 
   offer: {
     label: "What is on offer",
     heading: { before: "Space that was ", swash: "planned", after: " to be used" },
     standfirst:
-      "Four things a podium can only have if it was drawn with them in it.",
+      "Four things a podium can only offer if they were part of its blueprint.",
     items: [
       {
         id: "kitchen",
         eyebrow: "Services",
         title: "Kitchen services in the structure",
-        body: "Extract routes, grease traps, water and power sized for a commercial kitchen at the structural stage — not chased into a slab afterwards.",
+        body: "Extract routes, grease traps, water and power sized for a commercial kitchen from the structural stage — built in, never chased into a slab later.",
       },
       {
         id: "access",
         eyebrow: "Access",
         title: "A delivery route that is not the lobby",
-        body: "Service access separated from the residential entrance, so a restaurant's morning and a resident's morning do not use the same door.",
+        body: "Service access kept apart from the residential entrance, so a restaurant's morning never crowds a resident's welcome home.",
       },
       {
         id: "acoustics",
         eyebrow: "Acoustics",
-        title: "A floor slab that ends the argument",
-        body: "Acoustic separation between the podium and the flats above it, specified at design stage — the single thing that decides whether a society and its tenant get along.",
+        title: "A floor slab that keeps the peace",
+        body: "Acoustic separation between the podium and the homes above it, specified at the design stage — the one detail that lets a society and its tenant live as good neighbours.",
       },
       {
         id: "frontage",
         eyebrow: "Frontage",
         title: "A street edge worth walking past",
-        body: "Glazing, signage zones and lighting set as part of the building's elevation rather than left to whatever a tenant's contractor brings to site.",
+        body: "Glazing, signage and lighting designed as part of the building's elevation, so the street edge carries the same care as every floor above.",
       },
     ],
   },
@@ -212,13 +212,13 @@ export const hospitalityPage: HospitalityPageContent = {
     {
       id: "since",
       value: "1973",
-      note: "Building in Mumbai, across residential, commercial and redevelopment.",
+      note: "Building futures in Mumbai — residential, commercial and redevelopment.",
     },
     {
       id: "commercial",
       value: "2.1",
       unit: "M sq. ft.",
-      note: "Delivered by the group to date, across every asset class it builds.",
+      note: "Developed to date, across every kind of space we build.",
     },
     {
       id: "iso",
@@ -228,6 +228,6 @@ export const hospitalityPage: HospitalityPageContent = {
     },
   ],
 
-  coda: "The room downstairs is held to the same certificate as the tower above it, because to the person standing in it there is no difference.",
+  coda: "The room downstairs is held to the same standard as the tower above it — because every brick we lay carries the same promise.",
   cta: { label: "Enquire about a space", href: "/contact" },
 };

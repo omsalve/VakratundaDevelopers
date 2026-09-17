@@ -1,0 +1,25 @@
+/* /awards — the light on the glass. See AwardsSpotlight.tsx. */
+
+/* FIXED, AND PORTALLED OUT OF <main> TO GET THERE. This is the same trick
+   `.u-grain` plays in global.css — a viewport-sized layer over everything,
+   painting nothing but light — and it has the same z-index, so it sits over
+   the page and under the masthead. It cannot live inside <main>, which carries
+   a transform while the footer closes around it and would make itself the
+   containing block for a fixed child and then clip it. */
+.spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  /* Resting position, used until a pointer moves and on every device that has
+     none: the cabinet is lit from above-centre. */
+  --spot-x: 50%;
+  --spot-y: 0%;
+
+  background: radial-gradient(
+    42rem 30rem at var(--spot-x) var(--spot-y),
+    rgba(228, 168, 161, 0.1),
+    transparent 70%
+  );
+}

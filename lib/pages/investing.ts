@@ -23,55 +23,55 @@ export const nriPage: NriPageContent = {
   seo: {
     title: "NRI Corner",
     description:
-      "Buying property in Mumbai as a non-resident: the four stages of the process, what genuinely needs you present, and how the group works with buyers abroad.",
+      "Finding your Mumbai address from abroad: the four stages of the process, what genuinely needs you present, and how we walk with buyers across time zones.",
   },
 
   hero: {
     label: "NRI Corner",
-    heading: { before: "Buying from ", swash: "abroad", after: ", without guesswork" },
+    heading: { before: "Your address in Mumbai, from ", swash: "anywhere", after: "" },
     standfirst:
-      "What the process actually looks like from another time zone — the parts that need you in the room, the parts that do not, and who answers when you write.",
+      "Distance shouldn't stand between a family and its dream home. Here is the journey from another time zone — what needs you present, what doesn't, and who answers when you write.",
     meta: ["Non-resident buyers", "Mumbai · MMR", "Since 1973"],
   },
 
   steps: {
-    label: "How it goes",
+    label: "Your journey",
     heading: { before: "Four ", swash: "stages", after: ", in order" },
     standfirst:
-      "The sequence is the same as it is for a resident buyer. What changes is how each stage is executed when you are eight thousand kilometres away.",
+      "The journey is the same as it is for a resident buyer. What changes is how we carry each stage for you when you are eight thousand kilometres away.",
     items: [
       {
         id: "step-1",
         eyebrow: "01",
         title: "Shortlist, remotely",
-        body: "Floor plates, specification and the approved plan for a specific unit, sent as documents rather than as a brochure. A walkthrough on a call, from site, at a time that works in your timezone rather than in ours.",
+        body: "Floor plates, specification and the approved plan for your chosen unit, sent as documents, not a brochure. Then a walkthrough on a call, from site, at a time that suits your timezone rather than ours.",
       },
       {
         id: "step-2",
         eyebrow: "02",
         title: "Diligence, through your own advocate",
-        body: "Title, the chain behind it, and the project's registration on the authority's own public register — checked by a lawyer you appoint, not one we introduce. We supply documents to whoever you name.",
+        body: "Title, the chain behind it, and the project's registration on the authority's own public register — checked by a lawyer you appoint, not one we introduce. Transparency is our foundation: we share documents with whoever you name.",
       },
       {
         id: "step-3",
         eyebrow: "03",
         title: "Authority to sign",
-        body: "Most non-resident buyers execute a specific, revocable power of attorney naming the property and the acts permitted, attested at the Indian mission where they live. Your advocate drafts it; we work to it.",
+        body: "Most non-resident buyers execute a specific, revocable power of attorney naming the property and the acts permitted, attested at the Indian mission where they live. Your advocate drafts it; we honour it to the letter.",
       },
       {
         id: "step-4",
         eyebrow: "04",
         title: "Payment, registration, handover",
-        body: "Consideration through normal banking channels, with every remittance advice kept — that trail is what supports repatriation later. Registration and handover are then scheduled around one trip, or none.",
+        body: "Consideration through normal banking channels, with every remittance advice kept — that trail supports repatriation later. Then registration and handover, scheduled around one trip or none, and your keys are waiting.",
       },
     ],
   },
 
   faqs: {
     label: "Questions",
-    heading: { before: "The four things people actually ", swash: "ask" },
+    heading: { before: "The four questions families ", swash: "ask" },
     standfirst:
-      "Answered as process, because the numbers attached to each of these change and are specific to your own circumstances.",
+      "Answered with transparency, as process — because the numbers attached to each change, and are specific to your own circumstances.",
     items: [
       {
         id: "faq-visit",
@@ -101,8 +101,8 @@ export const nriPage: NriPageContent = {
         id: "faq-after",
         question: "Who looks after the flat once it is handed over?",
         answer: [
-          "The society does, once it is formed, and that is the honest answer. What the group can do is make the handover itself work from a distance: documentation sent in full, the defect liability period explained in writing, and a named person at the office who answers about the building rather than about the sale.",
-          "If the flat is to be let, that is between you and an agent you appoint. We do not manage lettings, and a developer who offers to is usually selling something else.",
+          "The society does, once it is formed — that is the honest answer. What we can do is make the handover itself work from a distance: documentation sent in full, the defect liability period explained in writing, and a named person who stays with you long after the sale.",
+          "If the home is to be let, that is between you and an agent you appoint. We don't manage lettings — we would rather do one thing with complete care.",
         ],
       },
     ],
@@ -110,25 +110,25 @@ export const nriPage: NriPageContent = {
 
   disclaimer:
     "This page describes process only. It is not tax, legal or investment advice, no figure or threshold is stated on it for that reason, and nothing here should be relied on without advice on your own circumstances.",
-  cta: { label: "Write to the office", href: "/contact" },
+  cta: { label: "Write to our team", href: "/contact" },
 };
 
 export const investorsPage: InvestorsPageContent = {
   seo: {
     title: "Investor Relations",
     description:
-      "Vakratunda Group's delivery record, governance and joint venture standing — 2.1 million sq. ft. delivered since 1973, triple ISO certified, MCHI-CREDAI member.",
+      "A legacy you can build on — Vakratunda Group's delivery record, governance and partnerships: 2.1 million sq. ft. since 1973, triple ISO certified, MCHI-CREDAI member.",
   },
 
   hero: {
     label: "Investor Relations",
-    heading: { before: "Fifty years of ", swash: "delivering", after: " what was drawn" },
+    heading: { before: "Five decades of ", swash: "trust", after: " you can build on" },
     standfirst:
-      "The group is privately held. What follows is the record a landowner, a joint venture partner or a lender asks for before the first meeting.",
+      "We are privately held, and proud of the record behind us. What follows is what a landowner, partner or lender asks for before the first meeting.",
     meta: ["Privately held", "Established 1973", "MCHI-CREDAI"],
   },
 
-  statsLabel: "The record",
+  statsLabel: "Our milestones",
 
   stats: [
     {
@@ -136,20 +136,20 @@ export const investorsPage: InvestorsPageContent = {
       value: "50",
       suffix: "+",
       unit: "years",
-      note: "Building continuously in Mumbai since 1973, now in its second generation.",
+      note: "Building futures in Mumbai since 1973, now in our second generation.",
     },
     {
       id: "area",
       value: "2.1",
       unit: "M sq. ft.",
-      note: "Delivered across residential, commercial and redevelopment work.",
+      note: "Developed across residential, commercial and redevelopment work.",
     },
     {
       id: "families",
       value: "2500",
       suffix: "+",
       unit: "families",
-      note: "Moved into buildings the group has completed and handed over.",
+      note: "Now at home in buildings we have completed and handed over.",
     },
     {
       id: "completion",
@@ -161,15 +161,15 @@ export const investorsPage: InvestorsPageContent = {
 
   governance: {
     label: "Standing",
-    heading: { before: "What the ", swash: "record", after: " rests on" },
+    heading: { before: "What our ", swash: "record", after: " rests on" },
     standfirst:
-      "Four things that can be checked by somebody who has never met the group.",
+      "Four foundations anyone can verify — no grey zones, even before we meet.",
     items: [
       {
         id: "jv",
         eyebrow: "Partners",
-        title: "Joint ventures that hold",
-        body: "Godrej Properties and Shapoorji Pallonji Real Estate. Both are listed-group counterparties that ran their own diligence before signing, and both have projects delivered rather than announced.",
+        title: "Partnerships that last",
+        body: "Godrej Properties and Shapoorji Pallonji Real Estate — both ran their own diligence before partnering with us, and both have projects delivered, not just announced.",
       },
       {
         id: "iso",
@@ -187,7 +187,7 @@ export const investorsPage: InvestorsPageContent = {
         id: "structure",
         eyebrow: "Structure",
         title: "Second-generation, privately held",
-        body: "No external equity and no listed obligations, which is why the group can hold a plot until the scheme is right — and why the material below is provided on request rather than published.",
+        body: "No external equity and no listed obligations — so we can hold a plot until the scheme is right, and share the material below on request rather than in public.",
       },
     ],
   },
@@ -196,7 +196,7 @@ export const investorsPage: InvestorsPageContent = {
     label: "Documentation",
     heading: { before: "Available on ", swash: "request" },
     standfirst:
-      "The group is private and does not publish accounts. This is what is supplied under NDA to a counterparty in a live conversation, usually within a week of asking.",
+      "We are private and do not publish accounts. This is what we share under NDA with a counterparty in a live conversation, usually within a week of asking.",
     entries: [
       {
         id: "doc-profile",
@@ -237,6 +237,6 @@ export const investorsPage: InvestorsPageContent = {
     note: "No projection, valuation or return is published on this site. Anything of that kind reaches you through a named person, under an agreement, and with the assumptions attached to it.",
   },
 
-  coda: "Everything above is supplied by a named person, in a conversation, with the assumptions attached to it.",
-  cta: { label: "Open a conversation", href: "/contact" },
+  coda: "Everything above comes from a named person, in a conversation — transparent actions, and trust you can build on.",
+  cta: { label: "Let’s build together", href: "/contact" },
 };

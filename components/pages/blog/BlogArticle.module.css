@@ -1,0 +1,325 @@
+/* /blogs/[slug] — one article. See BlogArticle.tsx. */
+
+.article {
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad-lg);
+}
+
+/* ---- The progress rule --------------------------------------------------- */
+
+/* Sticky, not fixed — this is inside <main data-enclose-page>, whose transform
+   would become the containing block for a fixed child and then clip it. */
+.progress {
+  position: sticky;
+  inset-block-start: var(--header-h);
+  z-index: var(--z-raised);
+  height: 2px;
+  background: transparent;
+  pointer-events: none;
+  margin-block-end: -2px;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--accent-deep);
+  opacity: 0.8;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ---- The opening --------------------------------------------------------- */
+
+.openingInner {
+  display: flex;
+  justify-content: center;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 44rem;
+  margin-bottom: var(--space-9);
+}
+
+.dateline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.category {
+  color: var(--accent-deep);
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+.metaText {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.title {
+  margin-bottom: var(--space-5);
+  max-width: 20ch;
+}
+
+.excerpt {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  max-width: 44ch;
+  margin-bottom: var(--space-6);
+}
+
+.byline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-5);
+  padding-block-start: var(--space-4);
+  border-block-start: var(--hairline) solid var(--page-rule);
+}
+
+/* ---- The lead plate ------------------------------------------------------ */
+
+.figure {
+  margin: 0 auto var(--space-10);
+  width: min(var(--maxw), 100%);
+  padding-inline: var(--gutter);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-300);
+  aspect-ratio: 16 / 9;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Oversized by the parallax travel, so no edge is ever revealed. */
+  scale: 1.1;
+}
+
+.caption {
+  margin-block-start: var(--space-3);
+  max-width: 48ch;
+}
+
+/* ---- The reading column -------------------------------------------------- */
+
+.column {
+  display: flex;
+  flex-direction: column;
+  /* A single centred measure. No rail — see the note in the component. */
+  max-width: calc(46rem + var(--gutter) * 2);
+}
+
+/* ---- The contents -------------------------------------------------------- */
+
+.contents {
+  padding-block: var(--space-6);
+  border-block: var(--hairline) solid var(--page-rule);
+  margin-block-end: var(--space-9);
+}
+
+.contentsLabel {
+  color: var(--text-on-cream-muted);
+  margin-bottom: var(--space-4);
+}
+
+.contentsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contentsLink {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  text-decoration: none;
+  color: var(--text-on-cream-muted);
+  font-size: var(--fs-small);
+  transition:
+    color var(--dur-base) var(--ease-out-expo),
+    padding-inline-start var(--dur-base) var(--ease-out-expo);
+}
+
+.contentsLink:hover {
+  color: var(--text-on-cream);
+  padding-inline-start: var(--space-2);
+}
+
+.contentsNumber {
+  font-size: var(--fs-caption);
+  color: var(--accent-deep);
+  opacity: 0.7;
+}
+
+/* ---- The body ------------------------------------------------------------ */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.clause {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  /* Clears the sticky progress rule when jumped to from the contents. */
+  scroll-margin-block-start: calc(var(--header-h) + var(--space-6));
+}
+
+.clauseHeading {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  max-width: 22ch;
+}
+
+.para {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+}
+
+/* The drawn cap. One per article, optically aligned rather than mechanically:
+   a Playfair cap has a left sidebearing a sans does not. */
+.drop {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 3.4em;
+  line-height: 0.82;
+  color: var(--accent-deep);
+  padding-inline-end: 0.08em;
+  margin-inline-start: -0.04em;
+  margin-block-start: 0.04em;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list > li {
+  position: relative;
+  padding-inline-start: var(--space-5);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream);
+}
+
+.list > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.72em;
+  width: var(--space-3);
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.close {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+  margin-block-start: var(--space-10);
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--page-rule);
+}
+
+.note {
+  max-width: var(--measure);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.back:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .article {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .stack {
+    text-align: start;
+    align-items: flex-start;
+  }
+
+  .dateline,
+  .byline {
+    justify-content: flex-start;
+  }
+
+  .frame {
+    aspect-ratio: 4 / 3;
+  }
+
+  .clauseHeading {
+    font-size: var(--fs-h3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contentsLink,
+  .back {
+    transition: none;
+  }
+
+  .image {
+    scale: 1;
+  }
+
+  /* An empty gauge tells nobody anything — see the same note on /terms. */
+  .progress {
+    display: none;
+  }
+}

@@ -1,0 +1,160 @@
+/* /about — the commitments as stations. See AboutStations.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+}
+
+/* ---- The line, carried through the change of ground ---------------------- */
+
+.thread {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--spine-inset) + var(--gutter));
+  width: 2px;
+  height: 100%;
+  /* `.on-cream` has re-pointed --accent-text to the deep rose, so the same
+     declaration draws the same line at the weight this ground needs. */
+  color: var(--accent-text);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.head {
+  padding-inline-start: calc(var(--spine-inset) + var(--space-6));
+  margin-bottom: calc(var(--head-gap) * 1.2);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The stations -------------------------------------------------------- */
+
+.stations {
+  display: flex;
+  flex-direction: column;
+  /* Wide intervals: these are stations passed one at a time, not cards
+     compared side by side. The air IS the fifty years. */
+  gap: clamp(3.5rem, 8vh, 6.5rem);
+}
+
+.station {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+  padding-inline-start: calc(var(--spine-inset) + var(--space-6));
+}
+
+/* The node that sits ON the line. `.p-node` in identity.css owns the dot and
+   the lit state; this only tells it where the line is. */
+.station::before {
+  inset-inline-start: calc(var(--spine-inset) - 3px);
+  inset-block-start: 1.1em;
+}
+
+/* ---- The leader ---------------------------------------------------------- */
+
+.leader {
+  position: absolute;
+  inset-inline-start: calc(var(--spine-inset) + 2px);
+  inset-block-start: calc(1.1em + 3px);
+  width: var(--space-6);
+  height: 2px;
+  color: var(--accent-text);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---- The numeral --------------------------------------------------------- */
+
+.number {
+  font-size: clamp(2.25rem, 1.4rem + 3vw, 4rem);
+  color: var(--accent-text);
+  opacity: 0.32;
+  line-height: 0.9;
+  transition: opacity var(--dur-slow) var(--ease-out-expo);
+}
+
+/* The station being read brings its own number up. The only thing that
+   changes on a lit station — the type does not move, because type that moves
+   as you read past it is type you have to re-find. */
+.station[data-current="true"] .number {
+  opacity: 0.85;
+}
+
+/* ---- The station's copy -------------------------------------------------- */
+
+.stationBody {
+  display: flex;
+  flex-direction: column;
+  max-width: var(--measure);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 62ch;
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .thread {
+    inset-inline-start: calc(var(--gutter) * 0.5);
+  }
+
+  .head {
+    padding-inline-start: var(--space-6);
+  }
+
+  .station {
+    /* The numeral moves above the copy rather than beside it: two columns at
+       this width leave the body at about 22 characters. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-inline-start: var(--space-6);
+  }
+
+  .station::before {
+    inset-inline-start: calc(var(--space-6) * -1 + 1px);
+  }
+
+  .leader {
+    display: none;
+  }
+
+  .number {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .number {
+    transition: none;
+  }
+}

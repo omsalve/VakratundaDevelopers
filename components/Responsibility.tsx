@@ -120,7 +120,7 @@ import styles from "./Responsibility.module.css";
 /** The three compositions, in order. The labels are the index's, and the
  *  accessible names of the slides themselves. */
 const SLIDES = [
-  { id: "ledger", label: "The ledger" },
+  { id: "ledger", label: "Our promise" },
   { id: "ground", label: "The ground" },
   { id: "closing", label: "In closing" },
 ] as const;
@@ -622,7 +622,7 @@ export function Responsibility({
               <PageLink
                 className={styles.onward}
                 href="/sustainability"
-                label="Both ledgers, in full"
+                label="The full green story"
               />
             </div>
           </Slide>

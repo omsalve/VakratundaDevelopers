@@ -1,0 +1,227 @@
+/* /press — the wire and the desk. See PressWire.tsx. */
+
+.section {
+  padding-block: var(--section-pad) var(--section-pad-lg);
+}
+
+.inner {
+  display: grid;
+  /* The desk sits beside the archive, not under it. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 19rem);
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  margin-bottom: var(--head-gap);
+  max-width: 44rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The columns of cuttings --------------------------------------------- */
+
+.columns {
+  position: relative;
+}
+
+/* The rule between the two columns — the broadsheet's own divider, drawn
+   down rather than faded in. */
+.columnRule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  width: 1px;
+  background: var(--navy-line);
+  transform-origin: top center;
+}
+
+.items {
+  columns: 2;
+  column-gap: var(--space-8);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  break-inside: avoid;
+  position: relative;
+  padding-block: var(--space-6);
+  /* `columns` does not collapse margins, so the interval is set once here. */
+  margin-block-end: var(--space-2);
+}
+
+.itemRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--navy-line);
+}
+
+.itemDateline {
+  margin-bottom: var(--space-3);
+  color: var(--accent-rose);
+}
+
+.itemTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  margin-bottom: var(--space-3);
+}
+
+.itemLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* The source, in the display italic — an attribution, set the way this site
+   sets an attribution. */
+.itemSource {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+.itemAction {
+  margin-block-start: var(--space-4);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+}
+
+/* An unpublished cutting ends in its standing, never in an action. */
+.itemState {
+  margin-block-start: var(--space-4);
+  display: inline-block;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-s);
+  padding: var(--space-1) var(--space-3);
+}
+
+.note {
+  margin-block-start: var(--space-7);
+  padding-block-start: var(--space-5);
+  border-block-start: var(--hairline) solid var(--navy-line);
+  max-width: var(--measure);
+}
+
+/* ---- The desk ------------------------------------------------------------ */
+
+.desk {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  background: var(--accent-wash);
+}
+
+.deskStandfirst {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+.deskList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.deskRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-block-start: var(--hairline) solid var(--navy-line);
+}
+
+.deskTerm {
+  color: var(--accent-rose);
+}
+
+.deskValue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  overflow-wrap: anywhere;
+}
+
+.deskLink {
+  color: var(--text-on-navy);
+  text-decoration: none;
+  border-block-end: var(--hairline) solid var(--accent-rose);
+  padding-block-end: 2px;
+  align-self: flex-start;
+}
+
+.deskNote {
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 74.99rem) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-9);
+  }
+
+  .desk {
+    position: static;
+  }
+
+  /* Beside the archive it is a card; under it, a wide register. */
+  .deskList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0 var(--space-6);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  /* One column: two columns of cuttings on a phone leaves about 20
+     characters a line, which is not a broadsheet, it is a mess. */
+  .items {
+    columns: 1;
+  }
+
+  .columnRule {
+    display: none;
+  }
+}

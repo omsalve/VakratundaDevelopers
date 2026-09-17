@@ -1,4 +1,5 @@
 import type { Cta, FinalCtaContent, NavLink } from "@/lib/content";
+import type { PageIdentity } from "@/lib/pageIdentity";
 import type { LegalPageContent } from "@/lib/pages";
 import PageHero from "./PageHero";
 import PageSection from "./PageSection";
@@ -19,18 +20,20 @@ import ProseDoc from "./ProseDoc";
  */
 
 export function LegalPage({
+  page,
   content,
   nav,
   finalCta,
   legal,
 }: {
+  page: PageIdentity;
   content: LegalPageContent;
   nav: { links: NavLink[]; cta: Cta };
   finalCta: FinalCtaContent;
   legal: string;
 }) {
   return (
-    <PageShell nav={nav} close={{ content: finalCta, legal }}>
+    <PageShell page={page} nav={nav} close={{ content: finalCta, legal }}>
       <PageHero content={content.hero} />
 
       <PageSection ground="cream" size="lg">

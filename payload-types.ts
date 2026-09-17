@@ -233,9 +233,9 @@ export interface Project {
   /**
    * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
    */
-  heading: {
+  heading?: {
     before?: string | null;
-    swash: string;
+    swash?: string | null;
     after?: string | null;
   };
   standfirst?: string | null;
@@ -622,13 +622,13 @@ export interface Home {
     ctaLabel?: string | null;
     ctaHref?: string | null;
   };
-  hero: {
+  hero?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
      */
-    heading: {
+    heading?: {
       before?: string | null;
-      swash: string;
+      swash?: string | null;
       after?: string | null;
     };
     standfirst?: string | null;
@@ -648,14 +648,46 @@ export interface Home {
      * ONE tall, continuous frame for the whole opening — the hero and the impact figures share it, and it travels from its top edge to its bottom edge across the section, reaching the bottom just as the story section closes over it. Nothing in it may repeat. Portrait, around 2880 × 3240 — roughly 8:9, which is the shape the frame is laid out at; a much taller original loses its sides to the crop. Sits at low opacity behind type throughout, so favour a dark, low-contrast image.
      */
     background?: (number | null) | Media;
+    /**
+     * EACH ONE IS GLUED TO A POINT IN THE PHOTOGRAPH ABOVE, not to the frame it is seen through: x and y are percentages of the picture itself, read off the picture. Replace the photograph and every pin has to be measured again, or the annotations end up pointing at whatever moved underneath them. Six at most — they need room.
+     */
+    pins?:
+      | {
+          title: string;
+          /**
+           * x %
+           */
+          x: number;
+          /**
+           * y %
+           */
+          y: number;
+          /**
+           * Two to four, one short sentence each.
+           */
+          body?:
+            | {
+                text: string;
+                id?: string | null;
+              }[]
+            | null;
+          /**
+           * The line that ties the claim to the picture. It is the hinge the whole annotation turns on — without it the copy floats free of what it is pinned to.
+           */
+          evidence: string;
+          ctaLabel?: string | null;
+          ctaHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
   };
-  immersive: {
+  immersive?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
      */
-    heading: {
+    heading?: {
       before?: string | null;
-      swash: string;
+      swash?: string | null;
       after?: string | null;
     };
     standfirst?: string | null;
@@ -699,6 +731,10 @@ export interface Home {
           }[]
         | null;
     };
+    /**
+     * One short line, drawn along the curve of the transition as it opens. It is decoration and is hidden from screen readers, so it must never carry anything the lockup and the paragraphs do not already say.
+     */
+    arcText?: string | null;
     body?:
       | {
           text: string;
@@ -706,21 +742,68 @@ export interface Home {
         }[]
       | null;
     /**
-     * The opening frame of the three-frame showcase at the foot of the section. Cropped to 16:9 and shown 300px wide, so put the subject in the middle third. 1600 × 900 or larger. The other two frames are shipped in content.ts.
+     * The lattice of proofs between the paragraphs and the showcase. Three discs lead on a figure and two on a phrase; each disc lays itself out from whichever it is given, so leave the other empty rather than inventing one. The copy is fitted to the circle it is set in — keep every line short.
      */
-    image?: (number | null) | Media;
+    legacy?: {
+      kicker?: string | null;
+      /**
+       * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+       */
+      heading?: {
+        before?: string | null;
+        swash?: string | null;
+        after?: string | null;
+      };
+      body?: string | null;
+      /**
+       * Five is what the three-over-two lattice is drawn for.
+       */
+      proofs?:
+        | {
+            icon: 'tower' | 'plan' | 'family' | 'crane' | 'trust';
+            value?: string | null;
+            suffix?: string | null;
+            unit?: string | null;
+            /**
+             * Used instead of the figure. Fill one or the other, never both.
+             */
+            phrase?: string | null;
+            note: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
     /**
-     * Runs under the showcase while the first frame is up. One line.
+     * The render the five discs are set against. It stands on the cream with no frame of its own, so it needs a transparent background: a PNG cut out to the building. Landscape, around 4:3.
      */
-    imageCaption?: string | null;
-  };
-  gallery: {
+    legacyImage?: (number | null) | Media;
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
      */
-    heading: {
+    showcaseHeading?: {
       before?: string | null;
-      swash: string;
+      swash?: string | null;
+      after?: string | null;
+    };
+    /**
+     * The frames at the foot of the section, in order — three is what the layout is drawn for. Each is cropped to 16:9 and shown 300px wide, so put the subject in the middle third; 1600 × 900 or larger. The name labels the frame's control for screen readers; the caption runs under the frame while it is up.
+     */
+    showcase?:
+      | {
+          name: string;
+          caption: string;
+          image: number | Media;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  gallery?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
       after?: string | null;
     };
     standfirst?: string | null;
@@ -728,30 +811,176 @@ export interface Home {
      * Drag to reorder. Leave empty to show every project, sorted by its Order field.
      */
     projects?: (number | Project)[] | null;
+    /**
+     * The plate behind the whole section. Project pins are placed in per cent of THIS image (lib/mapPoints.ts), so a replacement has to be the same map at the same framing — a re-export, not a different map.
+     */
+    map?: (number | null) | Media;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+  };
+  atmosphere?: {
+    /**
+     * The wide-tracked label the spread opens on.
+     */
+    eyebrow?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    /**
+     * One paragraph, set into the composition rather than stacked under the headline.
+     */
+    lead?: string | null;
+    /**
+     * Landscape, around 16:9. The frame the section opens against, top right.
+     */
+    deck?: (number | null) | Media;
+    /**
+     * Which side of the threshold this frame stands on.
+     */
+    deckSide?: string | null;
+    /**
+     * Micro-copy set in the space the plate opens next to it. Leave empty where the composition has no room and the tag carries the frame alone.
+     */
+    deckNote?: string | null;
+    /**
+     * Landscape, around 3:2. The one frame that holds inside and outside at once.
+     */
+    glass?: (number | null) | Media;
+    /**
+     * Which side of the threshold this frame stands on.
+     */
+    glassSide?: string | null;
+    /**
+     * Micro-copy set in the space the plate opens next to it. Leave empty where the composition has no room and the tag carries the frame alone.
+     */
+    glassNote?: string | null;
+    /**
+     * Portrait, around 9:16. Stands off the page and overlaps the frame beside it.
+     */
+    terrace?: (number | null) | Media;
+    /**
+     * Which side of the threshold this frame stands on.
+     */
+    terraceSide?: string | null;
+    /**
+     * Micro-copy set in the space the plate opens next to it. Leave empty where the composition has no room and the tag carries the frame alone.
+     */
+    terraceNote?: string | null;
+    /**
+     * Landscape, around 16:9. Breaks the right margin.
+     */
+    lounge?: (number | null) | Media;
+    /**
+     * Which side of the threshold this frame stands on.
+     */
+    loungeSide?: string | null;
+    /**
+     * Landscape, around 16:9.
+     */
+    garden?: (number | null) | Media;
+    /**
+     * Which side of the threshold this frame stands on.
+     */
+    gardenSide?: string | null;
+    /**
+     * Micro-copy set in the space the plate opens next to it. Leave empty where the composition has no room and the tag carries the frame alone.
+     */
+    gardenNote?: string | null;
+    detailsTitle?: string | null;
+    /**
+     * Three things done that nobody is meant to notice.
+     */
+    details?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The last line of the section, alone in the left margin beside the closing photograph.
+     */
+    coda?: string | null;
+  };
+  practice?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    statement?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    /**
+     * Each sentence is a thing that is actually done. Leave empty to set the statement alone.
+     */
+    detail?: string | null;
+    ctaLabel?: string | null;
+    ctaHref?: string | null;
+    commitmentsTitle?: string | null;
+    /**
+     * One line each. Three is what the block is set for.
+     */
+    commitments?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Landscape, around 3:2.
+     */
+    wide?: (number | null) | Media;
+    /**
+     * Portrait, around 9:16.
+     */
+    portrait?: (number | null) | Media;
+    /**
+     * The closing frames walk up the building: the garden, the lounge, the roof. Keep each to the place it is named for.
+     */
+    garden?: {
+      image?: (number | null) | Media;
+      place?: string | null;
+      caption?: string | null;
+    };
+    lounge?: {
+      image?: (number | null) | Media;
+      place?: string | null;
+      caption?: string | null;
+    };
+    roof?: {
+      image?: (number | null) | Media;
+      place?: string | null;
+      caption?: string | null;
+    };
   };
   /**
    * Four slides, in this order. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.
    */
-  team: {
+  team?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
      */
-    heading: {
+    heading?: {
       before?: string | null;
-      swash: string;
+      swash?: string | null;
       after?: string | null;
     };
     standfirst?: string | null;
     /**
      * The one line carried on the cream of the arc above this section.
      */
-    interstitial: {
+    interstitial?: {
       /**
        * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
        */
-      heading: {
+      heading?: {
         before?: string | null;
-        swash: string;
+        swash?: string | null;
         after?: string | null;
       };
       subtext?: string | null;
@@ -760,15 +989,15 @@ export interface Home {
       image?: (number | null) | Media;
       ctaLabel?: string | null;
     };
-    chairman: {
+    chairman?: {
       name?: string | null;
       title?: string | null;
       /**
        * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
        */
-      quote: {
+      quote?: {
         before?: string | null;
-        swash: string;
+        swash?: string | null;
         after?: string | null;
       };
       superpower?: string | null;
@@ -804,13 +1033,145 @@ export interface Home {
     roleCtaHref?: string | null;
     bioCtaLabel?: string | null;
   };
-  finalCta: {
+  ventures?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
      */
-    quote: {
+    heading?: {
       before?: string | null;
-      swash: string;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Cropped to fill a tall frame, so keep the building in the middle.
+     */
+    godrej?: (number | null) | Media;
+    /**
+     * Set large across the foot of the photograph.
+     */
+    godrejPartner?: string | null;
+    godrejKicker?: string | null;
+    godrejStat1Label?: string | null;
+    godrejStat1Value?: string | null;
+    godrejStat2Label?: string | null;
+    godrejStat2Value?: string | null;
+    godrejBlurb?: string | null;
+    godrejCtaLabel?: string | null;
+    godrejCtaHref?: string | null;
+    /**
+     * Cropped to fill a tall frame, so keep the building in the middle.
+     */
+    shapoorji?: (number | null) | Media;
+    /**
+     * Set large across the foot of the photograph.
+     */
+    shapoorjiPartner?: string | null;
+    shapoorjiKicker?: string | null;
+    shapoorjiStat1Label?: string | null;
+    shapoorjiStat1Value?: string | null;
+    shapoorjiStat2Label?: string | null;
+    shapoorjiStat2Value?: string | null;
+    shapoorjiBlurb?: string | null;
+    shapoorjiCtaLabel?: string | null;
+    shapoorjiCtaHref?: string | null;
+    /**
+     * Cropped to fill a tall frame, so keep the building in the middle.
+     */
+    redevelopment?: (number | null) | Media;
+    /**
+     * Set large across the foot of the photograph.
+     */
+    redevelopmentPartner?: string | null;
+    redevelopmentKicker?: string | null;
+    redevelopmentStat1Label?: string | null;
+    redevelopmentStat1Value?: string | null;
+    redevelopmentStat2Label?: string | null;
+    redevelopmentStat2Value?: string | null;
+    redevelopmentBlurb?: string | null;
+    redevelopmentCtaLabel?: string | null;
+    redevelopmentCtaHref?: string | null;
+  };
+  vihaa?: {
+    nameMark?: string | null;
+    nameRest?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    fact1Label?: string | null;
+    fact1Value?: string | null;
+    fact2Label?: string | null;
+    fact2Value?: string | null;
+    /**
+     * State nothing here the group has not published — no year, no board, no roll.
+     */
+    note?: string | null;
+    /**
+     * Landscape, around 3:2.
+     */
+    cover?: (number | null) | Media;
+    /**
+     * Portrait, around 2:3. Dealt into two columns in order — left, right, left — so an even number reads best.
+     */
+    moments?:
+      | {
+          image: number | Media;
+          caption?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  responsibility?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Landscape, around 16:9. Stands beside the heading.
+     */
+    image?: (number | null) | Media;
+    imageCaption?: string | null;
+    environment?: {
+      /**
+       * Set into the rule that opens the band.
+       */
+      label?: string | null;
+      lead?: string | null;
+      /**
+       * Four, in two ruled pairs. Each is bound to a drawing that exists, so the set cannot grow past the four drawings.
+       */
+      commitments?:
+        | {
+            title: string;
+            icon?: ('green' | 'rainwater' | 'waste' | 'energy') | null;
+            detail: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    /**
+     * The last line of the section, ranged right against the edge of the field.
+     */
+    coda?: string | null;
+  };
+  finalCta?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    quote?: {
+      before?: string | null;
+      swash?: string | null;
       after?: string | null;
     };
     attribution?: string | null;
@@ -2534,6 +2895,23 @@ export interface HomeSelect<T extends boolean = true> {
         ctaHref?: T;
         scrollCue?: T;
         background?: T;
+        pins?:
+          | T
+          | {
+              title?: T;
+              x?: T;
+              y?: T;
+              body?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              evidence?: T;
+              ctaLabel?: T;
+              ctaHref?: T;
+              id?: T;
+            };
       };
   immersive?:
     | T
@@ -2572,14 +2950,53 @@ export interface HomeSelect<T extends boolean = true> {
                     id?: T;
                   };
             };
+        arcText?: T;
         body?:
           | T
           | {
               text?: T;
               id?: T;
             };
-        image?: T;
-        imageCaption?: T;
+        legacy?:
+          | T
+          | {
+              kicker?: T;
+              heading?:
+                | T
+                | {
+                    before?: T;
+                    swash?: T;
+                    after?: T;
+                  };
+              body?: T;
+              proofs?:
+                | T
+                | {
+                    icon?: T;
+                    value?: T;
+                    suffix?: T;
+                    unit?: T;
+                    phrase?: T;
+                    note?: T;
+                    id?: T;
+                  };
+            };
+        legacyImage?: T;
+        showcaseHeading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        showcase?:
+          | T
+          | {
+              name?: T;
+              caption?: T;
+              image?: T;
+              id?: T;
+            };
       };
   gallery?:
     | T
@@ -2593,6 +3010,88 @@ export interface HomeSelect<T extends boolean = true> {
             };
         standfirst?: T;
         projects?: T;
+        map?: T;
+        ctaLabel?: T;
+        ctaHref?: T;
+      };
+  atmosphere?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        lead?: T;
+        deck?: T;
+        deckSide?: T;
+        deckNote?: T;
+        glass?: T;
+        glassSide?: T;
+        glassNote?: T;
+        terrace?: T;
+        terraceSide?: T;
+        terraceNote?: T;
+        lounge?: T;
+        loungeSide?: T;
+        garden?: T;
+        gardenSide?: T;
+        gardenNote?: T;
+        detailsTitle?: T;
+        details?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        coda?: T;
+      };
+  practice?:
+    | T
+    | {
+        statement?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        detail?: T;
+        ctaLabel?: T;
+        ctaHref?: T;
+        commitmentsTitle?: T;
+        commitments?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        wide?: T;
+        portrait?: T;
+        garden?:
+          | T
+          | {
+              image?: T;
+              place?: T;
+              caption?: T;
+            };
+        lounge?:
+          | T
+          | {
+              image?: T;
+              place?: T;
+              caption?: T;
+            };
+        roof?:
+          | T
+          | {
+              image?: T;
+              place?: T;
+              caption?: T;
+            };
       };
   team?:
     | T
@@ -2661,6 +3160,104 @@ export interface HomeSelect<T extends boolean = true> {
         roleCtaLabel?: T;
         roleCtaHref?: T;
         bioCtaLabel?: T;
+      };
+  ventures?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        godrej?: T;
+        godrejPartner?: T;
+        godrejKicker?: T;
+        godrejStat1Label?: T;
+        godrejStat1Value?: T;
+        godrejStat2Label?: T;
+        godrejStat2Value?: T;
+        godrejBlurb?: T;
+        godrejCtaLabel?: T;
+        godrejCtaHref?: T;
+        shapoorji?: T;
+        shapoorjiPartner?: T;
+        shapoorjiKicker?: T;
+        shapoorjiStat1Label?: T;
+        shapoorjiStat1Value?: T;
+        shapoorjiStat2Label?: T;
+        shapoorjiStat2Value?: T;
+        shapoorjiBlurb?: T;
+        shapoorjiCtaLabel?: T;
+        shapoorjiCtaHref?: T;
+        redevelopment?: T;
+        redevelopmentPartner?: T;
+        redevelopmentKicker?: T;
+        redevelopmentStat1Label?: T;
+        redevelopmentStat1Value?: T;
+        redevelopmentStat2Label?: T;
+        redevelopmentStat2Value?: T;
+        redevelopmentBlurb?: T;
+        redevelopmentCtaLabel?: T;
+        redevelopmentCtaHref?: T;
+      };
+  vihaa?:
+    | T
+    | {
+        nameMark?: T;
+        nameRest?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        fact1Label?: T;
+        fact1Value?: T;
+        fact2Label?: T;
+        fact2Value?: T;
+        note?: T;
+        cover?: T;
+        moments?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              id?: T;
+            };
+      };
+  responsibility?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        image?: T;
+        imageCaption?: T;
+        environment?:
+          | T
+          | {
+              label?: T;
+              lead?: T;
+              commitments?:
+                | T
+                | {
+                    title?: T;
+                    icon?: T;
+                    detail?: T;
+                    id?: T;
+                  };
+            };
+        coda?: T;
       };
   finalCta?:
     | T

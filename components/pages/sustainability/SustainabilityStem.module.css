@@ -1,0 +1,286 @@
+/* /sustainability — the stem and its branches. See SustainabilityStem.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad) var(--section-pad-lg);
+}
+
+/* ---- The trunk ----------------------------------------------------------- */
+
+.trunk {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  width: 2px;
+  height: 100%;
+  color: var(--accent-deep);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.trunkSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  /* Centred, because the stem is centred and a left-ranged head would leave
+     the trunk running through empty space beside it. This is the only head on
+     the site that centres — the page is symmetrical about its own stem. */
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+  margin-bottom: calc(var(--head-gap) * 1.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The practices ------------------------------------------------------- */
+
+.practices {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 9vh, 7rem);
+}
+
+.practiceItem {
+  position: relative;
+  display: flex;
+  min-height: clamp(9rem, 16vh, 13rem);
+}
+
+.practiceItem[data-side="right"] {
+  justify-content: flex-end;
+}
+
+.practiceItem[data-side="left"] {
+  justify-content: flex-start;
+}
+
+/* ---- The node ------------------------------------------------------------ */
+
+.petal {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 0;
+  translate: -50% -50%;
+  width: 16px;
+  height: 16px;
+  color: var(--accent-deep);
+  opacity: 0.75;
+}
+
+.petal svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- The branch ---------------------------------------------------------- */
+
+.branch {
+  position: absolute;
+  inset-block-start: 0;
+  width: clamp(3rem, 9vw, 8rem);
+  height: clamp(2rem, 5vh, 3rem);
+  color: var(--accent-deep);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.practiceItem[data-side="right"] .branch {
+  inset-inline-start: 50%;
+}
+
+/* The same curve, mirrored — one path, drawn both ways. */
+.practiceItem[data-side="left"] .branch {
+  inset-inline-end: 50%;
+  scale: -1 1;
+}
+
+/* ---- The practice -------------------------------------------------------- */
+
+.practice {
+  width: min(30rem, 44%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  /* Dropped clear of the branch that reaches it. */
+  padding-block-start: clamp(2rem, 5vh, 3rem);
+}
+
+.practiceItem[data-side="right"] .practice {
+  padding-inline-start: clamp(2rem, 5vw, 4rem);
+}
+
+.practiceItem[data-side="left"] .practice {
+  padding-inline-end: clamp(2rem, 5vw, 4rem);
+  text-align: end;
+  align-items: flex-end;
+}
+
+/* ---- The drawing --------------------------------------------------------- */
+
+.icon {
+  display: block;
+  width: clamp(3.5rem, 7vw, 5.5rem);
+  aspect-ratio: 1;
+  color: var(--accent-deep);
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Held undrawn. Every stroked element in ResponsibilityIcons carries
+   pathLength={1}, so one unit is the whole outline whatever the geometry —
+   no measurement, and the same two declarations hold all four icons. */
+.motion-on .icon :is(path, circle, line, polyline, rect) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.practiceBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin-bottom: var(--space-4);
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 44ch;
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.close {
+  margin-block-start: clamp(4rem, 10vh, 7rem);
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--page-rule);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+.coda {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--accent-deep);
+  max-width: 46ch;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  /* The stem moves to the left gutter and every practice hangs off the same
+     side. The alternation is what needs two columns; the growing line and the
+     curved branch are what make the page, and both survive. */
+  .trunk {
+    inset-inline-start: var(--gutter);
+    translate: none;
+  }
+
+  .head {
+    margin-inline: 0;
+    text-align: start;
+    align-items: flex-start;
+    padding-inline-start: var(--space-8);
+  }
+
+  .practiceItem[data-side="right"],
+  .practiceItem[data-side="left"] {
+    justify-content: flex-start;
+    min-height: 0;
+  }
+
+  .practice,
+  .practiceItem[data-side="left"] .practice {
+    width: 100%;
+    padding-inline: var(--space-8) 0;
+    text-align: start;
+    align-items: flex-start;
+  }
+
+  .practiceItem[data-side="right"] .practice {
+    padding-inline-start: var(--space-8);
+  }
+
+  .petal {
+    inset-inline-start: var(--gutter);
+  }
+
+  .branch,
+  .practiceItem[data-side="left"] .branch {
+    inset-inline: var(--gutter) auto;
+    scale: 1;
+    width: var(--space-7);
+  }
+
+  .close {
+    align-items: flex-start;
+    text-align: start;
+    padding-inline-start: var(--space-8);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .practices {
+    gap: var(--space-9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

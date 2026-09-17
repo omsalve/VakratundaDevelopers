@@ -1,0 +1,105 @@
+/* /press — the masthead. See PressMasthead.tsx. */
+
+.section {
+  padding-block-start: calc(var(--header-h) + var(--space-9));
+  padding-block-end: var(--space-8);
+}
+
+/* Full bleed, edge to edge — see the note in the component. */
+.rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.4;
+  transform-origin: center;
+}
+
+/* ---- The title row ------------------------------------------------------- */
+
+.titleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: var(--space-6);
+}
+
+.label {
+  margin-bottom: var(--space-4);
+}
+
+/* The one place on the site a display heading is centred and set wide: a
+   masthead is symmetrical about its own page. */
+.title {
+  max-width: 20ch;
+  letter-spacing: -0.01em;
+}
+
+/* ---- The deck ------------------------------------------------------------ */
+
+.deckRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-5) var(--space-8);
+  align-items: baseline;
+  padding-block-start: var(--space-5);
+}
+
+.deck {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  max-width: 52ch;
+}
+
+/* The dateline: wide caps, rose, separated by rules rather than dots. */
+.dateline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  align-items: center;
+}
+
+.datelineItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.motion-on .datelineItem {
+  opacity: 0;
+}
+
+.datelineItem + .datelineItem::before {
+  content: "";
+  width: var(--space-4);
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.5;
+  margin-inline-start: calc(var(--space-5) * -1);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .deckRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .titleRow {
+    text-align: start;
+    align-items: flex-start;
+  }
+}

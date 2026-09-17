@@ -1,0 +1,127 @@
+/* /sustainability — the ground line. See SustainabilityHero.tsx. */
+
+.section {
+  position: relative;
+  padding-block-start: calc(var(--header-h) + var(--space-10));
+  /* No bottom padding: the horizon IS the bottom edge, and the stem crosses
+     straight out of it into the next section. */
+  padding-block-end: 0;
+}
+
+.inner {
+  position: relative;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-block-end: var(--space-10);
+  max-width: 52rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 16ch;
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- The horizon --------------------------------------------------------- */
+
+.horizon {
+  position: relative;
+}
+
+.horizonRule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.45;
+  transform-origin: center;
+}
+
+.metaWrap {
+  /* The credentials stand ON the line rather than under it. */
+  position: relative;
+  transform: translateY(-50%);
+}
+
+.meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  align-items: center;
+  /* A cream cartouche punched through the rule, so the line appears to pass
+     behind the words rather than to be crossed out by them. */
+  background: var(--page-ground);
+  padding-inline-end: var(--space-6);
+}
+
+.motion-on .meta {
+  opacity: 0;
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.metaItem + .metaItem::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-deep);
+  margin-inline-start: calc(var(--space-5) * -1 + 1px);
+}
+
+/* ---- The stem breaking the ground ---------------------------------------- */
+
+.sprout {
+  position: absolute;
+  /* On the same axis the stem below runs down. */
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inset-block-start: 0;
+  width: 24px;
+  height: clamp(2.5rem, 6vh, 4rem);
+  color: var(--accent-deep);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .sprout {
+    inset-inline-start: var(--gutter);
+    translate: none;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-8));
+  }
+
+  .stack {
+    padding-block-end: var(--space-8);
+  }
+}

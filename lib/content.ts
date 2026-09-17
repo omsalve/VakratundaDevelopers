@@ -9,10 +9,18 @@
  *  2. Carry the shipped copy, so the site renders correctly before anyone has
  *     logged into /admin and before the database has a `home` row.
  *
+ * ⚠️ THIS IS THE FALLBACK, NOT THE SITE. Every string and every photograph
+ * below has a field in the `home` global, and `npm run seed` has put them all
+ * there. Once a field is filled, the CMS wins and editing the line below
+ * changes nothing a visitor sees — it changes only what would be rendered on a
+ * database that cannot be read (lib/cms/read.ts). Edit the page in /admin;
+ * edit here when the SHIPPED default should change too, and re-seed a fresh
+ * database to pick it up.
+ *
  * COPY PROVENANCE — every string below is either quoted from the brand guide
  * (CP_Final.pdf, page cited inline) or a factual restatement of it. Lines
  * marked AUTHORED are new writing in the guide's voice and are the ones to
- * review before launch; they are listed in README.md under "Copy to approve".
+ * review before launch.
  */
 
 /* ------------------------------------------------------------------ types */
@@ -243,6 +251,12 @@ export interface GalleryContent {
    * length, and the section is not finished without a door to it.
    */
   cta: Cta;
+  /**
+   * The map of the region the section is painted on. The pins are placed in
+   * per cent of this image (lib/mapPoints.ts), so it is swapped only for the
+   * same map re-exported, never for a different one.
+   */
+  map: ImageAsset;
 }
 
 /* --------------------------------------------------------------- practice */
@@ -628,8 +642,8 @@ export const siteContent: SiteContent = {
     meta: ["Established 1973", "Mumbai · MMR", "MCHI-CREDAI"],
     // CP_Final p.4, condensed.
     standfirst:
-      "Fifty years of building in Mumbai — residential, commercial and redevelopment, across the island city, the eastern and western suburbs, and Thane.",
-    primaryCta: { label: "Explore the portfolio", href: "#projects" },
+      "Five decades of transforming spaces into experiences and addresses into aspirations — across Mumbai City, its eastern and western suburbs, and Thane.",
+    primaryCta: { label: "Explore our addresses", href: "#projects" },
     // AUTHORED — the label on the cue at the foot of the opening frame. It is
     // required by HeroContent and rendered by Journey, but was missing here,
     // so the cue shipped with an empty label.
@@ -670,11 +684,15 @@ export const siteContent: SiteContent = {
         y: 62.2,
         title: "Rooted in Purpose",
         body: [
-          "Vakratunda began in 1973 as a single vision, and has been family-led ever since.",
-          "Second generation now, on the same footing the first one set.",
-          "Everything that followed was arranged inside that frame.",
+          "Established in 1973 as a single vision — rooted in purpose, driven by progress.",
+          "A second generation now builds on the foundation the first one laid.",
+          "Every address since has grown from that first frame.",
         ],
-        cta: { label: "The practice", href: "#practice" },
+        // #practice was this page's Practice band, which the redesign took out
+        // (components/Practice.tsx is no longer imported anywhere). The pin is
+        // about the founding and the promise that came out of it, and that is
+        // what the story section is.
+        cta: { label: "Our promise", href: "#story" },
         evidence:
           "Shown: the open pavilion frame — built before the room it holds.",
       },
@@ -682,13 +700,15 @@ export const siteContent: SiteContent = {
         id: "lounge",
         x: 10.0,
         y: 84.0,
-        title: "Trust, Handed Over",
+        title: "Built on Trust",
         body: [
-          "33(7) society and cluster schemes redeveloped through MCGM and MHADA.",
-          "Each one began with people handing over the place they already called home.",
-          "That decision, not the drawing, is what the work is built on.",
+          "33(7) and cluster redevelopment, carried out through MCGM and MHADA.",
+          "Every society began by trusting us with the home it already loved.",
+          "We don’t just redevelop buildings, we honour that trust floor by floor.",
         ],
-        cta: { label: "Redevelopment", href: "#practice" },
+        // As above: #practice is gone. The redevelopment record is the third
+        // slide of the ventures band — MHADA & MCGM — so the pin points there.
+        cta: { label: "Redevelopment", href: "#ventures" },
         evidence:
           "Shown: the seating turned in on itself — a circle for talking, not a row for looking.",
       },
@@ -698,9 +718,9 @@ export const siteContent: SiteContent = {
         y: 83.0,
         title: "Where Dreams Find an Address",
         body: [
-          "2,500+ families have moved into a Vakratunda home and stayed.",
-          "An address rather than a unit — the number the practice measures itself by.",
-          "A run of places, and every one of them somebody’s.",
+          "More than 2,500 families have found their address with us.",
+          "Each number is more than a metric — it’s a family, and a milestone.",
+          "Each one different. Each one somebody’s dream.",
         ],
         cta: { label: "Our projects", href: "#projects" },
         evidence:
@@ -712,9 +732,9 @@ export const siteContent: SiteContent = {
         y: 84.5,
         title: "Built for Tomorrow",
         body: [
-          "The promise on the first page: we don’t just build for today.",
-          "Fifty years in, the measure is what still stands and is still lived in.",
-          "The edge is where the built stops — and the reason to keep going.",
+          "We don’t just build for today, we build for tomorrow.",
+          "Five decades on, our measure is what still stands and still feels like home.",
+          "The water stops at the edge. The future doesn’t.",
         ],
         cta: { label: "The Vakratunda Impact", href: "#impact" },
         evidence:
@@ -724,11 +744,11 @@ export const siteContent: SiteContent = {
         id: "skyline",
         x: 84.0,
         y: 75.0,
-        title: "Skylines, and Then Lives",
+        title: "Not Just Skylines, but Lives",
         body: [
-          "2.1 million sq. ft. across the island city, both suburbs and Thane.",
-          "Residential, commercial and redevelopment — with Godrej Properties and Shapoorji Pallonji among the partners.",
-          "The skyline is the part you can see. It was never the point.",
+          "2.1 million sq. ft. developed across Mumbai, its suburbs and Thane.",
+          "Trusted by industry giants — Godrej Properties and Shapoorji Pallonji among them.",
+          "The skyline is what you see. The lives within it are the point.",
         ],
         cta: { label: "The Vakratunda Impact", href: "#impact" },
         evidence:
@@ -738,11 +758,11 @@ export const siteContent: SiteContent = {
         id: "green",
         x: 76.0,
         y: 88.0,
-        title: "What the Ground Is Owed",
+        title: "Green Today, Greater Tomorrow",
         body: [
-          "Aligned with IGBC and LEED guidelines, to build a greener tomorrow.",
-          "Rainwater, waste and energy, specified into the drawings rather than added after.",
-          "The work is measured twice: by what it gives, and by what it asks.",
+          "Aligned with IGBC and LEED guidelines, to minimise our carbon footprint.",
+          "Rainwater, waste and energy, planned in from the very first drawing.",
+          "We rise by uplifting the communities around us.",
         ],
         cta: { label: "Responsibility", href: "#responsibility" },
         evidence:
@@ -766,7 +786,7 @@ export const siteContent: SiteContent = {
         value: "50+",
         unit: "years",
         title: "Of building futures",
-        body: "A second-generation practice. The group was established in 1973 and has been led by the family ever since.",
+        body: "A second-generation legacy since 1973 — honouring where we come from, evolving towards where we’re going.",
       },
       {
         id: "area",
@@ -775,7 +795,7 @@ export const siteContent: SiteContent = {
         value: "2.1",
         unit: "Million sq. ft.",
         title: "Developed across Mumbai",
-        body: "Residential, commercial and redevelopment work spanning the island city, both suburbs and Thane.",
+        body: "Residential, commercial and redevelopment spaces, turning addresses into aspirations across the city.",
       },
       {
         id: "families",
@@ -784,7 +804,7 @@ export const siteContent: SiteContent = {
         value: "2500+",
         unit: "families",
         title: "Moved into dream homes",
-        body: "Handed over and lived in — the number the practice measures itself by.",
+        body: "We don’t just hand over homes, we build lifelong trust.",
       },
       {
         id: "redevelopment",
@@ -793,7 +813,7 @@ export const siteContent: SiteContent = {
         value: "33(7)",
         unit: "& cluster schemes",
         title: "Redevelopment completed",
-        body: "Society and MHADA layout redevelopment delivered through MCGM and MHADA, with many more in the pipeline.",
+        body: "Societies given a new address through MCGM and MHADA — with many more in the pipeline.",
       },
       {
         id: "partners",
@@ -802,7 +822,7 @@ export const siteContent: SiteContent = {
         value: "2",
         unit: "national partners",
         title: "Trusted by industry giants",
-        body: "Joint ventures with Godrej Properties and Shapoorji Pallonji Real Estate, among others.",
+        body: "More than milestones — lasting partnerships with Godrej Properties, Shapoorji Pallonji and more.",
       },
     ],
   },
@@ -823,6 +843,12 @@ export const siteContent: SiteContent = {
     body: [
       // CP_Final p.4, verbatim.
       "Established in 1973, Vakratunda Group began as a single vision, rooted in purpose, driven by progress. Over five decades later, that vision has grown into a legacy of shaping not just skylines, but lives.",
+      // AUTHORED. The education work, said here rather than only in `vihaa`
+      // six sections further down: this is the paragraph a visitor reads to
+      // find out what the group actually does, and a school is part of the
+      // answer. It stands on Vihaa International School, Badlapur — the
+      // section below — and adds no figure of its own.
+      "Not all of it is housing. Alongside residential, commercial and redevelopment work we build schools — Vihaa International School in Badlapur among them — because a neighbourhood needs more than somewhere to live.",
       // CP_Final p.4, verbatim.
       "At the heart of Vakratunda lies a simple promise: to deliver more than structures, to deliver belonging. Because we don’t just build for today, we build for tomorrow.",
     ],
@@ -830,9 +856,9 @@ export const siteContent: SiteContent = {
     // set against the Skygarden roof render. AUTHORED framing; every figure
     // is the one already carried by `immersive.hotspots` above.
     legacy: {
-      kicker: "The record so far",
-      heading: { before: "What fifty years ", swash: "add up", after: " to" },
-      body: "Every figure here is a building that stands, a family that moved in, or a society that handed us the place they already called home.",
+      kicker: "Our legacy so far",
+      heading: { before: "Milestones built on ", swash: "trust", after: "" },
+      body: "Every number here is more than a metric: a building that stands tall, a family that found its address, a society that trusted us with its home.",
       proofs: [
         {
           id: "years",
@@ -898,10 +924,7 @@ export const siteContent: SiteContent = {
             width: 1600,
             height: 1600,
           },
-          // ⚠️ The locality is the one fact missing from the repo for this
-          // project. Add it here — "Anantaraa, <locality>" — to match the two
-          // captions below.
-          caption: "Anantaraa",
+          caption: "Anantaraa, Thane",
         },
         {
           name: "Vihaa Gardens",
@@ -920,16 +943,15 @@ export const siteContent: SiteContent = {
           caption: "Vihaa Gardens, Badlapur",
         },
         {
-          name: "Vedanta",
-          // ⚠️ REPLACE ART. The group's own Bandra tower, standing in until the
-          // Vedanta frame arrives. See the note above.
+          name: "Vedantaa",
+          // BKC 28 is Vedantaa, so this is its own frame.
           image: {
             src: "/images/hero/bkc-28.png",
             alt: "A slender residential tower in Bandra at sunset, seen from the road at its foot",
             width: 1672,
             height: 941,
           },
-          caption: "Vedanta, Bandra",
+          caption: "Vedantaa, Bandra",
         },
       ],
     },
@@ -940,21 +962,28 @@ export const siteContent: SiteContent = {
     heading: { before: "Our ", swash: "Projects" },
     // AUTHORED — factual summary of pp.9-12.
     standfirst:
-      "Fourteen addresses across the city, from delivered redevelopment in Bandra to a twenty-acre township in Badlapur.",
+      "Addresses where dreams found a home — from redevelopment in Bandra to a twenty-acre township in Badlapur.",
     // The section shows the portfolio; /projects is where it can be filtered,
     // sorted and read at length. Same array, more room.
-    cta: { label: "View all projects", href: "/projects" },
+    cta: { label: "See every address", href: "/projects" },
+    // The navy-and-rose plate of the region. Pins: lib/mapPoints.ts.
+    map: {
+      src: "/images/maps.png",
+      alt: "Map of the Mumbai metropolitan region, from Mira Bhayandar south to the island city and east through Thane to Badlapur",
+      width: 3344,
+      height: 1880,
+    },
     slides: [
       // Ongoing — CP_Final p.9.
       {
         id: "bkc-28",
-        name: "BKC 28",
+        name: "Vedantaa",
         locality: "Bandra",
         status: "Ongoing",
-        blurb: "Under construction in the Bandra East corridor.",
+        blurb: "Rising in the Bandra East corridor, floor by floor.",
         image: {
           src: "/images/hero/bkc-28.png",
-          alt: "BKC 28, a slender residential tower in Bandra, illuminated at night",
+          alt: "Vedantaa, a slender residential tower in Bandra, illuminated at night",
           width: 1672,
           height: 941,
         },
@@ -965,7 +994,7 @@ export const siteContent: SiteContent = {
         locality: "Badlapur",
         status: "Ongoing",
         blurb:
-          "Part of the twenty-acre mini-township developed with Godrej Properties.",
+          "A twenty-acre mini-township, built hand in hand with Godrej Properties.",
         image: {
           src: "/images/jv/skygardens.png",
           alt: "Godrej Skygarden in Badlapur, a white mid-rise residential cluster",
@@ -974,79 +1003,45 @@ export const siteContent: SiteContent = {
         },
       },
       // Upcoming — CP_Final p.10.
-      {
-        id: "bkc-32",
-        name: "BKC 32",
-        locality: "Bandra",
-        status: "Upcoming",
-        blurb: "Mixed-use, with retail at the podium.",
-        image: {
-          src: "/images/projects/bkc-32.jpg",
-          alt: "BKC 32, a twin-wing tower in Bandra with a landscaped podium",
-          width: 1200,
-          height: 1500,
-        },
-      },
-      {
-        id: "parijat",
-        name: "Parijat by Vakratunda",
-        locality: "Kandivali",
-        status: "Upcoming",
-        blurb: "A high-rise on the western suburban corridor.",
-        image: {
-          src: "/images/projects/parijat.jpg",
-          alt: "Parijat by Vakratunda, a tall bronze-toned residential tower in Kandivali",
-          width: 1200,
-          height: 1500,
-        },
-      },
+      //
+      // Only projects with real photography are listed. BKC 32, Parijat,
+      // Badlapur East, Vakratunda Royale and Vakratunda Residency are held back
+      // until their frames arrive — their cards were navy placeholder plates.
+      // BKC 28 is Vedantaa, above, so it is not listed twice.
       {
         id: "kolshet",
-        name: "Kolshet Road Residences",
+        name: "Anantaraa",
         locality: "Thane",
         status: "Upcoming",
-        blurb: "Residential development on Kolshet Road.",
+        blurb: "Homes taking shape on Kolshet Road.",
         image: {
-          src: "/images/jv/shapoorji.png",
-          alt: "Planned residential development on Kolshet Road, Thane",
+          src: "/images/anantaraa/anantaraa.jpeg",
+          alt: "Anantaraa at dusk: a slender residential tower lit floor by floor above a glazed retail podium, seen from the arterial road at its foot",
+          width: 1600,
+          height: 1600,
+        },
+      },
+      {
+        id: "vihaa-amaraa",
+        name: "Vihaa Amaraa",
+        locality: "Badlapur",
+        status: "Upcoming",
+        blurb: "A new residential tower joining our Badlapur story.",
+        image: {
+          src: "/images/amaraa/amaraa.png",
+          alt: "Vihaa Amaraa at sunset: a broad residential tower with white-framed balconies above a glazed podium, set behind a lawn and a tree-lined road",
           width: 941,
           height: 1672,
         },
       },
-      {
-        id: "badlapur-east",
-        name: "Badlapur East",
-        locality: "Badlapur",
-        status: "Upcoming",
-        blurb: "Next phase of the group’s Badlapur footprint.",
-        image: {
-          src: "/images/projects/badlapur-east.jpg",
-          alt: "Planned development in Badlapur East",
-          width: 1200,
-          height: 1500,
-        },
-      },
       // Completed — CP_Final pp.11-12.
-      {
-        id: "bkc-28-completed",
-        name: "BKC 28",
-        locality: "Bandra",
-        status: "Completed",
-        blurb: "Delivered redevelopment in Bandra East.",
-        image: {
-          src: "/images/projects/bkc-28.jpg",
-          alt: "BKC 28, a completed glass-and-stone tower in Bandra",
-          width: 1200,
-          height: 1500,
-        },
-      },
       {
         id: "godrej-vihaa",
         name: "Godrej Vihaa by Vakratunda",
         locality: "Badlapur",
         status: "Completed",
         blurb:
-          "Delivered with Godrej Properties as part of the Badlapur township.",
+          "Delivered with Godrej Properties — a township where families belong.",
         image: {
           src: "/images/projects/godrej-vihaa.jpg",
           alt: "Godrej Vihaa in Badlapur, low-rise residential blocks lit at dusk",
@@ -1059,7 +1054,7 @@ export const siteContent: SiteContent = {
         name: "Vakratunda Dilkhush",
         locality: "Andheri",
         status: "Completed",
-        blurb: "Society redevelopment in Andheri.",
+        blurb: "A society’s new address in Andheri.",
         image: {
           src: "/images/hero/dilkhush.png",
           alt: "Vakratunda Dilkhush, a white residential building in Andheri",
@@ -1072,7 +1067,7 @@ export const siteContent: SiteContent = {
         name: "Vakratunda Dilbahar",
         locality: "Santacruz",
         status: "Completed",
-        blurb: "Society redevelopment in Santacruz.",
+        blurb: "A society’s new address in Santacruz.",
         image: {
           src: "/images/projects/dilbahar.jpg",
           alt: "Vakratunda Dilbahar in Santacruz, framed by trees",
@@ -1085,23 +1080,10 @@ export const siteContent: SiteContent = {
         name: "Vakratunda Corporate Park",
         locality: "Goregaon",
         status: "Completed",
-        blurb: "The group’s commercial address in Goregaon.",
+        blurb: "Our commercial address, where Goregaon comes to work.",
         image: {
           src: "/images/projects/corporate-park.jpg",
           alt: "Vakratunda Corporate Park, a glazed commercial building in Goregaon",
-          width: 1200,
-          height: 1500,
-        },
-      },
-      {
-        id: "royale",
-        name: "Vakratunda Royale",
-        locality: "Sion",
-        status: "Completed",
-        blurb: "Residential redevelopment in Sion.",
-        image: {
-          src: "/images/projects/royale.jpg",
-          alt: "Vakratunda Royale, a mid-rise residential building in Sion",
           width: 1200,
           height: 1500,
         },
@@ -1111,23 +1093,10 @@ export const siteContent: SiteContent = {
         name: "Vakratunda Palace",
         locality: "Bhandup",
         status: "Completed",
-        blurb: "Residential development in Bhandup.",
+        blurb: "A regal address in Bhandup.",
         image: {
           src: "/images/projects/palace.jpg",
           alt: "Vakratunda Palace, a sand-coloured tower in Bhandup",
-          width: 1200,
-          height: 1500,
-        },
-      },
-      {
-        id: "residency",
-        name: "Vakratunda Residency",
-        locality: "Thane",
-        status: "Completed",
-        blurb: "Residential development in Thane.",
-        image: {
-          src: "/images/projects/residency.jpg",
-          alt: "Vakratunda Residency, a residential tower in Thane",
           width: 1200,
           height: 1500,
         },
@@ -1171,7 +1140,7 @@ export const siteContent: SiteContent = {
           height: 2160,
         },
         side: "Exterior",
-        note: "The sky deck at the hour it was drawn for. The city is still there — it just stops being loud.",
+        note: "The sky deck at golden hour, where the city doesn’t just fall quiet, it becomes the view.",
       },
       glass: {
         image: {
@@ -1181,7 +1150,7 @@ export const siteContent: SiteContent = {
           height: 1023,
         },
         side: "Interior, and out",
-        note: "One wall of glass, and the garden on the other side of it. The room borrows a view it does not own.",
+        note: "One wall of glass, and the garden beyond it. Rooms here don’t just have windows, they have views.",
       },
       terrace: {
         image: {
@@ -1191,7 +1160,7 @@ export const siteContent: SiteContent = {
           height: 1672,
         },
         side: "The threshold",
-        note: "Planting brought up to the table — the outside made somewhere you sit, rather than somewhere you look at.",
+        note: "Planting brought up to the table — nature not just admired from afar, but lived with, meal by meal.",
       },
       lounge: {
         image: {
@@ -1210,18 +1179,18 @@ export const siteContent: SiteContent = {
           height: 941,
         },
         side: "Exterior",
-        note: "Dusk at the foot of the tower. The lighting was specified before the benches were.",
+        note: "Dusk at the foot of the tower, lit with the same care as the homes above it.",
       },
     },
 
-    detailsTitle: "What the detail is for",
+    detailsTitle: "Designed around people",
     details: [
-      "A threshold drawn so the floor inside and the deck outside meet at one level.",
-      "Light warm enough at dusk that nobody reaches for a switch.",
-      "Planting placed for the window it will be seen through, not for the plan.",
+      "A threshold where the floor inside and the deck outside meet as one, safe for every age.",
+      "Ample light and airflow, so a home breathes before it’s ever switched on.",
+      "Community spaces placed where neighbours meet naturally, not where a plan had room.",
     ],
     coda:
-      "You will not notice most of it. That is the whole of the intention — the room simply agrees with you.",
+      "You may never notice most of it — and that’s the intention. Where homes don’t just exist, they belong.",
   },
 
   /* ---- The practice ----------------------------------------------------
@@ -1234,18 +1203,18 @@ export const siteContent: SiteContent = {
      liability RERA already obliges, not a warranty of our own devising. */
   practice: {
     statement: {
-      before: "Every decision here is made in a room with the families who will ",
-      swash: "live with it",
+      before: "Every decision here is shared with the families who will one day ",
+      swash: "call it home",
       after: ".",
     },
     detail:
       "",
     cta: { label: "Meet the people behind it", href: "#team" },
-    commitmentsTitle: "Held to on every project:",
+    commitmentsTitle: "Our promise on every project:",
     commitments: [
-      "A resident committee in every design review",
-      "Monthly progress, open to the whole society",
-      "No handover until the last snag is closed",
+      "Residents as co-creators in every design review",
+      "Monthly progress, shared openly with the society",
+      "No handover until every last detail is right",
     ],
     portrait: {
       src: "/images/gallery/restaurant.png",
@@ -1278,7 +1247,7 @@ export const siteContent: SiteContent = {
           width: 1672,
           height: 941,
         },
-        caption: "The garden at the foot of the tower, lit for the evening.",
+        caption: "The garden at the tower’s foot, where evenings are shared.",
       },
       {
         id: "lounge",
@@ -1289,7 +1258,7 @@ export const siteContent: SiteContent = {
           width: 1672,
           height: 941,
         },
-        caption: "The residents’ lounge, off the main lobby.",
+        caption: "The residents’ lounge, a room for neighbours.",
       },
       {
         id: "skygarden-roof",
@@ -1301,17 +1270,17 @@ export const siteContent: SiteContent = {
           height: 1088,
         },
         // AUTHORED — factual, from the projects list.
-        caption: "Godrej Skygarden, Badlapur — the roof, on handover.",
+        caption: "Godrej Skygarden, Badlapur — the roof, handed over with pride.",
       },
     ],
   },
 
   team: {
-    // BRIEF — supplied copy, verbatim.
-    heading: { before: "Where dreams find an ", swash: "address", after: "." },
-    // BRIEF — supplied copy, verbatim.
+    // CP_Final pp.18–19, “Leadership That Inspires”.
+    heading: { before: "Leadership that ", swash: "inspires", after: "." },
+    // CP_Final p.4, condensed.
     standfirst:
-      "Spaces you don’t just see — you feel. From facade to finish, every detail is intentional — built around how people actually live.",
+      "A team grounded in expertise and guided by family values — where thoughtful design, professional commitment and people-first thinking meet.",
 
     /* Rides the cream of the page's second arc, between the portfolio and
        everything the arc opens onto.
@@ -1329,11 +1298,11 @@ export const siteContent: SiteContent = {
        line at 1.34em against single words above it and break the stack. */
     interstitial: {
       heading: {
-        before: "Built for the people ",
+        before: "Designed around the people ",
         swash: "in them",
         after: ".",
       },
-      subtext: "What that looks like, and who stands behind it.",
+      subtext: "The spaces we shape, and the people who shape them.",
     },
 
     intro: {
@@ -1363,9 +1332,9 @@ export const siteContent: SiteContent = {
         swash: "continuum",
         after: " of purpose, progress, and people.",
       },
-      // BRIEF — supplied copy.
-      superpower: "Disciplined delivery, and a people-first outlook.",
-      bio: "Ram Makhecha drives the organisation with disciplined delivery and a people-first outlook.",
+      // CP_Final p.18, condensed.
+      superpower: "A contemporary outlook, rooted in care for society.",
+      bio: "The passionate young visionary of Vakratunda, driving the organisation towards customer orientation.",
       portrait: {
         src: "/images/team/ram.JPG",
         alt: "Portrait — Ram Makhecha, Chairman",
@@ -1377,12 +1346,12 @@ export const siteContent: SiteContent = {
     leadership: [
       {
         id: "khelaan-unadkat",
-        // BRIEF — supplied copy.
+        // CP_Final p.19, condensed.
         name: "Mr. Khelaan Manoj Unadkat",
         title: "Director",
         superpower:
           "A young, dynamic leader who adds energy and ideas to the group.",
-        bio: "Khelaan brings energy and strategic ideas that help scale operations and set higher standards across projects.",
+        bio: "A passion for scaling greater heights and setting higher standards, shaping our reputation.",
         portrait: {
           // TO SUPPLY → /images/team/khelaan-unadkat.jpg
           src: "",
@@ -1393,12 +1362,12 @@ export const siteContent: SiteContent = {
       },
       {
         id: "siddhesh-tendulkar",
-        // BRIEF — supplied copy.
+        // CP_Final p.19, condensed.
         name: "Mr. Siddhesh Tendulkar",
         title: "Vice President, Planning & Design",
         superpower:
-          "Planning and design lead, with deep redevelopment experience.",
-        bio: "Siddhesh has 18 years of experience in design and execution, guiding project planning with practical, people-first design choices.",
+          "Design that reflects how people truly live.",
+        bio: "With 18 years in design, execution and redevelopment — 12 of them with Vakratunda — Siddhesh shapes every plan around people.",
         portrait: {
           // TO SUPPLY → /images/team/siddhesh-tendulkar.jpg
           src: "",
@@ -1409,12 +1378,12 @@ export const siteContent: SiteContent = {
       },
       {
         id: "naimesh-tanna",
-        // BRIEF — supplied copy.
+        // CP_Final p.19, condensed.
         name: "Mr. Naimesh Tanna",
         title: "Vice President, Operations",
         superpower:
-          "Operations from land selection to handover; liaison and execution.",
-        bio: "Naimesh handles on-ground delivery, government liaison and smooth project handovers, ensuring timelines and compliance.",
+          "From choosing the right land to handing over the keys.",
+        bio: "In real estate since 1998, Naimesh bridges management, partners and government — keeping every timeline honest.",
         portrait: {
           // TO SUPPLY → /images/team/naimesh-tanna.jpg
           src: "",
@@ -1434,18 +1403,17 @@ export const siteContent: SiteContent = {
         id: "design",
         icon: "design",
         title: "Planning & Design",
-        // From the planning lead's own brief: "practical, people-first
-        // design choices".
+        // CP_Final p.17: "how people truly live, not just how buildings look".
         descriptor:
-          "Practical, people-first design choices, settled before a line is built.",
+          "Spaces shaped around how people truly live, not just how buildings look.",
       },
       {
         id: "operations",
         icon: "operations",
         title: "Operations",
-        // Restates the operations brief above.
+        // CP_Final p.2: "our unwavering respect for timelines".
         descriptor:
-          "Land selection to handover, with the liaison work that keeps a timeline honest.",
+          "From the right land to the final handover, with an unwavering respect for timelines.",
       },
       {
         id: "sales",
@@ -1453,23 +1421,22 @@ export const siteContent: SiteContent = {
         title: "Sales",
         // AUTHORED, against the 2500+ families figure on CP_Final p.3.
         descriptor:
-          "The first conversation a family has with the place they will live in.",
+          "The first chapter of every family’s journey to a home of their own.",
       },
       {
         id: "quality",
         icon: "quality",
         title: "Quality Assurance",
-        // CP_Final p.4 verbatim, plus where it is actually checked. The
-        // triple ISO certification behind it is on CP_Final p.23.
+        // CP_Final p.23, verbatim — the triple ISO certification page.
         descriptor:
-          "Legacy-built, future-focused and human-first — checked on site, floor by floor.",
+          "Quality isn’t a milestone, it’s the mindset behind every brick we lay.",
       },
       {
         id: "sustainability",
         icon: "sustainability",
         title: "Sustainability",
-        // CP_Final p.4, verbatim.
-        descriptor: "Because we don’t just build for today, we build for tomorrow.",
+        // CP_Final p.22, condensed.
+        descriptor: "Sustainability that shapes every decision, from drawing board to handover.",
       },
       {
         id: "site",
@@ -1478,7 +1445,7 @@ export const siteContent: SiteContent = {
         // AUTHORED, from the promise on CP_Final p.4: "to deliver more than
         // structures, to deliver belonging".
         descriptor:
-          "The crews who turn a sanctioned drawing into somewhere to belong.",
+          "The hands that turn every blueprint into a place to belong.",
       },
     ],
 
@@ -1498,7 +1465,7 @@ export const siteContent: SiteContent = {
       after: "",
     },
     standfirst:
-      "Three partnerships, and the ground each one covers. National developers and civic bodies bring the mandate; the group brings the site, the approvals and the delivery.",
+      "We grow stronger through the right partnerships — trusted names bring their reach, and we bring the land, the approvals and the promise of delivery.",
     slides: [
       {
         id: "godrej",
@@ -1509,7 +1476,7 @@ export const siteContent: SiteContent = {
           { label: "Homes delivered", value: "1,400+" },
         ],
         blurb:
-          "A twenty-acre mini-township taken from land assembly to handover — Vihaa delivered, Skygarden rising behind it.",
+          "Affordability and modern living on twenty acres — Vihaa delivered, Skygarden rising behind it.",
         cta: { label: "Explore the township", href: "#projects" },
         image: {
           src: "/images/jv/skygardens.png",
@@ -1527,7 +1494,7 @@ export const siteContent: SiteContent = {
           { label: "Planned", value: "3 towers" },
         ],
         blurb:
-          "A residential address on Kolshet Road, developed with one of India's oldest builders — their engineering, our ground.",
+          "A residential address on Kolshet Road — global construction standards, grounded in our local legacy.",
         cta: { label: "See the development", href: "#projects" },
         image: {
           src: "/images/jv/shapoorji.png",
@@ -1545,8 +1512,8 @@ export const siteContent: SiteContent = {
           { label: "Completion", value: "100%" },
         ],
         blurb:
-          "Society and MHADA layout redevelopment across the western suburbs — every family returned to a better building than the one they left.",
-        cta: { label: "Read the record", href: "#projects" },
+          "Societies and MHADA layouts across the western suburbs — every family welcomed back to a better home than the one they left.",
+        cta: { label: "Read our record", href: "#projects" },
         image: {
           src: "/images/hero/dilkhush.png",
           alt: "Vakratunda Dilkhush in Andheri, a completed society redevelopment",
@@ -1567,10 +1534,10 @@ export const siteContent: SiteContent = {
   vihaa: {
     name: { mark: "Vihaa", rest: "International School" },
     // AUTHORED.
-    heading: { before: "A school the group has a ", swash: "stake", after: " in" },
+    heading: { before: "Beyond homes, building ", swash: "lives", after: "" },
     // AUTHORED.
     standfirst:
-      "Vihaa International School in Badlapur is a joint venture, held the way the group holds every address that carries its name — built to a standard, and answered for long after the opening day.",
+      "Vihaa International School in Badlapur is a joint venture we hold like every address that carries our name — built with devotion, and nurtured long after the opening day.",
     facts: [
       { label: "Structure", value: "Joint venture" },
       { label: "Town", value: "Badlapur" },
@@ -1589,42 +1556,42 @@ export const siteContent: SiteContent = {
         alt: "A pupil laughing as she holds a picture book up at arm's length in a bright classroom.",
         width: 1707,
         height: 2560,
-        caption: "A picture book, held up to be read.",
+        caption: "A story, held up to be shared.",
       },
       {
         src: "/images/vihaa/vihaa-2883.jpg",
         alt: "A pupil jumping a row of yellow training hurdles in the school yard, classmates queued behind her.",
         width: 1704,
         height: 2560,
-        caption: "Hurdles in the yard.",
+        caption: "Hurdles, cleared with joy.",
       },
       {
         src: "/images/vihaa/vihaa-3080.jpg",
         alt: "A boy fitting wooden letter pegs into an alphabet puzzle board at a classroom table.",
         width: 1707,
         height: 2560,
-        caption: "Letters, a peg at a time.",
+        caption: "Big dreams, a letter at a time.",
       },
       {
         src: "/images/vihaa/vihaa-3057.jpg",
         alt: "Pupils kneeling at a raised bed, pressing soil around young plants.",
         width: 1707,
         height: 2560,
-        caption: "Planting out a bed.",
+        caption: "Roots for tomorrow.",
       },
       {
         src: "/images/vihaa/vihaa-3198.jpg",
         alt: "Two pupils at a play kitchen, one smiling across at the other over a set of steel pots.",
         width: 1707,
         height: 2560,
-        caption: "The play kitchen.",
+        caption: "Cooking up dreams.",
       },
       {
         src: "/images/vihaa/vihaa-3145.jpg",
         alt: "A girl kneeling on a foam play mat, laughing as she holds up a tower of red, blue and white blocks.",
         width: 1707,
         height: 2560,
-        caption: "A tower, held up for inspection.",
+        caption: "A tower built with pride.",
       },
     ],
   },
@@ -1633,12 +1600,12 @@ export const siteContent: SiteContent = {
      it or is a factual restatement of it; the lines marked AUTHORED are new
      writing in the guide's voice. */
   responsibility: {
-    // AUTHORED — the concept pin's own title, "What the Ground Is Owed", so
+    // CP_Final p.17 — the concept pin's own title, "Green Today, Greater Tomorrow", so
     // the pin and the section it links to say the same thing.
-    heading: { before: "What the ground is ", swash: "owed", after: "" },
+    heading: { before: "Green today, ", swash: "greater", after: " tomorrow" },
     // AUTHORED.
     standfirst:
-      "Fifty years in, the work is also measured by what it asks of the ground it stands on — and that is answered in the drawings, where it is still cheap to get right.",
+      "Sustainability shapes every decision we make — so the ground we build on keeps giving back, for generations to come.",
 
     // A render of a Vakratunda garden podium, so the caption says so.
     image: {
@@ -1697,17 +1664,17 @@ export const siteContent: SiteContent = {
       },
       {
         // CP_Final pp.14-15.
-        title: "Joint ventures that hold",
+        title: "Partnerships that last",
         body: "Godrej Properties and Shapoorji Pallonji Real Estate — 100% accuracy in project completion.",
       },
       {
         // CP_Final pp.3-4.
-        title: "A second-generation practice",
-        body: "MCHI-CREDAI member, building in Mumbai since 1973.",
+        title: "A second-generation legacy",
+        body: "MCHI-CREDAI member, building futures in Mumbai since 1973.",
       },
     ],
     primaryCta: {
-      label: "Start a conversation",
+      label: "Let’s build it together",
       href: "mailto:info@vakratundagroup.com",
     },
     // CP_Final p.26, verbatim.
@@ -1724,6 +1691,6 @@ export const siteContent: SiteContent = {
   seo: {
     title: "Vakratunda — Where dreams find an address",
     description:
-      "Vakratunda Group has been building in Mumbai since 1973 — 2.1 million sq. ft. delivered, 2,500+ families moved in, and joint ventures with Godrej Properties and Shapoorji Pallonji.",
+      "Since 1973, Vakratunda Group has shaped not just skylines, but lives — 2.1 million sq. ft. developed, 2,500+ families home, and partnerships with Godrej Properties and Shapoorji Pallonji.",
   },
 };

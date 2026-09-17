@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
-import ContactForm from "@/components/ContactForm";
-import LedgerList from "@/components/LedgerList";
-import OfficePanel from "@/components/OfficePanel";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import ContactDesk from "@/components/pages/contact/ContactDesk";
+import ContactSwitchboard from "@/components/pages/contact/ContactSwitchboard";
 import PageShell from "@/components/PageShell";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Contact Us.
+ * Contact Us — THE DESK.
  *
- * THREE WAYS IN, IN ORDER OF DIRECTNESS: the channels, which open an email
- * with its subject already set; the form, for a visitor who would rather be
- * asked what to say than compose it; and the office itself.
+ * The shortest opening on the site: the channels are in the first screen,
+ * beside the title rather than a scroll below it, and they are the largest
+ * type in the band. Somebody here has already decided to get in touch, and a
+ * screen of atmosphere between them and a phone number is a page enjoying
+ * itself at the visitor's expense.
  *
- * ⚠️ THE FORM COMPOSES, IT DOES NOT POST — the project has no submission
- * endpoint, and a form that silently drops what a society committee writes
- * into it is worse than no form at all. See the notice at the head of
- * components/ContactForm.tsx. Wiring a real one is a Payload collection and a
- * server action, and it should happen before launch.
+ * Then the desk — the only two-panel working layout on the site. The enquiry
+ * takes the working column and the office stays beside it, sticky: the
+ * photograph, the address, the hours and the direct email all in view while
+ * the form is being filled in, so somebody weighing "write, or just turn up?"
+ * can see both answers at once. The old page put the address a full screen
+ * below the box you were writing in.
  *
- * The office email comes from `site.finalCta.contact`, which is the same
- * address the footer publishes and is editable in /admin — so the page cannot
- * end up offering a different address from the one the site closes on.
+ * NOTHING IS POSTED ANYWHERE. The submit composes the fields into a plain-text
+ * body and hands it to the visitor's own mail client — behaviour carried over
+ * unchanged from the component this replaces.
  *
- * Content: the `contact-page` global over lib/pages/people.ts.
+ * Content: the `contact-page` global over lib/pages/people.ts, shape untouched.
  */
 
 export const revalidate = 60;
@@ -38,48 +38,17 @@ export default async function ContactPage() {
 
   return (
     <PageShell
+      page="contact"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <ContactSwitchboard content={page.hero} channels={page.channels} />
 
-      <PageSection
-        id="channels"
-        label={page.channels.label}
-        heading={page.channels.heading}
-        standfirst={page.channels.standfirst}
-      >
-        <div className="u-shell">
-          <LedgerList
-            entries={page.channels.entries}
-            note={page.channels.note}
-          />
-        </div>
-      </PageSection>
-
-      <PageSection id="enquiry" ground="cream" size="lg">
-        <ContactForm
-          email={site.finalCta.contact.email}
-          label={page.form.label}
-          heading={page.form.heading}
-          standfirst={page.form.standfirst}
-          note={page.form.note}
-        />
-      </PageSection>
-
-      <PageSection
-        id="office"
-        ground="cream"
-        divider
-        label={page.office.label}
-        heading={page.office.heading}
-        standfirst={page.office.standfirst}
-      >
-        <OfficePanel
-          office={page.office}
-          email={site.finalCta.contact.email}
-        />
-      </PageSection>
+      <ContactDesk
+        form={page.form}
+        office={page.office}
+        email={site.finalCta.contact.email}
+      />
     </PageShell>
   );
 }

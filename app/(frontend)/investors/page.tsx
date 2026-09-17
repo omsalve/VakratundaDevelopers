@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import CardGrid from "@/components/CardGrid";
-import LedgerList from "@/components/LedgerList";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import InvestorsRecord from "@/components/pages/investors/InvestorsRecord";
+import InvestorsStatement from "@/components/pages/investors/InvestorsStatement";
 import PageShell from "@/components/PageShell";
-import SectionCoda from "@/components/SectionCoda";
-import StatRow from "@/components/StatRow";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Investor Relations.
+ * Investor Relations — THE STATEMENT.
  *
- * The figures, what stands behind them, then what is actually available and on
- * what terms. The group is private, so the third band is the honest one: every
- * document row carries a state — on request, under NDA — instead of an `href`
- * pointing at a PDF that does not exist, which is what an investor page for a
- * private company usually does.
+ * The only page on the site whose opening is data. The figures are ruled
+ * across the full width directly under the title and are set LARGER than it,
+ * which is the correct hierarchy for a statement of account and the inverse of
+ * every other page here. Then governance as a ruled schedule, and the
+ * documents as a filing list.
  *
- * Content: the `investors-page` global over lib/pages/investing.ts.
+ * WHY NO CARDS ANYWHERE. This page previously ran `StatRow`, then a `CardGrid`
+ * of governance commitments, then a `LedgerList` — the same three components
+ * in the same order as /careers. An investor reads a register: terms in the
+ * left column, what they mean in the right, ruled, scannable straight down.
+ * Four floating cards make four independent claims of equal weight, which is
+ * the wrong shape for a set of undertakings.
+ *
+ * THE FIGURES COUNT UP FROM THE MARKUP. `countUp` reads the value already in
+ * the HTML and restores the authored string when it finishes, so the real
+ * figure is what is served, indexed, and shown under reduced motion.
+ *
+ * Content: the `investors-page` global over lib/pages/investing.ts, shape
+ * untouched.
  */
 
 export const revalidate = 60;
@@ -31,46 +39,22 @@ export default async function InvestorsPage() {
 
   return (
     <PageShell
+      page="investors"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <InvestorsStatement
+        content={page.hero}
+        statsLabel={page.statsLabel}
+        stats={page.stats}
+      />
 
-      <PageSection id="record" label={page.statsLabel}>
-        <div className="u-shell">
-          <StatRow stats={page.stats} />
-        </div>
-      </PageSection>
-
-      <PageSection
-        id="governance"
-        ground="cream"
-        size="lg"
-        label={page.governance.label}
-        heading={page.governance.heading}
-        standfirst={page.governance.standfirst}
-      >
-        <div className="u-shell">
-          <CardGrid items={page.governance.items} columns={2} />
-        </div>
-      </PageSection>
-
-      <PageSection
-        id="documents"
-        ground="cream"
-        divider
-        label={page.documents.label}
-        heading={page.documents.heading}
-        standfirst={page.documents.standfirst}
-      >
-        <div className="u-shell">
-          <LedgerList
-            entries={page.documents.entries}
-            note={page.documents.note}
-          />
-          <SectionCoda text={page.coda} cta={page.cta} />
-        </div>
-      </PageSection>
+      <InvestorsRecord
+        governance={page.governance}
+        documents={page.documents}
+        coda={page.coda}
+        cta={page.cta}
+      />
     </PageShell>
   );
 }

@@ -15,10 +15,17 @@ import type { SeoContent } from "@/lib/content";
 
 export const SITE_NAME = "Vakratunda Group";
 export const TITLE_TEMPLATE = "%s · Vakratunda";
+
+/**
+ * The card used where a page has set none and the Home global has none either.
+ * It is the one image on the site that is still a file rather than an upload,
+ * and it is the last resort rather than the default: the site-wide card is the
+ * Home global's own share image, passed in as `siteImage` by the callers below.
+ */
 export const DEFAULT_SHARE_IMAGE = {
   url: "/images/og.jpg",
-  width: 1200,
-  height: 630,
+  width: 1600,
+  height: 840,
 };
 
 export function buildMetadata(
@@ -27,24 +34,32 @@ export function buildMetadata(
     path,
     type = "website",
     absoluteTitle = false,
+    siteImage,
   }: {
     /** The canonical path, e.g. "/about". */
     path: string;
     type?: "website" | "article";
     /** The home page's title is the full brand line, not a name to template. */
     absoluteTitle?: boolean;
+    /**
+     * The site's own card — the Home global's share image — used by any page
+     * that has not set one of its own. Passed in rather than read here so this
+     * stays a pure function of the content it is given.
+     */
+    siteImage?: SeoContent["image"];
   },
 ): Metadata {
   const shareTitle = absoluteTitle
     ? seo.title
     : TITLE_TEMPLATE.replace("%s", seo.title);
-  const images = seo.image
+  const share = seo.image ?? siteImage;
+  const images = share
     ? [
         {
-          url: seo.image.src,
-          width: seo.image.width,
-          height: seo.image.height,
-          alt: seo.image.alt,
+          url: share.src,
+          width: share.width,
+          height: share.height,
+          alt: share.alt,
         },
       ]
     : [DEFAULT_SHARE_IMAGE];

@@ -1,0 +1,242 @@
+/* /nri-corner — the questions, after the crossing. See NriQuestions.tsx. */
+
+.section {
+  position: relative;
+  /* NO GROUND OF ITS OWN. The crossing above used to warm toward --navy-600
+     and this section used to start there, which left the page visibly lighter
+     below the meridian than above it. The page has one field now — the navy
+     the opening is on — and the crossing is marked by the line going, not by
+     the colour changing. */
+  padding-block: var(--section-pad-lg);
+}
+
+.inner {
+  display: grid;
+  /* The head stays beside the questions rather than above them: after the
+     crossing the page has room to be read across, and a second full-width
+     head would repeat the rhythm of the section above it. */
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: var(--space-9) var(--space-10);
+  align-items: start;
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-6));
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The disclosure ------------------------------------------------------ */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  border-block-start: var(--hairline) solid var(--navy-line);
+}
+
+.item {
+  border-block-end: var(--hairline) solid var(--navy-line);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: baseline;
+  padding-block: var(--space-6);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* The UA's own disclosure triangle, removed in both engines. */
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary::marker {
+  content: "";
+}
+
+.summary:hover {
+  color: var(--accent-rose);
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.index {
+  font-size: var(--fs-caption);
+  color: var(--accent-rose);
+  opacity: 0.65;
+  letter-spacing: 0.08em;
+}
+
+.question {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+/* ---- The marker: a drawn cross that becomes a dash ----------------------- */
+
+.marker {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  align-self: center;
+}
+
+.markerBar {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent-rose);
+  transform-origin: center;
+}
+
+/* The upright of the cross, rotated away as the panel opens. */
+.markerBarV {
+  rotate: 90deg;
+  transition: rotate var(--dur-base) var(--ease-out-expo);
+}
+
+.item[open] .markerBarV {
+  rotate: 0deg;
+}
+
+/* ---- The panel ----------------------------------------------------------- */
+
+.answer {
+  overflow: hidden;
+}
+
+.answerInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-block-end: var(--space-7);
+  /* Aligned under the question, clear of the numeral column. */
+  padding-inline-start: calc(2ch + var(--space-5));
+  max-width: var(--measure);
+  color: var(--text-on-navy-muted);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+/* ---- The close ----------------------------------------------------------- */
+
+.close {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5) var(--space-7);
+  margin-block-start: var(--space-7);
+  padding-block-start: var(--space-6);
+  border-block-start: var(--hairline) solid var(--navy-line);
+}
+
+/* Set in the display face at caption size: it is a statement of record, and
+   this site sets its statements of record in the serif. */
+.disclaimer {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  max-width: 54ch;
+  flex: 1 1 22rem;
+}
+
+.action {
+  flex: 0 0 auto;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--accent-rose);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid currentColor;
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .head {
+    position: static;
+  }
+
+  .close {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .summary {
+    /* The numeral moves out of the row on a phone: three columns leave the
+       question at about 18 characters. */
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-4);
+  }
+
+  .index {
+    display: none;
+  }
+
+  .answerInner {
+    padding-inline-start: 0;
+  }
+
+  .question {
+    font-size: var(--fs-body);
+    font-family: var(--font-body);
+    letter-spacing: var(--tracking-body);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary,
+  .markerBarV,
+  .cta {
+    transition: none;
+  }
+}

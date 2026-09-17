@@ -36,22 +36,18 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || "",
     },
     /**
-     * Schema auto-push is OFF by default, deliberately.
+     * Schema auto-push is ON in development; Payload never pushes when
+     * NODE_ENV is "production". Opt out with PAYLOAD_DB_PUSH=false.
      *
-     * DATABASE_URL currently points at a schema that also holds an unrelated
-     * Prisma application (User, Account, Session, Plan, Task, PlanWeek,
-     * _prisma_migrations, …). With push enabled, drizzle-kit sees Payload's
-     * new tables, cannot tell a new table from a renamed one, and interactively
-     * offers to RENAME those Prisma tables into Payload ones. Answering wrong
-     * there is unrecoverable.
+     * This is safe only because DATABASE_URL points at a database Payload owns
+     * outright (`vakratunda` on Neon). Never point it at `neondb`: that database
+     * holds an unrelated Prisma application (User, Account, Plan, Task, …), and
+     * push would interactively offer to RENAME those tables into Payload ones.
      *
-     * Turn it on only against a database Payload owns outright:
-     *   PAYLOAD_DB_PUSH=true npm run dev
-     *
-     * See README, "The database needs a decision", for the two ways to make
-     * this safe permanently.
+     * Before the first production deploy, create a baseline migration
+     * (`payload migrate:create`) and ship schema changes as migrations.
      */
-    push: process.env.PAYLOAD_DB_PUSH === "true",
+    push: process.env.PAYLOAD_DB_PUSH !== "false",
   }),
   sharp,
   plugins: [

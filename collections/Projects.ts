@@ -119,7 +119,11 @@ export const Projects: CollectionConfig = {
               defaultValue: false,
               label: "Project page is live",
             },
-            swashHeading("heading", "Page headline"),
+            // Optional: the page is not rendered yet, and a required italic
+            // word would block saving a project's card.
+            swashHeading("heading", "Page headline", undefined, {
+              required: false,
+            }),
             {
               name: "standfirst",
               type: "textarea",

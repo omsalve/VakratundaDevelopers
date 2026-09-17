@@ -329,7 +329,7 @@ export function Concept({ content }: { content: ConceptContent }) {
           <PageLink
             className={styles.onward}
             href="/about"
-            label="The practice, in full"
+            label="Our story, in full"
           />
         </div>
 

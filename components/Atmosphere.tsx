@@ -321,12 +321,12 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
               <PageLink
                 size="sm"
                 href="/experiences"
-                label="A day in one of these homes"
+                label="A day in one of our homes"
               />
               <PageLink
                 size="sm"
                 href="/hospitality"
-                label="The parts that are not homes"
+                label="The spaces beyond our homes"
               />
             </div>
           </div>

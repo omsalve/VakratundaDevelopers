@@ -1,0 +1,109 @@
+/* /careers — the doorway. See CareersHero.tsx. */
+
+.section {
+  position: relative;
+  min-height: clamp(32rem, calc(100svh - var(--header-h)), 48rem);
+  display: flex;
+  align-items: flex-end;
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+  overflow: hidden;
+}
+
+/* ---- The arch ------------------------------------------------------------ */
+
+.arch {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-end: 0;
+  translate: -50% 0;
+  /* Tall enough to span the copy inside it; capped so it never outgrows the
+     screen on a wide monitor. */
+  width: min(52rem, 88vw);
+  height: 82%;
+  color: var(--accent-rose);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ---- The copy, standing inside it ---------------------------------------- */
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* Inside the span of the arch, clear of where its curves close in. */
+  max-width: min(38rem, 72vw);
+  margin-inline: auto;
+  padding-block-end: var(--space-9);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-7);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3) var(--space-5);
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.metaItem + .metaItem::before {
+  content: "";
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-rose);
+  margin-inline-start: calc(var(--space-5) * -1 + 1px);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + var(--space-8)) var(--section-pad);
+  }
+
+  /* The arch widens past the copy rather than squeezing it: at this width the
+     curves would otherwise close in on a three-line headline. */
+  .arch {
+    width: 150vw;
+    height: 70%;
+    opacity: 0.22;
+  }
+
+  .stack {
+    max-width: 100%;
+    padding-block-end: var(--space-6);
+  }
+}

@@ -1,0 +1,355 @@
+/* /hospitality — the corridor. See HospitalityCorridor.tsx. */
+
+/* ---- Shared heads -------------------------------------------------------- */
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  max-width: var(--measure-lead);
+}
+
+/* ---- The practice -------------------------------------------------------- */
+
+.story {
+  padding-block: var(--section-pad-lg);
+}
+
+.storyInner {
+  display: flex;
+  flex-direction: column;
+}
+
+.storyHead {
+  max-width: 44rem;
+  margin-bottom: var(--head-gap);
+}
+
+/* Two columns of prose, which is the shape a spread has. No photograph: the
+   page's one picture is in the hero. */
+.prose {
+  columns: 2;
+  column-gap: var(--space-9);
+  max-width: 62rem;
+}
+
+.para {
+  break-inside: avoid;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+  margin-block-end: var(--space-5);
+}
+
+.quote {
+  margin: 0;
+  margin-block-start: var(--space-9);
+  padding-block-start: var(--space-7);
+  border-block-start: var(--hairline) solid var(--navy-line);
+}
+
+.quoteText {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.5rem, 1rem + 2.1vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose);
+  max-width: 26ch;
+}
+
+/* ---- The corridor -------------------------------------------------------- */
+
+/* The runway buys the scroll the corridor travels along. One extra viewport
+   per space beyond the first, plus the screen the stage itself occupies. */
+.runway {
+  position: relative;
+  height: calc(100svh + (var(--spaces, 4) - 1) * 62svh);
+  background: var(--navy-800);
+}
+
+.stage {
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100svh - var(--header-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+  overflow: hidden;
+}
+
+.offerHead {
+  flex: none;
+}
+
+.track {
+  /* `flex: none` so the row keeps its cards' own height. Left to shrink, it
+     would squeeze them inside a stage that clips, and the corridor would read
+     as half-empty on a short screen. */
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-6);
+  padding-inline: var(--gutter);
+  width: max-content;
+  list-style: none;
+  margin: 0;
+  will-change: transform;
+}
+
+.space {
+  flex: none;
+  width: clamp(18rem, 26vw, 24rem);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  background: var(--navy-900);
+}
+
+.spaceNumber {
+  font-size: var(--fs-h2);
+  color: var(--accent-rose);
+  opacity: 0.35;
+  margin-bottom: var(--space-5);
+}
+
+.spaceEyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.spaceTitle {
+  margin-bottom: var(--space-4);
+}
+
+.spaceBody {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The record ---------------------------------------------------------- */
+
+.close {
+  padding-block: var(--section-pad-lg);
+}
+
+.closeInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-9);
+}
+
+.stats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-6) var(--space-8);
+  padding-block-start: var(--space-7);
+}
+
+.closeRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--accent-deep);
+  opacity: 0.45;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.statValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.value {
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+  color: var(--text-on-cream);
+  line-height: 1;
+}
+
+.suffix {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  color: var(--accent-deep);
+  align-self: flex-start;
+}
+
+.unit {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-h3);
+  color: var(--accent-deep);
+}
+
+.statNote {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-cream-muted);
+  max-width: 24ch;
+}
+
+.codaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5) var(--space-8);
+}
+
+.coda {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--accent-deep);
+  max-width: 46ch;
+  flex: 1 1 24rem;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-cream);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
+  padding-block-end: var(--space-1);
+  border-block-end: var(--hairline) solid var(--accent-deep);
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover {
+  gap: var(--space-4);
+}
+
+/* ---- A short screen ------------------------------------------------------ */
+
+/* The stage is one screen tall and has to hold the head AND the cards inside
+   it. On a laptop with browser chrome it cannot at full scale, and a stage
+   that clips is a stage with nothing in it. So the head steps down and the
+   card tightens — the corridor survives, and every word of it stays. */
+@media (min-width: 62rem) and (max-height: 48rem) {
+  .stage {
+    gap: var(--space-6);
+  }
+
+  .stage .heading {
+    font-size: var(--fs-h3);
+    max-width: 28ch;
+    margin-bottom: var(--space-4);
+  }
+
+  .stage .label {
+    margin-bottom: var(--space-4);
+  }
+
+  .stage .standfirst {
+    font-size: var(--fs-body);
+  }
+
+  .space {
+    padding: var(--space-5);
+  }
+
+  .spaceNumber {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .prose {
+    columns: 1;
+  }
+
+  /* NO CORRIDOR BELOW THIS WIDTH. A horizontal track on a touch device fights
+     the browser's own back gesture and traps the reader in a section they
+     cannot scroll past. The runway collapses, the stage stops sticking, and
+     the spaces become an ordinary stack — the content is identical and only
+     the figure is gone. The script checks the same breakpoint. */
+  .runway {
+    height: auto;
+    padding-block: var(--section-pad);
+  }
+
+  .stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .track {
+    flex-direction: column;
+    width: auto;
+    /* Back inside the shell, which the horizontal track had to escape. */
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    will-change: auto;
+  }
+
+  .space {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+
+  /* NO CORRIDOR UNDER REDUCED MOTION EITHER, and this one is not a nicety —
+     it is the difference between the section working and eating its own
+     content. `useGsapScope` does not run at all for a visitor who has asked
+     for less motion, so nothing would ever translate the track; the spaces
+     would sit in a `width: max-content` row inside a clipped stage and every
+     one past the second would be unreachable. Collapsing to the same stack
+     the narrow breakpoint uses puts all of them back on the page. */
+  .runway {
+    height: auto;
+    padding-block: var(--section-pad);
+  }
+
+  .stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .track {
+    flex-direction: column;
+    width: auto;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    will-change: auto;
+  }
+
+  .space {
+    width: 100%;
+  }
+}

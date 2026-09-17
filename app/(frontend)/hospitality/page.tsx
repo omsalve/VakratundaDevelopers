@@ -1,20 +1,35 @@
 import type { Metadata } from "next";
-import BrandStory from "@/components/BrandStory";
-import CardGrid from "@/components/CardGrid";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import HospitalityCorridor from "@/components/pages/hospitality/HospitalityCorridor";
+import HospitalityHero from "@/components/pages/hospitality/HospitalityHero";
 import PageShell from "@/components/PageShell";
-import SectionCoda from "@/components/SectionCoda";
-import StatRow from "@/components/StatRow";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Hospitality.
+ * Hospitality — THE CORRIDOR.
  *
- * The argument, then what it is made of, then the record behind it — which is
- * the order the landing page makes every argument in. BrandStory carries the
- * first, because this is a page about a practice rather than a portfolio, and
- * a practice is a story with one photograph, not a grid.
+ * A split opening — copy on one side, the dining room running floor to ceiling
+ * and bleeding off the other — then the practice as a typographic spread, then
+ * the four spaces travelling SIDEWAYS while the page is scrolled down, then
+ * the record on cream.
+ *
+ * THE PHOTOGRAPH DECIDED THE OPENING. It is shot portrait (941 × 1672), which
+ * is the wrong shape for the plates and full-bleed bands every other page uses
+ * and exactly the right shape for a column the height of the screen. So the
+ * page's one picture is spent there, and the story band below carries none —
+ * the same `StoryContent`, re-allocated, with its shape in lib/pages/types.ts
+ * untouched.
+ *
+ * THE CORRIDOR IS THE ONLY SECTION ON THE SITE WHOSE CONTENT MOVES SIDEWAYS.
+ * /projects has a strip that leafs horizontally, but that is decoration behind
+ * a masthead and every frame in it reappears as a real card below. Here the
+ * spaces themselves pass through a held stage, which is what walking a service
+ * corridor is — and it is built on `position: sticky` rather than a
+ * ScrollTrigger pin, because a pin uses `position: fixed` and this lives inside
+ * the transformed <main> that PageShell warns about.
+ *
+ * It collapses to an ordinary stack below 62rem and under reduced motion. On a
+ * touch device a horizontal track fights the browser's own back gesture, and
+ * with no tween running the spaces would be stranded outside a clipped stage.
  *
  * Content: the `hospitality-page` global over lib/pages/living.ts.
  */
@@ -30,34 +45,19 @@ export default async function HospitalityPage() {
 
   return (
     <PageShell
+      page="hospitality"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
+      <HospitalityHero content={page.hero} image={page.story.image} />
 
-      <PageSection id="practice" label={page.story.label}>
-        <BrandStory content={page.story} />
-      </PageSection>
-
-      <PageSection
-        id="offer"
-        ground="cream"
-        size="lg"
-        label={page.offer.label}
-        heading={page.offer.heading}
-        standfirst={page.offer.standfirst}
-      >
-        <div className="u-shell">
-          <CardGrid items={page.offer.items} columns={2} />
-        </div>
-      </PageSection>
-
-      <PageSection id="record" ground="cream" divider>
-        <div className="u-shell">
-          <StatRow stats={page.stats} />
-          <SectionCoda text={page.coda} cta={page.cta} />
-        </div>
-      </PageSection>
+      <HospitalityCorridor
+        story={page.story}
+        offer={page.offer}
+        stats={page.stats}
+        coda={page.coda}
+        cta={page.cta}
+      />
     </PageShell>
   );
 }

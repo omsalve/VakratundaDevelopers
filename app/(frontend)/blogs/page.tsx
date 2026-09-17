@@ -1,26 +1,31 @@
 import type { Metadata } from "next";
-import PageHero from "@/components/PageHero";
-import PageSection from "@/components/PageSection";
+import BlogReadingRoom from "@/components/pages/blog/BlogReadingRoom";
 import PageShell from "@/components/PageShell";
-import PostGrid from "@/components/PostGrid";
 import { getBlogPosts } from "@/lib/getBlogPosts";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Blogs.
+ * Blogs — THE READING ROOM.
  *
- * THE FIELD IS ProjectGrid'S, NOT A NEW ONE. Each article is a frame, the
- * date and category on the hairline under it, the title, the excerpt — the
- * same card the portfolio uses, on the same two-rate entrance.
+ * A contents page, not a gallery: one lead article opened out, then the rest
+ * as ruled rows where the headline is the largest thing in the line and the
+ * photograph is a thumbnail at the end of it.
  *
- * ⚠️ THE SHIPPED PHOTOGRAPHS ARE THE GROUP'S OWN PROJECTS, standing in as
- * editorial imagery for the subject each piece covers rather than illustrating
- * a specific claim in it. They are not stock. Articles published in /admin
- * carry their own card photograph.
+ * WHY IT IS NOT /projects. Those are the two lit pages on the site — both
+ * cream from the first pixel, both a set of things with a picture each — and
+ * under the old template both were a grid of identical cards. The difference
+ * is what each set is judged on. A portfolio is judged on the buildings, so
+ * /projects sets big frames in a four-beat rhythm and lets the photographs
+ * carry it. A journal is judged on whether anything is worth reading, so this
+ * page leads with headlines, dates and reading times, and the pictures come
+ * last and small.
  *
- * Content: the articles are the `posts` collection (lib/getBlogPosts.ts); the
- * chrome around them is the `blog-page` global. Every card goes somewhere
- * real, because /blogs/[slug] reads the same source.
+ * THE LEAD IS SIMPLY THE NEWEST. `getBlogPosts` returns them in order and the
+ * first is the lead, so there is no "featured" flag in the CMS that can
+ * disagree with the ordering or be left set on last year's article.
+ *
+ * Content: the `blog-page` global over lib/pages/newsroom.ts for the chrome,
+ * and the `posts` collection for the articles. Shapes untouched.
  */
 
 export const revalidate = 60;
@@ -37,23 +42,16 @@ export default async function BlogsPage() {
 
   return (
     <PageShell
+      page="blog"
       nav={site.nav}
       close={{ content: site.finalCta, legal: site.legal }}
     >
-      <PageHero content={page.hero} />
-
-      <PageSection
-        id="articles"
-        ground="cream"
-        size="lg"
-        label={page.listing.label}
-        heading={page.listing.heading}
-        standfirst={page.listing.standfirst}
-      >
-        <div className="u-shell">
-          <PostGrid posts={posts} note={page.note} />
-        </div>
-      </PageSection>
+      <BlogReadingRoom
+        hero={page.hero}
+        listing={page.listing}
+        posts={posts}
+        note={page.note}
+      />
     </PageShell>
   );
 }

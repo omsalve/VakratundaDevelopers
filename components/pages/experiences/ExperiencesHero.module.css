@@ -1,0 +1,62 @@
+/* /experiences — before the day starts. See ExperiencesHero.tsx. */
+
+.section {
+  position: relative;
+  min-height: clamp(32rem, calc(100svh - var(--header-h)), 50rem);
+  display: flex;
+  align-items: flex-end;
+  /* The hour before the light: deeper than the page's own ground. */
+  background: var(--navy-900);
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad-lg);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 48rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 16ch;
+  margin-bottom: var(--space-6);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-7);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + var(--space-8)) var(--section-pad);
+  }
+}

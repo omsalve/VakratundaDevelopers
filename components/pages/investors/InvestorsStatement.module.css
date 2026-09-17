@@ -1,0 +1,142 @@
+/* /investors — the statement of account. See InvestorsStatement.tsx. */
+
+.section {
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+/* ---- The title ----------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 46rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+/* `u-h1`, not `u-display` — the figures below are the largest thing on this
+   page, and that is the point. See the note in the component. */
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-6);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The record ---------------------------------------------------------- */
+
+.recordLabel {
+  margin-bottom: var(--space-5);
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-7) var(--space-8);
+}
+
+.figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block-start: var(--space-5);
+}
+
+/* Each figure is ruled off the top, like a line in a statement. */
+.figureRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.4;
+}
+
+.figureValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+/* Larger than the page title. */
+.value {
+  font-size: clamp(2.5rem, 1.5rem + 3.6vw, 4.5rem);
+  color: var(--text-on-navy);
+  line-height: 0.92;
+}
+
+.suffix {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
+  color: var(--accent-rose);
+  line-height: 1;
+  /* Rides the figure, raised. */
+  align-self: flex-start;
+  padding-block-start: 0.18em;
+}
+
+/* The unit, in the swash italic the brand guide sets beside a figure. */
+.unit {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-h3);
+  color: var(--accent-rose);
+  margin-inline-start: var(--space-1);
+}
+
+/* A <dt> after its <dd>: the figure is read first and the caption explains
+   it, which is the order a statement is read in. */
+.figureNote {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+  max-width: 24ch;
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .inner {
+    gap: var(--space-9);
+  }
+
+  .figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-5);
+  }
+}

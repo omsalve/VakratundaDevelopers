@@ -1,0 +1,300 @@
+/* /blogs — the reading room. See BlogReadingRoom.tsx. */
+
+.section {
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad-lg);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-pad);
+}
+
+/* ---- The opening --------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 46rem;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-cream-muted);
+}
+
+/* ---- Shared meta --------------------------------------------------------- */
+
+.category {
+  color: var(--accent-deep);
+}
+
+.date,
+.reading {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent-deep);
+  opacity: 0.6;
+}
+
+/* ---- The lead ------------------------------------------------------------ */
+
+.lead {
+  border-block: var(--hairline) solid var(--page-rule);
+  padding-block: var(--space-8);
+}
+
+.leadLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: var(--space-8);
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.leadFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-300);
+  aspect-ratio: 4 / 3;
+}
+
+.leadImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Oversized by exactly the parallax travel, so no edge is ever revealed. */
+  scale: 1.12;
+  transition: scale var(--dur-slow) var(--ease-out-expo);
+}
+
+.leadLink:hover .leadImage {
+  scale: 1.16;
+}
+
+.leadBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.leadMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* The lead is the largest type on the page — larger than the page title,
+   because on a journal the article is the point and the masthead is not. */
+.leadTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.15rem + 2.4vw, 3rem);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  max-width: 20ch;
+}
+
+.leadExcerpt {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  max-width: 44ch;
+}
+
+.leadAction {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  color: var(--accent-deep);
+  border-block-end: var(--hairline) solid currentColor;
+  padding-block-end: var(--space-1);
+  align-self: flex-start;
+  transition: gap var(--dur-base) var(--ease-out-expo);
+}
+
+.leadLink:hover .leadAction {
+  gap: var(--space-4);
+}
+
+/* ---- The contents rows --------------------------------------------------- */
+
+.listingHead {
+  max-width: 44rem;
+  margin-bottom: var(--head-gap);
+}
+
+.listingHeading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  position: relative;
+}
+
+.rowRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.row:last-child::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--page-rule);
+}
+
+.rowLink {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-4) var(--space-7);
+  align-items: start;
+  padding-block: var(--space-6);
+  text-decoration: none;
+  color: inherit;
+  transition: padding-inline-start var(--dur-base) var(--ease-out-expo);
+}
+
+.rowLink:hover,
+.rowLink:focus-visible {
+  padding-inline-start: var(--space-4);
+}
+
+.rowMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rowMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* The headline is the largest thing in the row. */
+.rowTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.rowExcerpt {
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  max-width: 62ch;
+}
+
+.thumb {
+  display: block;
+  width: clamp(5rem, 9vw, 7.5rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: var(--cream-300);
+}
+
+.thumbImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--dur-slow) var(--ease-out-expo);
+}
+
+.rowLink:hover .thumbImage {
+  scale: 1.06;
+}
+
+.note {
+  max-width: var(--measure);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .leadLink {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .rowLink {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-3) var(--space-5);
+  }
+
+  /* The date and category move above the headline; the thumbnail keeps its
+     column beside the text so the row still reads as a line in a contents
+     page rather than as a card. */
+  .rowMeta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: var(--space-4);
+    align-items: baseline;
+  }
+
+  .thumb {
+    width: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leadImage,
+  .thumbImage,
+  .leadAction,
+  .rowLink {
+    transition: none;
+  }
+
+  .leadImage {
+    scale: 1;
+  }
+}

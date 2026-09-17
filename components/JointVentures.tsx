@@ -207,9 +207,9 @@ export function JointVentures({ content }: { content: VenturesContent }) {
           <PageLink
             size="sm"
             href="/investors"
-            label="The record a partner asks for"
+            label="The record partners build on"
           />
-          <PageLink size="sm" href="/nri-corner" label="Buying from abroad" />
+          <PageLink size="sm" href="/nri-corner" label="Your home, from abroad" />
         </div>
       </div>
     </section>

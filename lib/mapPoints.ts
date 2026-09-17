@@ -1,22 +1,15 @@
-import type { MapImage, MapPoint } from "@/components/LocationMap";
+import type { MapPoint } from "@/components/LocationMap";
 import type { ProjectSlide } from "@/lib/content";
 
 /**
  * The portfolio, placed on the metropolitan map.
  *
- * Two things live here and nothing else: the map file's own facts, and where
- * each locality sits on it. The copy in the panels is not authored here — it
- * is derived from the same project list the section already renders, so a
- * project added in Payload appears on the map without a second edit.
+ * One thing lives here: where each locality sits on the map. The map file
+ * itself is `gallery.map` (the Home global's Projects tab, shipped in
+ * content.ts), and the copy in the panels is derived from the same project
+ * list the section already renders, so a project added in Payload appears on
+ * the map without a second edit.
  */
-
-/** public/images/maps.png — the navy-and-rose plate of the region. */
-export const MUMBAI_MAP: MapImage = {
-  src: "/images/maps.png",
-  alt: "Map of the Mumbai metropolitan region, from Mira Bhayandar south to the island city and east through Thane to Badlapur",
-  width: 3344,
-  height: 1880,
-};
 
 /**
  * Where each locality sits on maps.png, in per cent of the SOURCE IMAGE —

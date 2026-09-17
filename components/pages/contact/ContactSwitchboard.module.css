@@ -1,0 +1,177 @@
+/* /contact — the switchboard. See ContactSwitchboard.tsx. */
+
+.section {
+  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad);
+  border-block-end: var(--hairline) solid var(--navy-line);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-9) var(--space-10);
+  align-items: start;
+}
+
+/* ---- The title ----------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 14ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+  margin-bottom: var(--space-6);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+}
+
+.metaItem {
+  font-family: var(--font-display);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The board ----------------------------------------------------------- */
+
+.boardLabel {
+  margin-bottom: var(--space-4);
+}
+
+.channels {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.channel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr) minmax(0, auto);
+  gap: var(--space-3) var(--space-5);
+  align-items: baseline;
+  padding-block: var(--space-5);
+}
+
+.channelRule {
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--navy-line);
+}
+
+.channel:last-child::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--navy-line);
+}
+
+.channelTerm {
+  color: var(--accent-rose);
+}
+
+.channelValue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* The number IS the content on this page — see the note in the component. */
+.channelLink,
+.channelPlain {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.channelLink {
+  border-block-end: var(--hairline) solid var(--accent-rose);
+  padding-block-end: 2px;
+  align-self: flex-start;
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+.channelLink:hover {
+  color: var(--accent-rose);
+}
+
+.channelNote {
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+}
+
+.channelState {
+  justify-self: end;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+  white-space: nowrap;
+}
+
+.boardNote {
+  margin-block-start: var(--space-4);
+  max-width: var(--measure);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 61.99rem) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .section {
+    padding-block-start: calc(var(--header-h) + var(--space-7));
+  }
+
+  .channel {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .channelTerm {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .channelLink {
+    transition: none;
+  }
+}

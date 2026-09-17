@@ -42,7 +42,7 @@ export const termsPage: LegalPageContent = {
     label: "Legal",
     heading: { before: "Terms & ", swash: "Conditions" },
     standfirst:
-      "The terms on which this website is made available, written to be read rather than to be scrolled past.",
+      "The terms on which this website is shared with you — written with the same transparency we build with.",
     meta: ["Website terms", `Updated ${UPDATED}`, "Mumbai"],
   },
 
@@ -129,7 +129,7 @@ export const termsPage: LegalPageContent = {
       },
     ],
     closing:
-      "If anything here is unclear, write and ask rather than assume — the address above reaches a person.",
+      "If anything here is unclear, write to us rather than assume — no grey zones, and the address above reaches a person.",
     cta: { label: "Contact the office", href: "/contact" },
   },
 };
@@ -145,7 +145,7 @@ export const disclaimerPage: LegalPageContent = {
     label: "Legal",
     heading: { before: "", swash: "Disclaimer" },
     standfirst:
-      "What the material on this site is, what it is not, and where to verify a project for yourself.",
+      "What the material on this site is, what it is not, and where to verify any project for yourself — transparency, always.",
     meta: ["Project information", `Updated ${UPDATED}`, "RERA"],
   },
 
@@ -230,14 +230,14 @@ export const grievancePage: LegalPageContent = {
     label: "Legal",
     heading: { before: "Grievance ", swash: "Redressal" },
     standfirst:
-      "How to raise a complaint about the group, a project, or this website — who it goes to, and what happens after it is logged.",
+      "How to raise a complaint about us, a project, or this website — who it goes to, and what happens after it is logged.",
     meta: ["Complaints", `Updated ${UPDATED}`, "Bandra East"],
   },
 
   doc: {
     updated: UPDATED,
     intro: [
-      "The group would rather hear a complaint early and directly than read it somewhere else later. This page sets out how to make one, who receives it, and the timeline you can hold us to.",
+      "We would rather hear a complaint early and directly — trust is built by listening. This page sets out how to make one, who receives it, and the timeline you can hold us to.",
       "Nothing on this page limits any right you have under the Real Estate (Regulation and Development) Act or under any other law. You may take a complaint to the regulator at any point, including instead of using this procedure.",
     ],
     clauses: [
@@ -299,7 +299,7 @@ export const grievancePage: LegalPageContent = {
       },
     ],
     closing:
-      "A complaint made properly and answered properly is cheaper for everybody than one that is not — which is the only reason this page is as specific as it is.",
+      "A complaint heard with care and answered with clarity builds trust for everybody — which is why this page is as specific as it is.",
     cta: { label: "Write to the office", href: "/contact" },
   },
 };
