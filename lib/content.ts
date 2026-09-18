@@ -23,6 +23,8 @@
  * review before launch.
  */
 
+import { siteImage } from "./siteImages";
+
 /* ------------------------------------------------------------------ types */
 
 export interface ImageAsset {
@@ -32,6 +34,11 @@ export interface ImageAsset {
   height: number;
   /** Rendered under the image where the layout shows a caption. */
   caption?: string;
+  /**
+   * A logo or cut-out on a transparent ground rather than a photograph, so it
+   * is set on the page's own ground and shown whole instead of cropped.
+   */
+  cutout?: boolean;
 }
 
 /**
@@ -461,6 +468,8 @@ export interface TeamContent {
   };
   chairman: TeamChairman;
   leadership: TeamMember[];
+  /** Slide three's one photograph, beside the three leadership panels. */
+  leadershipImage: ImageAsset;
   roles: TeamRole[];
   /** On every role card. */
   roleCta: Cta;
@@ -539,6 +548,31 @@ export interface VihaaContent {
   moments: ImageAsset[];
 }
 
+/* ----------------------------------------------------------- testimonials */
+/*
+ * THE CLIENTS, IN THEIR OWN WORDS.
+ *
+ * The ventures and the school say who the group builds beside; this says what
+ * it was like to be built for. Every quote is the client's own, from the
+ * testimonial slide, attributed by name and by the address they speak for —
+ * never a first name alone, and never a sentence the client did not say.
+ */
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  /** The project or neighbourhood they speak for — "Kandivali", "BKC 28". */
+  place: string;
+  /** Without quotation marks; the section sets its own. */
+  quote: string;
+}
+
+export interface TestimonialsContent {
+  heading: SwashHeading;
+  standfirst: string;
+  voices: Testimonial[];
+}
+
 /* --------------------------------------------------------- responsibility */
 /*
  * THE LEDGER — what the group owes the ground it stands on.
@@ -610,6 +644,7 @@ export interface SiteContent {
   team: TeamContent;
   ventures: VenturesContent;
   vihaa: VihaaContent;
+  testimonials: TestimonialsContent;
   responsibility: ResponsibilityContent;
   finalCta: FinalCtaContent;
   legal: string;
@@ -649,7 +684,7 @@ export const siteContent: SiteContent = {
     // so the cue shipped with an empty label.
     scrollCue: "Scroll",
     background: {
-      src: "/images/mainheroimage.png",
+      src: siteImage("mainheroimage.png"),
       alt: "",
       width: 1182,
       height: 1330,
@@ -897,7 +932,7 @@ export const siteContent: SiteContent = {
         },
       ],
       image: {
-        src: "/images/herosection2.png",
+        src: siteImage("herosection2.png"),
         alt: "Two Vakratunda residential towers rising over a glazed retail and office podium, with the city and its treeline behind",
         width: 3238,
         height: 2371,
@@ -919,7 +954,7 @@ export const siteContent: SiteContent = {
         {
           name: "Anantaraa",
           image: {
-            src: "/images/anantaraa/anantaraa.jpeg",
+            src: siteImage("anantaraa/anantaraa.jpeg"),
             alt: "Anantaraa at dusk: a slender residential tower lit floor by floor above a glazed retail podium, seen from the arterial road at its foot",
             width: 1600,
             height: 1600,
@@ -930,12 +965,12 @@ export const siteContent: SiteContent = {
           name: "Vihaa Gardens",
           // ⚠️ REPLACE ART. The group's own Badlapur render, standing in until
           // the Vihaa Gardens frame arrives. Everything under
-          // public/images/projects is generated placeholder art — the real
+          // site images under projects/ are generated placeholder art — the real
           // photography on this site is in hero/, jv/ and anantaraa/ — so a
           // stand-in has to be picked from those, not from the name that
           // matches.
           image: {
-            src: "/images/jv/skygardens.png",
+            src: siteImage("jv/skygardens.png"),
             alt: "A residential cluster at Badlapur photographed at blue hour, its apartments lit above planted grounds and a lit arterial road",
             width: 941,
             height: 1672,
@@ -946,7 +981,7 @@ export const siteContent: SiteContent = {
           name: "Vedantaa",
           // BKC 28 is Vedantaa, so this is its own frame.
           image: {
-            src: "/images/hero/bkc-28.png",
+            src: siteImage("hero/bkc-28.png"),
             alt: "A slender residential tower in Bandra at sunset, seen from the road at its foot",
             width: 1672,
             height: 941,
@@ -968,7 +1003,7 @@ export const siteContent: SiteContent = {
     cta: { label: "See every address", href: "/projects" },
     // The navy-and-rose plate of the region. Pins: lib/mapPoints.ts.
     map: {
-      src: "/images/maps.png",
+      src: siteImage("maps.png"),
       alt: "Map of the Mumbai metropolitan region, from Mira Bhayandar south to the island city and east through Thane to Badlapur",
       width: 3344,
       height: 1880,
@@ -982,7 +1017,7 @@ export const siteContent: SiteContent = {
         status: "Ongoing",
         blurb: "Rising in the Bandra East corridor, floor by floor.",
         image: {
-          src: "/images/hero/bkc-28.png",
+          src: siteImage("hero/bkc-28.png"),
           alt: "Vedantaa, a slender residential tower in Bandra, illuminated at night",
           width: 1672,
           height: 941,
@@ -996,7 +1031,7 @@ export const siteContent: SiteContent = {
         blurb:
           "A twenty-acre mini-township, built hand in hand with Godrej Properties.",
         image: {
-          src: "/images/jv/skygardens.png",
+          src: siteImage("jv/skygardens.png"),
           alt: "Godrej Skygarden in Badlapur, a white mid-rise residential cluster",
           width: 941,
           height: 1672,
@@ -1015,7 +1050,7 @@ export const siteContent: SiteContent = {
         status: "Upcoming",
         blurb: "Homes taking shape on Kolshet Road.",
         image: {
-          src: "/images/anantaraa/anantaraa.jpeg",
+          src: siteImage("anantaraa/anantaraa.jpeg"),
           alt: "Anantaraa at dusk: a slender residential tower lit floor by floor above a glazed retail podium, seen from the arterial road at its foot",
           width: 1600,
           height: 1600,
@@ -1028,7 +1063,7 @@ export const siteContent: SiteContent = {
         status: "Upcoming",
         blurb: "A new residential tower joining our Badlapur story.",
         image: {
-          src: "/images/amaraa/amaraa.png",
+          src: siteImage("amaraa/amaraa.png"),
           alt: "Vihaa Amaraa at sunset: a broad residential tower with white-framed balconies above a glazed podium, set behind a lawn and a tree-lined road",
           width: 941,
           height: 1672,
@@ -1043,7 +1078,7 @@ export const siteContent: SiteContent = {
         blurb:
           "Delivered with Godrej Properties — a township where families belong.",
         image: {
-          src: "/images/projects/godrej-vihaa.jpg",
+          src: siteImage("projects/godrej-vihaa.jpg"),
           alt: "Godrej Vihaa in Badlapur, low-rise residential blocks lit at dusk",
           width: 1200,
           height: 1500,
@@ -1056,7 +1091,7 @@ export const siteContent: SiteContent = {
         status: "Completed",
         blurb: "A society’s new address in Andheri.",
         image: {
-          src: "/images/hero/dilkhush.png",
+          src: siteImage("hero/dilkhush.png"),
           alt: "Vakratunda Dilkhush, a white residential building in Andheri",
           width: 1537,
           height: 1023,
@@ -1069,7 +1104,7 @@ export const siteContent: SiteContent = {
         status: "Completed",
         blurb: "A society’s new address in Santacruz.",
         image: {
-          src: "/images/projects/dilbahar.jpg",
+          src: siteImage("projects/dilbahar.jpg"),
           alt: "Vakratunda Dilbahar in Santacruz, framed by trees",
           width: 1200,
           height: 1500,
@@ -1082,7 +1117,7 @@ export const siteContent: SiteContent = {
         status: "Completed",
         blurb: "Our commercial address, where Goregaon comes to work.",
         image: {
-          src: "/images/projects/corporate-park.jpg",
+          src: siteImage("projects/corporate-park.jpg"),
           alt: "Vakratunda Corporate Park, a glazed commercial building in Goregaon",
           width: 1200,
           height: 1500,
@@ -1095,7 +1130,7 @@ export const siteContent: SiteContent = {
         status: "Completed",
         blurb: "A regal address in Bhandup.",
         image: {
-          src: "/images/projects/palace.jpg",
+          src: siteImage("projects/palace.jpg"),
           alt: "Vakratunda Palace, a sand-coloured tower in Bhandup",
           width: 1200,
           height: 1500,
@@ -1112,12 +1147,25 @@ export const siteContent: SiteContent = {
      invented figures — the details named are things a drawing office
      actually decides, not warranties.
 
-     THE PHOTOGRAPHY IS THE LIBRARY WE HAVE, NOT THE ONE THIS WANTS. Four of
-     the five frames are also used by `practice`, which follows immediately;
-     they are cropped to entirely different shapes here so the two sections
-     read as different views of one place rather than as a repeat. When the
-     shoot lands, this is the section to re-photograph first — it is the one
-     that is about how the buildings feel. */
+     THE PHOTOGRAPHY LANDED, AND THIS IS THE SECTION IT WAS SPENT ON FIRST,
+     which is what the note that stood here asked for. All five frames are
+     Anantaraa, all five are the same hour, and not one of them appears again
+     anywhere on this page: `practice`, which follows immediately, keeps the
+     older library entirely to itself, so the two sections no longer share a
+     single photograph between them.
+
+     THE ONE LIGHT IS THE POINT, not a coincidence of what arrived. A spread
+     arguing that rooms are felt rather than seen cannot be assembled out of
+     five buildings at five times of day — that set reads as a brochure of
+     unrelated places, which is the opposite of the claim. Five rooms of one
+     building between golden hour and dusk reads as an evening.
+
+     THE INSIDE/OUTSIDE CASTING IS STRUCTURAL AND SURVIVES ANY RE-SHOOT:
+     deck, terrace and garden are exteriors, glass and lounge interiors,
+     because Atmosphere.module.css lays each of its two overlaps as an OUTSIDE
+     across an INSIDE and that pairing is the section's subject. Cast an
+     interior into `garden` or `terrace` and the composition still renders; it
+     just stops meaning anything. */
   atmosphere: {
     eyebrow: "Interior & exterior",
     /* The claim the arc above used to carry on an empty field of cream. It
@@ -1134,38 +1182,38 @@ export const siteContent: SiteContent = {
     plates: {
       deck: {
         image: {
-          src: "/images/skydeck.jpg",
-          alt: "The rooftop sky deck at dusk: residents at the parapet with the city lit below, timber decking and a canopy behind them",
-          width: 4096,
-          height: 2160,
+          src: siteImage("anantaraa/outgym169.png"),
+          alt: "The open-air fitness deck on the roof at sunset: equipment on a coloured track beside timber decking and lit planters, a resident at the parapet with the skyline beyond",
+          width: 1672,
+          height: 941,
         },
         side: "Exterior",
-        note: "The sky deck at golden hour, where the city doesn’t just fall quiet, it becomes the view.",
+        note: "The roof at golden hour, where the city doesn’t just fall quiet, it becomes the view.",
       },
       glass: {
         image: {
-          src: "/images/gallery/kids.png",
-          alt: "The children’s room: a book wall and small timber furniture beside a full-height wall of glass, with the play garden and the skyline beyond it",
-          width: 1537,
-          height: 1023,
+          src: siteImage("anantaraa/gym169.png"),
+          alt: "The residents’ gym: treadmills and weights ranged along a full-height wall of glass, with the podium garden, the pool and the sunset beyond it",
+          width: 1672,
+          height: 941,
         },
         side: "Interior, and out",
         note: "One wall of glass, and the garden beyond it. Rooms here don’t just have windows, they have views.",
       },
       terrace: {
         image: {
-          src: "/images/gallery/restaurant.png",
-          alt: "The rooftop dining terrace at sunset: a laid table set among planting, with the city framed by an opening in the wall behind the bar",
+          src: siteImage("anantaraa/terrace916.png"),
+          alt: "The roof terrace at sunset: residents in low seating and on an open lawn between planted beds and timber canopies, with the lit city and the hills below the parapet",
           width: 941,
           height: 1672,
         },
         side: "The threshold",
-        note: "Planting brought up to the table — nature not just admired from afar, but lived with, meal by meal.",
+        note: "Planting brought up to the seat — nature not just admired from afar, but lived with, evening by evening.",
       },
       lounge: {
         image: {
-          src: "/images/gallery/bar.png",
-          alt: "The residents’ lounge: timber panelling, leather banquettes and brass pendants over round tables",
+          src: siteImage("anantaraa/theatre169.png"),
+          alt: "The residents’ screening room: tiered velvet sofas lit from beneath, ribbed acoustic walls and a fibre-optic ceiling, turned to a lit screen",
           width: 1672,
           height: 941,
         },
@@ -1173,8 +1221,8 @@ export const siteContent: SiteContent = {
       },
       garden: {
         image: {
-          src: "/images/gallery/outdoor.png",
-          alt: "The landscaped garden at the foot of the tower at sunset, with lit stone seating, a lawn and a timber deck",
+          src: siteImage("anantaraa/basketball169.png"),
+          alt: "The lit court at the foot of the tower at sunset: a game under way, benches and a basket of balls at the near side, mature planting behind the screen",
           width: 1672,
           height: 941,
         },
@@ -1217,13 +1265,13 @@ export const siteContent: SiteContent = {
       "No handover until every last detail is right",
     ],
     portrait: {
-      src: "/images/gallery/restaurant.png",
+      src: siteImage("gallery/restaurant.png"),
       alt: "The rooftop dining terrace at sunset: tables laid among planting, with the city framed by an opening in the wall behind the bar",
       width: 941,
       height: 1672,
     },
     wide: {
-      src: "/images/gallery/kids.png",
+      src: siteImage("gallery/kids.png"),
       alt: "The children’s room: a book wall, small timber furniture and a climbing wall, with the play garden through full-height glass",
       width: 1537,
       height: 1023,
@@ -1242,7 +1290,7 @@ export const siteContent: SiteContent = {
         id: "garden",
         place: "The garden",
         image: {
-          src: "/images/gallery/outdoor.png",
+          src: siteImage("gallery/outdoor.png"),
           alt: "The landscaped garden at the foot of the tower at sunset, with lit stone seating, a lawn and a timber deck",
           width: 1672,
           height: 941,
@@ -1253,7 +1301,7 @@ export const siteContent: SiteContent = {
         id: "lounge",
         place: "The lounge",
         image: {
-          src: "/images/gallery/bar.png",
+          src: siteImage("gallery/bar.png"),
           alt: "The residents’ lounge: timber panelling, leather banquettes and brass pendants over round tables",
           width: 1672,
           height: 941,
@@ -1264,7 +1312,7 @@ export const siteContent: SiteContent = {
         id: "skygarden-roof",
         place: "Godrej Skygarden",
         image: {
-          src: "/images/skygarden6.png",
+          src: siteImage("skygarden6.png"),
           alt: "The planted roof terrace at Godrej Skygarden, Badlapur, on the day it was handed over",
           width: 2000,
           height: 1088,
@@ -1307,7 +1355,7 @@ export const siteContent: SiteContent = {
 
     intro: {
       image: {
-        // TO SUPPLY → /images/team/group.jpg
+        // TO SUPPLY (upload in /admin) → team/group.jpg
         src: "",
         alt: "The Vakratunda Group team photographed together at the Bandra East office",
         width: 1600,
@@ -1336,7 +1384,7 @@ export const siteContent: SiteContent = {
       superpower: "A contemporary outlook, rooted in care for society.",
       bio: "The passionate young visionary of Vakratunda, driving the organisation towards customer orientation.",
       portrait: {
-        src: "/images/team/ram.JPG",
+        src: siteImage("team/ram.JPG"),
         alt: "Portrait — Ram Makhecha, Chairman",
         width: 7008,
         height: 4672,
@@ -1347,13 +1395,13 @@ export const siteContent: SiteContent = {
       {
         id: "khelaan-unadkat",
         // CP_Final p.19, condensed.
-        name: "Mr. Khelaan Manoj Unadkat",
+        name: "Mr. Khelaan Unadkat",
         title: "Director",
         superpower:
           "A young, dynamic leader who adds energy and ideas to the group.",
         bio: "A passion for scaling greater heights and setting higher standards, shaping our reputation.",
         portrait: {
-          // TO SUPPLY → /images/team/khelaan-unadkat.jpg
+          // TO SUPPLY (upload in /admin) → team/khelaan-unadkat.jpg
           src: "",
           alt: "Portrait — Khelaan Unadkat, Director",
           width: 1000,
@@ -1369,7 +1417,7 @@ export const siteContent: SiteContent = {
           "Design that reflects how people truly live.",
         bio: "With 18 years in design, execution and redevelopment — 12 of them with Vakratunda — Siddhesh shapes every plan around people.",
         portrait: {
-          // TO SUPPLY → /images/team/siddhesh-tendulkar.jpg
+          // TO SUPPLY (upload in /admin) → team/siddhesh-tendulkar.jpg
           src: "",
           alt: "Portrait — Siddhesh Tendulkar, Vice President, Planning & Design",
           width: 1000,
@@ -1385,7 +1433,7 @@ export const siteContent: SiteContent = {
           "From choosing the right land to handing over the keys.",
         bio: "In real estate since 1998, Naimesh bridges management, partners and government — keeping every timeline honest.",
         portrait: {
-          // TO SUPPLY → /images/team/naimesh-tanna.jpg
+          // TO SUPPLY (upload in /admin) → team/naimesh-tanna.jpg
           src: "",
           alt: "Portrait — Naimesh Tanna, Vice President, Operations",
           width: 1000,
@@ -1393,6 +1441,15 @@ export const siteContent: SiteContent = {
         },
       },
     ],
+
+    // The leadership at the table, set beside the three panels on slide
+    // three. Portrait orientation once its EXIF rotation is applied.
+    leadershipImage: {
+      src: siteImage("team/DSC05061.JPG"),
+      alt: "The Vakratunda leadership in discussion around the boardroom table",
+      width: 4672,
+      height: 7008,
+    },
 
     /* The six functions. Every descriptor is either quoted from CP_Final or
        restates a line already carried elsewhere in this file, so the grid
@@ -1479,7 +1536,7 @@ export const siteContent: SiteContent = {
           "Affordability and modern living on twenty acres — Vihaa delivered, Skygarden rising behind it.",
         cta: { label: "Explore the township", href: "#projects" },
         image: {
-          src: "/images/jv/skygardens.png",
+          src: siteImage("jv/skygardens.png"),
           alt: "Godrej Skygarden in Badlapur, a white mid-rise residential cluster",
           width: 941,
           height: 1672,
@@ -1497,7 +1554,7 @@ export const siteContent: SiteContent = {
           "A residential address on Kolshet Road — global construction standards, grounded in our local legacy.",
         cta: { label: "See the development", href: "#projects" },
         image: {
-          src: "/images/jv/shapoorji.png",
+          src: siteImage("jv/shapoorji.png"),
           alt: "Planned residential development on Kolshet Road, Thane",
           width: 941,
           height: 1672,
@@ -1515,7 +1572,7 @@ export const siteContent: SiteContent = {
           "Societies and MHADA layouts across the western suburbs — every family welcomed back to a better home than the one they left.",
         cta: { label: "Read our record", href: "#projects" },
         image: {
-          src: "/images/hero/dilkhush.png",
+          src: siteImage("hero/dilkhush.png"),
           alt: "Vakratunda Dilkhush in Andheri, a completed society redevelopment",
           width: 1537,
           height: 1023,
@@ -1545,53 +1602,101 @@ export const siteContent: SiteContent = {
     // CP_Final, verbatim.
     note: "A state-of-the-art institution designed to give young learners an environment worth arriving at.",
     cover: {
-      src: "/images/vihaa/children.jpg",
+      src: siteImage("vihaa/children.jpg"),
       alt: "A class of Vihaa International School pupils in blue uniform, laughing and making peace signs on the painted play surface of the school yard.",
       width: 2560,
       height: 1707,
     },
     moments: [
       {
-        src: "/images/vihaa/vihaa-3174.jpg",
+        src: siteImage("vihaa/vihaa-3174.jpg"),
         alt: "A pupil laughing as she holds a picture book up at arm's length in a bright classroom.",
         width: 1707,
         height: 2560,
         caption: "A story, held up to be shared.",
       },
       {
-        src: "/images/vihaa/vihaa-2883.jpg",
+        src: siteImage("vihaa/vihaa-2883.jpg"),
         alt: "A pupil jumping a row of yellow training hurdles in the school yard, classmates queued behind her.",
         width: 1704,
         height: 2560,
         caption: "Hurdles, cleared with joy.",
       },
       {
-        src: "/images/vihaa/vihaa-3080.jpg",
+        src: siteImage("vihaa/vihaa-3080.jpg"),
         alt: "A boy fitting wooden letter pegs into an alphabet puzzle board at a classroom table.",
         width: 1707,
         height: 2560,
         caption: "Big dreams, a letter at a time.",
       },
       {
-        src: "/images/vihaa/vihaa-3057.jpg",
+        src: siteImage("vihaa/vihaa-3057.jpg"),
         alt: "Pupils kneeling at a raised bed, pressing soil around young plants.",
         width: 1707,
         height: 2560,
         caption: "Roots for tomorrow.",
       },
       {
-        src: "/images/vihaa/vihaa-3198.jpg",
+        src: siteImage("vihaa/vihaa-3198.jpg"),
         alt: "Two pupils at a play kitchen, one smiling across at the other over a set of steel pots.",
         width: 1707,
         height: 2560,
         caption: "Cooking up dreams.",
       },
       {
-        src: "/images/vihaa/vihaa-3145.jpg",
+        src: siteImage("vihaa/vihaa-3145.jpg"),
         alt: "A girl kneeling on a foam play mat, laughing as she holds up a tower of red, blue and white blocks.",
         width: 1707,
         height: 2560,
         caption: "A tower built with pride.",
+      },
+    ],
+  },
+
+  /* The testimonial slide. The quotes are the clients' own, verbatim save
+     for two marks of punctuation (a dash in Mr. Barot's last line, a comma
+     in Mr. Patil's first); the order is the slide's. */
+  testimonials: {
+    // AUTHORED.
+    heading: { before: "In their own ", swash: "words", after: "" },
+    // AUTHORED — names only the addresses the five quotes speak for.
+    standfirst:
+      "From BKC to Badlapur, the people we have built for, on what it was like to build with us.",
+    voices: [
+      {
+        id: "bharat-jain",
+        name: "Bharat Jain",
+        place: "BKC 28",
+        quote:
+          "Collaborating with Vakratunda was a breath of fresh air. Their team respected the design vision, worked with precision, and delivered on time. That’s rare.",
+      },
+      {
+        id: "bimal-maheshwari",
+        name: "Bimal Maheshwari",
+        place: "Kandivali",
+        quote:
+          "The Vakratunda team stood by us from paperwork to handover. They were responsive, respectful, and truly cared about our needs. We’re proud of our new home.",
+      },
+      {
+        id: "chetan-panchal",
+        name: "Chetan Panchal",
+        place: "Badlapur",
+        quote:
+          "Vakratunda stays transparent and honest through every stage — something you don’t see often. Working with them felt turnkey, dependable, and respectful.",
+      },
+      {
+        id: "kamlesh-barot",
+        name: "Kamlesh Barot",
+        place: "Thane",
+        quote:
+          "Watching our society transform into a new, modern building was emotional. Vakratunda kept us informed every step of the way. Now, we live in a home that feels fresh and secure — just what we hoped.",
+      },
+      {
+        id: "sanjeev-patil",
+        name: "Sanjeev Patil",
+        place: "Goregaon",
+        quote:
+          "Quality matters, and that’s exactly what Vakratunda delivers. I’ve seen the workmanship up close, and every detail reflects care.",
       },
     ],
   },
@@ -1609,7 +1714,7 @@ export const siteContent: SiteContent = {
 
     // A render of a Vakratunda garden podium, so the caption says so.
     image: {
-      src: "/images/gallery/outdoor.png",
+      src: siteImage("gallery/outdoor.png"),
       alt: "The landscaped garden at the foot of the tower at sunset, with lit stone seating, a lawn and a timber deck",
       width: 1672,
       height: 941,

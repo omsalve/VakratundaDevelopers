@@ -8,10 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "generate:types": "node --import ./scripts/register-hooks.mjs scripts/generate-types.mts",
+    "generate:importmap": "node --import ./scripts/register-hooks.mjs scripts/generate-importmap.mts",
     "placeholders": "node scripts/make-placeholders.mjs",
     "seed": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/seed.mts",
     "typecheck": "tsc --noEmit",
-    "repair:cloudinary": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/repair-cloudinary.mts"
+    "repair:cloudinary": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/repair-cloudinary.mts",
+    "upload:site-images": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/upload-site-images.mts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.85.1",

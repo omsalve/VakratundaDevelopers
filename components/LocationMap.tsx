@@ -75,11 +75,11 @@ import styles from "./LocationMap.module.css";
  *
  * @example
  * <LocationMap
- *   image={{ src: "/images/maps.png", alt: "…", width: 3344, height: 1880 }}
+ *   image={{ src: siteImage("maps.png"), alt: "…", width: 3344, height: 1880 }}
  *   points={[
  *     { id: "bandra", x: 30.8, y: 59.6, title: "Bandra",
  *       description: "Three addresses in the BKC corridor.",
- *       media: [{ id: "bkc-9", src: "/images/projects/bkc-9.jpg",
+ *       media: [{ id: "bkc-9", src: siteImage("projects/bkc-9.jpg"),
  *                 alt: "BKC 9 at dusk", width: 1200, height: 1500 }],
  *       meta: [{ label: "Possession", value: "2027" }],
  *       items: [{ id: "bkc-9", label: "BKC 9", note: "Ongoing" }] },

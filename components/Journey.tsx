@@ -439,7 +439,7 @@ export function Journey({ hero }: Props) {
       }
     >
       <div className={styles.viewport}>
-        {/* The one continuous photograph — /public/images/mainheroimage.png,
+        {/* The one continuous photograph — siteImage("mainheroimage.png"),
             sky at the top where the lockup sits, the terrace and the city at
             the bottom where the figures land. `travel` carries the long
             descent, `push` the hero's camera move, so the two transforms

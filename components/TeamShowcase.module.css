@@ -237,31 +237,34 @@
   border-color: var(--text-on-cream);
 }
 
-/* ---- 3 · Leadership ----------------------------------------------------- */
+/* ---- 3 · Leadership -----------------------------------------------------
+   Three panels, stacked, beside one photograph of the team. The panels are
+   boxed here — a filled ground, a hairline, the house radius — so they read
+   as a set held together against the picture rather than as a list. */
+.leadership {
+  display: grid;
+  gap: clamp(var(--space-6), 4vw, var(--space-9));
+}
+
 .people {
   display: grid;
-  gap: clamp(var(--space-7), 4vw, var(--space-9));
+  gap: var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* NOT A CARD. No box, no fill, no radius: one hairline across the top of each
-   column, which is the same drawn rule the rest of the site divides with. A
-   field of three filled panels would be the only boxed thing on this page. */
 .person {
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
-  gap: var(--space-3);
-  padding-top: var(--space-5);
-  border-top: var(--hairline) solid var(--cream-line);
-}
-
-.personPlate {
-  width: clamp(5.5rem, 9vw, 8rem);
-  margin-bottom: var(--space-2);
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+  background: var(--cream-100);
+  border: var(--hairline) solid var(--cream-line);
+  border-radius: var(--radius-m);
 }
 
 .personName {
@@ -538,14 +541,28 @@
     grid-template-columns: minmax(13rem, 0.42fr) minmax(0, 1fr);
   }
 
-  :global(.motion-on) .leadership,
   :global(.motion-on) .teams {
     display: grid;
     align-content: center;
   }
 
+  /* The photograph takes the frame's full height at its own ratio; the
+     panels share whatever width is left and split the height three ways. */
+  :global(.motion-on) .leadership {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
+    height: 100%;
+  }
+
   :global(.motion-on) .people {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    min-height: 0;
+  }
+
+  :global(.motion-on) .leadership .leadershipPlate {
+    width: auto;
+    height: 100%;
+    max-width: 38vw;
   }
 
   :global(.motion-on) .roles {
@@ -791,8 +808,8 @@
     width: 100%;
   }
 
-  .people {
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  .leadershipPlate {
+    width: min(100%, 26rem);
   }
 
   .roles {

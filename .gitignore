@@ -46,3 +46,7 @@ CLAUDE.md
 .env
 # impeccable QA captures (session artifacts)
 .impeccable/review/
+
+# photographs are managed in the CMS; the fallback set is hosted on Cloudinary
+# (lib/siteImages.ts, npm run upload:site-images). Brand files are in public/brand.
+/public/images/

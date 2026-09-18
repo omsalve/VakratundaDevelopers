@@ -6,30 +6,21 @@ import styles from "./Logo.module.css";
  * The Vakratunda mark + wordmark.
  *
  * BOTH ASSETS ARE TIGHT-CROPPED, and that is the whole reason this file is
- * worth reading. The studio's originals — `logo.png` (717×348) and
- * `Brandmark.png` (858×144) — are plates: the artwork floats inside a much
- * larger transparent canvas. The mark's drawing is only 263×264 of that
- * 717×348 box, so a caller asking for a 34px mark got 12.5px of drawing and
- * 21.5px of nothing. `brand-mark.png` is the mark cropped to its own alpha
+ * worth reading. The studio's originals — `logo/logo.png` and
+ * `logo/brandmark.png` — are plates: the artwork floats inside a much larger
+ * transparent canvas. `brand-mark.png` is the mark cropped to its own alpha
  * bounds, so a size passed here is the size that lands on the page. The
- * originals are kept in `public/images` as the source of record; nothing
- * renders them. The wordmark is no longer artwork: it is set in the display
- * face, to match the hero's "find an address" line.
+ * originals are kept in `public/images/logo` (untracked, like all of
+ * public/images) as the source of record;
+ * nothing renders them directly. The wordmark is no longer artwork: it is
+ * set in the display face, to match the hero's "find an address" line.
  *
- * ⚠️ PLACEHOLDER ART. The petal mandala is redrawn by hand from the brand
- * guide cover (CP_Final p.1). It is close, not exact. Replace it with the
- * studio's real vector before launch:
- *
- *   1. Export the mark as SVG, strokes only, no fill, TRIMMED TO THE ARTWORK
- *      — no canvas margin, or the sizing below understates it again.
- *   2. Point `MARK.src` at it and update `MARK.width` / `MARK.height`.
- *
- * The same curve is reused as the wipe shape in ArcTransition, so if the real
- * mark has a different petal profile, update `ARC_PATH` there too.
+ * The mark's petal is the same curve family as the circular wipe drawn in
+ * `lib/arc.ts` and used by ArcTransition — see that file's header comment.
  */
 
 /** The mark, cropped to its drawing. Very nearly square. */
-const MARK = { src: "/images/brand-mark.png", width: 263, height: 264 };
+const MARK = { src: "/brand/brand-mark.png", width: 800, height: 800 };
 
 type MarkProps = {
   className?: string;

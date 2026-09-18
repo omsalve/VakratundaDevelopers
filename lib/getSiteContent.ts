@@ -530,6 +530,7 @@ async function readSiteContent(): Promise<SiteContent> {
               };
             })
           : fallback.team.leadership,
+      leadershipImage: fallback.team.leadershipImage,
       roles:
         (home.team?.roles ?? []).length > 0
           ? home.team!.roles!.map((role, index) => ({
@@ -607,6 +608,31 @@ async function readSiteContent(): Promise<SiteContent> {
       note: text(home.vihaa?.note, fallback.vihaa.note),
       cover: image(home.vihaa?.cover, fallback.vihaa.cover),
       moments: mergeFigures(home.vihaa?.moments, fallback.vihaa.moments),
+    },
+
+    /* ---- Testimonials ----------------------------------------------------
+       A row stands only with all three of its parts: a quote nobody is named
+       against, or a name with nothing said, is dropped rather than set. */
+    testimonials: {
+      heading: heading(
+        home.testimonials?.heading,
+        fallback.testimonials.heading,
+      ),
+      standfirst: text(
+        home.testimonials?.standfirst,
+        fallback.testimonials.standfirst,
+      ),
+      voices: rows(
+        home.testimonials?.voices,
+        fallback.testimonials.voices,
+        (row, index) => {
+          const name = optionalText(row.name);
+          const place = optionalText(row.place);
+          const quote = optionalText(row.quote);
+          if (!name || !place || !quote) return undefined;
+          return { id: rowId(row.id, "voice", index), name, place, quote };
+        },
+      ),
     },
 
     /* ---- Responsibility --------------------------------------------------

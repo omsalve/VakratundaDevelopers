@@ -224,7 +224,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
 
       setStacked(true);
 
-      /* Empty for slides three and four, which are type alone — every tween
+      /* Empty for slide four, which is type alone — every tween
          that moves a plate has to ask before it runs. */
       const plateOf = (slide: Element) => slide.querySelectorAll("[data-plate]");
 
@@ -541,6 +541,13 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
                 />
               ))}
             </ul>
+            <PortraitPlate
+              image={content.leadershipImage}
+              name="Vakratunda Leadership"
+              ratio="2 / 3"
+              sizes="(max-width: 64rem) 90vw, 30vw"
+              className={styles.leadershipPlate}
+            />
           </Slide>
 
           {/* ---------------------------------------------- 4 · the teams */}
@@ -660,7 +667,7 @@ function Slide({
 }
 
 /**
- * One leader.
+ * One leader, as one of the three panels beside the team photograph.
  *
  * The card carries the name, the title and the one line that says what the
  * person is FOR; the bio is what the disclosure opens. That split is what
@@ -684,12 +691,6 @@ function LeaderCard({
 
   return (
     <li ref={groupRef} className={clsx(styles.person, open && styles.isOpen)}>
-      <PortraitPlate
-        image={member.portrait}
-        name={member.name}
-        sizes="(max-width: 64rem) 40vw, 14vw"
-        className={styles.personPlate}
-      />
       <h3 className={styles.personName}>{member.name}</h3>
       <p className={styles.personRole}>{member.title}</p>
       <p className={styles.personLead}>{member.superpower}</p>

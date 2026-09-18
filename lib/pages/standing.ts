@@ -30,6 +30,7 @@ import type {
   ProjectsPageContent,
   SustainabilityPageContent,
 } from "./types";
+import { siteImage } from "../siteImages";
 
 /* ------------------------------------------------------------------ about */
 
@@ -74,7 +75,7 @@ export const aboutPage: AboutPageContent = {
       "At the heart of Vakratunda lies a simple promise: to deliver more than structures, to deliver belonging. Because we don't just build for today, we build for tomorrow — and a second generation now carries forward what the first began.",
     ],
     image: {
-      src: "/images/concept.jpg",
+      src: siteImage("concept.jpg"),
       alt: "A Vakratunda Group residential tower seen from the street, its upper floors against open sky.",
       width: 2133,
       height: 2667,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { SeoContent } from "@/lib/content";
+import { SITE_IMAGES_BASE } from "@/lib/siteImages";
 
 /**
  * Route metadata, built from a page's SEO content.
@@ -18,12 +19,12 @@ export const TITLE_TEMPLATE = "%s · Vakratunda";
 
 /**
  * The card used where a page has set none and the Home global has none either.
- * It is the one image on the site that is still a file rather than an upload,
+ * It is the one image on the site that is hosted rather than an upload,
  * and it is the last resort rather than the default: the site-wide card is the
  * Home global's own share image, passed in as `siteImage` by the callers below.
  */
 export const DEFAULT_SHARE_IMAGE = {
-  url: "/images/og.jpg",
+  url: `${SITE_IMAGES_BASE}/og.jpg`,
   width: 1600,
   height: 840,
 };

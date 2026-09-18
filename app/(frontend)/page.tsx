@@ -10,6 +10,7 @@ import Responsibility from "@/components/Responsibility";
 import SiteHeader from "@/components/SiteHeader";
 import SmoothScroll from "@/components/SmoothScroll";
 import TeamShowcase from "@/components/TeamShowcase";
+import Testimonials from "@/components/Testimonials";
 import Vihaa from "@/components/Vihaa";
 import { buildMetadata } from "@/lib/cms/metadata";
 import { getSiteContent } from "@/lib/getSiteContent";
@@ -114,6 +115,16 @@ export default async function HomePage() {
             sticky copy and drifting columns are read, not driven, so the page
             does not gain a third scroll set piece. */}
         <Vihaa content={content.vihaa} />
+
+        {/* The clients, in their own words. The partnerships and the school
+            say who the group builds beside; this says what it was like to be
+            built for, and it is set here — after every claim the page makes
+            and before the close — so the last voices a visitor hears before
+            the contact form are the clients', not the group's. Same cream,
+            and read rather than driven: a thread of quotes that ink in as the
+            eye reaches them, not a third scroll set piece or a second
+            carousel. */}
+        <Testimonials content={content.testimonials} />
 
         {/* What the group owes the ground it builds on, on the same cream. It
             is the last thing said before the close and the smallest section on

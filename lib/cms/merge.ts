@@ -80,6 +80,8 @@ export function mediaImage(
     width: media.width,
     height: media.height,
     caption: optionalText(caption),
+    // Read from the upload's type: a Cloudinary URL carries no extension.
+    cutout: /^image\/(png|svg\+xml|gif)$/.test(media.mimeType ?? ""),
   };
 }
 

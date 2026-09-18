@@ -84,7 +84,13 @@ import {
   type ProseDoc,
   type Stat,
 } from "../lib/pages";
+import { SITE_IMAGES_BASE, siteImage } from "../lib/siteImages";
 
+/**
+ * A local copy wins where there is one; otherwise the file is fetched from its
+ * hosted fallback (lib/siteImages.ts), so a fresh clone — which has no
+ * public/images — can still seed.
+ */
 const IMAGES = path.resolve(import.meta.dirname, "../public/images");
 const LONG_EDGE = 2560;
 /**
@@ -153,7 +159,7 @@ const KEEP_PNG = new Set(["maps.png"]);
  * its own now falls back to the Home global's, which is this, uploaded once.
  */
 const SHARE_CARD: ImageAsset = {
-  src: "/images/og.jpg",
+  src: siteImage("og.jpg"),
   alt: "Vakratunda Group — where dreams find an address",
   width: 1200,
   height: 630,
@@ -170,17 +176,25 @@ const report = {
 };
 
 function fileOf(src: string): string {
-  const file = src.replace(/^\/images\//, "");
+  const file = src.slice(SITE_IMAGES_BASE.length + 1);
   return ALIASES[file] ?? file;
+}
+
+/** The file's bytes, from public/images if present, else its hosted copy. */
+async function source(file: string): Promise<Buffer | undefined> {
+  const local = path.join(IMAGES, file);
+  if (existsSync(local)) return readFile(local);
+  const response = await fetch(siteImage(file));
+  return response.ok ? Buffer.from(await response.arrayBuffer()) : undefined;
 }
 
 async function upload(
   payload: Payload,
   file: string,
+  input: Buffer,
   alt: string,
   name?: string,
 ): Promise<number> {
-  const input = await readFile(path.join(IMAGES, file));
   const [meta, stats] = await Promise.all([
     sharp(input).metadata(),
     sharp(input).stats(),
@@ -236,12 +250,13 @@ async function media(
     report.placeholders.add(file);
     return undefined;
   }
-  if (!existsSync(path.join(IMAGES, file))) {
-    report.missing.add(file);
-    return undefined;
-  }
   if (!uploaded.has(file)) {
-    uploaded.set(file, await upload(payload, file, ALT[file] ?? asset.alt));
+    const input = await source(file);
+    if (!input) {
+      report.missing.add(file);
+      return undefined;
+    }
+    uploaded.set(file, await upload(payload, file, input, ALT[file] ?? asset.alt));
   }
   return uploaded.get(file);
 }
@@ -663,6 +678,18 @@ async function seedHome(payload: Payload) {
       }),
     ],
 
+    /* ---- Testimonials ---- */
+    ["testimonials.heading", swashOf(site.testimonials.heading)],
+    ["testimonials.standfirst", site.testimonials.standfirst],
+    [
+      "testimonials.voices",
+      site.testimonials.voices.map((v) => ({
+        name: v.name,
+        place: v.place,
+        quote: v.quote,
+      })),
+    ],
+
     /* ---- Responsibility ---- */
     ["responsibility.heading", swashOf(site.responsibility.heading)],
     ["responsibility.standfirst", site.responsibility.standfirst],
@@ -953,14 +980,13 @@ async function seedPosts(payload: Payload) {
     });
     if (totalDocs > 0) continue;
 
-    const image =
-      (await media(payload, post.image)) ??
-      (await upload(
-        payload,
-        fileOf(post.image.src),
-        post.image.alt,
-        `placeholder-${post.slug}`,
-      ));
+    const file = fileOf(post.image.src);
+    let image = await media(payload, post.image);
+    if (image === undefined) {
+      const input = await source(file);
+      if (!input) throw new Error(`No image for post "${post.slug}": ${file}`);
+      image = await upload(payload, file, input, post.image.alt, `placeholder-${post.slug}`);
+    }
 
     await payload.create({
       collection: "posts",

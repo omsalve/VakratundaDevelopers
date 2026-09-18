@@ -32,6 +32,16 @@ import styles from "./PortraitPlate.module.css";
  * Honorifics are dropped, and the first and last remaining words are what is
  * taken — a middle name should not push the surname's initial off the plate.
  */
+/**
+ * A logo or cut-out on a transparent ground rather than a photograph — known
+ * from `ImageAsset.cutout` for a CMS upload (whose Cloudinary URL has no
+ * extension), or from the extension for a shipped file. It is set on no
+ * ground of its own and shown whole: the
+ * `--cream-300` fill would read as a grey card around it on the cream page,
+ * and `cover` would crop the artwork's edges to fill the box.
+ */
+const CUTOUT = /\.(png|svg|gif)(\?|#|$)/i;
+
 const HONORIFICS = new Set(["mr", "mrs", "ms", "dr", "shri", "smt"]);
 
 export function initialsOf(name: string): string {
@@ -71,7 +81,11 @@ export function PortraitPlate({
 
   if (image.src) {
     return (
-      <div className={box} style={{ aspectRatio: ratio }} data-plate>
+      <div
+        className={clsx(box, (image.cutout || CUTOUT.test(image.src)) && styles.cutout)}
+        style={{ aspectRatio: ratio }}
+        data-plate
+      >
         <Image
           src={image.src}
           alt={image.alt}

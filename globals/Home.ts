@@ -1109,6 +1109,62 @@ export const Home: GlobalConfig = {
           ],
         },
 
+        /* -------------------------------------------------- Testimonials */
+        {
+          label: "Testimonials",
+          description:
+            "The clients, in their own words. Quote only what a client actually said and agreed to publish, and attribute every quote to a full name and the address they speak for.",
+          fields: [
+            {
+              name: "testimonials",
+              type: "group",
+              label: " ",
+              fields: [
+                swashHeading("heading", "Headline"),
+                para("standfirst", "Standfirst"),
+                {
+                  name: "voices",
+                  type: "array",
+                  label: "Testimonials",
+                  labels: { singular: "Testimonial", plural: "Testimonials" },
+                  admin: {
+                    description:
+                      "Set in this order down the page, alternating sides like a conversation. Three to six reads best.",
+                  },
+                  fields: [
+                    {
+                      type: "row",
+                      fields: [
+                        {
+                          name: "name",
+                          type: "text",
+                          label: "Name",
+                          admin: { width: "50%", placeholder: "Bimal Maheshwari" },
+                        },
+                        {
+                          name: "place",
+                          type: "text",
+                          label: "Project or neighbourhood",
+                          admin: { width: "50%", placeholder: "Kandivali" },
+                        },
+                      ],
+                    },
+                    {
+                      name: "quote",
+                      type: "textarea",
+                      label: "Quote",
+                      admin: {
+                        description:
+                          "Without quotation marks — the page sets its own.",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+
         /* ------------------------------------------------ Responsibility */
         {
           label: "Responsibility",

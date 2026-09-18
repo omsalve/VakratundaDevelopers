@@ -21,6 +21,18 @@
   object-position: 50% 30%;
 }
 
+/* A logo or cut-out: no ground behind it, and the whole drawing kept in the
+   box rather than cropped to fill it. */
+.cutout {
+  background: transparent;
+  border-radius: 0;
+}
+
+.cutout .photo {
+  object-fit: contain;
+  object-position: 50% 50%;
+}
+
 /* ---- The plate ---------------------------------------------------------- */
 .plate {
   display: grid;

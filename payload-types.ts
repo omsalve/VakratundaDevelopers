@@ -335,7 +335,7 @@ export interface Post {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1127,6 +1127,31 @@ export interface Home {
         }[]
       | null;
   };
+  testimonials?: {
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Set in this order down the page, alternating sides like a conversation. Three to six reads best.
+     */
+    voices?:
+      | {
+          name?: string | null;
+          place?: string | null;
+          /**
+           * Without quotation marks — the page sets its own.
+           */
+          quote?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   responsibility?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
@@ -1209,7 +1234,7 @@ export interface Home {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1320,7 +1345,7 @@ export interface AboutPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1380,7 +1405,7 @@ export interface ProjectsPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1468,7 +1493,7 @@ export interface SustainabilityPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1588,7 +1613,7 @@ export interface ExperiencesPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1720,7 +1745,7 @@ export interface HospitalityPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1834,7 +1859,7 @@ export interface NriPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -1967,7 +1992,7 @@ export interface InvestorsPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2084,7 +2109,7 @@ export interface PressPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2200,7 +2225,7 @@ export interface AwardsPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2289,7 +2314,7 @@ export interface BlogPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2442,7 +2467,7 @@ export interface CareersPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2566,7 +2591,7 @@ export interface ContactPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2660,7 +2685,7 @@ export interface TermsPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2754,7 +2779,7 @@ export interface DisclaimerPage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -2848,7 +2873,7 @@ export interface GrievancePage {
      */
     description?: string | null;
     /**
-     * 1200 × 630. Leave empty to use the site's default share card.
+     * 1.91:1, and at least 1200 × 630 — 1600 × 840 is what the site's own card is. Leave empty to use that card, which is set on the Home global's SEO tab.
      */
     image?: (number | null) | Media;
     noIndex?: boolean | null;
@@ -3227,6 +3252,26 @@ export interface HomeSelect<T extends boolean = true> {
           | {
               image?: T;
               caption?: T;
+              id?: T;
+            };
+      };
+  testimonials?:
+    | T
+    | {
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        voices?:
+          | T
+          | {
+              name?: T;
+              place?: T;
+              quote?: T;
               id?: T;
             };
       };

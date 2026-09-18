@@ -1,0 +1,317 @@
+/* ============================================================================
+   Testimonials — the clients, in their own words, set as a conversation.
+
+   A BUBBLE IS A LINE WITH A TAIL IN IT. Each voice opens on a rose hairline
+   that rises into a speech-bubble tail a short way in from its near end and
+   runs on from the tail's foot. Nothing is boxed or filled: the quote stands
+   on the cream under its edge, as every block of copy on this site does.
+
+   THE VOICES ALTERNATE. On a wide window the thread is twelve columns and the
+   voices take eight of them, near and far in turn; the far voice's edge is
+   mirrored, so its tail stands at its own near end. Narrow, the thread is one
+   column and only the mirroring is kept.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+
+  /* The pale a quote waits in before it is read: the ink laid 28% over the
+     cream, written out rather than mixed, because GSAP tweens from the
+     computed colour and cannot read a `color-mix()`. */
+  --word-pale: #b5b6bc;
+  --tail-w: 34px;
+  --tail-h: 30px;
+}
+
+/* The drawn rule that separates it from the school above — ranged on the
+   shell, exactly as its neighbours draw their own. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw) - var(--gutter) * 2);
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.5;
+}
+
+.head {
+  max-width: var(--maxw);
+}
+
+/* ---- The thread ---------------------------------------------------------- */
+.thread {
+  display: grid;
+  row-gap: clamp(var(--space-9), 8vw, 8rem);
+  margin: 0 auto;
+  list-style: none;
+}
+
+.voice {
+  position: relative;
+  min-width: 0;
+}
+
+.figure {
+  position: relative;
+  margin: 0;
+}
+
+/* ---- The edge, and its tail --------------------------------------------- */
+.edge {
+  display: flex;
+  align-items: flex-end;
+  height: var(--tail-h);
+}
+
+.ruleNear,
+.ruleFar {
+  display: block;
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+}
+
+.ruleNear {
+  flex: 0 0 clamp(var(--space-8), 14%, 8rem);
+  transform-origin: left center;
+}
+
+.ruleFar {
+  flex: 1 1 auto;
+  transform-origin: left center;
+}
+
+.tail {
+  display: block;
+  flex: none;
+  width: var(--tail-w);
+  height: var(--tail-h);
+  overflow: visible;
+}
+
+.tail path {
+  fill: none;
+  stroke: var(--cream-line-rose);
+  stroke-width: var(--hairline);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* The far voice is the near one in a mirror: the tail stands at its right,
+   and both rules run out from it towards the left. */
+.isFar .edge {
+  flex-direction: row-reverse;
+}
+
+.isFar .tail {
+  transform: scaleX(-1);
+}
+
+.isFar .ruleNear,
+.isFar .ruleFar {
+  transform-origin: right center;
+}
+
+/* ---- The opening mark ----------------------------------------------------
+   One large quotation mark SEATED ON THE EDGE at its far end, in the pale
+   rose the guide draws its line-work in: the tail marks where the bubble
+   speaks from, the mark where it is heard. The line breaks for it — the
+   cream behind the glyph is what cuts the gap — and it stays above the
+   rule, clear of the words under it. */
+.markSeat {
+  position: absolute;
+  /* A display face's opening marks sit in the top half of the em, so half
+     an em up puts their foot on the rule. */
+  top: calc(var(--tail-h) - 0.5em);
+  right: var(--space-7);
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 3rem + 5vw, 8rem);
+  line-height: 1;
+  height: 0.5em;
+  padding-inline: 0.12em;
+  background: var(--cream-200);
+}
+
+.isFar .markSeat {
+  right: auto;
+  left: var(--space-7);
+}
+
+.mark {
+  display: block;
+  color: var(--accent-rose);
+  opacity: 0.7;
+}
+
+/* ---- The quote ----------------------------------------------------------- */
+.quote {
+  position: relative;
+  z-index: 1;
+  margin: var(--space-6) 0 0;
+}
+
+.quote p {
+  position: relative;
+  max-width: 30ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1rem + 1.5vw, 2.25rem);
+  line-height: 1.26;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+  text-wrap: pretty;
+}
+
+/* The far voice sets its words against its own far edge. */
+.isFar .quote p {
+  margin-left: auto;
+}
+
+/* Hanging punctuation: the opening mark stands in the margin, so the first
+   letter of every line of the quote lies on one edge. */
+.hang {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -100% 0;
+  color: var(--accent-text);
+}
+
+.word {
+  color: inherit;
+}
+
+/* ---- The attribution ----------------------------------------------------- */
+.cite {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.isFar .cite {
+  justify-content: flex-end;
+}
+
+.citeMask {
+  display: block;
+  overflow: hidden;
+  /* Room for the italic's descenders inside the mask. */
+  padding-bottom: 0.12em;
+}
+
+.citeInk {
+  display: block;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-h3);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.place {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+/* ---- Motion start states -------------------------------------------------
+   Additive, under `.motion-on` only: with no JS every edge is drawn, every
+   word is in ink and every name is standing. */
+:global(.motion-on) .ruleNear,
+:global(.motion-on) .ruleFar {
+  transform: scaleX(0);
+}
+
+:global(.motion-on) .word {
+  color: var(--word-pale);
+}
+
+:global(.motion-on) .mark {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+:global(.motion-on) .citeInk {
+  transform: translate3d(0, 108%, 0);
+}
+
+/* ============================================================================
+   BETWEEN. The thread is still one column, but the far voices step in, so
+   the alternation reads before there is room to lay it out.
+   ========================================================================== */
+@media (min-width: 48rem) {
+  .voice {
+    width: 88%;
+  }
+
+  .isFar {
+    margin-left: auto;
+  }
+}
+
+/* ============================================================================
+   WIDE. Eight columns of twelve, near and far in turn, the far voice
+   overlapping the near one by four so the thread reads as one exchange.
+   ========================================================================== */
+@media (min-width: 64rem) {
+  .thread {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(var(--space-5), 2.4vw, var(--space-7));
+  }
+
+  .voice {
+    grid-column: 1 / 9;
+    width: auto;
+  }
+
+  .isFar {
+    grid-column: 5 / -1;
+    margin-left: 0;
+  }
+}
+
+/* ============================================================================
+   NARROW. The mark comes down to a size that leaves the words room.
+   ========================================================================== */
+@media (max-width: 47.99rem) {
+  .markSeat {
+    font-size: 4.5rem;
+  }
+
+  .quote p {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruleNear,
+  .ruleFar,
+  .citeInk,
+  .mark,
+  .markSeat {
+    transform: none !important;
+  }
+
+  .word {
+    color: inherit !important;
+  }
+
+  .mark {
+    opacity: 0.7 !important;
+  }
+}

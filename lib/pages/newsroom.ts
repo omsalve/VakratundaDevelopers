@@ -30,6 +30,7 @@ import type {
   BlogPost,
   PressPageContent,
 } from "./types";
+import { siteImage } from "../siteImages";
 
 export const pressPage: PressPageContent = {
   seo: {
@@ -252,7 +253,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "The journey a housing society takes from its first general body meeting to the day its members come home — and the four points where it usually stalls.",
     image: {
-      src: "/images/projects/dilbahar.jpg",
+      src: siteImage("projects/dilbahar.jpg"),
       alt:
         "A completed redevelopment on a suburban plot, the new building standing on the footprint of the society that resolved to rebuild it.",
       width: 1600,
@@ -311,7 +312,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "A registration number is not a rating. What it does tell you, where to check it yourself, and the four fields on the public record worth more than the brochure.",
     image: {
-      src: "/images/projects/bkc-32.jpg",
+      src: siteImage("projects/bkc-32.jpg"),
       alt:
         "A tower under construction, the stage at which a project carries a live RERA registration against a declared completion date.",
       width: 1600,
@@ -360,7 +361,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "The parts of an Indian property purchase that genuinely require a non-resident buyer to be present, the parts that do not, and how a power of attorney is normally used to bridge the two.",
     image: {
-      src: "/images/projects/godrej-skygarden.jpg",
+      src: siteImage("projects/godrej-skygarden.png"),
       alt:
         "A finished residential development of the kind bought most often by buyers living outside India.",
       width: 1600,

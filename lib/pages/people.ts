@@ -22,6 +22,7 @@
  */
 
 import type { CareersPageContent, ContactPageContent } from "./types";
+import { siteImage } from "../siteImages";
 
 const OFFICE_EMAIL = "info@vakratundagroup.com";
 
@@ -278,7 +279,7 @@ export const contactPage: ContactPageContent = {
       "Saturday, by prior arrangement",
     ],
     image: {
-      src: "/images/maps.png",
+      src: siteImage("maps.png"),
       alt: "A map of the Mumbai Metropolitan Region marking the localities the group has built in, from the island city through the western and eastern suburbs to Thane and Badlapur.",
       width: 3344,
       height: 1880,

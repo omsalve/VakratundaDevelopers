@@ -133,7 +133,7 @@
 }
 
 /* Sized by HEIGHT and square, because the asset finally is: `brand-mark.png`
-   is the drawing cropped to its own alpha bounds (263×264), so this height is
+   is the drawing cropped to its own alpha bounds (800×800), so this height is
    the height of the mark rather than the height of a plate the mark floats in.
    It is the largest the mark appears anywhere on the site, which is the point
    — this is the one screen the page gives it on its own. */

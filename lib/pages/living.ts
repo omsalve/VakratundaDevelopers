@@ -5,12 +5,18 @@
  * live in one of these buildings, and what the group does with the parts of
  * them that are not homes.
  *
- * THE PHOTOGRAPHS ARE THE LIBRARY WE HAVE, NOT THE ONE THIS WANTS — the same
- * note the landing page's `atmosphere` block carries. Four of the frames here
- * are the amenity photographs already in public/images; they are cropped to
- * different shapes than the landing page gives them so the two read as
- * different views rather than a repeat. When the shoot lands, Experiences is
- * the second page to re-photograph, after the spread.
+ * THE PHOTOGRAPHS ARE HALF RE-SHOT. Two of the day's four frames are now
+ * Anantaraa — the court at the hour after school, and the screening room on a
+ * Saturday — and each is cast against the copy it is actually evidence for
+ * rather than against the copy it happened to sit next to. Both also appear in
+ * the landing page's spread, a whole page away and cropped to a different
+ * shape, which is the rule this site works to: a frame repeated within a
+ * screen of itself is a repeat, the same place seen twice across two pages is
+ * a library.
+ *
+ * THE OTHER TWO ARE STILL THE OLD ART, and they are the next to go. Neither
+ * 07:40 nor 20:00 has a frame that is evidence of what it claims — the walk
+ * out is about a lobby and a drop-off, and there is no photograph of either.
  *
  * COPY: AUTHORED. Nothing below states a figure that is not already in
  * lib/content.ts, and nothing describes an amenity that is not visible in the
@@ -23,6 +29,7 @@ import type {
   ExperiencesPageContent,
   HospitalityPageContent,
 } from "./types";
+import { siteImage } from "../siteImages";
 
 export const experiencesPage: ExperiencesPageContent = {
   seo: {
@@ -46,32 +53,32 @@ export const experiencesPage: ExperiencesPageContent = {
       "Four moments we design for by name, because long after the keys are handed over, these are the moments a family measures home by.",
     figures: [
       {
-        src: "/images/gallery/outdoor.png",
+        src: siteImage("gallery/outdoor.png"),
         alt: "The landscaped deck of a Vakratunda development in the late afternoon, with seating under mature planting.",
         width: 1672,
         height: 941,
         caption: "The deck, as afternoon slows.",
       },
       {
-        src: "/images/gallery/kids.png",
-        alt: "Children playing on the shaded play surface of a Vakratunda residential development.",
-        width: 1537,
-        height: 1023,
+        src: siteImage("anantaraa/basketball169.png"),
+        alt: "A game under way on the lit court of a Vakratunda development in the late afternoon, with benches and a basket of balls at the near side.",
+        width: 1672,
+        height: 941,
         caption: "Room to play, safely.",
       },
       {
-        src: "/images/skydeck.jpg",
+        src: siteImage("skydeck.jpg"),
         alt: "A rooftop sky deck looking out across the Mumbai skyline at dusk.",
         width: 4096,
         height: 2160,
         caption: "The sky deck, at golden hour.",
       },
       {
-        src: "/images/skygarden6.png",
-        alt: "A landscaped sky garden between residential wings, planted along its full length.",
-        width: 2000,
-        height: 1088,
-        caption: "A garden in the sky.",
+        src: siteImage("anantaraa/theatre169.png"),
+        alt: "Residents together in the screening room of a Vakratunda development, tiered velvet seating turned to a lit screen.",
+        width: 1672,
+        height: 941,
+        caption: "The whole building, in one room.",
       },
     ],
     items: [
@@ -165,7 +172,7 @@ export const hospitalityPage: HospitalityPageContent = {
       "It is also where trust is earned fastest. A society sees whether we can run a single room with care long before it sees us hand over an entire tower on the date we promised.",
     ],
     image: {
-      src: "/images/gallery/restaurant.png",
+      src: siteImage("gallery/restaurant.png"),
       alt: "The dining room of a restaurant in a Vakratunda development, laid for service under warm pendant lighting.",
       width: 941,
       height: 1672,

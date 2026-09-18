@@ -30,7 +30,7 @@
    moment before the plate lands. */
 .journey {
   position: relative;
-  background: url("/images/journey.jpg") center / cover no-repeat var(--navy-700);
+  background: url("https://res.cloudinary.com/dwsxaetnd/image/upload/site/journey.jpg") center / cover no-repeat var(--navy-700);
 }
 
 .viewport {

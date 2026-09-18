@@ -23,6 +23,15 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      graphics: {
+        Icon: "/admin/graphics#Icon",
+        Logo: "/admin/graphics#Logo",
+      },
+    },
+    meta: {
+      icons: [{ rel: "icon", type: "image/png", url: "/brand/brand-mark.png" }],
+    },
   },
   collections: [Users, Media, Projects, Posts],
   globals: [Home, ...pageGlobals],
