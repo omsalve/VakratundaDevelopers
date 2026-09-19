@@ -817,6 +817,20 @@
   }
 }
 
+/* On a phone the gutter is narrower than the mark's overhang, so a mark
+   hung in the margin is cut by the screen edge. It rises above the first
+   line instead, on the same left edge as the sentence. */
+@media (max-width: 47.99rem) {
+  .quoteText {
+    margin-top: 0.6em;
+  }
+
+  .quoteText::before {
+    top: -0.66em;
+    left: -0.05em;
+  }
+}
+
 /* Slides two to four arrive one at a time in the standing layout. Held here
    rather than by the global `[data-reveal]` rule alone so the intent is
    readable next to what reverses it in the motion branch. */
@@ -846,5 +860,29 @@
   .veil,
   .shutter {
     display: none !important;
+  }
+}
+
+/* ---- Touch ---------------------------------------------------------------
+   The three quiet controls — the hand-on, the bio and the role contact — are
+   set small on purpose. On a touch screen their hit areas grow to a thumb's
+   height; the ink stays exactly where it is. */
+@media (pointer: coarse) {
+  .textCta,
+  .personCta,
+  .roleCta {
+    position: relative;
+  }
+
+  .textCta::after,
+  .personCta::after,
+  .roleCta::after {
+    content: "";
+    position: absolute;
+    inset: -10px 0;
+  }
+
+  .personCta::after {
+    inset: -13px 0;
   }
 }

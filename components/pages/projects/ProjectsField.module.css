@@ -323,3 +323,12 @@
     scale: 1;
   }
 }
+
+/* ---- Touch ---------------------------------------------------------------
+   The filter rows are the one control on this page. On a touch screen each
+   takes a thumb's height. */
+@media (pointer: coarse) {
+  .stage {
+    padding-block: calc(var(--space-3) + 4px);
+  }
+}

@@ -451,7 +451,12 @@ export function Journey({ hero }: Props) {
                 src={hero.background.src}
                 alt=""
                 fill
-                sizes="100vw"
+                // The frame is BACKDROP_SPAN viewports tall and covered, so on
+                // a portrait screen the picture is PAINTED ~178vh wide (2 x
+                // the 2880/3240 ratio) and the camera pans across it. Asking
+                // for 100vw there fetched a quarter of the pixels a phone
+                // shows. Landscape windows paint at or near 100vw and keep it.
+                sizes="(orientation: portrait) 178vh, 100vw"
                 quality={82}
                 // Next 16: `priority` is deprecated. This is the LCP
                 // candidate, so it loads eagerly and at high priority.

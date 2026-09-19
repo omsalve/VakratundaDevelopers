@@ -423,3 +423,15 @@
     opacity: 1;
   }
 }
+
+/* ---- Touch ---------------------------------------------------------------
+   The ring is drawn at a pointer's size. On a touch screen the button grows
+   an invisible margin to a thumb's 44px; the ring stays the size it is. */
+@media (pointer: coarse) {
+  .node::after {
+    content: "";
+    position: absolute;
+    inset: calc((44px - var(--node-size)) / -2);
+    border-radius: 50%;
+  }
+}

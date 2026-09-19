@@ -610,6 +610,35 @@
   }
 }
 
+/* ---- Touch ----------------------------------------------------------------
+   Fifteen links at a 17px line and a 12px gap are a map to a pointer and a
+   lottery to a thumb. On a touch screen each one becomes a full 44px row and
+   the gap goes, so the list keeps its rhythm; the email and the back-to-top
+   pill take the same height by padding out their hit area, not their ink. */
+@media (pointer: coarse) {
+  .list {
+    gap: 0;
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .email,
+  .toTop {
+    position: relative;
+  }
+
+  .email::after,
+  .toTop::after {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
+  }
+}
+
 /* ---- Reduced motion ------------------------------------------------------
    Nothing travels. The page does not scale, the panel does not rise, the
    columns never leave their final position — the enclosure is expressed as

@@ -662,3 +662,48 @@
     will-change: auto;
   }
 }
+
+/* ---- A phone on its side ---------------------------------------------------
+   Under 32rem of height the lockup, standfirst, action and credentials band
+   no longer share one frame: the action and the band fell off the bottom.
+   Everything keeps its place in the composition and closes up — the mark
+   goes (the header carries it forty pixels above), the lockup takes its size
+   from the short side, and the rail steps aside for the band. */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .hero {
+    padding: calc(var(--header-h) + var(--space-2)) var(--gutter) var(--space-4);
+  }
+
+  .heroInner {
+    gap: var(--space-4);
+  }
+
+  .mark,
+  .rail {
+    display: none;
+  }
+
+  .title {
+    --fs-hero: clamp(1.9rem, 10svh, 2.75rem);
+    margin-top: 0;
+  }
+
+  .standfirst {
+    margin-top: var(--space-3);
+    max-width: 46rem;
+    font-size: var(--fs-small);
+  }
+
+  .cta {
+    margin-top: var(--space-4);
+  }
+
+  .band {
+    flex-direction: row;
+  }
+
+  .rule {
+    flex: 1 1 auto;
+    width: auto;
+  }
+}

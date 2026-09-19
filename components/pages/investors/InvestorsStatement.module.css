@@ -139,4 +139,16 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-6) var(--space-5);
   }
+
+  /* Half a phone is narrower than "2,498 + families". The unit drops under
+     its figure rather than running into the next column — and only where it
+     has to: a short figure keeps its unit beside it. */
+  .figureValue {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+  }
+
+  .unit {
+    margin-inline-start: 0;
+  }
 }

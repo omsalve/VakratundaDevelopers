@@ -225,3 +225,18 @@
     display: none;
   }
 }
+
+/* ---- Touch ---------------------------------------------------------------
+   A hairline-underlined link is sized for a pointer. On a touch screen its
+   hit area grows to a thumb's height without moving the ink. */
+@media (pointer: coarse) {
+  .deskLink {
+    position: relative;
+  }
+
+  .deskLink::after {
+    content: "";
+    position: absolute;
+    inset: -11px 0;
+  }
+}

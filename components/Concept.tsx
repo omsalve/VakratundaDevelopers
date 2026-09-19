@@ -7,7 +7,6 @@ import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
 import ConceptShowcase from "./ConceptShowcase";
 import Legacy from "./Legacy";
 import PageLink from "./PageLink";
-import { LogoMark } from "./Logo";
 import styles from "./Concept.module.css";
 
 /**
@@ -285,12 +284,19 @@ export function Concept({ content }: { content: ConceptContent }) {
                 fourth child would both break the interval and stagger the
                 lockup apart from itself. */}
             <div className={styles.lede}>
-              {/* No aria-label. The heading's own text is the name, exactly as
-                  it is set, and the mark above it is decorative — so the
-                  accessible name is right without being overridden. */}
+              {/* The studio's lockup artwork — mark and name drawn as one
+                  piece, cropped to its own alpha bounds. The name is in the
+                  drawing, so the alt text is what gives the heading its
+                  accessible name. */}
               <h2 id="story-title" className={styles.lockup}>
-                <LogoMark className={styles.lockupMark} />
-                <span className={styles.word}>{content.lockup.wordmark}</span>
+                <img
+                  className={styles.lockupArt}
+                  src="/brand/brand-lockup.png"
+                  alt={content.lockup.wordmark}
+                  width={1600}
+                  height={877}
+                  draggable={false}
+                />
               </h2>
 
               <span className={styles.rule} aria-hidden="true" />

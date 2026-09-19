@@ -117,30 +117,17 @@
   color: var(--text-on-cream);
 }
 
-/* The name, alone. It carried label scale when it was one of two words
-   flanking the mark; standing under the mark on an empty field of cream it is
-   the base the monument sits on, and it is set to be read as one — in the
-   hero's face and case, no more weight than the line-work above it. */
-.word {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 0.9rem + 2.4vw, 2.75rem);
-  font-weight: 400;
-  line-height: 1;
-  /* Matches the wordmark in Logo.module.css and the hero's roman lines. */
-  letter-spacing: -0.012em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-/* Sized by HEIGHT and square, because the asset finally is: `brand-mark.png`
-   is the drawing cropped to its own alpha bounds (800×800), so this height is
-   the height of the mark rather than the height of a plate the mark floats in.
-   It is the largest the mark appears anywhere on the site, which is the point
-   — this is the one screen the page gives it on its own. */
-.lockupMark {
-  height: clamp(4.5rem, 2.5rem + 7vw, 9rem);
+/* The mark and the name as one drawing: `brand-lockup.png` is the studio's
+   lockup cropped to its own alpha bounds (1600×877), so this height is the
+   height of the artwork rather than of a plate it floats in. It is the
+   largest the mark appears anywhere on the site, which is the point — this is
+   the one screen the page gives it on its own. */
+.lockupArt {
+  display: block;
+  height: clamp(7rem, 3.5rem + 11vw, 14rem);
   width: auto;
   max-width: 100%;
+  object-fit: contain;
 }
 
 /* The drop. The one piece of rose line-work on the cream ground, and the
@@ -314,23 +301,11 @@
   :global(.motion-on) .dome {
     padding: var(--space-2xl) 0;
   }
-  /* The stack holds at every width — it is a column, so there is nothing to
-     wrap. What has to give on a phone is the tracking: 0.34em on a ten-letter
-     word is wider than a 360px screen once the gutters are taken. */
-  .lockup {
-    gap: clamp(0.6rem, 2vh, 1rem);
-  }
-  .word {
-    font-size: clamp(0.8125rem, 3.4vw, 1.25rem);
-    letter-spacing: 0.2em;
-    text-indent: 0.2em;
-  }
-  /* A phone gives the mark a narrow column and a great deal of height, so it
-     takes its size from the width it has: 22vw is the largest the mark can be
-     and still leave the tracked-out name below it wider than itself, which is
-     the proportion the whole lockup rests on. */
-  .lockupMark {
-    height: clamp(4rem, 22vw, 7rem);
+  /* A phone gives the lockup a narrow column and a great deal of height, so
+     it takes its size from the width it has. */
+  .lockupArt {
+    width: min(72vw, 20rem);
+    height: auto;
   }
   /* The drop is measured against the mark, not against the viewport. At 22vh
      a phone gave the hairline three times the mark's height and the lockup
@@ -363,5 +338,25 @@
      that must not be left drawing an arc that is no longer there. */
   .arcSvg {
     display: none !important;
+  }
+}
+
+/* A phone turned on its side gives the dome a screen barely taller than the
+   lockup alone, and the rule and promise were pushed out of the sticky frame
+   onto the prose behind it. The composition keeps its three parts and its one
+   interval; every size in it is taken from the short side instead. */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .lede {
+    --lede-step: 1.1rem;
+  }
+  .lockupArt {
+    width: auto;
+    height: 34svh;
+  }
+  .rule {
+    height: 12svh;
+  }
+  :global(.motion-on) .dome {
+    padding: calc(var(--header-h) * 0.6) 0 var(--space-4);
   }
 }
