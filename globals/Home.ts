@@ -232,7 +232,7 @@ function ventureSlide(prefix: string, label: string): Field {
         ],
       },
       para(`${prefix}Blurb`, "Blurb"),
-      ctaRow(`${prefix}Cta`, "Button", "#projects"),
+      ctaRow(`${prefix}Cta`, "Button", "/projects"),
     ],
   };
 }
@@ -278,7 +278,7 @@ export const Home: GlobalConfig = {
                           name: "href",
                           type: "text",
                           required: true,
-                          admin: { width: "50%", placeholder: "#projects" },
+                          admin: { width: "50%", placeholder: "/projects" },
                         },
                       ],
                     },
@@ -411,7 +411,7 @@ export const Home: GlobalConfig = {
                           "The line that ties the claim to the picture. It is the hinge the whole annotation turns on — without it the copy floats free of what it is pinned to.",
                       },
                     },
-                    ctaRow("cta", "Button", "#projects"),
+                    ctaRow("cta", "Button", "/projects"),
                   ],
                 },
               ],

@@ -656,18 +656,21 @@ export interface SiteContent {
 
 export const siteContent: SiteContent = {
   nav: {
-    /* FOUR ROUTES, NOT FOURTEEN. The masthead carries what a visitor arrives
-       looking for; the rest of the site is grouped in the footer's map (see
-       lib/navigation.ts). A bare "#team" would be dead on /about, so anything
-       that IS an anchor is written root-relative and the masthead collapses
-       it back to a hash while it is on the landing page. */
+    /* FOUR ROUTES, NOT FOURTEEN, AND EVERY ONE OF THEM A PAGE. The masthead
+       used to point into the landing page's own sections (#story, #impact,
+       #team), which did nothing useful from any other route and jumped the
+       visitor into the middle of a scroll sequence on this one. It now
+       carries the pages a visitor arrives looking for; the rest of the site
+       is grouped in the footer's map (see lib/navigation.ts). A root-relative
+       anchor still works here if one is ever added back — the masthead
+       collapses it to a hash on the landing page. */
     links: [
-      { label: "Story", href: "/#story" },
-      { label: "Impact", href: "/#impact" },
-      { label: "Projects", href: "/#projects" },
-      { label: "Team", href: "/#team" },
+      { label: "About", href: "/about" },
+      { label: "Projects", href: "/projects" },
+      { label: "Sustainability", href: "/sustainability" },
+      { label: "Careers", href: "/careers" },
     ],
-    cta: { label: "Contact", href: "/#contact" },
+    cta: { label: "Contact", href: "/contact" },
   },
 
   hero: {
@@ -678,7 +681,7 @@ export const siteContent: SiteContent = {
     // CP_Final p.4, condensed.
     standfirst:
       "Five decades of transforming spaces into experiences and addresses into aspirations — across Mumbai City, its eastern and western suburbs, and Thane.",
-    primaryCta: { label: "Explore our addresses", href: "#projects" },
+    primaryCta: { label: "Explore our addresses", href: "/projects" },
     // AUTHORED — the label on the cue at the foot of the opening frame. It is
     // required by HeroContent and rendered by Journey, but was missing here,
     // so the cue shipped with an empty label.
@@ -757,7 +760,7 @@ export const siteContent: SiteContent = {
           "Each number is more than a metric — it’s a family, and a milestone.",
           "Each one different. Each one somebody’s dream.",
         ],
-        cta: { label: "Our projects", href: "#projects" },
+        cta: { label: "Our projects", href: "/projects" },
         evidence:
           "Shown: the loungers in a run along the water, each one lit on its own.",
       },
@@ -1558,24 +1561,6 @@ export const siteContent: SiteContent = {
           alt: "Planned residential development on Kolshet Road, Thane",
           width: 941,
           height: 1672,
-        },
-      },
-      {
-        id: "redevelopment",
-        partner: "MHADA & MCGM",
-        kicker: "Redevelopment mandates — Mumbai",
-        stats: [
-          { label: "Societies", value: "9 rehoused" },
-          { label: "Completion", value: "100%" },
-        ],
-        blurb:
-          "Societies and MHADA layouts across the western suburbs — every family welcomed back to a better home than the one they left.",
-        cta: { label: "Read our record", href: "#projects" },
-        image: {
-          src: siteImage("hero/dilkhush.png"),
-          alt: "Vakratunda Dilkhush in Andheri, a completed society redevelopment",
-          width: 1537,
-          height: 1023,
         },
       },
     ],
