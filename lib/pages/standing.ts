@@ -48,7 +48,7 @@ export const aboutPage: AboutPageContent = {
     // "and schools" is AUTHORED, and it is in the first sentence a visitor
     // reads for a reason: the school is not a footnote to the practice, and it
     // was previously named only once, in the last line of the last card on the
-    // page. It stands on Vihaa International School, Badlapur — which the
+    // page. It stands on Vihaa Innovative School, Badlapur — which the
     // landing page already carries as a section of its own (content.ts
     // `vihaa`), so nothing here claims anything new.
     standfirst:
@@ -67,10 +67,10 @@ export const aboutPage: AboutPageContent = {
       // The redevelopment practice, from `concept.legacy.proofs`.
       "Much of that journey is redevelopment — the most demanding work we do, and the work we are proudest of. A society that hands over the home it already loves isn't buying a render; it is trusting us with an address it will return to. Those projects stand completed and lived in, and many more are in the pipeline.",
       // AUTHORED. The education work, given a paragraph rather than a clause.
-      // It stands on Vihaa International School in Badlapur — a joint venture
+      // It stands on Vihaa Innovative School in Badlapur — a joint venture
       // the landing page already sets out as a section of its own — and
       // claims nothing beyond it: no count, no second campus, no intake.
-      "We do not only build homes. Vihaa International School in Badlapur is ours too — a joint venture held to the standard of every address that carries our name, and the clearest answer we have to what a neighbourhood needs besides somewhere to live. A school is a fifty-year building in the way a tower is not: it is judged by the people who come out of it.",
+      "We do not only build homes. Vihaa Innovative School in Badlapur is ours too — held to the standard of every address that carries our name, and the clearest answer we have to what a neighbourhood needs besides somewhere to live. A school is a fifty-year building in the way a tower is not: it is judged by the people who come out of it.",
       // content.ts `concept.body[1]`, verbatim in substance.
       "At the heart of Vakratunda lies a simple promise: to deliver more than structures, to deliver belonging. Because we don't just build for today, we build for tomorrow — and a second generation now carries forward what the first began.",
     ],
@@ -116,19 +116,21 @@ export const aboutPage: AboutPageContent = {
         // is where a reader least expects to meet it. It has a station of its
         // own below now, and this one is back to being about partnerships.
         id: "ventures",
-        eyebrow: "Joint ventures",
+        // "Partnerships", not "Joint ventures": the Badlapur work with Godrej
+        // is development management (MoM 2.5.4).
+        eyebrow: "Partnerships",
         title: "Partnerships that last",
         body: "We grow stronger through the right partnerships — Godrej Properties and Shapoorji Pallonji Real Estate among them. A partner's name on a site board is a standard we then have to keep, which is the point of having one.",
       },
       {
         // AUTHORED. A station rather than a clause — see the note on the
-        // ventures card above. It states Vihaa International School, Badlapur
-        // and its standing as a joint venture, both of which content.ts
-        // `vihaa` already carries, and no figure beyond them.
+        // ventures card above. It states Vihaa Innovative School, Badlapur,
+        // which content.ts `vihaa` already carries, and no figure beyond it.
+        // Not a joint venture (MoM 2.5.2).
         id: "education",
         eyebrow: "Education",
         title: "Not only homes — schools",
-        body: "Vihaa International School in Badlapur is a joint venture of ours: a state-of-the-art institution built to give young learners an environment worth arriving at. We build schools for the same reason we build homes, and hold them to the same standard — a neighbourhood is made of more than the buildings people sleep in.",
+        body: "Vihaa Innovative School in Badlapur is ours: a state-of-the-art institution built to give young learners an environment worth arriving at. We build schools for the same reason we build homes, and hold them to the same standard — a neighbourhood is made of more than the buildings people sleep in.",
       },
     ],
   },

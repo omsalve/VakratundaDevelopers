@@ -518,17 +518,12 @@ export interface VenturesContent {
 
 /* ------------------------------------------------------------------ vihaa */
 /*
- * VIHAA INTERNATIONAL SCHOOL — a joint venture, not an initiative.
+ * VIHAA INNOVATIVE SCHOOL — the group's own school.
  *
- * It used to be modelled as the community half of the responsibility ledger:
- * a thing built for somebody else's benefit. It is a venture the group holds
- * a stake in, so it is modelled beside `ventures` instead, and it borrows
- * that section's shapes — a name set across a photograph, and a pair of
- * label-over-value facts — so the page records it the way it records every
- * other partnership.
- *
- * THE PARTNER IS NOT NAMED. The site says "joint venture" and nothing more
- * about who with; add a fact here when that is published.
+ * NOT A JOINT VENTURE (MoM 2.5.2), and not an initiative either. It borrows
+ * the ventures section's shapes — a name set across a photograph, and a pair
+ * of label-over-value facts — because they suit a place, not because it is a
+ * partnership; nothing on the page classes it as one.
  */
 
 export interface VihaaContent {
@@ -578,7 +573,7 @@ export interface TestimonialsContent {
  * THE LEDGER — what the group owes the ground it stands on.
  *
  * ONE OBLIGATION. This section used to carry a community band built around
- * Vihaa International School; the school is a joint venture and now has its
+ * Vihaa Innovative School; the school now has its
  * own section (see `vihaa` above), so what is left here is the environmental
  * ledger alone, which is also what /sustainability sets out at length.
  *
@@ -740,13 +735,13 @@ export const siteContent: SiteContent = {
         y: 84.0,
         title: "Built on Trust",
         body: [
-          "33(7) and cluster redevelopment, carried out through MCGM and MHADA.",
+          "33(5) and cluster redevelopment, carried out through MCGM and MHADA.",
           "Every society began by trusting us with the home it already loved.",
           "We don’t just redevelop buildings, we honour that trust floor by floor.",
         ],
-        // As above: #practice is gone. The redevelopment record is the third
-        // slide of the ventures band — MHADA & MCGM — so the pin points there.
-        cta: { label: "Redevelopment", href: "#ventures" },
+        // The redevelopment record lives in the portfolio: MHADA is not a
+        // joint venture (MoM 2.5.6), so the ventures band no longer carries it.
+        cta: { label: "Our redevelopment work", href: "/projects" },
         evidence:
           "Shown: the seating turned in on itself — a circle for talking, not a row for looking.",
       },
@@ -848,7 +843,7 @@ export const siteContent: SiteContent = {
         id: "redevelopment",
         x: 77,
         y: 58,
-        value: "33(7)",
+        value: "33(5)",
         unit: "& cluster schemes",
         title: "Redevelopment completed",
         body: "Societies given a new address through MCGM and MHADA — with many more in the pipeline.",
@@ -886,7 +881,7 @@ export const siteContent: SiteContent = {
       // find out what the group actually does, and a school is part of the
       // answer. It stands on Vihaa International School, Badlapur — the
       // section below — and adds no figure of its own.
-      "Not all of it is housing. Alongside residential, commercial and redevelopment work we build schools — Vihaa International School in Badlapur among them — because a neighbourhood needs more than somewhere to live.",
+      "Not all of it is housing. Alongside residential, commercial and redevelopment work we build schools — Vihaa Innovative School in Badlapur among them — because a neighbourhood needs more than somewhere to live.",
       // CP_Final p.4, verbatim.
       "At the heart of Vakratunda lies a simple promise: to deliver more than structures, to deliver belonging. Because we don’t just build for today, we build for tomorrow.",
     ],
@@ -955,17 +950,19 @@ export const siteContent: SiteContent = {
       // three cannot yet, so they claim nothing.
       slides: [
         {
-          name: "Anantaraa",
+          name: "Vakratunda Anantaraa",
           image: {
             src: siteImage("anantaraa/anantaraa.jpeg"),
             alt: "Anantaraa at dusk: a slender residential tower lit floor by floor above a glazed retail podium, seen from the arterial road at its foot",
             width: 1600,
             height: 1600,
           },
-          caption: "Anantaraa, Thane",
+          caption: "Vakratunda Anantaraa, Thane",
         },
         {
-          name: "Vihaa Gardens",
+          // Was "Vihaa Gardens" over the Skygarden frame; the project is
+          // Skygarden at Godrej Vihaa (MoM 2.5.7) — to confirm.
+          name: "Skygarden at Godrej Vihaa",
           // ⚠️ REPLACE ART. The group's own Badlapur render, standing in until
           // the Vihaa Gardens frame arrives. Everything under
           // site images under projects/ are generated placeholder art — the real
@@ -978,10 +975,10 @@ export const siteContent: SiteContent = {
             width: 941,
             height: 1672,
           },
-          caption: "Vihaa Gardens, Badlapur",
+          caption: "Skygarden at Godrej Vihaa, Badlapur",
         },
         {
-          name: "Vedantaa",
+          name: "Vakratunda Vedantaa",
           // BKC 28 is Vedantaa, so this is its own frame.
           image: {
             src: siteImage("hero/bkc-28.png"),
@@ -989,7 +986,7 @@ export const siteContent: SiteContent = {
             width: 1672,
             height: 941,
           },
-          caption: "Vedantaa, Bandra",
+          caption: "Vakratunda Vedantaa, Bandra",
         },
       ],
     },
@@ -1015,32 +1012,32 @@ export const siteContent: SiteContent = {
       // Ongoing — CP_Final p.9.
       {
         id: "bkc-28",
-        name: "Vedantaa",
+        name: "Vakratunda Vedantaa",
         locality: "Bandra",
-        status: "Ongoing",
-        blurb: "Rising in the Bandra East corridor, floor by floor.",
+        status: "Upcoming",
+        blurb: "A new address coming to the Bandra East corridor.",
         image: {
           src: siteImage("hero/bkc-28.png"),
-          alt: "Vedantaa, a slender residential tower in Bandra, illuminated at night",
+          alt: "Vakratunda Vedantaa, a slender residential tower in Bandra, illuminated at night",
           width: 1672,
           height: 941,
         },
       },
       {
         id: "godrej-skygarden",
-        name: "Godrej Skygarden — Vakratunda",
+        name: "Skygarden at Godrej Vihaa",
         locality: "Badlapur",
         status: "Ongoing",
         blurb:
           "A twenty-acre mini-township, built hand in hand with Godrej Properties.",
         image: {
           src: siteImage("jv/skygardens.png"),
-          alt: "Godrej Skygarden in Badlapur, a white mid-rise residential cluster",
+          alt: "Skygarden at Godrej Vihaa in Badlapur, a white mid-rise residential cluster",
           width: 941,
           height: 1672,
         },
       },
-      // Upcoming — CP_Final p.10.
+      // Upcoming — CP_Final p.10. (Vedantaa, above, is Upcoming too — MoM 2.6.)
       //
       // Only projects with real photography are listed. BKC 32, Parijat,
       // Badlapur East, Vakratunda Royale and Vakratunda Residency are held back
@@ -1061,13 +1058,13 @@ export const siteContent: SiteContent = {
       },
       {
         id: "vihaa-amaraa",
-        name: "Vihaa Amaraa",
+        name: "Vakratunda Amaraa",
         locality: "Badlapur",
         status: "Upcoming",
         blurb: "A new residential tower joining our Badlapur story.",
         image: {
           src: siteImage("amaraa/amaraa.png"),
-          alt: "Vihaa Amaraa at sunset: a broad residential tower with white-framed balconies above a glazed podium, set behind a lawn and a tree-lined road",
+          alt: "Vakratunda Amaraa at sunset: a broad residential tower with white-framed balconies above a glazed podium, set behind a lawn and a tree-lined road",
           width: 941,
           height: 1672,
         },
@@ -1075,7 +1072,7 @@ export const siteContent: SiteContent = {
       // Completed — CP_Final pp.11-12.
       {
         id: "godrej-vihaa",
-        name: "Godrej Vihaa by Vakratunda",
+        name: "Godrej Vihaa",
         locality: "Badlapur",
         status: "Completed",
         blurb:
@@ -1313,15 +1310,15 @@ export const siteContent: SiteContent = {
       },
       {
         id: "skygarden-roof",
-        place: "Godrej Skygarden",
+        place: "Skygarden at Godrej Vihaa",
         image: {
           src: siteImage("skygarden6.png"),
-          alt: "The planted roof terrace at Godrej Skygarden, Badlapur, on the day it was handed over",
+          alt: "The planted roof terrace at Skygarden at Godrej Vihaa, Badlapur, on the day it was handed over",
           width: 2000,
           height: 1088,
         },
         // AUTHORED — factual, from the projects list.
-        caption: "Godrej Skygarden, Badlapur — the roof, handed over with pride.",
+        caption: "Skygarden at Godrej Vihaa, Badlapur — the roof, handed over with pride.",
       },
     ],
   },
@@ -1515,9 +1512,11 @@ export const siteContent: SiteContent = {
 
   /* ---- Joint ventures ---------------------------------------------------
      Sourced from CP_Final: the partners on p.13 ("Godrej Properties and
-     Shapoorji Pallonji Real Estate, among others") and the redevelopment
-     mandates on p.9. The photographs are the built work each partnership
-     produced, so the slide shows the venture rather than a logo. */
+     Shapoorji Pallonji Real Estate, among others"). Per MoM 2.5: Badlapur is
+     development management, not a joint venture; Shapoorji Pallonji is in
+     Khernagar, Bandra East; MHADA is not a joint venture and its slide is
+     gone; the school is not a venture either. The photographs are the built
+     work each partnership produced, so the slide shows it rather than a logo. */
   ventures: {
     heading: {
       before: "Built ",
@@ -1530,17 +1529,17 @@ export const siteContent: SiteContent = {
       {
         id: "godrej",
         partner: "Godrej Properties",
-        kicker: "Joint venture — Badlapur",
+        kicker: "Development management — Badlapur",
         stats: [
           { label: "Township", value: "20 acres" },
           { label: "Homes delivered", value: "1,400+" },
         ],
         blurb:
-          "Affordability and modern living on twenty acres — Vihaa delivered, Skygarden rising behind it.",
-        cta: { label: "Explore the township", href: "#projects" },
+          "Affordability and modern living on twenty acres — Godrej Vihaa delivered, Skygarden at Godrej Vihaa rising behind it.",
+        cta: { label: "Explore the township", href: "/projects" },
         image: {
           src: siteImage("jv/skygardens.png"),
-          alt: "Godrej Skygarden in Badlapur, a white mid-rise residential cluster",
+          alt: "Skygarden at Godrej Vihaa in Badlapur, a white mid-rise residential cluster",
           width: 941,
           height: 1672,
         },
@@ -1548,17 +1547,17 @@ export const siteContent: SiteContent = {
       {
         id: "shapoorji",
         partner: "Shapoorji Pallonji",
-        kicker: "Joint venture — Thane",
+        kicker: "Joint venture — Bandra East",
         stats: [
-          { label: "Frontage", value: "Kolshet Rd" },
-          { label: "Planned", value: "3 towers" },
+          { label: "Location", value: "Khernagar" },
+          { label: "Suburb", value: "Bandra East" },
         ],
         blurb:
-          "A residential address on Kolshet Road — global construction standards, grounded in our local legacy.",
-        cta: { label: "See the development", href: "#projects" },
+          "A residential address in Khernagar, Bandra East — global construction standards, grounded in our local legacy.",
+        cta: { label: "See the development", href: "/projects" },
         image: {
           src: siteImage("jv/shapoorji.png"),
-          alt: "Planned residential development on Kolshet Road, Thane",
+          alt: "Planned residential development in Khernagar, Bandra East",
           width: 941,
           height: 1672,
         },
@@ -1566,29 +1565,28 @@ export const siteContent: SiteContent = {
     ],
   },
 
-  /* ---- Vihaa International School ---------------------------------------
-     A joint venture. The note is CP_Final verbatim; everything marked
-     AUTHORED is new writing in the guide's voice and wants approving. The
-     partner is deliberately not named, and nothing here states a figure —
-     a year, a board, a roll — the group has not published.
-     Photographed on site; captions describe what is in the frame and claim
-     nothing beyond it. */
+  /* ---- Vihaa Innovative School -------------------------------------------
+     NOT a joint venture (MoM 2.5.2) — the group's own school. The note is
+     CP_Final verbatim; everything marked AUTHORED is new writing in the
+     guide's voice and wants approving. Nothing here states a figure — a year,
+     a board, a roll — the group has not published. Photographed on site;
+     captions describe what is in the frame and claim nothing beyond it. */
   vihaa: {
-    name: { mark: "Vihaa", rest: "International School" },
+    name: { mark: "Vihaa", rest: "Innovative School" },
     // AUTHORED.
     heading: { before: "Beyond homes, building ", swash: "lives", after: "" },
     // AUTHORED.
     standfirst:
-      "Vihaa International School in Badlapur is a joint venture we hold like every address that carries our name — built with devotion, and nurtured long after the opening day.",
+      "Vihaa Innovative School in Badlapur is held to the standard of every address that carries our name — built with devotion, and nurtured long after the opening day.",
     facts: [
-      { label: "Structure", value: "Joint venture" },
+      { label: "Part of", value: "Vakratunda Group" },
       { label: "Town", value: "Badlapur" },
     ],
     // CP_Final, verbatim.
     note: "A state-of-the-art institution designed to give young learners an environment worth arriving at.",
     cover: {
       src: siteImage("vihaa/children.jpg"),
-      alt: "A class of Vihaa International School pupils in blue uniform, laughing and making peace signs on the painted play surface of the school yard.",
+      alt: "A class of Vihaa Innovative School pupils in blue uniform, laughing and making peace signs on the painted play surface of the school yard.",
       width: 2560,
       height: 1707,
     },

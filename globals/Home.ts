@@ -629,7 +629,7 @@ export const Home: GlobalConfig = {
                           name: "name",
                           type: "text",
                           required: true,
-                          admin: { width: "40%", placeholder: "Anantaraa" },
+                          admin: { width: "40%", placeholder: "Vakratunda Anantaraa" },
                         },
                         {
                           name: "caption",

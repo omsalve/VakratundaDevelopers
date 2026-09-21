@@ -36,7 +36,7 @@ export const pressPage: PressPageContent = {
   seo: {
     title: "Press Room",
     description:
-      "Stories of Vakratunda Group's projects and partnerships, Vihaa International School among them — and direct contacts for media enquiries.",
+      "Stories of Vakratunda Group's projects and partnerships, Vihaa Innovative School among them — and direct contacts for media enquiries.",
   },
 
   hero: {
@@ -51,7 +51,7 @@ export const pressPage: PressPageContent = {
     label: "Coverage",
     heading: { before: "What has been ", swash: "written" },
     standfirst:
-      "Selected stories of our projects and partnerships, Vihaa International School among them.",
+      "Selected stories of our projects and partnerships, Vihaa Innovative School among them.",
     // ⚠️ PLACEHOLDER — see the notice at the head of this file.
     entries: [
       {
@@ -79,7 +79,7 @@ export const pressPage: PressPageContent = {
         id: "coverage-4",
         meta: "February 2024",
         title: "Why a developer takes a stake in a school",
-        note: "Western Suburbs Herald — on Vihaa International School in Badlapur.",
+        note: "Western Suburbs Herald — on Vihaa Innovative School in Badlapur.",
         state: "Print",
       },
     ],
@@ -159,7 +159,7 @@ export const awardsPage: AwardsPageContent = {
         id: "award-3",
         meta: "2023",
         title: "Education Project of the Year",
-        note: "Mumbai Build Excellence — for Vihaa International School.",
+        note: "Mumbai Build Excellence — for Vihaa Innovative School.",
         state: "Citation",
       },
     ],
