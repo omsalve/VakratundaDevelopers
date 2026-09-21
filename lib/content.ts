@@ -1392,18 +1392,20 @@ export const siteContent: SiteContent = {
     },
 
     leadership: [
+      // MoM 2.4.2: Khelaan Unadkat and Naimesh Tanna removed; Twinkle Unadkat
+      // and Dhawal Joshi added, with the designations the client gave. The
+      // one-line and bio copy for both is AUTHORED from the designation alone
+      // and claims nothing else — ⚠️ TO CONFIRM, with photographs (MoM 4.2).
       {
-        id: "khelaan-unadkat",
-        // CP_Final p.19, condensed.
-        name: "Mr. Khelaan Unadkat",
-        title: "Director",
-        superpower:
-          "A young, dynamic leader who adds energy and ideas to the group.",
-        bio: "A passion for scaling greater heights and setting higher standards, shaping our reputation.",
+        id: "twinkle-unadkat",
+        name: "Twinkle Unadkat",
+        title: "Vice President, Accounting & Finance",
+        superpower: "Keeping every project's numbers as sound as its structure.",
+        bio: "Leads accounting and finance across the group — the budgets, approvals and reporting every project runs on.",
         portrait: {
-          // TO SUPPLY (upload in /admin) → team/khelaan-unadkat.jpg
+          // TO SUPPLY (upload in /admin) → team/twinkle-unadkat.jpg
           src: "",
-          alt: "Portrait — Khelaan Unadkat, Director",
+          alt: "Portrait — Twinkle Unadkat, Vice President, Accounting & Finance",
           width: 1000,
           height: 1250,
         },
@@ -1425,17 +1427,15 @@ export const siteContent: SiteContent = {
         },
       },
       {
-        id: "naimesh-tanna",
-        // CP_Final p.19, condensed.
-        name: "Mr. Naimesh Tanna",
-        title: "Vice President, Operations",
-        superpower:
-          "From choosing the right land to handing over the keys.",
-        bio: "In real estate since 1998, Naimesh bridges management, partners and government — keeping every timeline honest.",
+        id: "dhawal-joshi",
+        name: "Dhawal Joshi",
+        title: "Vice President, Procurement",
+        superpower: "The right materials, at the right time, to the right standard.",
+        bio: "Leads procurement for every site — sourcing, vendor partnerships and the checks that come before anything is built.",
         portrait: {
-          // TO SUPPLY (upload in /admin) → team/naimesh-tanna.jpg
+          // TO SUPPLY (upload in /admin) → team/dhawal-joshi.jpg
           src: "",
-          alt: "Portrait — Naimesh Tanna, Vice President, Operations",
+          alt: "Portrait — Dhawal Joshi, Vice President, Procurement",
           width: 1000,
           height: 1250,
         },
