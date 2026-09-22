@@ -11,12 +11,13 @@ import TeamIcons from "./TeamIcons";
 import styles from "./TeamShowcase.module.css";
 
 /**
- * The team, as four slides.
+ * The team, as five slides: the introduction, the Chairman, the Director,
+ * the leadership and the core teams.
  *
  * It stands where the presence timeline stood, and it keeps that section's
  * one idea: A RULE WITH NODES ON IT, measuring a set. The rule used to be a
  * survey line and the nodes were localities; it is now the slideshow's own
- * control rail and the nodes are the four slides. Same grammar, same
+ * control rail and the nodes are the five slides. Same grammar, same
  * disclosure behaviour (usePopover, exactly as the stops used), same
  * two-layouts-from-one-markup construction — a different subject.
  *
@@ -32,7 +33,7 @@ import styles from "./TeamShowcase.module.css";
  *     below, so there is no timeline to get stuck inside.
  *
  *   · `.motion-on`, 64rem and up. The section grows to SPAN viewports, its
- *     stage goes sticky, and the four slides share one frame while the
+ *     stage goes sticky, and the five slides share one frame while the
  *     scroll cuts between them.
  *
  * ============================================================================
@@ -100,11 +101,12 @@ import styles from "./TeamShowcase.module.css";
    needing to be re-tuned to match.
    ========================================================================== */
 
-/** The four slides, in order. The labels are the rail's, and the accessible
+/** The five slides, in order. The labels are the rail's, and the accessible
  *  names of the slides themselves. */
 const SLIDES = [
   { id: "intro", label: "Introduction" },
   { id: "chairman", label: "Chairman" },
+  { id: "director", label: "Director" },
   { id: "leadership", label: "Leadership" },
   { id: "teams", label: "Core teams" },
 ] as const;
@@ -224,11 +226,11 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
 
       setStacked(true);
 
-      /* Empty for slide four, which is type alone — every tween
+      /* Empty for the last slide, which is type alone — every tween
          that moves a plate has to ask before it runs. */
       const plateOf = (slide: Element) => slide.querySelectorAll("[data-plate]");
 
-      /* The bodies of slides two to four are marked `data-reveal`, which the
+      /* The bodies of slides two to five are marked `data-reveal`, which the
          global stylesheet holds at opacity 0 under `motion-on` so the
          STANDING layout can bring them in one at a time. In this layout the
          slide itself owns visibility, so they are handed back visible before
@@ -444,7 +446,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
     return () => mm.revert();
   }, []);
 
-  const { chairman, leadership, roles, intro } = content;
+  const { chairman, director, leadership, roles, intro } = content;
 
   return (
     <section
@@ -524,9 +526,43 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
             </div>
           </Slide>
 
-          {/* ----------------------------------------- 3 · the leadership */}
+          {/* ------------------------------------------- 3 · the director
+              The Chairman's slide, mirrored: the words on the left and the
+              portrait on the right, so the two read as a pair rather than as
+              the same slide twice. No quote — her designation and her line
+              lead instead. */}
           <Slide
             index={2}
+            active={index}
+            stacked={stacked}
+            onMount={holdSlide}
+            className={styles.director}
+          >
+            <div className={styles.directorText} data-reveal="up">
+              <p className={`u-label ${styles.directorLabel}`}>{director.title}</p>
+              <h3 className={`u-h2 ${styles.directorName}`}>{director.name}</h3>
+              <p className={styles.directorLead}>{director.superpower}</p>
+              <p className={styles.bio}>{director.bio}</p>
+              <button
+                type="button"
+                className={styles.textCta}
+                onClick={() => goTo(3)}
+              >
+                {director.ctaLabel}
+                <Arrow />
+              </button>
+            </div>
+            <PortraitPlate
+              image={director.portrait}
+              name={director.name}
+              sizes="(max-width: 64rem) 60vw, 24vw"
+              className={styles.chairmanPlate}
+            />
+          </Slide>
+
+          {/* ----------------------------------------- 4 · the leadership */}
+          <Slide
+            index={3}
             active={index}
             stacked={stacked}
             onMount={holdSlide}
@@ -550,9 +586,9 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
             />
           </Slide>
 
-          {/* ---------------------------------------------- 4 · the teams */}
+          {/* ---------------------------------------------- 5 · the teams */}
           <Slide
-            index={3}
+            index={4}
             active={index}
             stacked={stacked}
             onMount={holdSlide}
@@ -589,11 +625,11 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
 
         {/* ---- The rail ---------------------------------------------------
             The presence timeline's survey line, kept: a rule with a node on
-            it for every item in the set. It measures four slides now instead
+            it for every item in the set. It measures five slides now instead
             of nine localities, and each node is the control that goes there.
 
             Not rendered in the standing layout — see the stylesheet. Every
-            slide is already on the page there, and a control rail for four
+            slide is already on the page there, and a control rail for five
             adjacent blocks is a navigation aid for a journey nobody is on. */}
         <nav className={styles.rail} aria-label="Team slides">
           <span className={styles.railTrack} aria-hidden="true">

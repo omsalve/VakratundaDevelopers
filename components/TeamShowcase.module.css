@@ -237,6 +237,51 @@
   border-color: var(--text-on-cream);
 }
 
+/* ---- 3 · Director --------------------------------------------------------
+   The Chairman's composition, mirrored. The type steps down from the
+   designation, to the name at the size the Chairman's quote is set, to her
+   line in the display italic. */
+.director {
+  display: grid;
+  gap: clamp(var(--space-7), 5vw, var(--space-10));
+  align-items: center;
+}
+
+.directorText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.directorLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--accent-deep);
+}
+
+.directorLabel::before {
+  content: "";
+  width: 2.25rem;
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+}
+
+.directorName {
+  margin: 0;
+  color: var(--text-on-cream);
+}
+
+.directorLead {
+  max-width: 30ch;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--accent-deep);
+}
+
 /* ---- 3 · Leadership -----------------------------------------------------
    Three panels, stacked, beside one photograph of the team. The panels are
    boxed here — a filled ground, a hairline, the house radius — so they read
@@ -541,6 +586,10 @@
     grid-template-columns: minmax(13rem, 0.42fr) minmax(0, 1fr);
   }
 
+  :global(.motion-on) .director {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.42fr);
+  }
+
   :global(.motion-on) .teams {
     display: grid;
     align-content: center;
@@ -721,7 +770,10 @@
   :global(.motion-on) .railStops {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* One column per slide, however many there are — the count lives in
+       TeamShowcase.tsx, not here. */
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -792,7 +844,8 @@
    ========================================================================== */
 @media (max-width: 63.99rem) {
   .intro,
-  .chairman {
+  .chairman,
+  .director {
     grid-template-columns: minmax(0, 1fr);
   }
 

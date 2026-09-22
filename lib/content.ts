@@ -456,6 +456,12 @@ export interface TeamInterstitial {
   subtext: string;
 }
 
+/** The Director, on a slide of her own after the Chairman's. */
+export interface TeamDirector extends TeamMember {
+  /** Hands on to the leadership slide, as the Chairman's control does. */
+  ctaLabel: string;
+}
+
 export interface TeamContent {
   /** Slide one, and the section's own <h2>. */
   heading: SwashHeading;
@@ -467,6 +473,8 @@ export interface TeamContent {
     ctaLabel: string;
   };
   chairman: TeamChairman;
+  /** Slide three. Required: the slide count sets the section's scroll length. */
+  director: TeamDirector;
   leadership: TeamMember[];
   /** Slide three's one photograph, beside the three leadership panels. */
   leadershipImage: ImageAsset;
@@ -1389,6 +1397,26 @@ export const siteContent: SiteContent = {
         width: 7008,
         height: 4672,
       },
+    },
+
+    // The Director, on a slide of her own between the Chairman and the
+    // leadership. Name and designation from the client; the two lines below
+    // are AUTHORED from the designation and claim nothing else —
+    // ⚠️ TO CONFIRM, with a photograph.
+    director: {
+      id: "anjana-makhecha",
+      name: "Anjana Makhecha",
+      title: "Director",
+      superpower: "Guiding the group's direction alongside the Chairman.",
+      bio: "As Director, Anjana Makhecha shares in the decisions that shape Vakratunda — the addresses it takes on, the partners it builds beside, and the standard every one of them is held to.",
+      portrait: {
+        // TO SUPPLY (upload in /admin) → team/anjana-makhecha.jpg
+        src: "",
+        alt: "Portrait — Anjana Makhecha, Director",
+        width: 1000,
+        height: 1250,
+      },
+      ctaLabel: "Meet the leadership",
     },
 
     leadership: [

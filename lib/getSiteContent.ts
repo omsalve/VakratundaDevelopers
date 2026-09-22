@@ -513,6 +513,10 @@ async function readSiteContent(): Promise<SiteContent> {
           fallback.team.chairman.ctaLabel,
         ),
       },
+      // Not a CMS field yet: a new group on the `home` global is a schema
+      // change on the live database, so the Director's slide ships with the
+      // site until one is made deliberately.
+      director: fallback.team.director,
       leadership:
         (home.team?.leadership ?? []).length > 0
           ? home.team!.leadership!.map((member, index) => {
