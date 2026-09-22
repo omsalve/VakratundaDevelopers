@@ -385,6 +385,50 @@
   color: var(--text-on-navy-muted);
 }
 
+/* ---- The brand lines ------------------------------------------------------
+   Two statements on one line, centred on the close's axis, in the display
+   italic at a size between the proofs and the quote, with a drawn rose petal
+   between them. They wrap to two centred lines on a phone. */
+.brandLines {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3) var(--space-6);
+  margin: var(--space-8) 0 0;
+  padding-top: var(--space-7);
+  border-top: var(--hairline) solid var(--navy-line-soft);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  line-height: 1.25;
+  color: var(--accent-rose);
+  text-align: center;
+}
+
+.brandLine {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+/* A four-point petal, drawn — the mark's own shape at the size of a bullet. */
+.brandMark {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  background: var(--accent-rose);
+  opacity: 0.7;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+
+@media (max-width: 47.99rem) {
+  .brandLine {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
+
 /* ---- The map and the address --------------------------------------------- */
 .inner {
   display: grid;
@@ -446,6 +490,19 @@
 
 .email:hover {
   border-bottom-color: var(--accent-rose);
+}
+
+.emailSecondary {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--fs-small);
+}
+
+.emailLabel {
+  font-size: 0.6875rem;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-on-navy-muted);
 }
 
 .addressLine {

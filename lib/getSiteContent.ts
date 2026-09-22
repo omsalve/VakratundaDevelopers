@@ -695,8 +695,11 @@ async function readSiteContent(): Promise<SiteContent> {
         ),
         href: text(home.finalCta?.ctaHref, fallback.finalCta.primaryCta.href),
       },
+      // Not CMS fields yet, for the same reason as the Director above.
+      brandLines: fallback.finalCta.brandLines,
       contact: {
         email: text(home.finalCta?.email, fallback.finalCta.contact.email),
+        rmoEmail: fallback.finalCta.contact.rmoEmail,
         addressLines: lines(
           home.finalCta?.addressLines,
           fallback.finalCta.contact.addressLines,

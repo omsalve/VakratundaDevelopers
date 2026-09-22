@@ -625,12 +625,16 @@ export interface ResponsibilityContent {
     lines they cannot. Shared by the close and the footer. */
 export interface Contact {
   email: string;
+  /** The RMO's own address (MoM 2.4.4), listed beside the general one. */
+  rmoEmail?: string;
   addressLines: string[];
 }
 
 export interface FinalCtaContent {
   quote: SwashHeading;
   attribution: string;
+  /** The group's standalone brand statements (MoM 2.4.3), set in the close. */
+  brandLines?: string[];
   proofs: { title: string; body: string }[];
   primaryCta: Cta;
   contact: Contact;
@@ -1772,6 +1776,8 @@ export const siteContent: SiteContent = {
       swash: "society",
     },
     attribution: "Vakratunda Group",
+    // MoM 2.4.3 — the group's two brand lines, set as standalone statements.
+    brandLines: ["Building Trust, Creating Future.", "Give the date, keep the date."],
     proofs: [
       {
         // CP_Final p.23.
@@ -1796,6 +1802,8 @@ export const siteContent: SiteContent = {
     // CP_Final p.26, verbatim.
     contact: {
       email: "info@vakratundagroup.com",
+      // MoM 2.4.4 — listed beside the general address in the close.
+      rmoEmail: "rmo@vakratundagroup.com",
       addressLines: ["Vakratunda CHS Ltd, Bandra East", "Mumbai — 400 051"],
     },
   },

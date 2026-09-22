@@ -25,6 +25,8 @@ import type { CareersPageContent, ContactPageContent } from "./types";
 import { siteImage } from "../siteImages";
 
 const OFFICE_EMAIL = "info@vakratundagroup.com";
+/** MoM 2.4.4. */
+const RMO_EMAIL = "rmo@vakratundagroup.com";
 
 export const careersPage: CareersPageContent = {
   seo: {
@@ -228,6 +230,15 @@ export const contactPage: ContactPageContent = {
         action: "Write",
       },
       {
+        // MoM 2.4.4 — its own address rather than the general inbox.
+        id: "rmo",
+        meta: "RMO",
+        title: "Write to our RMO",
+        note: `Reaches ${RMO_EMAIL} directly.`,
+        href: `mailto:${RMO_EMAIL}`,
+        action: "Write",
+      },
+      {
         id: "careers",
         meta: "Careers",
         title: "Building with us",
@@ -252,7 +263,7 @@ export const contactPage: ContactPageContent = {
         action: "Read",
       },
     ],
-    note: `Everything above reaches ${OFFICE_EMAIL}. There is no contact form on this site: an enquiry from a society committee is worth more than a form submission, and it is answered by a person.`,
+    note: `Everything above reaches ${OFFICE_EMAIL}, except the RMO line, which reaches ${RMO_EMAIL}. There is no contact form on this site: an enquiry from a society committee is worth more than a form submission, and it is answered by a person.`,
   },
 
   form: {

@@ -251,6 +251,22 @@ export function EnclosureFooter({
             </a>
             <p className={styles.attribution}>{content.attribution}</p>
           </div>
+
+          {/* The group's two brand lines, as standalone statements rather
+              than as copy attributed to anyone: set last in the close, under
+              the action, a drawn petal between them. */}
+          {content.brandLines && content.brandLines.length > 0 ? (
+            <p className={`${styles.block} ${styles.brandLines}`} style={step(4)}>
+              {content.brandLines.map((line, index) => (
+                <span key={line} className={styles.brandLine}>
+                  {index > 0 ? (
+                    <span className={styles.brandMark} aria-hidden="true" />
+                  ) : null}
+                  {line}
+                </span>
+              ))}
+            </p>
+          ) : null}
         </div>
 
         <div className={`u-shell ${styles.inner}`}>
@@ -268,6 +284,15 @@ export function EnclosureFooter({
               >
                 {content.contact.email}
               </a>
+              {content.contact.rmoEmail ? (
+                <a
+                  className={`${styles.email} ${styles.emailSecondary}`}
+                  href={`mailto:${content.contact.rmoEmail}`}
+                >
+                  <span className={styles.emailLabel}>RMO</span>
+                  {content.contact.rmoEmail}
+                </a>
+              ) : null}
               {content.contact.addressLines.map((line) => (
                 <span key={line} className={styles.addressLine}>
                   {line}
