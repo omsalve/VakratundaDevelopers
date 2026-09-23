@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import type { BlogPost, PageHeroContent } from "@/lib/pages";
 import type { SwashHeading } from "@/lib/content";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/lib/motion";
 import Swash from "@/components/Swash";
 import styles from "./BlogReadingRoom.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * /blogs — the reading room.
@@ -120,14 +120,13 @@ export function BlogReadingRoom({
           <article className={styles.lead}>
             <a className={styles.leadLink} href={`/blogs/${lead.slug}`}>
               <div className={styles.leadFrame}>
-                <Image
+                <FitImage
                   src={lead.image.src}
                   alt={lead.image.alt}
                   width={lead.image.width}
                   height={lead.image.height}
                   sizes="(max-width: 62rem) 92vw, 56vw"
-                  quality={82}
-                  priority
+                  loading="eager"
                   className={styles.leadImage}
                 />
               </div>
@@ -213,7 +212,7 @@ export function BlogReadingRoom({
                     {/* The picture comes last and small: on a reading list it
                         is a reminder, not the reason to open something. */}
                     <span className={styles.thumb} data-reveal="up">
-                      <Image
+                      <FitImage
                         src={post.image.src}
                         alt=""
                         width={post.image.width}

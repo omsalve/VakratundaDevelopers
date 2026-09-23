@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import type { CardItem } from "@/lib/pages";
 import type { ImageAsset, SwashHeading } from "@/lib/content";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/lib/motion";
 import Swash from "@/components/Swash";
 import styles from "./ExperiencesHours.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * /experiences — the day, hour by hour.
@@ -131,13 +131,12 @@ export function ExperiencesHours({
                   {/* The clipped box. The caption is deliberately OUTSIDE it —
                       see the note in the stylesheet. */}
                   <div className={styles.frame}>
-                    <Image
+                    <FitImage
                       src={figure.src}
                       alt={figure.alt}
                       width={figure.width}
                       height={figure.height}
                       sizes="(max-width: 62rem) 100vw, 62vw"
-                      quality={82}
                       className={styles.image}
                     />
                     {/* The scrim exists so the hour set over the photograph

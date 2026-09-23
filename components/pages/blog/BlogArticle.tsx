@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import type { BlogPost } from "@/lib/pages";
 import type { Cta } from "@/lib/content";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@/lib/motion";
 import Swash from "@/components/Swash";
 import styles from "./BlogArticle.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * /blogs/[slug] — one article.
@@ -142,14 +142,14 @@ export function BlogArticle({
 
         <figure className={styles.figure}>
           <div className={styles.frame}>
-            <Image
+            <FitImage
               src={post.image.src}
               alt={post.image.alt}
               width={post.image.width}
               height={post.image.height}
               sizes="(max-width: 62rem) 100vw, 76vw"
               quality={84}
-              priority
+              loading="eager"
               className={styles.image}
             />
           </div>

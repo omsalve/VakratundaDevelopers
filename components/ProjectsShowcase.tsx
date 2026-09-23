@@ -10,6 +10,7 @@ import { projectMapPoints } from "@/lib/mapPoints";
 import { gsap, useGsapScope } from "@/lib/motion";
 import { MapPinLayer } from "./LocationMap";
 import styles from "./ProjectsShowcase.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * Our Projects — the demo transition (demos/our-projects-transition), ported
@@ -484,13 +485,12 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           {slides.map((slide) => (
             <li key={slide.id} className={styles.item}>
               <div className={styles.card}>
-                <Image
+                <FitImage
                   src={slide.image.src}
                   alt={slide.image.alt}
                   width={slide.image.width}
                   height={slide.image.height}
                   sizes="(max-width: 48rem) 88vw, (max-width: 60rem) 44vw, 30rem"
-                  quality={82}
                   loading="lazy"
                   className={styles.cardImage}
                 />

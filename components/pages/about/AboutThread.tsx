@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import type { StoryContent } from "@/lib/pages";
 import {
   drawOnEnter,
@@ -13,6 +12,7 @@ import {
 } from "@/lib/motion";
 import Swash from "@/components/Swash";
 import styles from "./AboutThread.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * /about — the story, threaded on the line.
@@ -121,7 +121,7 @@ export function AboutThread({ content }: { content: StoryContent }) {
           {/* Sticky: the one thing that does not move while the prose runs. */}
           <figure className={styles.figure}>
             <div className={`p-plate ${styles.plate}`}>
-              <Image
+              <FitImage
                 className={styles.plateImage}
                 src={content.image.src}
                 alt={content.image.alt}

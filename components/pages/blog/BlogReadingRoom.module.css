@@ -229,6 +229,8 @@
 }
 
 .thumb {
+  /* FitImage fills this box absolutely. */
+  position: relative;
   display: block;
   width: clamp(5rem, 9vw, 7.5rem);
   aspect-ratio: 1;

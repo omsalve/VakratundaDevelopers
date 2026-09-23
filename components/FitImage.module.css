@@ -1,0 +1,48 @@
+/* ============================================================================
+   FitImage — the whole photograph, on a blurred bed of itself when the frame
+   is not its shape. See FitImage.tsx.
+   ========================================================================== */
+
+.fit {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  /* Keeps the bed's blur and the photograph's own layers inside the frame. */
+  isolation: isolate;
+}
+
+/* The bed: the same photograph, enlarged well past the frame so the blur has
+   no hard edge to show, softened and a little dimmed so the sharp photograph
+   in front of it reads as the picture and the bed as its surround. */
+.backdrop {
+  object-fit: cover;
+  transform: scale(1.25);
+  filter: blur(24px) saturate(1.15) brightness(0.82);
+  pointer-events: none;
+  user-select: none;
+}
+
+.fit[data-mode="cover"] .backdrop {
+  display: none;
+}
+
+/* Over the bed. The fit itself is set inline by the component. */
+.front {
+  z-index: 1;
+}
+
+/* A hairline of shadow either side of a photograph shown whole, so it reads
+   as a print laid on its own blur rather than a hole cut in it.
+
+   AND NOTHING MOVES IT. A frame's own hover zoom or scroll parallax is written
+   for a photograph that overfills the frame; applied to one shown whole it
+   would push its edges back out of the frame and cut them off again — which
+   is the one thing this component exists to prevent. `!important` because
+   those movements are usually written inline, by GSAP. */
+.fit[data-mode="contain"] .front {
+  filter: drop-shadow(0 10px 24px rgba(8, 12, 32, 0.35));
+  transform: none !important;
+  scale: none !important;
+  translate: none !important;
+}

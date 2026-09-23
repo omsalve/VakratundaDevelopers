@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import Image from "next/image";
 import clsx from "clsx";
 import type { VenturesContent } from "@/lib/content";
 import { revealOnEnter, useGsapScope } from "@/lib/motion";
 import Swash from "./Swash";
 import PageLink from "./PageLink";
 import styles from "./JointVentures.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * The joint ventures — one partnership at a time, in a single frame.
@@ -118,13 +118,12 @@ export function JointVentures({ content }: { content: VenturesContent }) {
 
               {/* Centre: the built work. */}
               <figure className={styles.frame}>
-                <Image
+                <FitImage
                   src={slide.image.src}
                   alt={slide.image.alt}
                   width={slide.image.width}
                   height={slide.image.height}
                   sizes="(max-width: 64rem) 86vw, 34vw"
-                  quality={82}
                   loading={index === 0 ? "eager" : "lazy"}
                   className={styles.image}
                 />

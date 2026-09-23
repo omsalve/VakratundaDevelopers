@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import clsx from "clsx";
 import styles from "./LocationMap.module.css";
+import FitImage from "@/components/FitImage";
 
 /**
  * An interactive overlay on a static map image. No map library, no tiles: a
@@ -680,23 +681,34 @@ export function MapPinLayer({
                   <p className={styles.description}>{point.description}</p>
                 )}
 
-                {/* The picture strip. One thumbnail runs wide; two or three
-                    share the width as squares — the grid decides, so the
-                    caller only sends pictures. The <li> is the box and holds
-                    its own aspect ratio, so the panel measures the same
-                    height whether the file has arrived or not. */}
+                {/* The picture strip. Up to three thumbnails share the width
+                    — the grid decides, so the caller only sends pictures.
+                    Each <li> is the box and takes its own photograph's shape
+                    (`--ratio`), so nothing is cropped or letterboxed, and the
+                    panel measures the same height whether the file has
+                    arrived or not. */}
                 {point.media && point.media.length > 0 && (
                   <ul className={styles.media} data-count={point.media.length}>
                     {point.media.map((shot) => (
-                      <li key={shot.id} className={styles.mediaItem}>
+                      <li
+                        key={shot.id}
+                        className={styles.mediaItem}
+                        style={
+                          shot.width && shot.height
+                            ? ({
+                                "--ratio": shot.width / shot.height,
+                              } as CSSProperties)
+                            : undefined
+                        }
+                      >
                         {revealed.has(point.id) && (
-                          <Image
+                          <FitImage
                             src={shot.src}
                             alt={shot.alt}
                             width={shot.width}
                             height={shot.height}
-                            sizes="180px"
-                            quality={70}
+                            sizes="(max-width: 47.99rem) 60vw, 20rem"
+                            quality={75}
                             loading="lazy"
                             className={styles.mediaImage}
                           />

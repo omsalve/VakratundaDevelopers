@@ -129,24 +129,6 @@
   margin-block-start: clamp(1rem, 4vh, 3rem);
 }
 
-/* The frames differ in shape as well as in width, so the rhythm survives even
-   where two entries happen to be the same size on screen. */
-.card[data-beat="0"] .frame {
-  aspect-ratio: 16 / 10;
-}
-
-.card[data-beat="1"] .frame {
-  aspect-ratio: 3 / 4;
-}
-
-.card[data-beat="2"] .frame {
-  aspect-ratio: 1 / 1;
-}
-
-.card[data-beat="3"] .frame {
-  aspect-ratio: 4 / 3;
-}
-
 /* ---- The entry ----------------------------------------------------------- */
 
 .cardInner {
@@ -156,8 +138,19 @@
   height: 100%;
 }
 
+/* THE FRAME IS THE PHOTOGRAPH'S SHAPE. `--ratio` is the file's own width
+   over height, set inline, so a tower shot tall stands in a tall frame and a
+   street shot wide in a wide one — nothing cropped, nothing letterboxed. The
+   rhythm is carried by the four widths above; the shapes now come from the
+   work itself. A tall photograph in a wide beat would run to several
+   screens, so the frame is held under --frame-max-h and narrows, keeping its
+   ratio, instead of growing taller. */
 .frame {
+  --frame-max-h: 78svh;
+
   position: relative;
+  width: min(100%, var(--frame-max-h) * var(--ratio, 4 / 3));
+  aspect-ratio: var(--ratio, 4 / 3);
   overflow: hidden;
   border-radius: var(--radius-m);
   background: var(--cream-300);
@@ -303,13 +296,8 @@
     margin-block-start: 0;
   }
 
-  /* One shape on a phone, so the column reads as a set rather than as four
-     unrelated crops. */
-  .card[data-beat="0"] .frame,
-  .card[data-beat="1"] .frame,
-  .card[data-beat="2"] .frame,
-  .card[data-beat="3"] .frame {
-    aspect-ratio: 4 / 3;
+  .frame {
+    --frame-max-h: 70svh;
   }
 }
 

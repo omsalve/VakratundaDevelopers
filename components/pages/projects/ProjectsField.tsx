@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { useMemo, useRef, useState, type CSSProperties } from "react";
 import clsx from "clsx";
 import type { ProjectSlide, ProjectStatus } from "@/lib/content";
 import { gsap, maskReveal, revealOnEnter, useGsapScope } from "@/lib/motion";
 import styles from "./ProjectsField.module.css";
+import FitImage from "@/components/FitImage";
 
 const STAGES: ProjectStatus[] = ["Ongoing", "Upcoming", "Completed"];
 
@@ -180,14 +180,22 @@ export function ProjectsField({
                   data-beat={index % 4}
                 >
                   <article className={styles.cardInner}>
-                    <div className={styles.frame}>
-                      <Image
+                    <div
+                      className={styles.frame}
+                      style={
+                        slide.image.width && slide.image.height
+                          ? ({
+                              "--ratio": slide.image.width / slide.image.height,
+                            } as CSSProperties)
+                          : undefined
+                      }
+                    >
+                      <FitImage
                         src={slide.image.src}
                         alt={slide.image.alt}
                         width={slide.image.width}
                         height={slide.image.height}
                         sizes="(max-width: 62rem) 92vw, 46vw"
-                        quality={82}
                         className={styles.image}
                       />
                     </div>
