@@ -98,6 +98,23 @@
   }
 }
 
+/* THE RUNWAY TAKES NO POINTER. Pulled back over the section above, the
+   wrapper and its runway are transparent boxes lying across that section's
+   pinned stage — painted above it, so they swallowed every click aimed at it
+   long before the disc had drawn anything there. On the projects stage that
+   was the pins and the "See every address" link, dead from the frame the
+   runway's top edge crossed them (07 of 09) to the end of the sequence. The
+   disc is drawing and the sentence is already `pointer-events: none`, so
+   nothing in the runway ever needs a pointer; the children below it do, and
+   get it back. */
+:global(.motion-on) .wrap {
+  pointer-events: none;
+}
+
+:global(.motion-on) .wrap > :not(.reveal) {
+  pointer-events: auto;
+}
+
 /* Below 60rem the runway opens on the page's own navy with nothing held
    behind it, so the full span was two and a half screens of empty ground on
    a phone. Two viewports is the whole runway there — one of arc, one of
