@@ -239,6 +239,20 @@ export interface ConceptContent {
 
 export type ProjectStatus = "Completed" | "Ongoing" | "Upcoming";
 
+/**
+ * THE WHOLE PORTFOLIO, BY STAGE — as agreed with the client (MoM 2.6).
+ *
+ * The site lists only the projects it has photography for, so counting the
+ * listing would under-report the practice (it said 5 / 2 / 2). These are the
+ * figures the /projects tally states; the filter beside the cards still
+ * counts the cards, so a filter never promises more than it shows.
+ */
+export const portfolioCounts: Record<ProjectStatus, number> = {
+  Completed: 21,
+  Ongoing: 3,
+  Upcoming: 3,
+};
+
 export interface ProjectSlide {
   id: string;
   name: string;

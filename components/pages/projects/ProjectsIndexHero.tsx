@@ -1,12 +1,16 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-import Image from "next/image";
 import type { PageHeroContent } from "@/lib/pages";
-import type { ProjectSlide, ProjectStatus } from "@/lib/content";
+import {
+  portfolioCounts,
+  type ProjectSlide,
+  type ProjectStatus,
+} from "@/lib/content";
 import { gsap, maskReveal, useGsapScope } from "@/lib/motion";
 import Swash from "@/components/Swash";
 import styles from "./ProjectsIndexHero.module.css";
+import FitImage from "@/components/FitImage";
 
 const STAGES: ProjectStatus[] = ["Completed", "Ongoing", "Upcoming"];
 
@@ -46,11 +50,16 @@ export function ProjectsIndexHero({
 }) {
   const root = useRef<HTMLElement | null>(null);
 
+  /* The WHOLE portfolio, as agreed with the client (MoM 2.6) — not a count
+     of the cards below, which list only the projects with photography. A
+     stage the agreed figures leave out falls back to counting the cards. */
   const tally = useMemo(
     () =>
       STAGES.map((status) => ({
         status,
-        count: slides.filter((slide) => slide.status === status).length,
+        count:
+          portfolioCounts[status] ??
+          slides.filter((slide) => slide.status === status).length,
       })).filter((row) => row.count > 0),
     [slides],
   );
@@ -156,8 +165,18 @@ export function ProjectsIndexHero({
       <div className={styles.sheet} aria-hidden="true">
         <div className={styles.track}>
           {slides.map((slide) => (
-            <span key={slide.id} className={styles.thumb}>
-              <Image
+            <span
+              key={slide.id}
+              className={styles.thumb}
+              style={
+                slide.image.width && slide.image.height
+                  ? ({
+                      "--ratio": slide.image.width / slide.image.height,
+                    } as React.CSSProperties)
+                  : undefined
+              }
+            >
+              <FitImage
                 src={slide.image.src}
                 alt=""
                 width={slide.image.width}

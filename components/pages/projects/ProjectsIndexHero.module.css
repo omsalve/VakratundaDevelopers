@@ -112,11 +112,16 @@
   will-change: transform;
 }
 
+/* One height for the whole strip, and each frame as wide as its own
+   photograph's shape makes it (`--ratio`, set inline) — a contact sheet shows
+   the prints as they were taken, not cropped to one format. */
 .thumb {
+  /* FitImage fills this box absolutely. */
+  position: relative;
   display: block;
   flex: none;
-  width: clamp(7rem, 13vw, 11rem);
-  aspect-ratio: 4 / 3;
+  height: clamp(5.25rem, 9.75vw, 8.25rem);
+  aspect-ratio: var(--ratio, 4 / 3);
   overflow: hidden;
   border-radius: var(--radius-s);
   background: var(--cream-300);
