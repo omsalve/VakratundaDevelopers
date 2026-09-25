@@ -1,37 +1,35 @@
 /* ============================================================================
-   ConceptShowcase — a very large headline over a deliberately small plate.
+   ConceptShowcase — Enclaves Living: the flagships on one centre line.
 
-   Every resting state lives here, keyed off `data-active`. GSAP paints over
-   these rules for the length of a cut and then calls `clearProps`, handing
-   the slide back. Nothing in this file assumes the script ran: with no JS the
-   buttons are ordinary buttons and the change is a plain cut.
+   EVERY PLATE IS PLACED FROM TWO NUMBERS. `--tx` is the side it stands on
+   (-1 left, 0 centre, 1 right) and `--k` how far it has shrunk towards a side
+   plate's size (0 whole, 1 side-sized, more for a plate put away behind the
+   centre). `data-slot` declares their resting values, so the row is laid out
+   on the first paint with no script; ConceptShowcase.tsx tweens the same two
+   numbers between those values, and the transform below does the rest
+   against the live plate width — which is why a resize never needs a script.
    ========================================================================== */
 
 .showcase {
-  /* The plate's width, in one place: the frame is set from it and the caption
-     is measured against it, so the two cannot drift apart. */
-  --plate-w: clamp(16rem, 26vw, 24rem);
+  /* The centre plate's width, and the side plates' scale and spacing. */
+  --plate-w: clamp(16rem, 27vw, 25rem);
+  --side: 0.72;
+  --gap: clamp(1.25rem, 2.6vw, 2.75rem);
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* ONE interval, not a uniform one. This gap binds plate → caption → controls
-     into a single object; the headline is pushed clear of it by the frame's
-     own margin below. A single gap for all four parts made the caption and the
-     dots read as three separate things stacked at the same distance. */
   gap: var(--space-5);
   width: 100%;
-  margin-top: var(--space-11);
+  margin-top: var(--space-9);
 }
 
 /* ---- The headline -------------------------------------------------------- */
 
-/* Deliberately off the type scale, and larger than the page's own h1. The
-   scale tops out at --fs-display (6rem); this goes past it because it is
-   playing against a plate a fifth of its width — the gap between the two is
-   the effect, and closing it would leave an ordinary captioned figure. */
+/* Deliberately off the type scale, and larger than the page's own h1: the
+   gap between it and the plates is the effect. */
 .heading {
-  margin: 0;
+  margin: 0 0 var(--space-4);
   font-family: var(--font-display);
   font-size: clamp(3rem, 1.4rem + 5.4vw, 6rem);
   line-height: 0.94;
@@ -39,207 +37,353 @@
   font-weight: 400;
   text-align: center;
   text-wrap: balance;
-  /* Tight enough that "Enclaves Living." always breaks into its two words,
-     which is the line the plate below is centred under; loose enough that a
-     longer heading from the CMS still sets sensibly. */
+  /* Tight enough that "Enclaves Living." always breaks into its two words. */
   max-width: 10ch;
   color: var(--text-on-cream);
 }
 
-/* ---- The frame ----------------------------------------------------------- */
+/* ---- The stage ----------------------------------------------------------- */
 
-.frame {
+/* Every plate in the same grid cell, centred: the cell is the centre plate's
+   size, and the side plates are carried out of it by transform alone. So they
+   share its centre line exactly, at every width. */
+.stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding-block: var(--space-3);
+  /* A swipe is ours; a vertical drag is still the page's scroll. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.card {
+  --tx: 0;
+  --k: 0;
+  --rise: 0px;
+
+  grid-area: 1 / 1;
   position: relative;
   width: min(var(--plate-w), 100%);
-  /* PORTRAIT, BECAUSE THE SUBJECT IS. Every photograph in this set is a tower
-     shot from the street, and a 16:9 letterbox at this width kept a horizontal
-     band of façade and threw away the building. 4:5 is the ratio the pictures
-     are already cut to, so the plate crops nothing it does not mean to. */
   aspect-ratio: 4 / 5;
+  /* Out by half the centre plate, the gap, and half a side plate — in the
+     plate's own width for the two halves, so the side plate's inner edge
+     always stands exactly one gap clear of the centre plate's. */
+  transform: translate3d(
+      calc(var(--tx) * (50% + 50% * var(--side)) + var(--tx) * var(--gap)),
+      var(--rise),
+      0
+    )
+    scale(calc(1 - (1 - var(--side)) * var(--k)));
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+.card[data-slot="center"] {
+  --tx: 0;
+  --k: 0;
+  z-index: 3;
+}
+
+.card[data-slot="left"] {
+  --tx: -1;
+  --k: 1;
+  z-index: 2;
+}
+
+.card[data-slot="right"] {
+  --tx: 1;
+  --k: 1;
+  z-index: 2;
+}
+
+.card[data-slot="hidden"] {
+  --tx: 0;
+  --k: 2.2;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The plate crossing behind the centre goes under everything on its way. */
+.card[data-crossing="true"] {
+  z-index: 0;
+}
+
+.plate {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  /* The interval the headline gets, on top of the stack's own gap: the space
-     between the two is the composition, so it is the one that is larger. */
-  margin-block-start: var(--space-4);
   background: var(--cream-300);
-  /* The guide rounds one corner hard and leaves the others square (pp.4, 13).
-     Scaled down from the section's larger figures — at this width the full
-     --radius-xl would eat the picture. */
+  /* The guide rounds one corner hard and leaves the others square. */
   border-radius: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
-  box-shadow: 0 18px 44px -24px rgba(15, 20, 48, 0.55);
-  /* Keeps the seam's z-index inside the frame rather than in the section's
-     stacking context, where it would sit above the sticky header. */
+  box-shadow: 0 22px 50px -26px rgba(15, 20, 48, 0.55);
+  /* Keeps the plate's layers inside it rather than in the section's stacking
+     context, where they could sit above the fixed header. */
   isolation: isolate;
 }
 
-.slide {
+.shot {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.slide[data-active="true"] {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* The element the counter-move is applied to. Separate from `.slide` so the
-   wipe (a clip on the slide) and the camera move (a transform on the inner)
-   never fight over the same property. */
-.slideInner {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
 }
 
 .image {
   object-fit: cover;
-  /* Only bites when a source is taller than the plate. When it does, the top
-     of the building is worth more than the pavement at its foot. */
+  /* The top of the building is worth more than the pavement at its foot. */
   object-position: 50% 45%;
-}
-
-/* The hairline of light pinned to the wipe edge. Zero width plus a spread
-   shadow, so it is a glow with a hard centre rather than a bar. */
-.seam {
-  position: absolute;
-  top: -10%;
-  bottom: -10%;
-  left: 0;
-  width: 1px;
-  z-index: 3;
-  opacity: 0;
   pointer-events: none;
-  background: var(--cream-100);
-  box-shadow:
-    0 0 6px 1px rgba(246, 245, 242, 0.75),
-    0 0 22px 6px rgba(228, 168, 161, 0.35);
 }
 
-/* ---- The caption --------------------------------------------------------- */
-
-/* A mask, not a fade: the lines are pulled through it. Sized by the longest
-   caption in flow so the block never changes height mid-cut. */
-.captions {
-  position: relative;
-  overflow: hidden;
-  /* Ranged to the plate rather than to the page: wide enough that every
-     caption in the set holds one line here, narrow enough that the block
-     still reads as this picture's caption and not the section's. */
-  width: min(30rem, 100%);
-  /* The captions are out of flow, so the block needs a height of its own.
-     One line at the size and leading below, with a little air — the mask
-     clips, so a short value cuts a caption off rather than wrapping it. The
-     phone width, where they take two lines, raises it. */
-  font-size: var(--fs-small);
-  line-height: var(--lh-caption);
-  min-height: 1.7em;
-  margin: 0;
-  text-align: center;
-}
-
-.caption {
+/* The side plates recede under a cream veil and come forward through it on
+   hover; the centre plate has none. */
+.veil {
   position: absolute;
   inset: 0;
-  display: flex;
-  /* Centred, not top-ranged: the box is sized for the longest caption, so a
-     shorter one would otherwise hang off the top of a pocket of air. */
-  align-items: center;
-  justify-content: center;
+  background: var(--cream-200);
   opacity: 0;
-  font-family: var(--font-display);
-  font-style: italic;
-  color: var(--text-on-cream-muted);
+  pointer-events: none;
+  transition: opacity 900ms var(--ease-out-quint);
 }
 
-.caption[data-active="true"] {
+.card[data-slot="left"] .veil,
+.card[data-slot="right"] .veil {
+  opacity: 0.38;
+}
+
+.card[data-slot="left"]:hover .veil,
+.card[data-slot="right"]:hover .veil {
+  opacity: 0.12;
+}
+
+/* The side plate's name, and the arrow that says it can be brought forward. */
+.chip {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.45em 0.9em;
+  border-radius: var(--radius-pill);
+  background: rgba(12, 18, 48, 0.78);
+  color: var(--cream-100);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) ease,
+    transform var(--dur-base) var(--ease-out-expo);
+}
+
+.card[data-slot="left"] .chip,
+.card[data-slot="right"] .chip {
+  opacity: 0.9;
+  transform: none;
+}
+
+.card[data-slot="left"]:hover .chip,
+.card[data-slot="right"]:hover .chip {
   opacity: 1;
 }
 
-/* ---- The control --------------------------------------------------------- */
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  /* The marks sit 21px inside their own hit areas. Without this the row reads
-     as twice the distance from the caption that every other gap here is. */
-  margin-block-start: calc(var(--space-4) * -1);
-}
-
-/* Generous hit area, hairline mark — the target is 44px, what you see is 2px
-   of rule. */
-.dot {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
+.cardButton {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   padding: 0;
   border: 0;
   background: none;
   cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
+  border-radius: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
 }
 
-.dotMark {
-  display: block;
-  width: 14px;
-  height: 2px;
-  background: var(--accent-deep);
-  opacity: 0.3;
+/* ---- The caption --------------------------------------------------------- */
+
+/* The captions are stacked in one cell and the live one fades up into it,
+   so the block never changes height as they change. */
+.captions {
+  display: grid;
+  width: min(30rem, 100%);
+  margin: var(--space-2) 0 0;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  text-align: center;
+}
+
+.caption {
+  grid-area: 1 / 1;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-on-cream-muted);
+  opacity: 0;
+  transform: translateY(8px);
   transition:
-    width 420ms var(--ease-out-quint),
-    opacity 420ms ease;
+    opacity 600ms ease,
+    transform 800ms var(--ease-out-expo);
 }
 
-.dot[data-active="true"] .dotMark {
-  width: 34px;
+.caption[data-active="true"] {
   opacity: 1;
+  transform: none;
+  transition-delay: 250ms;
 }
 
-.dot:hover .dotMark {
-  opacity: 0.65;
+/* ---- The controls ---------------------------------------------------------
+   Arrows either side of the flagships' names. The names ARE the buttons that
+   bring a flagship to the centre; the active one is filled.
+
+   SYMMETRICAL ABOUT THE PLATES' CENTRE LINE. Every name gets the same width
+   (`--count` equal columns, set inline), whatever its length, so the middle
+   name sits on the centre plate's axis, the outer two mirror each other, and
+   the arrows hang the same distance off either end. */
+
+.controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 100%;
 }
 
-.dot[data-active="true"]:hover .dotMark {
-  opacity: 1;
+.names {
+  display: grid;
+  grid-template-columns: repeat(var(--count, 3), minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: var(--hairline) solid var(--cream-line);
+  border-radius: var(--radius-pill);
+  background: var(--cream-100);
 }
 
-.dot:focus-visible {
+.name {
+  min-height: 2.5rem;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-on-cream-muted);
+  font: inherit;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-ui);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) ease;
+}
+
+.name:hover {
+  color: var(--text-on-cream);
+  background: rgba(168, 87, 76, 0.08);
+}
+
+.name.isActive {
+  background: var(--accent-deep);
+  color: var(--cream-100);
+}
+
+.name:focus-visible,
+.arrow:focus-visible {
   outline: 2px solid var(--accent-deep);
-  outline-offset: -6px;
-  border-radius: var(--radius-s);
+  outline-offset: 2px;
 }
 
-/* ---- Responsive ---------------------------------------------------------- */
+.arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--accent-deep);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) ease;
+}
 
+.arrow:hover {
+  background: var(--accent-deep);
+  color: var(--cream-100);
+}
+
+/* ---- Phones ---------------------------------------------------------------
+   The centre plate takes most of the width and the side plates peek in from
+   the window's edges: the stage runs out to the edges of the window and
+   clips there, so there is always a plate either side to reach for. */
 @media (max-width: 47.99rem) {
   .showcase {
+    --plate-w: min(62vw, 17rem);
+    --side: 0.66;
+    --gap: 0.75rem;
+    margin-top: var(--space-8);
     gap: var(--space-4);
-    margin-top: var(--space-9);
-    --plate-w: 20rem;
   }
+
   .heading {
     font-size: clamp(2.75rem, 12vw, 4.5rem);
     max-width: 9ch;
   }
-  /* Two lines at this width, and the mask clips: an em short here and the
-     second line is cut off rather than wrapped. */
-  .captions {
-    min-height: 2.9em;
+
+  .stage {
+    width: calc(100% + var(--gutter) * 2);
+    margin-inline: calc(var(--gutter) * -1);
+    overflow-x: clip;
+  }
+
+  /* The names take the full width on a row of their own, and the two arrows
+     sit under them, centred as a pair — still one axis, still mirrored. */
+  .controls {
+    grid-template-columns: 1fr auto auto 1fr;
+    width: 100%;
+  }
+
+  .names {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    border-radius: var(--radius-l);
+  }
+
+  .arrow:first-child {
+    grid-row: 2;
+    grid-column: 2;
+  }
+
+  .arrow:last-child {
+    grid-row: 2;
+    grid-column: 3;
+  }
+
+  /* Equal columns on a phone are narrow, so a long name breaks onto a second
+     line inside its own button rather than pushing the row off the glass. */
+  .name {
+    padding: var(--space-2);
+    border-radius: calc(var(--radius-l) - 4px);
+    letter-spacing: 0;
+    line-height: 1.2;
+    white-space: normal;
+    text-wrap: balance;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .slideInner {
+  .card {
     will-change: auto;
   }
-  .dotMark {
+  .veil,
+  .chip,
+  .caption,
+  .name,
+  .arrow {
     transition: none;
-  }
-  /* The seam only ever exists inside a cut that is not run at all here. */
-  .seam {
-    display: none;
   }
 }
