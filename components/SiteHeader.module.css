@@ -1,76 +1,153 @@
+/* ============================================================================
+   SiteHeader — a floating capsule of navy glass.
+
+   THE MASTHEAD MEASURES --header-h, EXACTLY: the capsule is inset from the
+   window's top by --space-3 and is --header-h less that tall, so every section
+   that clears the header is still correct by construction.
+
+   IT TAKES THE COLOUR OF WHAT IS BEHIND IT. SiteHeader.tsx samples the
+   ground under the capsule as the page scrolls and writes it here as
+   `--ground` (an "r g b" triple) and `data-tone` (dark or light). The glass is
+   that ground at about two-thirds opacity, so the capsule reads as a pane of
+   the page rather than a bar laid across it; the tone flips the type, the
+   hairlines and the logo between the navy and cream palettes. Every one of
+   those changes is transitioned, so crossing from navy to cream is a fade,
+   not a cut.
+   ========================================================================== */
+
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: var(--z-header);
-  transition:
-    background-color var(--dur-slow) var(--ease-out-expo),
-    border-color var(--dur-slow) var(--ease-out-expo),
-    backdrop-filter var(--dur-slow) var(--ease-out-expo);
-  border-bottom: var(--hairline) solid transparent;
+  padding-top: var(--space-3);
+  padding-inline: clamp(0.625rem, 2vw, var(--space-6));
+  pointer-events: none;
+  --progress: 0;
+  /* Until the first sample: the navy the landing page opens on. */
+  --ground: 22 30 65;
+  --glass-alpha: 0.66;
+  --tone-dur: 650ms;
+
+  /* The dark palette — type and line-work for a navy ground. */
+  --hd-border: rgba(228, 168, 161, 0.18);
+  --hd-track-bg: rgba(255, 255, 255, 0.04);
+  --hd-track-line: rgba(228, 168, 161, 0.12);
+  --hd-indicator-bg: rgba(228, 168, 161, 0.14);
+  --hd-indicator-ring: rgba(228, 168, 161, 0.32);
+  --hd-current: var(--accent-rose-bright);
+  --hd-toggle: var(--accent-rose);
+  --hd-toggle-bg: rgba(228, 168, 161, 0.08);
+  --hd-panel-bg: rgba(12, 18, 48, 0.94);
+  --hd-shadow: rgba(6, 9, 26, 0.55);
 }
 
-.isScrolled {
-  background: rgba(12, 18, 48, 0.78);
-  backdrop-filter: blur(16px) saturate(1.15);
-  -webkit-backdrop-filter: blur(16px) saturate(1.15);
-  border-bottom-color: var(--navy-line-soft);
+/* The light palette — the same tokens re-pointed for a cream ground, the way
+   `.on-cream` does it, so the logo and the type need no branches of their
+   own. */
+.header[data-tone="light"] {
+  --text-on-navy: var(--text-on-cream);
+  --text-on-navy-muted: var(--text-on-cream-muted);
+  --accent-text: var(--accent-deep);
+  --navy-line: rgba(15, 20, 48, 0.14);
+  --navy-line-soft: rgba(15, 20, 48, 0.07);
+
+  --hd-border: rgba(15, 20, 48, 0.12);
+  --hd-track-bg: rgba(15, 20, 48, 0.035);
+  --hd-track-line: rgba(15, 20, 48, 0.08);
+  --hd-indicator-bg: rgba(168, 87, 76, 0.1);
+  --hd-indicator-ring: rgba(168, 87, 76, 0.36);
+  --hd-current: var(--accent-deep);
+  --hd-toggle: var(--accent-deep);
+  --hd-toggle-bg: rgba(168, 87, 76, 0.08);
+  --hd-panel-bg: rgba(253, 252, 250, 0.94);
+  --hd-shadow: rgba(15, 20, 48, 0.22);
 }
 
-/* THE ROW IS --header-h, exactly, at every viewport. It used to be derived the
-   other way round — padding plus whatever the tallest child measured — which
-   worked only while every child was a fixed pixel size. The brand now clamps
-   with the viewport, so the row states its height and the lockup composes
-   inside it. Sections that clear the header are correct by construction
-   instead of by a number that happened to match. */
-.inner {
+.bar {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  /* Less the hairline the header draws under itself, so the whole masthead
-     measures --header-h and the sections that clear it are not a pixel short. */
-  height: calc(var(--header-h) - var(--hairline));
-  max-width: var(--maxw);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  height: calc(var(--header-h) - var(--space-3));
+  max-width: calc(var(--maxw) + var(--space-6));
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-inline: clamp(var(--space-4), 2vw, var(--space-6)) var(--space-2);
+  border: var(--hairline) solid var(--hd-border);
+  border-radius: var(--radius-pill);
+  /* The ground behind, as glass. The blur is what keeps the type legible
+     over whatever scrolls under it. */
+  background-color: rgb(var(--ground) / var(--glass-alpha));
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 18px 44px -22px var(--hd-shadow);
+  pointer-events: auto;
+  transition:
+    background-color var(--tone-dur) ease,
+    border-color var(--tone-dur) ease,
+    box-shadow var(--tone-dur) ease;
 }
 
-/* ---- The brand ----------------------------------------------------------
-   THE MASTHEAD IS THE MARK, so it is given the room to be one. Two things
-   make it read at size rather than merely measure large:
+.isScrolled .bar {
+  --glass-alpha: 0.7;
+}
 
-   · Flex, not inline. `.logo` is inline-flex, so as an inline child it sat on
-     a text baseline and carried a descender's worth of dead space under it —
-     which is what set the header's height, not the artwork. As a flex item it
-     does not, and --header-h is now exactly the mark plus its padding.
+/* ---- The scroll hairline -------------------------------------------------
+   Along the capsule's foot, inset from its rounded ends so it never runs into
+   the curve. Filled from the left by --progress, written by the component. */
+.progress {
+  position: absolute;
+  left: 1.75rem;
+  right: 1.75rem;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(228, 168, 161, 0),
+    var(--accent-rose) 12%,
+    var(--accent-rose-bright)
+  );
+  transform: scaleX(var(--progress));
+  transform-origin: left center;
+  opacity: 0.85;
+  pointer-events: none;
+}
 
-   · A drop shadow, but only over the hero. The mark is rose line-work at a
-     hairline weight and the opening viewport behind it is a photograph of a
-     sky with clouds moving through it. Over that it needs a ground of its
-     own; over the navy plate it does not, and the shadow lifts away as the
-     plate arrives. It is legibility, not decoration — which is why it is the
-     one thing here that changes with scroll. */
+/* ---- The brand ----------------------------------------------------------- */
 .brand {
   display: flex;
   flex: none;
   text-decoration: none;
-  filter: drop-shadow(0 1px 12px rgba(8, 12, 32, 0.6));
-  transition: filter var(--dur-slow) var(--ease-out-expo);
+  border-radius: var(--radius-pill);
 }
 
-.isScrolled .brand {
-  filter: drop-shadow(0 1px 12px rgba(8, 12, 32, 0));
+.brand:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 6px;
+}
+
+/* The lockup's colour follows the tone. */
+.brand * {
+  transition: color var(--tone-dur) ease;
 }
 
 /* The mark is bi-axially symmetric — a half turn lands it exactly on itself,
    and all that moves is the rose-to-silver gradient running through the
    line-work. So the hover is a mark that turns and is unchanged: the light
-   crosses it and settles. Nothing jumps, because there is no second position.
-   Verified against the asset's own alpha: 2.5% mismatch at 180°, which is the
-   gradient and the antialiasing, not the drawing. */
+   crosses it and settles.
+
+   SLOW, AND EASED BOTH WAYS. It used to snap round in a second on an expo
+   curve, which spent most of the half turn in its first few frames and read
+   as a twitch. It now takes two and a half seconds on an in-out curve — it
+   gathers, turns, and settles — so it reads as the light moving rather than
+   the mark being flicked. */
 .brandMark {
-  transition: rotate 1.1s var(--ease-out-expo);
+  transition:
+    rotate 2.6s cubic-bezier(0.65, 0, 0.35, 1),
+    color var(--tone-dur) ease;
 }
 
 .brand:hover .brandMark,
@@ -78,14 +155,49 @@
   rotate: 180deg;
 }
 
-/* ---- Desktop nav -------------------------------------------------------- */
+/* ---- Desktop nav --------------------------------------------------------- */
 .nav {
   margin-left: auto;
 }
 
+.track {
+  position: relative;
+  padding: 4px;
+  border: var(--hairline) solid var(--hd-track-line);
+  border-radius: var(--radius-pill);
+  background: var(--hd-track-bg);
+  transition:
+    background-color var(--tone-dur) ease,
+    border-color var(--tone-dur) ease;
+}
+
+/* The indicator. It slides between links rather than appearing under each —
+   one object travelling, which is what makes the row read as one control. */
+.indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  border-radius: var(--radius-pill);
+  background: var(--hd-indicator-bg);
+  box-shadow: inset 0 0 0 1px var(--hd-indicator-ring);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 520ms var(--ease-out-quint),
+    width 520ms var(--ease-out-quint),
+    opacity var(--dur-base) ease,
+    background-color var(--tone-dur) ease,
+    box-shadow var(--tone-dur) ease;
+}
+
+.indicator[data-on="true"] {
+  opacity: 1;
+}
+
 .list {
   display: flex;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -93,28 +205,19 @@
 
 .link {
   position: relative;
-  display: inline-block;
-  padding-block: var(--space-1);
+  display: inline-flex;
+  align-items: center;
+  height: 2.375rem;
+  padding-inline: clamp(0.875rem, 1.4vw, 1.25rem);
+  border-radius: var(--radius-pill);
   font-size: var(--fs-small);
   letter-spacing: var(--tracking-ui);
   color: var(--text-on-navy);
   text-decoration: none;
-  opacity: 0.82;
-  transition: opacity var(--dur-fast) ease;
-}
-
-/* Rose rule wipes in from the left rather than fading. */
-.link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent-rose);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-base) var(--ease-out-expo);
+  opacity: 0.78;
+  transition:
+    opacity var(--dur-fast) ease,
+    color var(--tone-dur) ease;
 }
 
 .link:hover,
@@ -122,62 +225,92 @@
   opacity: 1;
 }
 
-.link:hover::after,
-.link:focus-visible::after {
-  transform: scaleX(1);
+.link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--hd-current);
 }
 
-/* The route the visitor is on. It is not a new state — it is the hover rule,
-   already ruled: the rose underline stays drawn and the label sits at full
-   opacity, so "you are here" and "you are pointing at this" are the same
-   mark, one of them permanent. */
+/* The route the visitor is on: full opacity and the rose, with the indicator
+   resting under it. */
 .isCurrent {
   opacity: 1;
+  color: var(--hd-current);
 }
 
-.isCurrent::after {
-  transform: scaleX(1);
-}
-
+/* ---- The one action ------------------------------------------------------ */
 .cta {
   flex: none;
-  padding: var(--space-2) var(--space-5);
-  border: var(--hairline) solid var(--accent-rose);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 2.875rem;
+  padding: 0 5px 0 var(--space-5);
   border-radius: var(--radius-pill);
-  color: var(--accent-rose);
+  background: var(--accent-rose);
+  color: var(--navy-900);
   font-size: var(--fs-small);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: var(--tracking-ui);
   text-decoration: none;
+  box-shadow: 0 10px 26px -14px rgba(228, 168, 161, 0.7);
   transition:
     background-color var(--dur-base) var(--ease-out-expo),
-    color var(--dur-base) var(--ease-out-expo);
+    box-shadow var(--dur-base) var(--ease-out-expo);
+}
+
+.ctaIcon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--navy-900);
+  color: var(--accent-rose);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
 }
 
 .cta:hover,
 .cta:focus-visible {
-  background: var(--accent-rose);
-  color: var(--navy-900);
+  background: var(--accent-rose-bright);
+  box-shadow: 0 14px 32px -12px rgba(228, 168, 161, 0.8);
 }
 
-/* ---- Mobile ------------------------------------------------------------- */
+.cta:hover .ctaIcon,
+.cta:focus-visible .ctaIcon {
+  transform: rotate(45deg);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 3px;
+}
+
+/* ---- Mobile -------------------------------------------------------------- */
 .mobile {
   display: none;
-  position: relative;
+  position: static;
   margin-left: auto;
 }
 
 .toggle {
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
   height: 2.75rem;
-  padding: 0;
-  background: none;
+  padding: 0 var(--space-4) 0 var(--space-5);
+  background: var(--hd-toggle-bg);
   border: var(--hairline) solid var(--navy-line);
-  border-radius: 50%;
-  color: var(--accent-rose);
+  border-radius: var(--radius-pill);
+  color: var(--hd-toggle);
+  font: inherit;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
   cursor: pointer;
+  transition:
+    background-color var(--tone-dur) ease,
+    border-color var(--tone-dur) ease,
+    color var(--tone-dur) ease;
 }
 
 .toggleBars {
@@ -195,30 +328,38 @@
 }
 
 .toggle[aria-expanded="true"] .toggleBars span:first-child {
-  transform: translateY(3px) rotate(45deg);
+  transform: translateY(2.5px) rotate(45deg);
 }
 
 .toggle[aria-expanded="true"] .toggleBars span:last-child {
-  transform: translateY(-3px) rotate(-45deg);
+  transform: translateY(-2.5px) rotate(-45deg);
 }
 
+/* The panel drops from the capsule and spans it, as a card of the same glass. */
 .panel {
   position: absolute;
   top: calc(100% + var(--space-3));
+  left: 0;
   right: 0;
-  width: max-content;
-  min-width: 13rem;
-  padding: var(--space-2);
-  background: rgba(12, 18, 48, 0.96);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: var(--hd-panel-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: var(--hairline) solid var(--navy-line);
-  border-radius: var(--radius-m);
+  border-radius: var(--radius-l);
   box-shadow: var(--shadow-l);
+  animation: panel-in 420ms var(--ease-out-expo) both;
 }
 
 .panel[hidden] {
   display: none;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
 }
 
 .panelList {
@@ -229,35 +370,70 @@
   list-style: none;
 }
 
+.panelList li {
+  animation: panel-item-in 520ms var(--ease-out-expo) both;
+  animation-delay: calc(60ms + var(--i, 0) * 45ms);
+}
+
+@keyframes panel-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 .panelLink {
-  display: block;
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--fs-body);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-3);
+  border-bottom: var(--hairline) solid var(--navy-line-soft);
   color: var(--text-on-navy);
   text-decoration: none;
   border-radius: var(--radius-s);
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+
+.panelIndex {
+  font-size: var(--fs-caption);
+  color: var(--hd-toggle);
+  opacity: 0.8;
+}
+
+.panelLabel {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  line-height: 1.1;
 }
 
 .panelLink:hover,
 .panelLink:focus-visible {
-  background: rgba(228, 168, 161, 0.1);
-  color: var(--accent-rose);
+  background: var(--hd-toggle-bg);
+  color: var(--hd-toggle);
 }
 
-/* In the panel the same mark is a rose rule down the leading edge, because
-   there is no underline to leave drawn on a stacked list. */
 .panelLink.isCurrent {
-  color: var(--accent-rose);
-  box-shadow: inset 2px 0 0 var(--accent-rose);
-  border-radius: 0;
+  color: var(--hd-current);
+}
+
+.panelLink.isCurrent .panelLabel {
+  font-style: italic;
 }
 
 .panelCta {
-  margin-top: var(--space-2);
-  padding-top: var(--space-4);
-  border-top: var(--hairline) solid var(--navy-line);
-  border-radius: 0;
-  color: var(--accent-rose);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
+  text-decoration: none;
 }
 
 @media (max-width: 55rem) {
@@ -271,19 +447,37 @@
 }
 
 @media (max-width: 47.99rem) {
-  /* The brand clamps down to 40px here on its own; what it needs from the row
-     is the space back between it and the menu button. */
-  .inner {
+  .bar {
     gap: var(--space-4);
+    padding-inline: var(--space-4) var(--space-2);
+  }
+}
+
+@media (max-width: 22rem) {
+  /* The word goes before the lockup has to shrink. */
+  .toggleLabel {
+    display: none;
+  }
+  .toggle {
+    padding-inline: var(--space-3);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header,
-  .brand,
-  .link::after,
-  .toggleBars span {
+  .bar,
+  .track,
+  .indicator,
+  .link,
+  .cta,
+  .ctaIcon,
+  .toggle,
+  .toggleBars span,
+  .brand * {
     transition: none;
+  }
+  .panel,
+  .panelList li {
+    animation: none;
   }
   .brandMark {
     transition: none;

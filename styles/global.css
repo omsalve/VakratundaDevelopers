@@ -325,6 +325,16 @@ a {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
 }
 
+/* ---- The masthead's ground probe ------------------------------------------
+   Hit testing skips `pointer-events: none`, and a good deal of what paints
+   the ground on this site is exactly that — the arcs' cream discs, the
+   pinned stages' overlap runways. For the instant SiteHeader samples what is
+   under its capsule, everything takes part; the class is added and removed
+   inside one task, so nothing is ever painted in this state. */
+html.header-probe * {
+  pointer-events: auto !important;
+}
+
 /* ---- Motion gate -------------------------------------------------------- */
 /* `motion-on` is set synchronously in <head> before first paint, and only
    when the visitor has NOT asked for reduced motion. Everything below is
