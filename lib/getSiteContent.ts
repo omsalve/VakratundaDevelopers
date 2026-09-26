@@ -586,6 +586,12 @@ async function readSiteContent(): Promise<SiteContent> {
       }),
     },
 
+    /* ---- Openland ---------------------------------------------------------
+       Shipped content only for now: the parcels are still to be confirmed
+       with the client (MoM 2.3), and a CMS field for a list that is not yet
+       settled would only have to be migrated once it is. */
+    openland: fallback.openland,
+
     /* ---- Vihaa -----------------------------------------------------------
        The school is recorded the way every other partnership is, so it
        borrows the ventures' shapes: a name set across a photograph and a pair

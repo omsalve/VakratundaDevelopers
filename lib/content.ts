@@ -638,6 +638,43 @@ export interface ResponsibilityContent {
   coda: string;
 }
 
+/* --------------------------------------------------------------- openland */
+/*
+ * OPENLAND / GREENFIELD — the land the group builds on from the ground up,
+ * rather than the society it rebuilds.
+ *
+ * Drawn as a survey sheet: every parcel is a boundary on one site plan, and
+ * the schedule beside it is the key to that plan. The plan has shapes drawn
+ * for up to four parcels; a fifth would have nowhere to stand on it.
+ */
+
+export interface OpenlandParcel {
+  id: string;
+  name: string;
+  locality: string;
+  /** The measured extent, counted up on arrival. Digits, at most one decimal. */
+  area?: { value: string; unit: string };
+  /** Carried instead of an area when none is published yet. */
+  phrase?: string;
+  /** Where the land is in its life: "Delivered", "In planning" and so on. */
+  status: string;
+  /** One or two lines. */
+  note: string;
+  /** Optional photograph, shown small beside the entry. */
+  image?: ImageAsset;
+  cta?: Cta;
+}
+
+export interface OpenlandContent {
+  eyebrow: string;
+  heading: SwashHeading;
+  standfirst: string;
+  /** Up to four. The site plan is drawn for that many boundaries. */
+  parcels: OpenlandParcel[];
+  /** The invitation the schedule closes on, to people who hold land. */
+  invitation: { text: string; cta: Cta };
+}
+
 /** The address the site publishes: the line a visitor can act on, then the
     lines they cannot. Shared by the close and the footer. */
 export interface Contact {
@@ -667,6 +704,7 @@ export interface SiteContent {
   practice: PracticeContent;
   team: TeamContent;
   ventures: VenturesContent;
+  openland: OpenlandContent;
   vihaa: VihaaContent;
   testimonials: TestimonialsContent;
   responsibility: ResponsibilityContent;
@@ -1614,6 +1652,55 @@ export const siteContent: SiteContent = {
         },
       },
     ],
+  },
+
+  /* ---- Openland / Greenfield ------------------------------------------------
+     ⚠️ TO CONFIRM WITH THE CLIENT (MoM 2.3): the final parcels, their
+     extents, images and statuses. Only the Badlapur township's twenty acres is
+     a published figure; the other entries carry a phrase instead of an area
+     until one is supplied, and no figure here is invented. */
+  openland: {
+    eyebrow: "Openland · Greenfield",
+    heading: { before: "Where the map is still ", swash: "open", after: "." },
+    standfirst:
+      "Not every address begins with a building. Some begin with open ground, a survey line and a plan drawn from nothing — townships and neighbourhoods laid out whole, from the first road to the last tree.",
+    parcels: [
+      {
+        id: "vihaa-township",
+        name: "Vihaa Township",
+        locality: "Badlapur",
+        area: { value: "20", unit: "acres" },
+        status: "Delivered · Expanding",
+        note: "Open land turned into a mini-township — Godrej Vihaa delivered, Skygarden at Godrej Vihaa rising behind it.",
+        image: {
+          src: siteImage("projects/godrej-skygarden.png"),
+          alt: "The Badlapur township at night, its towers lit above planted grounds",
+          width: 941,
+          height: 1672,
+        },
+        cta: { label: "See the township", href: "/projects" },
+      },
+      {
+        id: "badlapur-east",
+        name: "Badlapur East",
+        locality: "Badlapur",
+        phrase: "Greenfield parcel",
+        status: "Upcoming",
+        note: "The next chapter of the Badlapur story, planned from the ground up.",
+      },
+      {
+        id: "amaraa",
+        name: "Vakratunda Amaraa",
+        locality: "Badlapur",
+        phrase: "New address",
+        status: "Upcoming",
+        note: "A residential address joining the township, on land the group already knows by heart.",
+      },
+    ],
+    invitation: {
+      text: "Hold open land? We develop it with its owners — as partners, from the first drawing.",
+      cta: { label: "Talk to us about land", href: "/contact" },
+    },
   },
 
   /* ---- Vihaa Innovative School -------------------------------------------
