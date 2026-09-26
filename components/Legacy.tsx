@@ -401,13 +401,17 @@ export function Legacy({ content }: { content: LegacyContent }) {
   /* ---- Markup ----------------------------------------------------------- */
 
   return (
-    <section ref={root} className={styles.band} aria-labelledby="legacy-title">
+    <section
+      ref={root}
+      className={`on-cream ${styles.band}`}
+      aria-labelledby="legacy-title"
+    >
       <div className={`u-shell ${styles.shell}`}>
         <div className={styles.intro}>
           <p className="u-label">{content.kicker}</p>
-          <h3 id="legacy-title" className={`u-h2 ${styles.heading}`}>
+          <h2 id="legacy-title" className={`u-h2 ${styles.heading}`}>
             <Swash heading={content.heading} />
-          </h3>
+          </h2>
           <p className={styles.body}>{content.body}</p>
         </div>
 

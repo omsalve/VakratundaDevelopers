@@ -5,6 +5,7 @@ import Concept from "@/components/Concept";
 import EnclosureFooter from "@/components/EnclosureFooter";
 import JointVentures from "@/components/JointVentures";
 import Journey from "@/components/Journey";
+import Legacy from "@/components/Legacy";
 import ProjectsShowcase from "@/components/ProjectsShowcase";
 import Responsibility from "@/components/Responsibility";
 import SiteHeader from "@/components/SiteHeader";
@@ -73,6 +74,17 @@ export default async function HomePage() {
         {/* Navy → cream. The dome is Concept's own top edge. */}
         <Concept content={content.concept} />
 
+        {/* The rooms, straight after the flagships the story closes on — in
+            the place the milestones used to take. The story ends on "more
+            than structures — belonging", and this is what that feels like
+            from the inside and the outside, on the same cream. */}
+        <Atmosphere content={content.atmosphere} />
+
+        {/* The proof, after the rooms rather than before them: the guide's
+            own circles, and the Skygarden roof render bled to the foot of the
+            cream, where the portfolio below cuts straight to navy. */}
+        <Legacy content={content.concept.legacy} />
+
         {/* The portfolio, as one continuous transition: two panels merge
             into a single full-bleed photograph, the title lands across it,
             and the scroll walks through every project in turn. It then holds
@@ -80,26 +92,11 @@ export default async function HomePage() {
             against — the two are a pair. */}
         <ProjectsShowcase content={content.gallery} />
 
-        {/* Navy → cream, second and last. THE ARC CARRIES THE PAGE'S SECOND
-            LOCKUP — a tower of type on a screen of open cream with nothing
-            else in it, which is the one moment where the ground itself is
-            the composition. Its copy is `team.interstitial`, and it is NOT
-            Atmosphere's headline: that sentence is set one screen below as
-            the head of the composition arguing for it, and setting it twice
-            within a screen of itself would make the first a caption on the
-            second. So the arc states the claim and Atmosphere answers it.
-
-            WHAT FOLLOWS THE ARC IS ONE ARGUMENT IN TWO PARTS, in order and
-            inseparably: the rooms, and the people behind them. Atmosphere is
-            the claim and what it feels like; the team is who it is a claim
-            about. The arc opens the field, Atmosphere states it, the team
-            answers it. Nothing may be inserted between the two, and neither
-            may be moved past the other.
-
-            Atmosphere closes on no padding of its own, because TeamShowcase
-            opens on --section-pad-lg — one interval between them, not two. */}
+        {/* Navy → cream, second and last. The arc carries the page's second
+            lockup — a tower of type on a screen of open cream — and hands it
+            straight to the people it is about. Nothing may be inserted
+            between the arc and the section above it. */}
         <ArcTransition interstitial={content.team.interstitial}>
-          <Atmosphere content={content.atmosphere} />
           <TeamShowcase content={content.team} />
         </ArcTransition>
 

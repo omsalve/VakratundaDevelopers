@@ -28,10 +28,13 @@
      change it here and the overlap above it follows. */
   --render-width: 107vw;
   position: relative;
-  /* The showcase's headline is the largest type on the page; the band that
-     follows it needs the wider of the two rhythm intervals to read as a new
-     movement rather than the showcase's own footer. */
-  margin-top: var(--section-pad-lg);
+  /* A section of its own now, set after the interior-and-exterior spread
+     rather than inside the story section — so it carries its own cream and
+     its own intervals. Padding rather than margin at the top, so the gap is
+     cream and not the navy of the page ground. The foot is --section-pad
+     because the render's negative margin below cancels exactly that, and the
+     picture meets the navy of the portfolio with no cream between. */
+  padding-block: var(--section-pad-lg) var(--section-pad);
 }
 
 /* Two columns, the copy and the cluster. The render is not one of them — it
@@ -78,7 +81,7 @@
    stands on the right of the frame: aligning the far edges spills the 7vw of
    overflow off the LEFT, where the file holds nothing but treeline and ground,
    instead of shearing the tower off the right. Flush bottom because the
-   negative margin cancels the story section's trailing padding, so the render
+   negative margin cancels the band's own trailing padding, so the render
    meets the navy below it with no cream between. No mask and no window — the
    picture is not cropped. */
 .plate {

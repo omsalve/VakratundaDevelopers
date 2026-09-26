@@ -5,7 +5,6 @@ import { measureDome, paintDome } from "@/lib/arc";
 import type { ConceptContent } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
 import ConceptShowcase from "./ConceptShowcase";
-import Legacy from "./Legacy";
 import PageLink from "./PageLink";
 import styles from "./Concept.module.css";
 
@@ -51,8 +50,10 @@ import styles from "./Concept.module.css";
  * hand-over the page makes exactly twice.
  *
  * Below the dome the section behaves normally: the prose, and then
- * ConceptShowcase — a very large headline over a small portrait plate that
- * changes every three seconds — flow on cream.
+ * ConceptShowcase — the flagships, one centred and one either side — flow on
+ * cream. The milestones that used to close the section (Legacy) now stand as
+ * a section of their own after the interior-and-exterior spread; see
+ * app/(frontend)/page.tsx.
  *
  * Without JS, or under prefers-reduced-motion, none of the `.motion-on` rules
  * in the stylesheet apply and no clip is ever set: the overlap, the sticky
@@ -345,11 +346,6 @@ export function Concept({ content }: { content: ConceptContent }) {
         <div className="u-shell">
           <ConceptShowcase content={content.showcase} />
         </div>
-
-        {/* The proof, and the last word the section has: the guide's own
-            circles on the right, the Skygarden roof render at the foot of the
-            left. It carries its own shell — the render is bled out past it. */}
-        <Legacy content={content.legacy} />
       </div>
     </section>
   );
