@@ -110,6 +110,9 @@ export interface HeroContent {
   standfirst: string;
   primaryCta: Cta;
   scrollCue: string;
+  /** The line under the pins once the photograph is open: what to do with
+   *  them. Optional; the component ships a default. */
+  pinHint?: string;
   /**
    * ONE continuous photograph for the whole opening section — the hero and
    * the impact figures share it, and it travels from its top edge to its
@@ -707,6 +710,8 @@ export const siteContent: SiteContent = {
     // required by HeroContent and rendered by Journey, but was missing here,
     // so the cue shipped with an empty label.
     scrollCue: "Scroll",
+    // AUTHORED — tells the visitor the pins are buttons.
+    pinHint: "Press a + to explore our story",
     background: {
       src: siteImage("mainheroimage.png"),
       alt: "",

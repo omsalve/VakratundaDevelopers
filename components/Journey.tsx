@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { HeroContent } from "@/lib/content";
 import { ScrollTrigger, gsap, useGsapScope } from "@/lib/motion";
 import { LogoMark } from "./Logo";
-import ScenePin from "./ScenePin";
+import ScenePin, { PIN_OPENED, PINS_WITHDRAWN } from "./ScenePin";
 import styles from "./Journey.module.css";
 
 /**
@@ -74,9 +74,10 @@ import styles from "./Journey.module.css";
  *      dissolves, the headline grows very slightly as if the camera were
  *      pushing in. That rate difference is the whole depth effect.
  *
- *   3. THE PINS come up as the hero clears, once, and then never animate
- *      again — from there the only thing moving them is the photograph they
- *      are pinned to. They are the whole content of the lower frame now, and
+ *   3. THE PINS come up as the hero clears, with the hint over them, and go
+ *      again if the visitor scrolls back up into the hero — otherwise the
+ *      only thing moving them is the photograph they are pinned to. They are
+ *      the whole content of the lower frame now, and
  *      they are glued to the picture rather than staked out on the frame:
  *      see the pin layer in the markup below, and ScenePin.
  *
@@ -96,14 +97,16 @@ import styles from "./Journey.module.css";
  * distance is derived from it, so the two can never drift apart.
  *
  * It is also the crop: the frame is laid out at 100vw x SPAN viewports and
- * covered, so the taller it is rendered the more of the photograph's width is
- * thrown away at the sides. Two viewports is what the shipped opening frame
- * (2880 x 3240) asks for — at a 16:9 window the box and the picture are the
- * same shape and nothing is cropped at all, and at 16:10 it loses a tenth of
- * its width rather than the better part of a third. Raising this only pays
- * for itself with a much taller original.
+ * covered, anchored to the photograph's FOOT (see `.backdropImage`). The top
+ * half of the shipped file is open sky with nothing in it, and at two
+ * viewports the whole first screen was that sky — nothing on it said there
+ * was a terrace, a city or a page underneath. At one and a half the picture
+ * is cut from the top instead: the frame loses the emptiest sky, the skyline
+ * and the edge of the terrace are already standing at the foot of the first
+ * screen, and the descent is a third shorter. The pins are laid out against
+ * the same foot-anchored rectangle, so they stay on their subjects.
  */
-const BACKDROP_SPAN = 2;
+const BACKDROP_SPAN = 1.5;
 
 /** Fraction of its own height the backdrop moves to show its whole length. */
 const BACKDROP_TRAVEL = -(1 - 1 / BACKDROP_SPAN) * 100;
@@ -112,17 +115,12 @@ const BACKDROP_TRAVEL = -(1 - 1 / BACKDROP_SPAN) * 100;
  * Viewports of scroll the photograph takes to descend its full length.
  *
  * This is every viewport the section is actually LOOKED at: the frame is held
- * for four, but the story section's dome starts closing over it at three (its
- * overlap — see Concept.module.css), and anything after that happens behind
- * cream. So the picture finishes exactly as the section is handed on, and not
- * a viewport before: the reveal is the section.
- *
- * One viewport of travel over three of scroll — a third of scroll speed,
- * which is slow enough to read as a descent rather than a pan. The picture
- * still passes its whole length: the frame is BACKDROP_SPAN viewports tall
- * and the travel is what is left over after the one that is on screen.
+ * for four, but the story section's dome starts closing over it at two (it is
+ * pulled back three viewports over a five-viewport section — see
+ * Concept.module.css), and anything after that happens behind cream. So the
+ * picture finishes exactly as the section is handed on.
  */
-const BACKDROP_DESCENT = 3;
+const BACKDROP_DESCENT = 2;
 
 /** The camera push-in the hero departure ends on. The tour reads it too. */
 const PUSH_SCALE = 1.06;
@@ -147,10 +145,11 @@ const PUSH_SCALE = 1.06;
  * tablet gets a short drift.
  */
 /** The descent is quicker on a tour: the terrace has to arrive in time for it. */
-const TOUR_DESCENT = 1.6;
-/** Where the sweep from the leftmost pins to the rightmost starts and ends. */
-const TOUR_SWEEP_FROM = 1.6;
-const TOUR_SWEEP_TO = 2.7;
+const TOUR_DESCENT = 1.2;
+/** Where the sweep from the leftmost pins to the rightmost starts and ends —
+ *  finished just before the dome starts closing, at two viewports. */
+const TOUR_SWEEP_FROM = 1.15;
+const TOUR_SWEEP_TO = 1.95;
 /** How far inside the window an edge pin is brought, in px. */
 const PIN_MARGIN = 48;
 
@@ -201,6 +200,19 @@ export function Journey({ hero }: Props) {
     observer.observe(box);
     return () => observer.disconnect();
   }, [hero.background.width, hero.background.height]);
+
+  /**
+   * The hint under the pins has done its job the first time any pin is
+   * opened, and steps aside for good. State, not motion, so it runs for
+   * reduced-motion visitors too.
+   */
+  useEffect(() => {
+    const section = root.current;
+    if (!section) return;
+    const onOpen = () => section.setAttribute("data-explored", "true");
+    window.addEventListener(PIN_OPENED, onOpen);
+    return () => window.removeEventListener(PIN_OPENED, onOpen);
+  }, []);
 
   /**
    * The credentials band is split around its own middle, so the two clusters
@@ -395,16 +407,34 @@ export function Journey({ hero }: Props) {
     const IMPACT_IN = 0.88;
 
     // The pins belong to the picture, not to either panel, so they arrive on
-    // the same beat the hero clears and then never animate again — from here
-    // the only thing moving them is the photograph they are pinned to.
-    gsap.to(`.${styles.pinLayer}`, {
-      opacity: 1,
-      duration: 1.1,
-      ease: "expo.out",
-      scrollTrigger: {
-        trigger: section,
-        start: () => `top top-=${vh() * IMPACT_IN}`,
-        once: true,
+    // the same beat the hero clears — and withdraw again, with the hint over
+    // them, when the visitor scrolls back up into the hero. Played rather
+    // than scrubbed: an arrival and a departure, not a scroll-tracked fade.
+    // `autoAlpha`, so a withdrawn pin is `visibility: hidden` and can be
+    // neither clicked nor tabbed to under the hero.
+    const pinChrome = [`.${styles.pinLayer}`, `.${styles.pinHint}`];
+    const showPins = () =>
+      gsap.to(pinChrome, {
+        autoAlpha: 1,
+        duration: 1.1,
+        ease: "expo.out",
+        overwrite: true,
+      });
+    ScrollTrigger.create({
+      trigger: section,
+      start: () => `top top-=${vh() * IMPACT_IN}`,
+      // Back up from below the section (or a reload that landed past it)
+      // arrives from the far end, which is onEnterBack, not onEnter.
+      onEnter: showPins,
+      onEnterBack: showPins,
+      onLeaveBack: () => {
+        window.dispatchEvent(new CustomEvent(PINS_WITHDRAWN));
+        gsap.to(pinChrome, {
+          autoAlpha: 0,
+          duration: 0.45,
+          ease: "power2.out",
+          overwrite: true,
+        });
       },
     });
 
@@ -452,11 +482,11 @@ export function Journey({ hero }: Props) {
                 alt=""
                 fill
                 // The frame is BACKDROP_SPAN viewports tall and covered, so on
-                // a portrait screen the picture is PAINTED ~178vh wide (2 x
-                // the 2880/3240 ratio) and the camera pans across it. Asking
-                // for 100vw there fetched a quarter of the pixels a phone
+                // a portrait screen the picture is PAINTED ~134vh wide (1.5 x
+                // the 1182/1330 ratio) and the camera pans across it. Asking
+                // for 100vw there fetched a fraction of the pixels a phone
                 // shows. Landscape windows paint at or near 100vw and keep it.
-                sizes="(orientation: portrait) 178vh, 100vw"
+                sizes="(orientation: portrait) 134vh, 100vw"
                 quality={82}
                 // Next 16: `priority` is deprecated. This is the LCP
                 // candidate, so it loads eagerly and at high priority.
@@ -486,12 +516,28 @@ export function Journey({ hero }: Props) {
           <div className={`${styles.travel} u-parallax`}>
             <div className={styles.push}>
               <div ref={pinFrame} className={styles.pinFrame}>
-                {hero.pins.map((pin) => (
-                  <ScenePin key={pin.id} data={pin} />
+                {hero.pins.map((pin, index) => (
+                  <ScenePin
+                    key={pin.id}
+                    data={pin}
+                    index={index}
+                    total={hero.pins.length}
+                  />
                 ))}
               </div>
             </div>
           </div>
+        </div>
+
+        {/* What the pins are for, said once, in the open sky over them. Under the hero panel in the stacking order, so it is
+            covered whenever the hero is on screen; faded in with the pins. */}
+        <div className={styles.pinHint}>
+          <p className={styles.pinHintInner}>
+            <span className={styles.pinHintDot} aria-hidden="true">
+              +
+            </span>
+            {hero.pinHint ?? "Press a + on the photograph to explore"}
+          </p>
         </div>
 
         {/* ---- Panel one: the brand line ---------------------------------- */}

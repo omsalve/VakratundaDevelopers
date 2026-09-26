@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useId, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import clsx from "clsx";
 import type { ScenePin as ScenePinData } from "@/lib/content";
 import { usePopover } from "@/lib/usePopover";
@@ -42,6 +49,9 @@ import styles from "./ScenePin.module.css";
 
 type Props = {
   data: ScenePinData;
+  /** This pin's place among the pins on the photograph, from 0. */
+  index: number;
+  total: number;
 };
 
 /** Breathing room left between the card and the edge it opens toward. */
@@ -62,14 +72,36 @@ type Placement = {
   nudge?: number;
 };
 
-export function ScenePin({ data }: Props) {
+/** "Shown: the open pavilion…" → "The open pavilion…". The card labels the
+ *  line itself, so the copy's own prefix would say it twice. */
+function evidenceText(line: string) {
+  const text = line.replace(/^shown:\s*/i, "");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Sent when any pin opens, so the hint under the pins can step aside. */
+export const PIN_OPENED = "scene-pin:open";
+
+/** Sent when the pins withdraw (the hero coming back), so no card is left
+ *  standing open on a layer that has faded out. */
+export const PINS_WITHDRAWN = "scene-pin:withdraw";
+
+export function ScenePin({ data, index, total }: Props) {
   const { open, toggle, close, groupRef, triggerRef } =
     usePopover<HTMLDivElement, HTMLButtonElement>();
+
+  useEffect(() => {
+    if (!open) return;
+    const onWithdraw = () => close(false);
+    window.addEventListener(PINS_WITHDRAWN, onWithdraw);
+    return () => window.removeEventListener(PINS_WITHDRAWN, onWithdraw);
+  }, [open, close]);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const cardId = `pin-${useId().replace(/:/g, "")}`;
 
   const [{ side, drop, maxHeight, nudge }, setPlacement] = useState<Placement>({
-    side: data.x > 62 ? "left" : "right",
+    // Right of the pin unless it stands in the last third of the picture.
+    side: data.x > 70 ? "left" : "right",
     drop: "down",
   });
 
@@ -112,9 +144,12 @@ export function ScenePin({ data }: Props) {
         maxHeight: Math.max(160, Math.floor(Math.max(above, below) / scale)),
         nudge: Math.round(shift / scale),
       });
+      window.dispatchEvent(new CustomEvent(PIN_OPENED));
     }
     toggle();
   }, [open, toggle, triggerRef]);
+
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
     <div
@@ -132,9 +167,15 @@ export function ScenePin({ data }: Props) {
         onClick={activate}
       >
         <span className={styles.pulse} aria-hidden="true" />
-        <span className={styles.dot} aria-hidden="true" />
+        <span className={clsx(styles.pulse, styles.pulseLate)} aria-hidden="true" />
+        <span className={styles.disc} aria-hidden="true">
+          <span className={styles.plus} />
+        </span>
         <span className="u-visually-hidden">{data.title}</span>
       </button>
+
+      {/* The line the card is drawn out along, from the pin to its edge. */}
+      <span className={styles.leader} aria-hidden="true" />
 
       <div
         id={cardId}
@@ -156,37 +197,68 @@ export function ScenePin({ data }: Props) {
            it is in is read from .isOpen on the group. */
         aria-hidden={!open}
       >
-        <p className={styles.cardTitle}>{data.title}</p>
+        <div className={styles.cardHead}>
+          <span className={`u-numeral ${styles.count}`}>
+            {pad(index + 1)}
+            <span className={styles.countTotal}> / {pad(total)}</span>
+          </span>
+          <button
+            type="button"
+            className={styles.close}
+            onClick={() => close()}
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+
+        <p className={styles.cardTitle}>
+          <span className={styles.cardTitleInner}>{data.title}</span>
+        </p>
 
         <ul className={styles.list}>
-          {data.body.map((line) => (
-            <li key={line}>{line}</li>
+          {data.body.map((line, i) => (
+            <li key={line} style={{ "--n": i } as CSSProperties}>
+              <span className={styles.tick} aria-hidden="true" />
+              <span>{line}</span>
+            </li>
           ))}
         </ul>
 
+        {/* The caption, not a claim: it says what is under the pin. */}
+        <p className={styles.evidence}>
+          <span className={styles.evidenceLabel}>In frame</span>
+          {evidenceText(data.evidence)}
+        </p>
+
         <a className={styles.cta} href={data.cta.href}>
           <span>{data.cta.label}</span>
-          <svg
-            viewBox="0 0 24 24"
-            width="14"
-            height="14"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
+          <span className={styles.ctaIcon} aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
         </a>
-
-        {/* The caption, not a bullet: it says what is under the pin. */}
-        <p className={styles.evidence}>{data.evidence}</p>
-
-        <button type="button" className={styles.close} onClick={() => close()}>
-          Close
-        </button>
       </div>
     </div>
   );

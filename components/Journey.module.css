@@ -66,7 +66,9 @@
    but the pins, so nothing washes it. */
 .backdropImage {
   object-fit: cover;
-  object-position: center;
+  /* Anchored to the FOOT: whatever the cover crop takes, it takes from the
+     empty sky at the top, never from the terrace the pins stand on. */
+  object-position: center bottom;
   opacity: 0.62;
 }
 
@@ -83,17 +85,74 @@
 }
 
 /* The photograph's painted rectangle. Its size is measured in Journey and
-   written here as inline width/height; this rule only has to centre it,
-   because the image it is standing in for is `object-position: center`. */
+   written here as inline width/height; this rule only has to place it where
+   the image it is standing in for is painted — centred across, and standing
+   on the foot, because the image is `object-position: center bottom`. */
 .pinFrame {
   position: absolute;
-  top: 50%;
+  bottom: 0;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
 }
 
 .pinFrame > * {
   pointer-events: auto;
+}
+
+/* ---- The hint over the pins -----------------------------------------------
+   Centred at the head of the frame, in the open sky under the masthead — the
+   pins stand on the terrace at the foot, so this is the one band of the
+   picture nothing is pinned to. Above the photograph and below the hero
+   panel, so the hero covers it until it leaves. It sits on the same navy
+   glass the pins' labels do. It goes for good once any pin has been opened. */
+.pinHint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--header-h) + clamp(1rem, 4vh, 2.5rem));
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+
+.pinHintInner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0.55em 1.1em 0.55em 0.55em;
+  border: var(--hairline) solid rgba(228, 168, 161, 0.3);
+  border-radius: var(--radius-pill);
+  background: rgba(12, 18, 48, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-on-navy);
+  font-size: var(--fs-small);
+  letter-spacing: 0.02em;
+  text-align: center;
+  transition:
+    opacity 500ms ease,
+    transform 700ms var(--ease-out-expo);
+}
+
+.pinHintDot {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.journey[data-explored="true"] .pinHintInner {
+  opacity: 0;
+  transform: translateY(-12px);
 }
 
 /* ---- Panel one: the brand line ------------------------------------------ */
@@ -271,49 +330,53 @@
   opacity: 0.84;
 }
 
-/* ---- Call to action ----------------------------------------------------- */
+/* ---- Call to action -----------------------------------------------------
+   SOLID, because it is the one thing in the frame to press. It used to be a
+   rose outline, which over a photograph of the sky read as a caption rather
+   than a button. The arrow stands in its own navy disc, like the masthead's
+   Contact, so the two actions visibly belong to one family. */
 .cta {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
+  gap: var(--space-4);
   margin-top: clamp(2rem, 4vh, 3rem);
-  padding: var(--space-3) var(--space-6);
-  border: var(--hairline) solid var(--accent-rose);
+  padding: 0.4rem 0.4rem 0.4rem var(--space-6);
   border-radius: var(--radius-pill);
-  color: var(--accent-rose);
-  font-size: var(--fs-small);
-  font-weight: 500;
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-size: var(--fs-body);
+  font-weight: 600;
   letter-spacing: var(--tracking-ui);
   text-decoration: none;
-  overflow: hidden;
-  isolation: isolate;
-  transition: color var(--dur-base) var(--ease-out-expo);
-}
-
-/* Rose fills the pill from the left on hover; the label inverts to navy. */
-.cta::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--accent-rose);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-slow) var(--ease-out-expo);
+  box-shadow:
+    0 0 0 6px rgba(228, 168, 161, 0.16),
+    0 18px 40px -16px rgba(228, 168, 161, 0.65);
+  transition:
+    background-color var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo);
 }
 
 .cta:hover,
 .cta:focus-visible {
-  color: var(--navy-900);
+  background: var(--accent-rose-bright);
+  box-shadow:
+    0 0 0 8px rgba(228, 168, 161, 0.22),
+    0 22px 46px -16px rgba(228, 168, 161, 0.8);
 }
 
-.cta:hover::before,
-.cta:focus-visible::before {
-  transform: scaleX(1);
+.cta:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 4px;
 }
 
 .ctaIcon {
+  box-sizing: content-box;
+  flex: none;
+  padding: 0.7rem;
+  border-radius: 50%;
+  background: var(--navy-900);
+  color: var(--accent-rose);
   transition: transform var(--dur-base) var(--ease-out-expo);
 }
 
@@ -464,15 +527,14 @@
    Motion layout. Only applies once JS has run AND the visitor allows motion.
    ========================================================================== */
 
-/* Six viewports: one for the hero, one for its departure, and four over
-   which the figures are held while the photograph finishes its descent. The
-   last three of those four are the ones Concept overlaps — see the note on
-   the overlap in Concept.module.css. Shortening this eats into the time the
-   figures are readable before the dome starts covering them, which is why it
-   grew by one when the dome's opening did: the figures still get their two
-   clear viewports (100svh–300svh) before the arc starts. */
+/* Five viewports: one for the hero, and four over which the photograph
+   finishes its descent with the pins on it. The last three are the ones
+   Concept overlaps — see the note on the overlap in Concept.module.css — so
+   the pins get a clear viewport after the hero has gone before the dome
+   starts to rise. It was six; the sixth was a second screen of the same held
+   frame, and the page felt as if it ended at the photograph. */
 :global(.motion-on) .journey {
-  min-height: 600svh;
+  min-height: 500svh;
 }
 
 :global(.motion-on) .viewport {
@@ -506,8 +568,12 @@
   min-height: 0;
 }
 
-:global(.motion-on) .pinLayer {
+/* Hidden until the hero has cleared, and again whenever it comes back — see
+   the pins' ScrollTrigger in Journey.tsx, which tweens `autoAlpha`. */
+:global(.motion-on) .pinLayer,
+:global(.motion-on) .pinHint {
   opacity: 0;
+  visibility: hidden;
 }
 
 /* The hero panel is the only thing in the frame that moves as a whole, so it

@@ -5,11 +5,28 @@
    layer in Journey sizes its box to the photograph's painted rectangle and
    carries the same transforms the photograph rides, so a `left`/`top` set
    here lands on the same feature at every size. Which way the card opens is
-   decided from the same coordinates — see FLIP_X / FLIP_Y in ScenePin.tsx.
+   measured when it opens — see ScenePin.tsx.
+
+   THE PIN IS A BUTTON, AND LOOKS LIKE ONE. A solid rose disc with a plus in
+   it, a glow under it and two rings breathing out of it — it reads as
+   something to press, not as a mark in the photograph.
+
+   THE CARD IS DRAWN OUT OF THE PIN. Opening runs as one movement in three
+   beats: a hairline leader is drawn from the pin to where the card will
+   stand; the card unfolds out of the end of that line as a growing circle —
+   the same arc the page changes ground with; and its contents come up behind
+   the unfold in reading order, each bullet's rule drawn as it arrives. The
+   plus turns into a cross on the same beat. Closing is the same movement
+   reversed, faster, with nothing staggered.
    ========================================================================== */
 
 .pin {
-  --node-size: 32px;
+  --node-size: 40px;
+  /* The gap the leader is drawn across, and where along the card's near edge
+     it lands. */
+  --reach: 30px;
+  --land: 26px;
+
   position: absolute;
   z-index: var(--z-hotspot);
   /* The coordinate is the centre of the node, not its corner. */
@@ -21,15 +38,6 @@
 }
 
 /* ---- The node ----------------------------------------------------------- */
-/* A DRAWN RING, and nothing inside it. The pin is a piece of line-work laid
-   over a photograph, in the same copper the rest of the site draws its rules
-   and its hairlines in (--accent-rose, the palette's warm metallic on navy),
-   so it reads as part of the drawing rather than as a sticker on the picture.
-   No fill of any kind: the photograph shows through the middle of it.
-
-   The one thing it keeps is a soft dark shadow. That is not a fill — it sits
-   under the stroke, and it is what holds a hollow ring against the bright
-   half of a sunset as well as against the dark half. */
 .node {
   position: relative;
   display: grid;
@@ -39,52 +47,99 @@
   padding: 0;
   background: none;
   border: 0;
+  border-radius: 50%;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.dot {
+.disc {
   position: relative;
+  display: grid;
+  place-items: center;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: none;
-  border: 2px solid var(--accent-rose);
-  box-shadow: 0 2px 16px -4px rgba(7, 10, 28, 0.8);
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--accent-rose-bright),
+    var(--accent-rose) 62%
+  );
+  box-shadow:
+    0 0 0 4px rgba(228, 168, 161, 0.22),
+    0 8px 22px -6px rgba(7, 10, 28, 0.85);
   transition:
-    transform var(--dur-base) var(--ease-out-expo),
-    border-color var(--dur-base) ease;
+    transform 520ms var(--ease-out-expo),
+    box-shadow var(--dur-base) ease,
+    background-color var(--dur-base) ease;
 }
 
-.node:hover .dot,
-.node:focus-visible .dot,
-.isOpen .dot {
-  border-color: var(--accent-rose-bright);
+/* The plus, drawn: two bars. It turns into a cross while the card is open. */
+.plus {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  transition: transform 560ms var(--ease-out-expo);
 }
 
-.node:hover .dot,
-.node:focus-visible .dot,
-.isOpen .dot {
-  transform: scale(1.14);
+.plus::before,
+.plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--navy-900);
+  translate: -50% -50%;
+}
+
+.plus::after {
+  rotate: 90deg;
+}
+
+.node:hover .disc,
+.node:focus-visible .disc {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 0 6px rgba(228, 168, 161, 0.3),
+    0 10px 26px -6px rgba(7, 10, 28, 0.9);
+}
+
+.isOpen .disc {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 6px rgba(228, 168, 161, 0.34),
+    0 10px 26px -6px rgba(7, 10, 28, 0.9);
+}
+
+.isOpen .plus {
+  transform: rotate(135deg);
 }
 
 .node:focus-visible {
   outline: none;
 }
-.node:focus-visible .dot {
-  outline: 2px solid var(--accent-rose);
-  outline-offset: 5px;
+
+.node:focus-visible .disc {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 6px;
 }
 
-/* The same slow breathing ring the impact hotspots use, so the two kinds of
-   annotation read as one family. It stops the moment the pin is engaged. */
+/* Two rings breathing out of the disc, half a beat apart, so there is always
+   one travelling. They stop the moment the pin is engaged. */
 .pulse {
   position: absolute;
   inset: 0;
-  border: 1px solid var(--accent-rose);
+  border: 1.5px solid var(--accent-rose);
   border-radius: 50%;
   opacity: 0;
-  animation: pinPulse 3.4s var(--ease-out-expo) infinite;
+  pointer-events: none;
+  animation: pinPulse 2.8s var(--ease-out-quint) infinite;
+}
+
+.pulseLate {
+  animation-delay: 1.4s;
 }
 
 .node:hover .pulse,
@@ -96,177 +151,271 @@
 
 @keyframes pinPulse {
   0% {
-    opacity: 0.85;
-    transform: scale(0.72);
+    opacity: 0.9;
+    transform: scale(0.9);
   }
-  70%,
+  80%,
   100% {
     opacity: 0;
-    transform: scale(1.85);
+    transform: scale(2.1);
   }
 }
 
-/* ---- The card ----------------------------------------------------------- */
-.card {
+/* ---- The leader ------------------------------------------------------------
+   The line the card is drawn out along: from the edge of the disc to the
+   card's near edge, at the pin's centre height, which is where the card's
+   header row stands. Drawn first on the way in, taken last on the way out. */
+.leader {
   position: absolute;
-  width: min(21rem, 74vw);
-  /* Capped to the room measured at open time; see ScenePin.tsx. The cap is
-     the safety net rather than the plan — the flip usually finds a side the
-     whole card fits on, and this only bites on a short window. */
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: var(--space-5);
-  background: rgba(12, 18, 48, 0.94);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  border: var(--hairline) solid var(--navy-line);
-  border-radius: var(--radius-m);
-  box-shadow: var(--shadow-l);
-  color: var(--text-on-navy);
-
-  /* ---- The closed state, and the only state the card rests in -----------
-     THE PANEL IS CUT OPEN, NOT FADED IN. The wipe runs from the edge nearest
-     the node — the direction the card grows in — so the movement reads as the
-     pin opening the card rather than as a tooltip appearing over it. Four
-     things travel together on that one axis: the clip, a short slide, a
-     hairline of scale, and the opacity. The custom properties below are set
-     by the flip classes, so all four reverse when the card flips sides and
-     nothing here needs a second copy.
-
-     `visibility`, not `display`: it takes the card out of the accessibility
-     tree and out of the tab order exactly as the `hidden` attribute did, but
-     it is a transitionable property, so the card can be held visible for the
-     length of its own exit and hidden on the frame it finishes. */
-  --slide-x: 0px;
-  --slide-y: 0px;
-  --clip-in: inset(0 0 0 0 round var(--radius-m));
-
-  visibility: hidden;
-  opacity: 0;
-  transform: translate3d(var(--slide-x), var(--slide-y), 0) scale(0.965);
-  transform-origin: var(--origin-x, 0%) var(--origin-y, 0%);
-  clip-path: var(--clip-in);
-  /* The way out is quicker than the way in, and it is the same curve the page
-     uses for a cut. Nothing lingers on a dismissal. */
-  transition:
-    clip-path 260ms var(--ease-in-out-quart),
-    transform 260ms var(--ease-in-out-quart),
-    opacity 200ms var(--ease-in-out-quart),
-    visibility 0s linear 260ms;
+  top: 50%;
+  width: var(--reach);
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--accent-rose),
+    var(--accent-rose-bright)
+  );
+  pointer-events: none;
+  transform: scaleX(0);
+  transition: transform 200ms var(--ease-in-out-quart) 120ms;
 }
 
-/* ---- The open state ------------------------------------------------------
-   Slower, and on the house ease. The clip and the slide take the full 620ms;
-   the opacity is done well before them, so the card is legible while it is
-   still settling rather than arriving all at once at the end. */
+.right .leader {
+  left: var(--node-size);
+  transform-origin: left center;
+}
+
+.left .leader {
+  right: var(--node-size);
+  transform-origin: right center;
+}
+
+.isOpen .leader {
+  transform: scaleX(1);
+  transition: transform 260ms var(--ease-out-quint);
+}
+
+/* ---- The card ------------------------------------------------------------- */
+.card {
+  position: absolute;
+  width: min(23rem, 78vw);
+  /* Capped to the room measured at open time; see ScenePin.tsx. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background:
+    radial-gradient(
+      120% 70% at var(--ox, 0%) 0%,
+      rgba(228, 168, 161, 0.1),
+      transparent 60%
+    ),
+    linear-gradient(160deg, rgba(24, 32, 70, 0.97), rgba(10, 15, 40, 0.97));
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: var(--hairline) solid rgba(228, 168, 161, 0.22);
+  /* The guide's corner: rounded, one cut back — the one nearest the pin. */
+  border-radius: var(--radius-card, var(--radius-l));
+  box-shadow:
+    0 30px 70px -30px rgba(4, 6, 20, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  color: var(--text-on-navy);
+
+  /* ---- Closed: a point at the end of the leader ------------------------ */
+  --ox: 0%;
+  --oy: var(--land);
+  visibility: hidden;
+  clip-path: circle(0% at var(--ox) var(--oy));
+  transition:
+    clip-path 300ms var(--ease-in-out-quart),
+    visibility 0s linear 300ms;
+}
+
+/* ---- Open: the circle grows out of the end of the leader until it holds the
+   whole card. 160% of the reference radius clears the far corner of any card
+   shape. It waits for the leader to be drawn, and runs on an in-out curve so
+   the unfold is seen — a fast-out curve had the card whole before the eye
+   found it. */
 .isOpen .card {
   visibility: visible;
-  opacity: 1;
-  transform: none;
-  clip-path: inset(0 0 0 0 round var(--radius-m));
+  clip-path: circle(160% at var(--ox) var(--oy));
   transition:
-    clip-path 620ms var(--ease-out-expo),
-    transform 620ms var(--ease-out-expo),
-    opacity 380ms var(--ease-out-quint),
+    clip-path 780ms var(--ease-in-out-quart) 150ms,
     visibility 0s;
 }
 
-/* Offset from the NODE, not from the coordinate. The pin's box is the circle
-   itself, so a full --node-size clears it and the 14px on top is the visible
-   gap — it stays 14px however the node is sized. Vertically the card's near
-   edge lands on the pin's centreline, so the two flips are mirror images of
-   each other rather than one hanging lower than the other. */
-/* Each flip also sets which edge the wipe opens from, which way the card
-   slides in, and the corner it scales out of — so the motion is a mirror of
-   the layout rather than a second set of rules that has to be kept in step
-   with it. */
+/* A rose rule along the card's top edge, drawn from the pin's side. */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--space-5);
+  right: var(--space-5);
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    var(--accent-rose),
+    rgba(228, 168, 161, 0)
+  );
+  transform: scaleX(0);
+  transform-origin: var(--ox, 0%) center;
+  transition: transform 200ms var(--ease-in-out-quart);
+}
+
+.isOpen .card::before {
+  transform: scaleX(1);
+  transition: transform 900ms var(--ease-out-expo) 360ms;
+}
+
+/* Placed from the NODE, not from the coordinate: a full --node-size clears
+   the disc and --reach is the leader between them. Vertically the leader
+   lands --land from the card's near edge, level with its header row, so the
+   two flips are mirror images of each other. */
 .right .card {
-  left: calc(var(--node-size) + 14px);
-  --clip-in: inset(0 100% 0 0 round var(--radius-m));
-  --slide-x: -18px;
-  --origin-x: 0%;
+  left: calc(var(--node-size) + var(--reach));
+  --ox: 0%;
+  --radius-card: var(--radius-s) var(--radius-l) var(--radius-l) var(--radius-l);
 }
+
 .left .card {
-  right: calc(var(--node-size) + 14px);
-  --clip-in: inset(0 0 0 100% round var(--radius-m));
-  --slide-x: 18px;
-  --origin-x: 100%;
+  right: calc(var(--node-size) + var(--reach));
+  --ox: 100%;
+  --radius-card: var(--radius-l) var(--radius-s) var(--radius-l) var(--radius-l);
 }
+
 .down .card {
-  top: calc(var(--node-size) / 2);
-  --slide-y: -10px;
-  --origin-y: 0%;
+  top: calc(var(--node-size) / 2 - var(--land));
+  --oy: var(--land);
 }
+
 .up .card {
-  bottom: calc(var(--node-size) / 2);
-  --slide-y: 10px;
-  --origin-y: 100%;
+  bottom: calc(var(--node-size) / 2 - var(--land));
+  --oy: calc(100% - var(--land));
 }
 
-/* ---- What is inside it ---------------------------------------------------
-   The contents come up behind the wipe, one beat apart, in reading order —
-   the second half of the same movement rather than a separate flourish. They
-   lead by a hairline (90ms) and are all seated inside the card's own 620ms,
-   so the panel finishes as one thing.
+.up.right .card {
+  --radius-card: var(--radius-l) var(--radius-l) var(--radius-l) var(--radius-s);
+}
 
-   On the way out they do NOT stagger: a dismissal is a cut, so everything
-   goes at once, faster than it came, and the delays are dropped. */
-.card > .cardTitle,
-.card > .list,
-.card > .cta,
-.card > .evidence,
-.card > .close {
+.up.left .card {
+  --radius-card: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
+}
+
+/* ---- What is inside it ------------------------------------------------------
+   Everything comes up behind the unfold in reading order. On the way out it
+   all goes at once, quicker than it came: a dismissal is a cut. */
+.cardHead,
+.cardTitleInner,
+.list li,
+.evidence,
+.cta {
   opacity: 0;
-  transform: translate3d(0, 10px, 0);
+  transform: translate3d(0, 12px, 0);
   transition:
-    opacity 180ms var(--ease-in-out-quart),
-    transform 180ms var(--ease-in-out-quart);
+    opacity 160ms var(--ease-in-out-quart),
+    transform 160ms var(--ease-in-out-quart);
 }
 
-/* The link keeps its own hover behaviour, which this selector would otherwise
-   outrank and drop. */
-.card > .cta {
-  transition:
-    opacity 180ms var(--ease-in-out-quart),
-    transform 180ms var(--ease-in-out-quart),
-    gap var(--dur-base) var(--ease-out-expo),
-    border-color var(--dur-fast) ease;
-}
-
-.isOpen .card > .cardTitle,
-.isOpen .card > .list,
-.isOpen .card > .cta,
-.isOpen .card > .evidence,
-.isOpen .card > .close {
+.isOpen .cardHead,
+.isOpen .cardTitleInner,
+.isOpen .list li,
+.isOpen .evidence,
+.isOpen .cta {
   opacity: 1;
   transform: none;
   transition:
-    opacity 460ms var(--ease-out-quint) var(--step, 90ms),
-    transform 560ms var(--ease-out-expo) var(--step, 90ms),
-    gap var(--dur-base) var(--ease-out-expo),
-    border-color var(--dur-fast) ease;
+    opacity 520ms var(--ease-out-quint) var(--step, 0ms),
+    transform 700ms var(--ease-out-expo) var(--step, 0ms);
 }
 
-.isOpen .card > .list {
-  --step: 150ms;
+.isOpen .cardHead {
+  --step: 260ms;
 }
-.isOpen .card > .cta {
-  --step: 205ms;
+.isOpen .cardTitleInner {
+  --step: 320ms;
 }
-.isOpen .card > .evidence {
-  --step: 250ms;
+.isOpen .list li {
+  --step: calc(420ms + var(--n, 0) * 80ms);
 }
-.isOpen .card > .close {
-  --step: 285ms;
+.isOpen .evidence {
+  --step: 660ms;
+}
+.isOpen .cta {
+  --step: 720ms;
 }
 
-.cardTitle {
-  font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  line-height: var(--lh-heading);
-  letter-spacing: var(--tracking-heading);
+/* The link keeps its own hover behaviour, which the rules above would
+   otherwise outrank and drop. */
+.isOpen .cta {
+  transition:
+    opacity 520ms var(--ease-out-quint) var(--step, 0ms),
+    transform 700ms var(--ease-out-expo) var(--step, 0ms),
+    background-color var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: calc(var(--land) * 2 - var(--space-4));
+  margin-bottom: var(--space-3);
+}
+
+.count {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
   color: var(--accent-rose);
-  margin-bottom: var(--space-4);
+}
+
+.countTotal {
+  color: var(--text-on-navy-muted);
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-on-navy-muted);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    transform var(--dur-base) var(--ease-out-expo);
+}
+
+.close:hover,
+.close:focus-visible {
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+  transform: rotate(90deg);
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 2px;
+}
+
+/* The title rises out of its own line box. */
+.cardTitle {
+  margin: 0 0 var(--space-4);
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  line-height: 1.12;
+  letter-spacing: var(--tracking-heading);
+  color: var(--accent-rose-bright);
+}
+
+.cardTitleInner {
+  display: block;
+  padding-bottom: 0.08em;
 }
 
 .list {
@@ -277,87 +426,111 @@
   list-style: none;
   font-size: var(--fs-small);
   line-height: var(--lh-body);
+  color: rgba(244, 242, 239, 0.9);
 }
 
-/* Drawn markers rather than list bullets, so they sit on the rose hairline
-   the rest of the page draws its rules in. */
 .list li {
-  position: relative;
-  padding-left: var(--space-5);
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  gap: var(--space-3);
 }
 
-.list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.62em;
-  width: 10px;
+/* Each bullet's rule is drawn as its line arrives. */
+.tick {
+  width: 14px;
   height: 1px;
+  margin-top: 0.8em;
   background: var(--accent-rose);
-  opacity: 0.75;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 160ms var(--ease-in-out-quart);
+}
+
+.isOpen .tick {
+  transform: scaleX(1);
+  transition: transform 600ms var(--ease-out-expo)
+    calc(500ms + var(--n, 0) * 80ms);
+}
+
+/* What is actually in frame under the pin, set apart from the claims. */
+.evidence {
+  margin: var(--space-5) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 2px solid rgba(228, 168, 161, 0.5);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  background: rgba(255, 255, 255, 0.035);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+}
+
+.evidenceLabel {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 0.6875rem;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-rose);
 }
 
 .cta {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-top: var(--space-5);
-  color: var(--accent-rose);
-  font-size: var(--fs-caption);
+  padding: 0.35rem 0.35rem 0.35rem var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--accent-rose);
+  color: var(--navy-900);
+  font-size: var(--fs-small);
+  font-weight: 600;
   letter-spacing: var(--tracking-ui);
-  text-transform: uppercase;
   text-decoration: none;
-  border-bottom: var(--hairline) solid transparent;
-  transition:
-    gap var(--dur-base) var(--ease-out-expo),
-    border-color var(--dur-fast) ease;
+  box-shadow: 0 10px 24px -14px rgba(228, 168, 161, 0.7);
+}
+
+.ctaIcon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--navy-900);
+  color: var(--accent-rose);
+  transition: transform var(--dur-base) var(--ease-out-expo);
 }
 
 .cta:hover,
 .cta:focus-visible {
-  gap: var(--space-3);
-  border-bottom-color: var(--accent-rose);
+  background: var(--accent-rose-bright);
+  box-shadow: 0 14px 30px -12px rgba(228, 168, 161, 0.8);
 }
 
-/* The caption. It says what is in frame under the pin, so it is set apart
-   from the claims above it rather than reading as one more of them. */
-.evidence {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: var(--hairline) solid var(--navy-line-soft);
-  font-size: var(--fs-caption);
-  line-height: var(--lh-body);
-  color: var(--text-on-navy-muted);
+.cta:hover .ctaIcon,
+.cta:focus-visible .ctaIcon {
+  transform: translateX(3px);
 }
 
-.close {
-  margin-top: var(--space-4);
-  padding: var(--space-2) var(--space-3);
-  background: none;
-  border: var(--hairline) solid var(--navy-line);
-  border-radius: var(--radius-pill);
-  color: var(--text-on-navy-muted);
-  font-size: var(--fs-caption);
-  letter-spacing: var(--tracking-ui);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    color var(--dur-fast) ease,
-    border-color var(--dur-fast) ease;
+.cta:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 3px;
 }
 
-.close:hover {
-  color: var(--accent-rose);
-  border-color: var(--accent-rose);
-}
-
-/* ---- Small screens ------------------------------------------------------ */
-/* The node shrinks toward the bottom of the 28-36px band, and the card
-   centres itself on the pin instead of hanging off one side — at this width
-   there is not enough room beside a pin for a card to hang. */
+/* ---- Small screens ----------------------------------------------------------
+   The card centres on its pin and opens straight down (or up) from it: there
+   is not the room beside a pin for a card to hang. The leader goes, since it
+   only has a job when the card stands beside the pin. */
 @media (max-width: 47.99rem) {
   .pin {
-    --node-size: 28px;
+    --node-size: 36px;
+  }
+
+  .leader {
+    display: none;
   }
 
   /* --nudge-x is measured on open (ScenePin.tsx): a pin carried to the edge
@@ -367,21 +540,19 @@
     left: 50%;
     right: auto;
     translate: calc(-50% + var(--nudge-x, 0px)) 0;
-    width: min(20rem, 80vw);
+    width: min(20rem, 84vw);
+    --ox: 50%;
+    --radius-card: var(--radius-l);
   }
-}
 
-/* ---- Small screens ------------------------------------------------------ */
-/* The card centres on the pin here rather than hanging off one side, so the
-   wipe follows it: it opens downward off the node instead of sideways. */
-@media (max-width: 47.99rem) {
-  .right .card,
-  .left .card {
-    --clip-in: inset(0 0 100% 0 round var(--radius-m));
-    --slide-x: 0px;
-    --slide-y: -12px;
-    --origin-x: 50%;
-    --origin-y: 0%;
+  .down .card {
+    top: calc(var(--node-size) + 12px);
+    --oy: 0%;
+  }
+
+  .up .card {
+    bottom: calc(var(--node-size) + 12px);
+    --oy: 100%;
   }
 }
 
@@ -390,48 +561,58 @@
     animation: none;
     opacity: 0;
   }
-  .dot,
-  .cta {
+
+  /* The card still has to appear and disappear — on the frame it is asked
+     to, with no leader, no unfold and no stagger. */
+  .disc,
+  .plus,
+  .leader,
+  .card,
+  .isOpen .card,
+  .card::before,
+  .isOpen .card::before,
+  .cardHead,
+  .cardTitleInner,
+  .list li,
+  .tick,
+  .evidence,
+  .cta,
+  .isOpen .cardHead,
+  .isOpen .cardTitleInner,
+  .isOpen .list li,
+  .isOpen .tick,
+  .isOpen .evidence,
+  .isOpen .cta {
     transition: none;
   }
 
-  /* The card still has to appear and disappear — it just does it on the
-     frame it is asked to, with no wipe, no slide and no stagger. The
-     visibility delay goes too, or the closed card would stay on screen for
-     the length of an exit that is no longer running. */
-  .card,
-  .isOpen .card,
-  .card > .cardTitle,
-  .card > .list,
-  .card > .cta,
-  .card > .evidence,
-  .card > .close,
-  .isOpen .card > .cardTitle,
-  .isOpen .card > .list,
-  .isOpen .card > .cta,
-  .isOpen .card > .evidence,
-  .isOpen .card > .close {
-    transition: none;
-    transform: none;
+  .card {
     clip-path: none;
   }
-  .card {
-    opacity: 0;
-  }
-  .isOpen .card,
-  .isOpen .card > * {
+
+  .cardHead,
+  .cardTitleInner,
+  .list li,
+  .evidence,
+  .cta {
     opacity: 1;
+    transform: none;
+  }
+
+  .tick,
+  .card::before {
+    transform: none;
   }
 }
 
 /* ---- Touch ---------------------------------------------------------------
-   The ring is drawn at a pointer's size. On a touch screen the button grows
-   an invisible margin to a thumb's 44px; the ring stays the size it is. */
+   The button grows an invisible margin to a thumb's 48px; the disc stays the
+   size it is. */
 @media (pointer: coarse) {
   .node::after {
     content: "";
     position: absolute;
-    inset: calc((44px - var(--node-size)) / -2);
+    inset: calc((48px - var(--node-size)) / -2);
     border-radius: 50%;
   }
 }

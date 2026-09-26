@@ -251,6 +251,8 @@ async function readSiteContent(): Promise<SiteContent> {
         href: text(home.hero?.ctaHref, fallback.hero.primaryCta.href),
       },
       scrollCue: text(home.hero?.scrollCue, fallback.hero.scrollCue),
+      // Not a CMS field yet.
+      pinHint: fallback.hero.pinHint,
       background: image(home.hero?.background, fallback.hero.background),
       // A pin's coordinates are measured against ONE photograph and are not
       // meaningful apart from it, so the field carries x and y in the row
