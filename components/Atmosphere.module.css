@@ -23,10 +23,12 @@
 
 .section {
   position: relative;
-  /* Opens on the field of cream the arc above has already cleared. It closes
-     on nothing: the team below opens on --section-pad-lg of its own, and two
-     intervals end to end would be a hole rather than a breath. */
-  padding-block: var(--section-pad) 0;
+  /* Follows the story section on the same cream, and that section already
+     closes on --section-pad of its own — so this opens on only enough to
+     hang the first plate's tag in. It closes on nothing: the milestones
+     below open on --section-pad-lg of their own, and two intervals end to
+     end would be a hole rather than a breath. */
+  padding-block: var(--space-8) 0;
 }
 
 .shell {
@@ -227,8 +229,29 @@
   isolation: isolate;
 }
 
+/* The entrance's zoom. A wrapper of its own, so the zoom and the drift on
+   the photograph inside it never write the same transform. */
+.zoom {
+  position: absolute;
+  inset: 0;
+}
+
 .image {
   object-fit: cover;
+}
+
+/* The cover each plate is opened from, declared here so the first paint of
+   the motion layout is already closed and the entrance never flashes an open
+   plate shut. Atmosphere.tsx opens it. No JS or reduced motion: no
+   `.motion-on`, no cover. */
+:global(.motion-on) .plate[data-from="left"] {
+  clip-path: inset(0% 100% 0% 0%);
+}
+:global(.motion-on) .plate[data-from="right"] {
+  clip-path: inset(0% 0% 0% 100%);
+}
+:global(.motion-on) .plate[data-from="bottom"] {
+  clip-path: inset(100% 0% 0% 0%);
 }
 
 /* Each crop is stated once, here, and holds in both layouts — a frame that
@@ -568,6 +591,7 @@
   .deck,
   .garden,
   .terrace,
+  .zoom,
   .image,
   .noteLayer,
   .copyLayer,

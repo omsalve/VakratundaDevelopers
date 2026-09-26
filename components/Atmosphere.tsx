@@ -98,13 +98,13 @@ import styles from "./Atmosphere.module.css";
  */
 const DEPTH = {
   /** The wide exteriors the section opens and closes on. The backdrop. */
-  ground: 0.07,
+  ground: 0.1,
   /** A photograph seen through the crop that holds it — every one of them. */
-  crop: 0.06,
+  crop: 0.08,
   /** The terrace plate. One plane forward of the page, and no more: it is the
    *  frame that overlaps two others, so it has to read as being in front of
    *  them rather than as flying past them. */
-  standing: -0.02,
+  standing: -0.04,
   /** Tags and micro-copy: just off the page. */
   label: -0.028,
   /** The paragraph, the details and the closing line. */
@@ -124,6 +124,45 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
 
     /* The head, off the section's own top edge, as one thing. */
     revealOnEnter(q("[data-head]"), section, { stagger: 0.12, start: "top 74%" });
+
+    /* THE PLATES OPEN, THEY DO NOT FADE. Each photograph is uncovered by an
+       edge travelling across it — from the side of the canvas it stands on,
+       so the spread opens left, right, left, right as it is read — while the
+       view inside settles out of a close crop. The cover is declared in the
+       stylesheet under `.motion-on`, so there is no flash of an open plate
+       before this runs; the zoom is on its own wrapper so the drift below,
+       which owns the photograph's transform, is never fought. */
+    const closed: Record<string, string> = {
+      left: "inset(0% 100% 0% 0%)",
+      right: "inset(0% 0% 0% 100%)",
+      bottom: "inset(100% 0% 0% 0%)",
+    };
+    q(`.${styles.plate}`).forEach((plate) => {
+      const from = (plate as HTMLElement).dataset.from ?? "left";
+      const zoom = plate.querySelector(`.${styles.zoom}`);
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: plate, start: "top 86%", once: true },
+      });
+      tl.fromTo(
+        plate,
+        { clipPath: closed[from], webkitClipPath: closed[from] },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          webkitClipPath: "inset(0% 0% 0% 0%)",
+          duration: 1.5,
+          ease: "expo.out",
+        },
+        0,
+      );
+      if (zoom) {
+        tl.fromTo(
+          zoom,
+          { scale: 1.28 },
+          { scale: 1, duration: 2.1, ease: "expo.out" },
+          0,
+        );
+      }
+    });
 
     /* Everything else, off its own. See the note on per-element entrances
        above: the section is too tall for one trigger to serve. */
@@ -230,6 +269,7 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
           <Plate
             plate={plates.deck}
             className={styles.deck}
+            from="right"
             tag="above"
             align="end"
             sizes="(max-width: 64rem) 92vw, 40vw"
@@ -243,6 +283,7 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
           <Plate
             plate={plates.glass}
             className={styles.glass}
+            from="left"
             tag="above"
             align="start"
             sizes="(max-width: 64rem) 100vw, 58vw"
@@ -250,6 +291,7 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
           <Plate
             plate={plates.terrace}
             className={styles.terrace}
+            from="bottom"
             tag="below"
             align="start"
             sizes="(max-width: 64rem) 66vw, 34vw"
@@ -270,6 +312,7 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
           <Plate
             plate={plates.lounge}
             className={styles.lounge}
+            from="right"
             tag="above"
             align="end"
             sizes="(max-width: 64rem) 86vw, 42vw"
@@ -296,6 +339,7 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
           <Plate
             plate={plates.garden}
             className={styles.garden}
+            from="left"
             tag="below"
             align="start"
             sizes="(max-width: 64rem) 100vw, 58vw"
@@ -353,6 +397,7 @@ function Plate({
   className,
   tag,
   align,
+  from,
   sizes,
 }: {
   plate: AtmospherePlate;
@@ -361,6 +406,8 @@ function Plate({
   tag: "above" | "below";
   /** Which edge of the plate it is ranged to. */
   align: "start" | "end";
+  /** The edge the plate is uncovered from on entry. */
+  from: "left" | "right" | "bottom";
   sizes: string;
 }) {
   return (
@@ -369,15 +416,18 @@ function Plate({
       data-tag={tag}
       data-align={align}
     >
-      <div className={styles.plate} data-reveal="rise">
-        <Image
-          src={plate.image.src}
-          alt={plate.image.alt}
-          fill
-          sizes={sizes}
-          quality={82}
-          className={styles.image}
-        />
+      <div className={styles.plate} data-from={from}>
+        {/* The entrance's zoom lives here; the drift lives on the image. */}
+        <div className={styles.zoom}>
+          <Image
+            src={plate.image.src}
+            alt={plate.image.alt}
+            fill
+            sizes={sizes}
+            quality={82}
+            className={styles.image}
+          />
+        </div>
       </div>
       <figcaption className={styles.tag} data-reveal="up">
         {plate.side}
