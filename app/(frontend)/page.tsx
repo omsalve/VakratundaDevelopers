@@ -6,6 +6,7 @@ import EnclosureFooter from "@/components/EnclosureFooter";
 import JointVentures from "@/components/JointVentures";
 import Journey from "@/components/Journey";
 import Legacy from "@/components/Legacy";
+import Openland from "@/components/Openland";
 import ProjectsShowcase from "@/components/ProjectsShowcase";
 import Responsibility from "@/components/Responsibility";
 import SiteHeader from "@/components/SiteHeader";
@@ -105,12 +106,17 @@ export default async function HomePage() {
             operates. It closes the case the team opened: who trusts them. */}
         <JointVentures content={content.ventures} />
 
-        {/* The venture that is not a building. Vihaa International School is
-            a joint venture, so it follows the partnerships directly and is
-            named in their grammar — a stake the group holds, set out beside
-            the others, rather than a line in what it owes. Same cream; the
-            sticky copy and drifting columns are read, not driven, so the page
-            does not gain a third scroll set piece. */}
+        {/* The land. The partnerships say who the group builds beside; this
+            says what it builds from nothing — open ground, surveyed and laid
+            out whole. Set here because the ventures have just introduced the
+            Badlapur township, and this is where that township came from. Its
+            own ground (a survey sheet on cream) rather than a third change of
+            ground: the page still goes navy → cream exactly twice. */}
+        <Openland content={content.openland} />
+
+        {/* The school, on the land the section above surveyed. Same cream;
+            the sticky copy and drifting columns are read, not driven, so the
+            page does not gain a third scroll set piece. */}
         <Vihaa content={content.vihaa} />
 
         {/* The clients, in their own words. The partnerships and the school

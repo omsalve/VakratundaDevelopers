@@ -1,0 +1,645 @@
+/* ============================================================================
+   Openland — the survey sheet.
+
+   ITS OWN GROUND WITHOUT A CHANGE OF GROUND. The page goes navy → cream twice
+   and no more, so this stays on cream — but the lightest cream, ruled with a
+   fine survey grid that fades into the plain cream at its top and foot, so the section
+   reads as a sheet laid on the page rather than as more of the page.
+
+   TWO LAYOUTS, from the same markup — the house pattern:
+     · DEFAULT (under 64rem). Head, the sheet, then the schedule, stacked.
+     · 64rem and up. The sheet holds still in the left seven columns while the
+       schedule is read beside it.
+   ========================================================================== */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+  background-color: var(--cream-100);
+  /* The survey grid: a fine rule every 2rem and a firmer one every 8rem, in
+     the navy hairline the cream ground re-points to. */
+  background-image:
+    linear-gradient(var(--cream-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cream-line) 1px, transparent 1px),
+    linear-gradient(rgba(15, 20, 48, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 20, 48, 0.035) 1px, transparent 1px);
+  background-size:
+    8rem 8rem,
+    8rem 8rem,
+    2rem 2rem,
+    2rem 2rem;
+  background-position: center top;
+  isolation: isolate;
+}
+
+/* The grid fades out toward the section's edges, so the sheet has no hard
+   seam against the plain cream either side of it. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      var(--cream-200) 0%,
+      transparent 18%,
+      transparent 82%,
+      var(--cream-200) 100%
+    );
+}
+
+/* ---- Head ---------------------------------------------------------------- */
+
+.head {
+  display: grid;
+  gap: var(--space-5);
+  margin-bottom: var(--head-gap);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+/* A surveyor's station mark: a ring with a cross-hair, in the rose line. */
+.eyebrowMark {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.eyebrowMark::before,
+.eyebrowMark::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.eyebrowMark::before {
+  left: 50%;
+  top: -4px;
+  bottom: -4px;
+  width: 1px;
+  translate: -50% 0;
+}
+
+.eyebrowMark::after {
+  top: 50%;
+  left: -4px;
+  right: -4px;
+  height: 1px;
+  translate: 0 -50%;
+}
+
+.heading {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
+
+.standfirst {
+  margin: 0;
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+/* ---- Body ---------------------------------------------------------------- */
+
+.body {
+  display: grid;
+  gap: var(--space-10);
+}
+
+/* ---- The sheet ----------------------------------------------------------- */
+
+.sheet {
+  position: relative;
+  margin: 0;
+  padding: clamp(var(--space-4), 2.4vw, var(--space-6));
+  background: rgba(253, 252, 250, 0.72);
+  border: var(--hairline) solid var(--cream-line);
+  border-radius: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
+  box-shadow: 0 30px 70px -44px rgba(15, 20, 48, 0.45);
+}
+
+/* Registration ticks at the four corners — the marks a drawing is aligned by. */
+.tick {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--accent-deep);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.7;
+}
+
+.tickTl {
+  top: -9px;
+  left: -9px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.tickTr {
+  top: -9px;
+  right: -9px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.tickBl {
+  bottom: -9px;
+  left: -9px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.tickBr {
+  bottom: -9px;
+  right: -9px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.plan {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--cream-200);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.contour {
+  fill: none;
+  stroke: var(--accent-deep);
+  stroke-width: 0.8;
+  stroke-opacity: 0.38;
+}
+
+/* Every fourth line is an index contour, drawn heavier — as a survey sets it. */
+.contourIndex {
+  stroke-width: 1.3;
+  stroke-opacity: 0.6;
+}
+
+.roadBed {
+  fill: none;
+  stroke: var(--cream-100);
+  stroke-width: 16;
+  stroke-linecap: round;
+}
+
+/* Solid, not dashed: the draw-on is itself a dash, and a second dash pattern
+   on the same stroke would be overwritten by it. The cream bed under it is
+   what makes it read as a road rather than as one more contour. */
+.road {
+  fill: none;
+  stroke: var(--text-on-cream);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-opacity: 0.5;
+}
+
+/* ---- Parcels --------------------------------------------------------------
+   At rest a boundary is a fine navy line with a hollow marker; the parcel
+   being read is ruled solid in rose, filled with a wash and its marker lit.
+   The change is a transition, so a boundary never snaps between the two. */
+
+.fill {
+  fill: var(--accent-deep);
+  fill-opacity: 0;
+  transition: fill-opacity var(--dur-slow) var(--ease-out-expo);
+}
+
+.boundary {
+  fill: none;
+  stroke: var(--text-on-cream);
+  stroke-width: 1.4;
+  stroke-opacity: 0.55;
+  stroke-linejoin: round;
+  transition:
+    stroke var(--dur-slow) var(--ease-out-expo),
+    stroke-width var(--dur-slow) var(--ease-out-expo),
+    stroke-opacity var(--dur-slow) var(--ease-out-expo);
+}
+
+.marker {
+  fill: var(--cream-100);
+  stroke: var(--text-on-cream);
+  stroke-width: 1;
+  stroke-opacity: 0.55;
+  transition:
+    fill var(--dur-slow) var(--ease-out-expo),
+    stroke var(--dur-slow) var(--ease-out-expo);
+}
+
+.markerText {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--text-on-cream);
+  transition: fill var(--dur-slow) var(--ease-out-expo);
+}
+
+.parcel[data-active="true"] .fill {
+  fill-opacity: 0.12;
+}
+
+.parcel[data-active="true"] .boundary {
+  stroke: var(--accent-deep);
+  stroke-width: 2.2;
+  stroke-opacity: 1;
+}
+
+.parcel[data-active="true"] .marker {
+  fill: var(--accent-deep);
+  stroke: var(--accent-deep);
+  stroke-opacity: 1;
+}
+
+.parcel[data-active="true"] .markerText {
+  fill: var(--cream-100);
+}
+
+/* ---- The survey line ------------------------------------------------------
+   Hidden until the motion layer is on; GSAP carries it across the plan. */
+.scan {
+  display: none;
+}
+
+:global(.motion-on) .scan {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  pointer-events: none;
+  background: var(--accent-deep);
+  opacity: 0.55;
+  box-shadow: 0 0 18px 4px rgba(168, 87, 76, 0.18);
+}
+
+/* ---- Legend -------------------------------------------------------------- */
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.north {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.north svg {
+  fill: var(--accent-deep);
+}
+
+.scale {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.scaleBar {
+  display: block;
+  width: 4.5rem;
+  height: 6px;
+  border: 1px solid var(--text-on-cream-muted);
+  background: linear-gradient(
+    90deg,
+    var(--text-on-cream-muted) 0 25%,
+    transparent 25% 50%,
+    var(--text-on-cream-muted) 50% 75%,
+    transparent 75%
+  );
+  opacity: 0.8;
+}
+
+/* ---- The schedule -------------------------------------------------------- */
+
+.scheduleTitle {
+  margin: 0 0 var(--space-5);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-on-cream-muted);
+}
+
+.schedule {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: var(--hairline) solid var(--cream-line);
+}
+
+.entry {
+  position: relative;
+  border-bottom: var(--hairline) solid var(--cream-line);
+}
+
+/* The rose rule down the leading edge of the entry being read — the same
+   "you are here" mark the masthead's menu uses. */
+.entry::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--space-6);
+  bottom: var(--space-6);
+  width: 2px;
+  background: var(--accent-deep);
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.entry[data-active="true"]::before {
+  transform: scaleY(1);
+}
+
+.entryInner {
+  padding: var(--space-6) 0 var(--space-6) var(--space-6);
+}
+
+.entryHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.index {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-text);
+}
+
+.status {
+  padding: 0.3em 0.85em;
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.04em;
+  color: var(--accent-text);
+  white-space: nowrap;
+}
+
+.entryMain {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  font-weight: 400;
+  color: var(--text-on-cream);
+}
+
+.locality {
+  margin: var(--space-1) 0 0;
+  font-size: var(--fs-small);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.area {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  color: var(--text-on-cream);
+}
+
+.figure {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.6rem + 2.6vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-lead);
+  color: var(--accent-text);
+}
+
+.phrase {
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  color: var(--accent-text);
+}
+
+.note {
+  margin: var(--space-3) 0 0;
+  max-width: 42ch;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: var(--space-4);
+  padding-block: var(--space-1);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
+  color: var(--accent-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--cream-line-rose);
+  transition:
+    border-color var(--dur-base) ease,
+    gap var(--dur-base) var(--ease-out-expo);
+}
+
+.cta:hover,
+.cta:focus-visible {
+  gap: 0.8em;
+  border-color: var(--accent-deep);
+}
+
+.thumb {
+  position: relative;
+  width: clamp(5.5rem, 9vw, 8rem);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius-m) var(--radius-m) var(--radius-s) var(--radius-m);
+  background: var(--cream-300);
+  box-shadow: 0 14px 32px -20px rgba(15, 20, 48, 0.5);
+}
+
+.thumbImage {
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.entry[data-active="true"] .thumbImage {
+  transform: scale(1.06);
+}
+
+/* ---- The invitation ------------------------------------------------------ */
+
+.invitation {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: var(--hairline) dashed var(--cream-line-rose);
+  border-radius: var(--radius-m);
+}
+
+.invitationText {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  line-height: 1.3;
+  color: var(--text-on-cream);
+  text-wrap: pretty;
+}
+
+/* ==========================================================================
+   64rem and up — the sheet holds still beside the schedule.
+   ========================================================================== */
+
+@media (min-width: 64rem) {
+  .head {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    column-gap: var(--space-6);
+  }
+
+  .eyebrow {
+    grid-column: 1 / -1;
+  }
+
+  .heading {
+    grid-column: 1 / 8;
+  }
+
+  .standfirst {
+    grid-column: 8 / 13;
+  }
+
+  .body {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+
+  .sheetCell {
+    grid-column: 1 / 8;
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-6));
+  }
+
+  /* Never taller than what the header leaves of the window, so the whole
+     sheet is in view for as long as it is held. */
+  .sheet {
+    max-width: calc(100svh - var(--header-h) - 7rem);
+    margin-inline: auto;
+  }
+
+  .scheduleCell {
+    grid-column: 8 / 13;
+    /* Starts level with the sheet's inner plan, not its frame. */
+    padding-top: var(--space-2);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .entryInner {
+    padding-left: var(--space-5);
+  }
+
+  .entryMain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    order: -1;
+  }
+
+  .legend {
+    font-size: 0.6875rem;
+  }
+
+  /* The plan is drawn at roughly half size here, so the markers are drawn
+     at nearly twice theirs to stay legible. */
+  .marker {
+    r: 30px;
+  }
+
+  .markerText {
+    font-size: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill,
+  .boundary,
+  .marker,
+  .markerText,
+  .entry::before,
+  .thumbImage,
+  .cta {
+    transition: none;
+  }
+}
