@@ -372,7 +372,8 @@ export interface AtmospherePlate {
 }
 
 export interface AtmosphereContent {
-  /** The wide-tracked label the spread opens on. */
+  /** Kept for the CMS; no longer rendered — the headline stands without a
+   *  label above it. */
   eyebrow: string;
   /** The claim. It used to ride the cream of the arc above this section with
    *  nothing around it; it is now the headline of the composition that argues
@@ -382,17 +383,17 @@ export interface AtmosphereContent {
    *  headline — see the canvas in Atmosphere.module.css. */
   lead: string;
   plates: {
-    /** Wide exterior. The frame the section opens against, top right. */
+    /** Wide exterior. The frame the section opens on, bleeding off the right. */
     deck: AtmospherePlate;
     /** Interior looking out through a full-height wall of glass. The section's
      *  argument, and the only frame that contains both sides at once. */
     glass: AtmospherePlate;
-    /** Tall threshold plate. The nearest object in the composition: it stands
-     *  off the page and overlaps the frame to its left. */
+    /** Tall threshold plate. Stands on the left of the middle movement, beside
+     *  the glass and the lounge. */
     terrace: AtmospherePlate;
-    /** Interior. Breaks the right margin. */
+    /** Interior. Under the glass, in the right-hand stack. */
     lounge: AtmospherePlate;
-    /** Wide exterior. The frame the section closes on. */
+    /** Wide exterior. The frame the section closes on, bleeding off the left. */
     garden: AtmospherePlate;
   };
   /** The line that introduces the three details. */

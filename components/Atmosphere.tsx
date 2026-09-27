@@ -1,116 +1,78 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import Image from "next/image";
-import type { AtmosphereContent, AtmospherePlate } from "@/lib/content";
-import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
+import type {
+  AtmosphereContent,
+  AtmospherePlate,
+  SwashHeading,
+} from "@/lib/content";
+import { gsap, useGsapScope } from "@/lib/motion";
 import PageLink from "./PageLink";
-import Swash from "./Swash";
 import styles from "./Atmosphere.module.css";
 
 /**
- * The spread — interior and exterior held in one composition.
- *
- * It stands where the arc's own line used to stand. That line was the claim
- * set on an empty field of cream with nothing around it; this is the claim
- * with the evidence built around it, which is why the arc above no longer
- * carries a lockup of its own. Stating it twice, forty pixels apart, would
- * have made the second one a caption on the first.
+ * The spread — interior and exterior, as one evening in five frames.
  *
  * ============================================================================
- * ONE CANVAS, THIRTEEN PLACED THINGS
+ * SET AT THE PAGE'S OWN SCALE
  * ============================================================================
  *
- * There is no repeating unit here and no `.map()` over a list. Five
- * photographs, a label, a headline, a paragraph, three blocks of micro-copy,
- * three details and a closing line are each PLACED — by column and by row —
- * on a single twelve-column canvas whose row is exactly half a column, so
- * every crop in the section is a whole number of the same square. That is
- * what lets the composition be irregular without being arbitrary: nothing is
- * where it is by accident, and every frame is a different shape on purpose.
+ * Every other section on the home page runs a headline at about 60px and
+ * photographs between 300 and 700px wide. The spread keeps to that: it is a
+ * cluster of medium frames inside the shell, not a sequence of full-width
+ * plates, and on a desk it is under two screens tall.
  *
- * THE TWO OVERLAPS ARE THE ARGUMENT, NOT AN EFFECT. The tall terrace plate
- * sits over the wall of glass; the garden sits over the lounge. Both are an
- * OUTSIDE frame laid across an INSIDE one — the section's whole subject, made
- * structural rather than described. No two photographs anywhere else on this
- * page overlap at all.
- *
- * TWO IS THE CEILING, and it was found rather than chosen: a third, with the
- * terrace over the lounge as well, left the lounge as an L-shaped sliver of
- * itself. An overlap has to leave the frame underneath legible as a
- * photograph, or it is not a layer — it is a crop.
- *
- * WHERE THE TYPE GOES IS DECIDED BY THE PHOTOGRAPHS. Every block of copy sits
- * in negative space a frame has opened next to it: the micro-copy for the
- * deck under the deck, the note for the terrace in the two-column strip the
- * terrace leaves at the right margin, the closing line beside the details
- * rather than under them. Nothing is stacked, and nothing is centred.
- *
- * FOUR THINGS BREAK THE MARGIN, and never by more than half a gutter — the
- * deck, the terrace's note and the lounge run past the right edge of the
- * shell, the wall of glass past the left. Half a gutter is enough to read as
- * a decision and not enough to reach the edge of the window, so the break
- * can never become an overflow at any width.
+ * EVERY PHOTOGRAPH IS SEEN WHOLE. Each frame takes the aspect ratio of the
+ * file it holds (`image.width / image.height`), and nothing overlaps.
  *
  * ============================================================================
- * TWO LAYOUTS, FROM THE SAME MARKUP — the house pattern
+ * THE ASYMMETRY
  * ============================================================================
  *
- *   · DEFAULT (under 64rem). One column, in document order, with the frames
- *     given different widths and alignments so the column still sways. No
- *     overlap, no negative margins, no canvas. THE SECTION IS COMPLETE.
+ * Three columns, three widths — five, three and four of twelve — and three
+ * different tops, so the cluster starts ragged and ends ragged:
  *
- *   · 64rem and up. The canvas, as above.
+ *   · LEFT, the widest: the two wide exteriors, the deck over the garden.
+ *   · MIDDLE, the narrowest, set lowest: the tall terrace on its own.
+ *   · RIGHT: the two interiors, the glass over the lounge.
  *
- * Each plate keeps the same crop in both, so the spread is recognisably the
- * same composition on a phone as on a desk — narrower, and unfolded.
+ * Outside on the left, inside on the right, and the threshold standing
+ * between them — the section's subject laid out as a floor plan.
+ *
+ * The head and the close mirror one another around it: headline left and the
+ * lead low on the right above; the details left and the coda right below.
+ *
+ * Under 64rem it is one column in reading order (deck, glass, terrace,
+ * lounge, garden), with the frames at different widths so it still sways.
  *
  * ============================================================================
- * MOTION
+ * MOTION — the cluster opens from the middle
  * ============================================================================
  *
- * The same ladder Practice uses, for the same reason: one scrubbed range, one
- * set of rates, so the layers are at fixed distances from one another rather
- * than at a dozen independent ones. Depth belongs to a wrapper and the
- * entrance belongs to the element inside it — the two never write the same
- * property, which is the rule that keeps a drift from swallowing a reveal.
+ * The frames are uncovered by their clip retreating AWAY from the middle
+ * column: the left column opens leftward, the right column rightward, and the
+ * terrace rises. The photograph inside each settles out of a close crop, its
+ * rose rule draws and its caption rises. The headline's words rise out of
+ * their own line boxes. On scroll the middle and right columns drift at two
+ * small rates, so the stagger between the three shifts as the section passes.
  *
- * THE ENTRANCES ARE PER-ELEMENT, WHICH IS THE ONE DEPARTURE. This spread is
- * the better part of three screens tall. One trigger on the section's top
- * edge would spend every entrance in it on frames the visitor has not reached
- * yet, so only the head — the label and the headline — arrives off the
- * section; everything below arrives off its own top edge, as it reaches the
- * window.
+ * No two tweens ever write the same transform: the plate owns the clip,
+ * `.zoom` the entrance scale, `.lift` the hover scale (CSS), the image its
+ * drift, and the column wrapper the column's drift.
  *
- * Under reduced motion `useGsapScope` skips the setup and none of it runs:
- * every element is already at its final opacity, every photograph at exactly
- * its cover crop, and the canvas is the whole of the section.
+ * Under reduced motion `useGsapScope` skips the setup, `.motion-on` is never
+ * set, and every frame is simply open.
  */
 
-/**
- * The ladder, in fractions of each layer's own height travelled end to end.
- * Positive is further away, negative is nearer, zero is on the page.
- *
- * Read down the list and it is a cross-section of the spread: the two wide
- * exteriors furthest back, every photograph drifting inside its own crop, the
- * tall terrace plate standing off the page in front of them, and the type
- * nearest of all.
- */
-const DEPTH = {
-  /** The wide exteriors the section opens and closes on. The backdrop. */
-  ground: 0.1,
-  /** A photograph seen through the crop that holds it — every one of them. */
-  crop: 0.08,
-  /** The terrace plate. One plane forward of the page, and no more: it is the
-   *  frame that overlaps two others, so it has to read as being in front of
-   *  them rather than as flying past them. */
-  standing: -0.04,
-  /** Tags and micro-copy: just off the page. */
-  label: -0.028,
-  /** The paragraph, the details and the closing line. */
-  copy: -0.036,
-  /** The headline. The nearest thing in the section. */
-  headline: -0.05,
+type Opening = "leftward" | "rightward" | "rise";
+
+const CLOSED: Record<Opening, string> = {
+  /* Pinned to the right edge, growing left. */
+  leftward: "inset(0% 0% 0% 100%)",
+  /* Pinned to the left edge, growing right. */
+  rightward: "inset(0% 100% 0% 0%)",
+  rise: "inset(100% 0% 0% 0%)",
 };
 
 export function Atmosphere({ content }: { content: AtmosphereContent }) {
@@ -122,119 +84,137 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
     if (!section) return;
     const q = gsap.utils.selector(section);
 
-    /* The head, off the section's own top edge, as one thing. */
-    revealOnEnter(q("[data-head]"), section, { stagger: 0.12, start: "top 74%" });
+    /* ---- The headline: each word out of its own line box --------------- */
+    gsap.fromTo(
+      q(`.${styles.word}`),
+      /* `y: 0` on both ends: GSAP reads the stylesheet's closed transform
+         into `y`, and it has to be cleared for yPercent alone to decide. */
+      { yPercent: 110, y: 0 },
+      {
+        yPercent: 0,
+        y: 0,
+        duration: 1.2,
+        ease: "expo.out",
+        stagger: 0.04,
+        scrollTrigger: { trigger: section, start: "top 80%", once: true },
+      },
+    );
 
-    /* THE PLATES OPEN, THEY DO NOT FADE. Each photograph is uncovered by an
-       edge travelling across it — from the side of the canvas it stands on,
-       so the spread opens left, right, left, right as it is read — while the
-       view inside settles out of a close crop. The cover is declared in the
-       stylesheet under `.motion-on`, so there is no flash of an open plate
-       before this runs; the zoom is on its own wrapper so the drift below,
-       which owns the photograph's transform, is never fought. */
-    const closed: Record<string, string> = {
-      left: "inset(0% 100% 0% 0%)",
-      right: "inset(0% 0% 0% 100%)",
-      bottom: "inset(100% 0% 0% 0%)",
-    };
-    q(`.${styles.plate}`).forEach((plate) => {
-      const from = (plate as HTMLElement).dataset.from ?? "left";
-      const zoom = plate.querySelector(`.${styles.zoom}`);
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: plate, start: "top 86%", once: true },
+    /* ---- Copy: the house rise, each block off its own edge -------------- */
+    q("[data-reveal]").forEach((el) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 1.05,
+        ease: "expo.out",
+        scrollTrigger: { trigger: el, start: "top 90%", once: true },
       });
+    });
+
+    /* ---- The frames: opening away from the middle ----------------------- */
+    q(`.${styles.figure}`).forEach((figure) => {
+      const plate = figure.querySelector<HTMLElement>(`.${styles.plate}`);
+      const zoom = figure.querySelector(`.${styles.zoom}`);
+      const rule = figure.querySelector(`.${styles.rule}`);
+      const caption = figure.querySelectorAll(`.${styles.captionLine}`);
+      if (!plate) return;
+
+      const opening = (plate.dataset.opening ?? "rise") as Opening;
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: figure, start: "top 88%", once: true },
+        onComplete: () => {
+          /* Hand the corners back to the stylesheet's border-radius. */
+          plate.dataset.open = "";
+          gsap.set(plate, { clearProps: "clipPath,webkitClipPath" });
+        },
+      });
+
       tl.fromTo(
         plate,
-        { clipPath: closed[from], webkitClipPath: closed[from] },
+        { clipPath: CLOSED[opening], webkitClipPath: CLOSED[opening] },
         {
           clipPath: "inset(0% 0% 0% 0%)",
           webkitClipPath: "inset(0% 0% 0% 0%)",
-          duration: 1.5,
+          duration: 1.4,
           ease: "expo.out",
         },
         0,
       );
+
       if (zoom) {
         tl.fromTo(
           zoom,
-          { scale: 1.28 },
-          { scale: 1, duration: 2.1, ease: "expo.out" },
+          { scale: 1.22 },
+          { scale: 1, duration: 1.9, ease: "expo.out" },
           0,
+        );
+      }
+
+      if (rule) {
+        tl.fromTo(
+          rule,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 1.1, ease: "expo.out" },
+          0.3,
+        );
+      }
+
+      if (caption.length) {
+        tl.fromTo(
+          caption,
+          { yPercent: 105, y: 0 },
+          { yPercent: 0, y: 0, duration: 1, ease: "expo.out", stagger: 0.07 },
+          0.4,
         );
       }
     });
 
-    /* Everything else, off its own. See the note on per-element entrances
-       above: the section is too tall for one trigger to serve. */
-    q("[data-reveal]:not([data-head])").forEach((el) => {
-      revealOnEnter(el, el, { start: "top 88%" });
-    });
-
-    /* THE RANGE EVERY LAYER SHARES: this section passing through the window.
-       Stated once and handed to all of them, so no two layers are ever
-       travelling at different rates relative to one another. */
-    const range = () =>
-      ({
-        trigger: section,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.8,
-        invalidateOnRefresh: true,
-      }) as const;
-
-    /** Promote a set of layers for the range they are actually moving in, and
-     *  no longer. */
-    const promote = (layers: Element[]) => (self: { isActive: boolean }) => {
-      const state = self.isActive ? "on" : "off";
-      layers.forEach((layer) => {
-        (layer as HTMLElement).dataset.drift = state;
-      });
-    };
-
-    const drift = (
-      targets: Element[],
-      travel: number,
-      /** Enough enlargement that a crop can travel without an edge entering
-       *  the frame. 1 for anything not seen through a crop. */
-      headroom = 1,
-    ) => {
-      const layers = targets.filter(Boolean);
-      if (layers.length === 0) return;
-
+    /* ---- Scroll: the view drifts inside every frame --------------------- */
+    q(`.${styles.image}`).forEach((image) => {
+      const frame = image.closest(`.${styles.plate}`);
+      if (!frame) return;
       gsap.fromTo(
-        layers,
-        { yPercent: -travel * 100, scale: headroom },
+        image,
+        { yPercent: -4, scale: 1.1 },
         {
-          yPercent: travel * 100,
-          scale: headroom,
+          yPercent: 4,
+          scale: 1.1,
           ease: "none",
-          scrollTrigger: { ...range(), onToggle: promote(layers) },
+          scrollTrigger: {
+            trigger: frame,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
         },
       );
-    };
+    });
 
-    /* ---- Back to front -------------------------------------------------- */
-
-    drift([...q(`.${styles.deck}`), ...q(`.${styles.garden}`)], DEPTH.ground);
-
-    /* Every photograph inside its own crop, at one rate. What is moving is
-       the view through the window rather than the window, and they are all
-       the same kind of window. The headroom is set here rather than in the
-       stylesheet, so a photograph is never left permanently enlarged to
-       serve an effect that did not run. */
-    drift(q(`.${styles.image}`), DEPTH.crop, 1.16);
-
-    /* The one frame that is in front of the page rather than behind it. */
-    drift(q(`.${styles.terrace}`), DEPTH.standing);
-
-    /* The type, by layer — never the elements the entrances are written on.
-       The tags are the exception and carry no depth at all: each one is
-       written on the figcaption itself, which is where its entrance is, and
-       a drift on the same element would take that transform over. They are
-       part of the plate they hang off, and they travel with it. */
-    drift(q(`.${styles.noteLayer}`), DEPTH.label);
-    drift(q(`.${styles.copyLayer}`), DEPTH.copy);
-    drift(q(`.${styles.headlineLayer}`), DEPTH.headline);
+    /* ---- The columns drift at two small rates (the composition only) ---- */
+    const cluster = q(`.${styles.cluster}`)[0];
+    if (cluster && window.matchMedia("(min-width: 64rem)").matches) {
+      (
+        [
+          [`.${styles.colMiddle}`, 48],
+          [`.${styles.colRight}`, 22],
+        ] as const
+      ).forEach(([selector, travel]) => {
+        gsap.fromTo(
+          q(selector),
+          { y: travel },
+          {
+            y: -travel,
+            ease: "none",
+            scrollTrigger: {
+              trigger: cluster,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+      });
+    }
   }, []);
 
   return (
@@ -245,123 +225,79 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
       aria-labelledby="atmosphere-title"
     >
       <div className={`u-shell ${styles.shell}`}>
-        <div className={styles.canvas}>
-          {/* --------------------------------------------------- the head */}
-          <p className={styles.eyebrow} data-reveal="up" data-head="">
-            {content.eyebrow}
+        <header className={styles.head}>
+          <h2
+            id="atmosphere-title"
+            className={styles.headline}
+            aria-label={headingText(content.heading)}
+          >
+            <MaskedWords heading={content.heading} />
+          </h2>
+          <p className={styles.lead} data-reveal="up">
+            {content.lead}
           </p>
+        </header>
 
-          <div className={styles.headlineLayer}>
-            <h2
-              id="atmosphere-title"
-              className={styles.headline}
-              data-reveal="up"
-              data-head=""
-            >
-              <Swash heading={content.heading} />
-            </h2>
+        <div className={styles.cluster}>
+          <div className={styles.colLeft}>
+            <Plate
+              plate={plates.deck}
+              className={styles.deck}
+              opening="leftward"
+              sizes="(max-width: 64rem) 92vw, 40vw"
+            />
+            <Plate
+              plate={plates.garden}
+              className={styles.garden}
+              opening="leftward"
+              sizes="(max-width: 64rem) 92vw, 40vw"
+            />
           </div>
 
-          {/* ------------------------------------------- the exterior, first
-              The frame the section opens against, and the only one whose tag
-              is set above it — in the section's own top padding, where it is
-              the first mark on the cream rather than a caption on anything. */}
-          <Plate
-            plate={plates.deck}
-            className={styles.deck}
-            from="right"
-            tag="above"
-            align="end"
-            sizes="(max-width: 64rem) 92vw, 40vw"
-          />
-          <Note text={plates.deck.note} className={styles.deckNote} />
+          <div className={styles.colMiddle}>
+            <Plate
+              plate={plates.terrace}
+              className={styles.terrace}
+              opening="rise"
+              sizes="(max-width: 64rem) 64vw, 24vw"
+            />
+          </div>
 
-          {/* ----------------------------------------- the wall of glass, and
-              the frame standing in front of it. These two are the section:
-              one photograph that contains both sides at once, with an
-              outside laid across it. */}
-          <Plate
-            plate={plates.glass}
-            className={styles.glass}
-            from="left"
-            tag="above"
-            align="start"
-            sizes="(max-width: 64rem) 100vw, 58vw"
-          />
-          <Plate
-            plate={plates.terrace}
-            className={styles.terrace}
-            from="bottom"
-            tag="below"
-            align="start"
-            sizes="(max-width: 64rem) 66vw, 34vw"
-          />
-          <Note text={plates.terrace.note} className={styles.terraceNote} />
+          <div className={styles.colRight}>
+            <Plate
+              plate={plates.glass}
+              className={styles.glass}
+              opening="rightward"
+              sizes="(max-width: 64rem) 92vw, 32vw"
+            />
+            <Plate
+              plate={plates.lounge}
+              className={styles.lounge}
+              opening="rightward"
+              sizes="(max-width: 64rem) 80vw, 32vw"
+            />
+          </div>
+        </div>
 
-          <div className={`${styles.copyLayer} ${styles.leadCell}`}>
-            <p className={styles.lead} data-reveal="up">
-              {content.lead}
+        <div className={styles.close}>
+          <div className={styles.details}>
+            <p className={styles.detailsTitle} data-reveal="up">
+              {content.detailsTitle}
             </p>
+            <ul className={styles.detailList}>
+              {content.details.map((detail) => (
+                <li key={detail} className={styles.detail} data-reveal="up">
+                  {detail}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* ------------------------------------------------ the inside, and
-              the garden that comes across it. The three details are placed
-              between them on the left, so the last screen of the section is
-              a photograph, a list and a note reading across one another
-              rather than a column of copy under a column of pictures. */}
-          <Plate
-            plate={plates.lounge}
-            className={styles.lounge}
-            from="right"
-            tag="above"
-            align="end"
-            sizes="(max-width: 64rem) 86vw, 42vw"
-          />
-
-          <div className={`${styles.copyLayer} ${styles.detailsCell}`}>
-            <div className={styles.details}>
-              <p className={styles.detailsTitle} data-reveal="up">
-                {content.detailsTitle}
-              </p>
-              <ul className={styles.detailList}>
-                {content.details.map((detail, index) => (
-                  <li key={detail} className={styles.detail} data-reveal="up">
-                    <span className={`u-numeral ${styles.detailIndex}`}>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span>{detail}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <Plate
-            plate={plates.garden}
-            className={styles.garden}
-            from="left"
-            tag="below"
-            align="start"
-            sizes="(max-width: 64rem) 100vw, 58vw"
-          />
-          <Note text={plates.garden.note} className={styles.gardenNote} />
-
-          {/* The last line. Set on the right, under the photograph the
-              section closes on rather than under the details — the two are
-              a pair, and neither is a footnote to the other. */}
-          <div className={`${styles.copyLayer} ${styles.codaCell}`}>
+          <div className={styles.codaCell}>
             <p className={styles.coda} data-reveal="up">
               {content.coda}
             </p>
-
-            {/* The two pages this section is the summary of, taken from
-                opposite ends of the same subject: what the rooms are like to
-                live in, and what the group does with the parts of a building
-                that are not rooms to live in. They sit in the coda's own
-                cell, so they travel on the copy layer's parallax with it and
-                the canvas keeps its squares — rows 52–56 are the last
-                placement on the grid and grow to take them. */}
-            <div className={styles.onward}>
+            <div className={styles.onward} data-reveal="up">
               <PageLink
                 size="sm"
                 href="/experiences"
@@ -381,77 +317,129 @@ export function Atmosphere({ content }: { content: AtmosphereContent }) {
 }
 
 /**
- * One frame: the photograph, and the tag that says which side of the
- * threshold it stands on.
- *
- * The tag is taken out of flow deliberately. In flow it would eat its own
- * height out of the plate, and every crop in the section is a whole number of
- * canvas squares — a frame that is thirty pixels shorter than the square it
- * was placed on is a different photograph. So the figure's box IS the plate,
- * and the tag hangs off it, above or below, ranged to whichever edge the
- * composition has room at. That is also why no two tags in the section are in
- * the same place.
+ * One frame, at the aspect ratio of the photograph it holds, with its caption
+ * under it: the side of the threshold it stands on, and the note if it has
+ * one. Each caption line sits in a clipped box of its own so the entrance can
+ * raise it out of that box.
  */
 function Plate({
   plate,
   className,
-  tag,
-  align,
-  from,
+  opening,
   sizes,
 }: {
   plate: AtmospherePlate;
   className: string;
-  /** Which side of the plate the tag hangs off. */
-  tag: "above" | "below";
-  /** Which edge of the plate it is ranged to. */
-  align: "start" | "end";
-  /** The edge the plate is uncovered from on entry. */
-  from: "left" | "right" | "bottom";
+  opening: Opening;
   sizes: string;
 }) {
+  const { width, height } = plate.image;
+  /* Clamped so a mis-sized upload cannot stretch a frame into a sliver. */
+  const ratio =
+    width && height ? Math.min(Math.max(width / height, 0.5), 2.4) : 16 / 9;
+
   return (
-    <figure
-      className={`${styles.figure} ${className}`}
-      data-tag={tag}
-      data-align={align}
-    >
-      <div className={styles.plate} data-from={from}>
-        {/* The entrance's zoom lives here; the drift lives on the image. */}
+    <figure className={`${styles.figure} ${className}`}>
+      <div
+        className={styles.plate}
+        data-opening={opening}
+        style={{ "--ratio": ratio } as CSSProperties}
+      >
         <div className={styles.zoom}>
-          <Image
-            src={plate.image.src}
-            alt={plate.image.alt}
-            fill
-            sizes={sizes}
-            quality={82}
-            className={styles.image}
-          />
+          <div className={styles.lift}>
+            <Image
+              src={plate.image.src}
+              alt={plate.image.alt}
+              fill
+              sizes={sizes}
+              quality={85}
+              className={styles.image}
+            />
+          </div>
         </div>
       </div>
-      <figcaption className={styles.tag} data-reveal="up">
-        {plate.side}
+      <figcaption className={styles.caption}>
+        <span className={styles.rule} aria-hidden="true" />
+        <span className={styles.captionMask}>
+          <span className={`${styles.captionLine} ${styles.side}`}>
+            {plate.side}
+          </span>
+        </span>
+        {plate.note ? (
+          <span className={styles.captionMask}>
+            <span className={`${styles.captionLine} ${styles.note}`}>
+              {plate.note}
+            </span>
+          </span>
+        ) : null}
       </figcaption>
     </figure>
   );
 }
 
 /**
- * A block of micro-copy in the negative space a frame has opened.
- *
- * Renders nothing at all when the plate has no note — two of the five do not,
- * and an empty rule hanging in the canvas is worse than the silence.
+ * The headline, one clipped box per word, so each word can rise out of its
+ * own line. The swash words keep their italic; the spaces stay real text so
+ * the line still wraps and balances as prose. The h2 carries the sentence
+ * whole as its label, and this markup is hidden from assistive tech.
  */
-function Note({ text, className }: { text?: string; className: string }) {
-  if (!text) return null;
+function MaskedWords({ heading }: { heading: SwashHeading }) {
+  const parts: { text: string; swash: boolean }[] = [
+    { text: heading.before ?? "", swash: false },
+    { text: heading.swash ?? "", swash: true },
+    { text: heading.after ?? "", swash: false },
+  ];
+
+  const words: { text: string; swash: boolean; space: boolean }[] = [];
+  parts.forEach(({ text, swash }) => {
+    text.split(/(\s+)/).forEach((token) => {
+      if (token) words.push({ text: token, swash, space: /^\s+$/.test(token) });
+    });
+  });
+
+  /* Group runs of non-space tokens into one unbreakable unit, so punctuation
+     glued to the previous part ("feel" + ".") rides on the same word and can
+     never wrap onto a line by itself. */
+  const units: { text: string; swash: boolean }[][] = [];
+  let current: { text: string; swash: boolean }[] = [];
+  words.forEach((word) => {
+    if (word.space) {
+      if (current.length) units.push(current);
+      current = [];
+    } else {
+      current.push({ text: word.text, swash: word.swash });
+    }
+  });
+  if (current.length) units.push(current);
 
   return (
-    <div className={`${styles.noteLayer} ${className}`}>
-      <p className={styles.note} data-reveal="up">
-        {text}
-      </p>
-    </div>
+    <span aria-hidden="true">
+      {units.map((unit, index) => (
+        <span key={index}>
+          <span className={styles.wordMask}>
+            <span className={styles.word}>
+              {unit.map((piece, i) =>
+                piece.swash ? (
+                  <em key={i} className="u-swash">
+                    {piece.text}
+                  </em>
+                ) : (
+                  <span key={i}>{piece.text}</span>
+                ),
+              )}
+            </span>
+          </span>
+          {index < units.length - 1 ? " " : null}
+        </span>
+      ))}
+    </span>
   );
+}
+
+function headingText(heading: SwashHeading) {
+  return `${heading.before ?? ""}${heading.swash ?? ""}${heading.after ?? ""}`
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export default Atmosphere;
