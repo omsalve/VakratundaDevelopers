@@ -18,11 +18,11 @@
  * the bounds below are written by the same run and must match them.
  *
  * THE ROADS ARE REAL TOO, and few. Seven, each traced along the actual OSM
- * highway it names: the ones that pass through, or join up, Mumbai, Dadar,
- * Bandra, Andheri East, Goregaon East and Badlapur — the six places the map
- * is labelled with. A project in a locality that is not one of those still
- * gets its pin (the pins come from the project list, not from here); the map
- * just does not print its name until someone asks for it.
+ * highway it names: the ones that pass through, or join up, Mumbai, Sion,
+ * Bandra, Andheri East, Goregaon East, Bhandup, Thane and Badlapur — the
+ * eight places the map is labelled with. A project in a locality that is not
+ * one of those still gets its pin (the pins come from the project list, not
+ * from here); the map just does not print its name until someone asks for it.
  *
  * THE UNIT IS THE KILOMETRE. Every coordinate is written as latitude and
  * longitude and projected here into kilometres east and south of a fixed
@@ -365,7 +365,7 @@ export function placeKey(locality: string): string {
 }
 
 /**
- * The six places the sheet is labelled with, and nothing else. A label that
+ * The eight places the sheet is labelled with, and nothing else. A label that
  * shares its place with a pin (`place`) sits beside the pin; one that does
  * not is marked with a small point of its own.
  */
@@ -382,10 +382,14 @@ export interface AreaLabel {
 
 export const AREAS: AreaLabel[] = [
   { key: "mumbai", name: "Mumbai", place: "mumbai", side: "left", city: true },
-  { key: "dadar", name: "Dadar", place: "dadar", side: "left" },
+  // Set east of its point, over the open ground toward Chembur: on the left it
+  // would sit a finger's width under Bandra's pin.
+  { key: "sion", name: "Sion", place: "sion", side: "right" },
   { key: "bandra", name: "Bandra", place: "bandra", side: "left" },
   { key: "andheri", name: "Andheri East", place: "andheri", side: "left" },
   { key: "goregaon", name: "Goregaon East", place: "goregaon", side: "left" },
+  { key: "bhandup", name: "Bhandup", place: "bhandup", side: "left" },
+  { key: "thane", name: "Thane", place: "thane", side: "left" },
   { key: "badlapur", name: "Badlapur", place: "badlapur", side: "below" },
 ];
 

@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -10,23 +18,36 @@ import Logo from "./Logo";
 import styles from "./SiteHeader.module.css";
 
 /**
- * Fixed masthead — a floating capsule of glass.
+ * Fixed masthead — an island.
  *
- * IT TAKES ITS COLOUR FROM WHAT IS BEHIND IT. The ground under the capsule
- * is sampled as the page scrolls (see the probe effect below) and the glass
- * becomes that ground at about two-thirds opacity: navy glass with cream type
- * over the navy sections and the photograph, cream glass with navy type over
- * the cream ones, fading between the two as a change of ground passes under
- * it. Its type therefore always has the contrast of the page it is on, and
- * the capsule never reads as a bar of the wrong colour laid across a section.
+ * AT REST IT IS A SMALL PILL OF INK at the top of the window, the way the
+ * island sits at the top of a phone: the mark, the wordmark, and a two-bar
+ * glyph that says there is more inside. A rose hairline along its foot fills
+ * with the page's scroll.
  *
- * WHAT IS IN IT:
- *   · the lockup, whose mark turns — slowly — on hover;
- *   · the pages, with a rose-washed indicator that slides to whichever link is
- *     being pointed at and rests on the route the visitor is on;
- *   · the one action, Contact, as a solid rose pill with its own arrow;
- *   · a rose hairline along the capsule's foot that fills with the page's
- *     scroll — a quiet "how far through this am I" on long pages.
+ * IT OPENS WHEN IT IS POINTED AT (tapped, on a touch screen; Enter, from the
+ * keyboard). The pill springs out into the full masthead — on a desktop a
+ * row of the lockup, the pages and Contact; on a phone a card of the pages
+ * set large. The lockup never fades: it rides the island's left edge out and
+ * back, so the pill and the masthead read as one object changing shape, not
+ * two swapped. Everything else arrives out of a blur, in order, while the
+ * island is still growing, and leaves before it shrinks.
+ *
+ * ON ARRIVAL — once per page load, not on every client-side navigation — it
+ * shows the visitor how it behaves: it appears as a dot and stretches into the
+ * pill; on a pointer device it then opens once on its own and closes again;
+ * and a small caption under it ("Hover to open the menu", or "Tap…") holds
+ * for a few seconds while the island pulses. Pointing at it, or tabbing into
+ * it, ends the sequence at once. Under reduced motion there is no dot and no
+ * peek: the caption simply fades in and out.
+ *
+ * WHY WIDTH AND HEIGHT ARE ANIMATED. The island's own box is the only thing
+ * that changes size. Everything inside it is absolutely positioned at its
+ * final, measured size (`--open-w` / `--open-h`, written by a ResizeObserver)
+ * and merely clipped, so no frame of the morph reflows any text; the header
+ * is a size container, so no frame reflows anything outside it either. The
+ * springs are real damped-spring curves sampled into `linear()` — see the
+ * stylesheet.
  *
  * `resolve` still collapses a root-relative anchor ("/#team") to a bare hash
  * on the landing page, should one ever be put back in the nav, and the link
@@ -36,77 +57,50 @@ import styles from "./SiteHeader.module.css";
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-type Rgba = [number, number, number, number];
+/** The arrival plays once per page load. The masthead remounts on every
+ *  client-side navigation, and module scope outlives that — so this is
+ *  exactly "once each time the site is opened". */
+let introPlayed = false;
 
-/** "rgb(r, g, b)" / "rgba(r, g, b, a)" → [r, g, b, a]. Anything else — a
- *  wide-gamut `color(…)` from a color-mix, say — is treated as unreadable
- *  and skipped rather than guessed at. */
-function parseColor(value: string): Rgba | null {
-  if (!value.startsWith("rgb")) return null;
-  const parts = value.match(/[\d.]+/g);
-  if (!parts || parts.length < 3) return null;
-  const [r, g, b, a = "1"] = parts;
-  return [Number(r), Number(g), Number(b), Number(a)];
-}
+/** Hover intent, in ms: how long the pointer rests before the island opens,
+ *  and how long it may stray outside before the island closes. The second is
+ *  what lets a cursor overshoot an edge without the menu snapping shut. */
+const OPEN_DELAY = 60;
+const CLOSE_DELAY = 280;
 
-/** An element's opacity as painted: its own times every ancestor's. */
-function paintedOpacity(el: Element): number {
-  let opacity = 1;
-  for (let node: Element | null = el; node; node = node.parentElement) {
-    opacity *= Number(getComputedStyle(node).opacity) || 0;
-    if (opacity < 0.5) break;
-  }
-  return opacity;
-}
+/**
+ * "dot"     — first paint of a first load: a circle, its contents hidden.
+ * "stretch" — the circle springs out into the pill and its contents arrive.
+ * "rest"    — every state after that.
+ */
+type Phase = "dot" | "stretch" | "rest";
 
-/** The first solid ground under a point, skipping the masthead itself,
- *  photographs and gradients (whose colour is not in `background-color`)
- *  and anything faded out. */
-function groundAt(header: HTMLElement, x: number, y: number): Rgba | null {
-  for (const el of document.elementsFromPoint(x, y)) {
-    if (header.contains(el)) continue;
-    const color = parseColor(getComputedStyle(el).backgroundColor);
-    if (!color || color[3] < 0.5) continue;
-    if (paintedOpacity(el) < 0.5) continue;
-    return color;
-  }
-  return null;
-}
-
-/** Relative luminance, 0 (black) to 1 (white). */
-function luminance([r, g, b]: Rgba): number {
-  const lin = (c: number) => {
-    const v = c / 255;
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-}
-
-/** The glass is the ground, pulled a little toward the palette's own ground
- *  — navy-900 on a dark page, cream-100 on a light one — so the capsule
- *  still reads as an object over a plain field of the same colour. */
-const DEEP: Rgba = [12, 18, 48, 1];
-const PALE: Rgba = [253, 252, 250, 1];
-
-/** Milliseconds between samples while the page is scrolling. */
-const PROBE_EVERY = 120;
+type Hint = { on: boolean; mode: "hover" | "tap" };
 
 export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   // Destructured, so reading `open` during render is not read as reaching
   // into the refs that travel in the same object.
   const {
-    open: menuOpen,
-    toggle: toggleMenu,
-    close: closeMenu,
-    groupRef: menuGroupRef,
-    triggerRef: menuTriggerRef,
+    open,
+    show,
+    toggle,
+    close,
+    groupRef: islandRef,
+    triggerRef,
   } = usePopover<HTMLDivElement, HTMLButtonElement>();
 
   const headerRef = useRef<HTMLElement | null>(null);
-  const listRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const brandRef = useRef<HTMLAnchorElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const hoverTimer = useRef(0);
+  const introTimers = useRef<number[]>([]);
+
+  const [arriving] = useState(() => !introPlayed);
+  const [phase, setPhase] = useState<Phase>(arriving ? "dot" : "rest");
+  const [hint, setHint] = useState<Hint>({ on: false, mode: "hover" });
   const [indicator, setIndicator] = useState<{
     x: number;
     w: number;
@@ -164,6 +158,37 @@ export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
     };
   }, [moveTo]);
 
+  /**
+   * The island's two sizes. The open size is the content's own — it is laid
+   * out at full size the whole time, only clipped — and the closed width is
+   * wherever the lockup ends, plus one pill-height for the glyph's square.
+   * Written as custom properties on the header, imperatively, so a resize or
+   * a late font never re-renders it. `data-ready` releases the arrival, which
+   * would otherwise start from a guessed width.
+   */
+  useIsoLayoutEffect(() => {
+    const header = headerRef.current;
+    const content = contentRef.current;
+    const brand = brandRef.current;
+    if (!header || !content || !brand) return;
+
+    const measure = () => {
+      header.style.setProperty("--open-w", `${content.offsetWidth}px`);
+      header.style.setProperty("--open-h", `${content.offsetHeight}px`);
+      header.style.setProperty(
+        "--brand-end",
+        `${brand.offsetLeft + brand.offsetWidth}px`,
+      );
+    };
+    measure();
+    header.dataset.ready = "";
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(content);
+    observer.observe(brand);
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     // Plain scroll listener rather than a ScrollTrigger: this needs to work
     // under reduced motion too, where no GSAP context is created. The progress
@@ -172,10 +197,9 @@ export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
     let frame = 0;
     const update = () => {
       frame = 0;
-      const y = window.scrollY;
-      setScrolled(y > 24);
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+      const progress =
+        max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
       headerRef.current?.style.setProperty("--progress", progress.toFixed(4));
     };
     const onScroll = () => {
@@ -192,237 +216,306 @@ export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
   }, []);
 
   /**
-   * The ground under the capsule, sampled at three points along it and
-   * written as `--ground` and `data-tone` — see the stylesheet. Imperative,
-   * like the progress above, so scrolling never re-renders the masthead.
-   *
-   * Sampled while scrolling at most every PROBE_EVERY ms, and twice more once
-   * it stops: the scrubbed scenes on the landing page (the arcs, the pinned
-   * stages) keep easing for a moment after the last scroll event, and the
-   * ground can still change under a header that has stopped moving.
+   * The arrival. Timed rather than chained off transitionend: every step is
+   * cancellable by `endIntro` in one place, and a step that never fires (a
+   * backgrounded tab) cannot strand the island half-way.
    */
   useEffect(() => {
-    const header = headerRef.current;
-    const bar = header?.firstElementChild as HTMLElement | null;
-    if (!header || !bar) return;
+    if (!arriving) return;
+    introPlayed = true;
 
-    let last = 0;
-    let frame = 0;
-    const timers: number[] = [];
+    const timers = introTimers.current;
+    const at = (ms: number, step: () => void) => {
+      timers.push(window.setTimeout(step, ms));
+    };
+    const moving = document.documentElement.classList.contains("motion-on");
+    const canHover = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
 
-    const probe = () => {
-      frame = 0;
-      last = performance.now();
-      const rect = bar.getBoundingClientRect();
-      if (!rect.width) return;
-      const y = rect.top + rect.height / 2;
-      const xs = [0.12, 0.5, 0.88].map((f) => rect.left + rect.width * f);
-
-      const root = document.documentElement;
-      root.classList.add("header-probe");
-      let samples: Rgba[];
-      try {
-        samples = xs
-          .map((x) => groundAt(header, x, y))
-          .filter((c): c is Rgba => c !== null);
-      } finally {
-        root.classList.remove("header-probe");
+    let t = 0;
+    if (moving) {
+      at((t += 380), () => setPhase("stretch"));
+      at((t += 900), () => setPhase("rest"));
+      if (canHover) {
+        // The peek: it opens once on its own, so the first thing a visitor
+        // learns about the island is that it opens.
+        at((t += 200), show);
+        at((t += 1700), () => close(false));
+        t += 560;
+      } else {
+        t += 150;
       }
-      if (!samples.length) return;
+    } else {
+      at(0, () => setPhase("rest"));
+      t = 600;
+    }
+    at(t, () => setHint({ on: true, mode: canHover ? "hover" : "tap" }));
+    at(t + 5200, () => setHint((prev) => ({ ...prev, on: false })));
 
-      const avg = (i: number) =>
-        samples.reduce((sum, c) => sum + c[i], 0) / samples.length;
-      const mean: Rgba = [avg(0), avg(1), avg(2), 1];
-      const light = luminance(mean) > 0.4;
-      const toward = light ? PALE : DEEP;
-      const pull = light ? 0.4 : 0.3;
-      const glass = [0, 1, 2].map((i) =>
-        Math.round(mean[i] + (toward[i] - mean[i]) * pull),
-      );
-
-      header.style.setProperty("--ground", glass.join(" "));
-      header.dataset.tone = light ? "light" : "dark";
-    };
-
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(probe);
-    };
-
-    const onScroll = () => {
-      if (performance.now() - last >= PROBE_EVERY) schedule();
+    return () => {
       timers.forEach(clearTimeout);
       timers.length = 0;
-      timers.push(
-        window.setTimeout(schedule, 160),
-        window.setTimeout(schedule, 800),
-      );
     };
+  }, [arriving, show, close]);
 
-    // After the new route has painted, and again once its scenes settle.
-    schedule();
-    timers.push(window.setTimeout(schedule, 400));
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      timers.forEach(clearTimeout);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [pathname]);
+  /** The visitor has found the island on their own: stop teaching it. */
+  const endIntro = useCallback(() => {
+    const timers = introTimers.current;
+    if (!timers.length) return;
+    timers.forEach(clearTimeout);
+    timers.length = 0;
+    setPhase("rest");
+    setHint((prev) => (prev.on ? { ...prev, on: false } : prev));
+  }, []);
+
+  useEffect(() => () => window.clearTimeout(hoverTimer.current), []);
+
+  const onPointerEnter = (event: ReactPointerEvent) => {
+    // A tap fires pointerenter too; touch opens on the click instead.
+    if (event.pointerType === "touch") return;
+    endIntro();
+    window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(show, OPEN_DELAY);
+  };
+
+  const onPointerLeave = (event: ReactPointerEvent) => {
+    if (event.pointerType === "touch") return;
+    window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => {
+      // Someone tabbing through the open island keeps it open, wherever the
+      // mouse happens to wander.
+      const active = document.activeElement;
+      if (
+        active &&
+        islandRef.current?.contains(active) &&
+        active.matches(":focus-visible")
+      ) {
+        return;
+      }
+      close(false);
+    }, CLOSE_DELAY);
+  };
+
+  const dismiss = () => close(false);
 
   return (
     <header
       ref={headerRef}
-      className={clsx(styles.header, scrolled && styles.isScrolled)}
+      className={styles.header}
+      data-open={open || undefined}
+      data-phase={phase}
+      data-hint={hint.on || undefined}
     >
-      <div className={styles.bar}>
-        <Link
-          href={resolve("/#top")}
-          className={styles.brand}
-          aria-label="Vakratunda, home"
+      <div className={styles.dock}>
+        <div
+          ref={islandRef}
+          className={styles.island}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onFocus={endIntro}
         >
-          <Logo
-            size="clamp(2.125rem, 4.4vw, 2.625rem)"
-            markClassName={styles.brandMark}
-          />
-        </Link>
-
-        <nav className={styles.nav} aria-label="Main">
-          <div
-            ref={listRef}
-            className={styles.track}
-            onMouseLeave={() => moveTo(-1)}
-            onBlur={(event) => {
-              if (!listRef.current?.contains(event.relatedTarget as Node)) {
-                moveTo(-1);
-              }
+          {/* Over the whole island while it is closed, so a tap anywhere on
+              it opens it; when open it lets every pointer through except on
+              a phone's close glyph. Its focus ring is the island's edge. */}
+          <button
+            ref={triggerRef}
+            type="button"
+            className={styles.trigger}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            onClick={() => {
+              endIntro();
+              toggle();
             }}
           >
-            {/* The indicator is a sibling of the list, not an item in it, and
-                the track is the links' offset parent — so a link's
-                offsetLeft is exactly where the indicator has to stand. */}
-            <span
-              className={styles.indicator}
-              aria-hidden="true"
-              data-on={indicator.on}
-              style={{
-                transform: `translateX(${indicator.x}px)`,
-                width: indicator.w,
-              }}
-            />
-            <ul className={styles.list}>
-              {links.map((link, index) => (
-                <li key={link.href}>
-                  <Link
-                    ref={(el) => {
-                      linkRefs.current[index] = el;
-                    }}
-                    className={clsx(
-                      styles.link,
-                      isCurrent(link.href) && styles.isCurrent,
-                    )}
-                    href={resolve(link.href)}
-                    aria-current={isCurrent(link.href) ? "page" : undefined}
-                    onMouseEnter={() => moveTo(index)}
-                    onFocus={() => moveTo(index)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
-
-        <Link className={styles.cta} href={resolve(cta.href)}>
-          <span>{cta.label}</span>
-          <span className={styles.ctaIcon} aria-hidden="true">
-            <svg
-              viewBox="0 0 24 24"
-              width="14"
-              height="14"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M7 17 17 7M9 7h8v8" />
-            </svg>
-          </span>
-        </Link>
-
-        <div ref={menuGroupRef} className={styles.mobile}>
-          <button
-            ref={menuTriggerRef}
-            type="button"
-            className={styles.toggle}
-            aria-expanded={menuOpen}
-            aria-controls="site-menu"
-            onClick={toggleMenu}
-          >
-            <span className={styles.toggleLabel} aria-hidden="true">
-              {menuOpen ? "Close" : "Menu"}
-            </span>
-            <span className={styles.toggleBars} aria-hidden="true">
+            <span className={styles.glyph} aria-hidden="true">
               <span />
               <span />
             </span>
-            <span className="u-visually-hidden">
-              {menuOpen ? "Close menu" : "Open menu"}
-            </span>
+            <span className="u-visually-hidden">Menu</span>
           </button>
 
-          <div id="site-menu" className={styles.panel} hidden={!menuOpen}>
-            <ul className={styles.panelList}>
-              {links.map((link, index) => (
-                <li
-                  key={link.href}
-                  style={{ "--i": index } as React.CSSProperties}
-                >
-                  <Link
-                    className={clsx(
-                      styles.panelLink,
-                      isCurrent(link.href) && styles.isCurrent,
-                    )}
-                    href={resolve(link.href)}
-                    aria-current={isCurrent(link.href) ? "page" : undefined}
-                    onClick={() => closeMenu(false)}
-                  >
-                    <span className={`u-numeral ${styles.panelIndex}`}>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className={styles.panelLabel}>{link.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div
+            ref={contentRef}
+            id="site-menu"
+            className={styles.content}
+            inert={!open}
+          >
             <Link
-              className={styles.panelCta}
-              href={resolve(cta.href)}
-              onClick={() => closeMenu(false)}
+              ref={brandRef}
+              href={resolve("/#top")}
+              className={styles.brand}
+              aria-label="Vakratunda, home"
+              onClick={dismiss}
             >
-              {cta.label}
-              <svg
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
+              <Logo size="1.625rem" markClassName={styles.brandMark} />
             </Link>
+
+            {/* The row — desktop. */}
+            <nav className={styles.nav} aria-label="Main">
+              <div
+                ref={trackRef}
+                className={styles.track}
+                onMouseLeave={() => moveTo(-1)}
+                onBlur={(event) => {
+                  if (!trackRef.current?.contains(event.relatedTarget as Node)) {
+                    moveTo(-1);
+                  }
+                }}
+              >
+                {/* The indicator is a sibling of the list, not an item in it,
+                    and the track is the links' offset parent — so a link's
+                    offsetLeft is exactly where the indicator has to stand. */}
+                <span
+                  className={styles.indicator}
+                  aria-hidden="true"
+                  data-on={indicator.on}
+                  style={{
+                    transform: `translateX(${indicator.x}px)`,
+                    width: indicator.w,
+                  }}
+                />
+                <ul className={styles.list}>
+                  {links.map((link, index) => (
+                    <li
+                      key={link.href}
+                      className={styles.reveal}
+                      style={{ "--i": index } as CSSProperties}
+                    >
+                      <Link
+                        ref={(el) => {
+                          linkRefs.current[index] = el;
+                        }}
+                        className={clsx(
+                          styles.link,
+                          isCurrent(link.href) && styles.isCurrent,
+                        )}
+                        href={resolve(link.href)}
+                        aria-current={isCurrent(link.href) ? "page" : undefined}
+                        onMouseEnter={() => moveTo(index)}
+                        onFocus={() => moveTo(index)}
+                        onClick={dismiss}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+
+            {/* The slot reveals; the pill keeps its own hover transitions. */}
+            <div
+              className={clsx(styles.ctaSlot, styles.reveal)}
+              style={{ "--i": links.length } as CSSProperties}
+            >
+              <Link
+                className={styles.cta}
+                href={resolve(cta.href)}
+                onClick={dismiss}
+              >
+                <span>{cta.label}</span>
+                <span className={styles.ctaIcon} aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M7 17 17 7M9 7h8v8" />
+                  </svg>
+                </span>
+              </Link>
+            </div>
+
+            {/* The card — phone. */}
+            <nav className={styles.sheet} aria-label="Main">
+              <ul className={styles.sheetList}>
+                {links.map((link, index) => (
+                  <li
+                    key={link.href}
+                    className={styles.reveal}
+                    style={{ "--i": index } as CSSProperties}
+                  >
+                    <Link
+                      className={clsx(
+                        styles.sheetLink,
+                        isCurrent(link.href) && styles.isCurrent,
+                      )}
+                      href={resolve(link.href)}
+                      aria-current={isCurrent(link.href) ? "page" : undefined}
+                      onClick={dismiss}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                className={clsx(styles.sheetCta, styles.reveal)}
+                style={{ "--i": links.length } as CSSProperties}
+                href={resolve(cta.href)}
+                onClick={dismiss}
+              >
+                {cta.label}
+                <svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+            </nav>
           </div>
+
+          {/* The page's scroll, as a rose hairline along the pill's foot. */}
+          <span className={styles.progress} aria-hidden="true" />
         </div>
 
-        {/* The page's scroll, as a rose hairline along the capsule's foot. */}
-        <span className={styles.progress} aria-hidden="true" />
+        {/* The arrival's caption. Decorative to assistive tech, which already
+            has the button's name and its expanded state. */}
+        <span className={styles.hint} aria-hidden="true">
+          <span className={styles.hintIcon} data-mode={hint.mode}>
+            {hint.mode === "hover" ? (
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+              >
+                <path d="M5.5 3.5 18.5 10l-5.6 1.9-2.4 5.6z" />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+              >
+                <circle cx="12" cy="12" r="3.25" fill="currentColor" />
+                <circle cx="12" cy="12" r="8" opacity="0.45" />
+              </svg>
+            )}
+          </span>
+          {hint.mode === "hover" ? "Hover to open the menu" : "Tap to open the menu"}
+        </span>
       </div>
     </header>
   );

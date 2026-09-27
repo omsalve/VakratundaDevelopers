@@ -245,7 +245,7 @@ export function Openland({ content }: { content: OpenlandContent }) {
           {/* ------------------------------------------------- the schedule */}
           <div className={styles.scheduleCell}>
             <p className={styles.scheduleTitle} data-reveal="up">
-              Schedule of land
+              {content.scheduleTitle}
             </p>
             <ol className={styles.schedule}>
               {parcels.map((parcel, i) => (

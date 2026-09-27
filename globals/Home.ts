@@ -19,9 +19,9 @@ import { revalidateGlobal } from "../lib/cms/revalidate";
  * the page: `npm run seed` writes the shipped copy and photography in once,
  * and from then on nothing on the home page is changed by editing TypeScript.
  *
- * WHAT IS STILL NOT A FIELD, and why, is written at the merge that skips it
- * in lib/getSiteContent.ts: the arc's drawn label is sized to its curve, and
- * the map's pins are measured against one map file.
+ * WHAT IS STILL NOT A FIELD is geometry, not copy, and why is written at the
+ * merge in lib/getSiteContent.ts: the map's pins are measured against one map
+ * file, and the Openland boundaries are drawn into one site plan.
  *
  * ADD-ONLY. Field paths here are the columns of the `home` table. Renaming or
  * removing one makes the dev-time schema push offer to drop a column, so a
@@ -171,10 +171,15 @@ function spreadPlate(
  * one at a time, so they are three named blocks rather than a list an editor
  * could add a fourth to.
  */
-function ventureSlide(prefix: string, label: string): Field {
+function ventureSlide(
+  prefix: string,
+  label: string,
+  description?: string,
+): Field {
   return {
     type: "collapsible",
     label,
+    admin: { description },
     fields: [
       photo(
         prefix,
@@ -348,6 +353,11 @@ export const Home: GlobalConfig = {
                     },
                   ],
                 },
+                line(
+                  "pinHint",
+                  "Hint under the annotations",
+                  "The one line that tells a visitor the + marks on the photograph are buttons. Shown once the photograph is open.",
+                ),
                 {
                   name: "background",
                   type: "upload",
@@ -800,7 +810,7 @@ export const Home: GlobalConfig = {
               label: " ",
               admin: {
                 description:
-                  "Four slides, in this order. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.",
+                  "Five slides, in this order: introduction, Chairman, Director, leadership, core teams. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.",
               },
               fields: [
                 swashHeading("heading", "Slide 1 — headline"),
@@ -879,13 +889,55 @@ export const Home: GlobalConfig = {
                   ],
                 },
                 {
+                  name: "director",
+                  type: "group",
+                  label: "Slide 3 — director",
+                  admin: {
+                    description:
+                      "The Chairman's slide, mirrored: the designation, the name, the one line and the bio on the left, the portrait on the right. No quote.",
+                  },
+                  fields: [
+                    {
+                      type: "row",
+                      fields: [
+                        { name: "name", type: "text", admin: { width: "50%" } },
+                        {
+                          name: "title",
+                          type: "text",
+                          label: "Designation",
+                          admin: { width: "50%", placeholder: "Director" },
+                        },
+                      ],
+                    },
+                    {
+                      name: "superpower",
+                      type: "text",
+                      label: "The one line under the name",
+                    },
+                    { name: "bio", type: "textarea", label: "Bio" },
+                    {
+                      name: "portrait",
+                      type: "upload",
+                      relationTo: "media",
+                      label: "Portrait",
+                      admin: { description: "Portrait, 4:5." },
+                    },
+                    {
+                      name: "ctaLabel",
+                      type: "text",
+                      label: "Button label",
+                      admin: { placeholder: "Meet the leadership" },
+                    },
+                  ],
+                },
+                {
                   name: "leadership",
                   type: "array",
-                  label: "Slide 3 — leadership",
+                  label: "Slide 4 — leadership",
                   maxRows: 3,
                   admin: {
                     description:
-                      "Three is what the slide is drawn for. The bio is what each card's own disclosure opens, so keep it out of the line above it.",
+                      "Three cards side by side, each with its own portrait over the name. Three is what the slide is drawn for. The bio is what each card's own disclosure opens, so keep it out of the line above it.",
                   },
                   fields: [
                     {
@@ -922,13 +974,17 @@ export const Home: GlobalConfig = {
                       type: "upload",
                       relationTo: "media",
                       label: "Portrait",
+                      admin: {
+                        description:
+                          "Portrait, 4:5, 1200 × 1500 or larger. Shown at the top of the card and cropped to the space the slide has, so keep the face in the upper middle.",
+                      },
                     },
                   ],
                 },
                 {
                   name: "roles",
                   type: "array",
-                  label: "Slide 4 — core teams",
+                  label: "Slide 5 — core teams",
                   maxRows: 6,
                   admin: {
                     description:
@@ -1010,7 +1066,7 @@ export const Home: GlobalConfig = {
         {
           label: "Ventures",
           description:
-            "Three partnerships, shown one at a time. This is not the portfolio — that is the Projects tab — it is the three names the group is trusted by, and the layout is drawn for exactly three.",
+            "The partnerships, shown one at a time. This is not the portfolio — that is the Projects tab — it is the names the group is trusted by. Two are on the page; each block below is bound to its own slide.",
           fields: [
             {
               name: "ventures",
@@ -1020,11 +1076,125 @@ export const Home: GlobalConfig = {
                 swashHeading("heading", "Headline"),
                 para("standfirst", "Standfirst"),
                 ventureSlide("godrej", "1 — Godrej Properties, Badlapur"),
-                ventureSlide("shapoorji", "2 — Shapoorji Pallonji, Thane"),
+                ventureSlide("shapoorji", "2 — Shapoorji Pallonji, Bandra East"),
                 ventureSlide(
                   "redevelopment",
-                  "3 — MHADA & MCGM, redevelopment",
+                  "3 — MHADA & MCGM, redevelopment (not on the page)",
+                  "⚠️ NOT SHOWN. The redevelopment slide was taken off the page (MoM 2.5: MHADA is not a joint venture). The fields are kept so nothing typed here is lost, but an edit here changes nothing a visitor sees.",
                 ),
+              ],
+            },
+          ],
+        },
+
+        /* ------------------------------------------------------ Openland */
+        {
+          label: "Openland",
+          description:
+            "The survey sheet: open land the group develops from the ground up. The site plan beside the schedule is drawn for up to four parcels — the first four here take its four boundaries, in order, and a fifth has nowhere to stand.",
+          fields: [
+            {
+              name: "openland",
+              type: "group",
+              label: " ",
+              fields: [
+                line(
+                  "eyebrow",
+                  "Rubric",
+                  "The wide-tracked label over the headline.",
+                ),
+                swashHeading("heading", "Headline"),
+                para("standfirst", "Standfirst"),
+                line(
+                  "scheduleTitle",
+                  "Rubric over the schedule",
+                  "Set over the numbered list of parcels.",
+                ),
+                {
+                  name: "parcels",
+                  type: "array",
+                  label: "Parcels",
+                  labels: { singular: "Parcel", plural: "Parcels" },
+                  maxRows: 4,
+                  admin: {
+                    description:
+                      "Numbered P—01 to P—04 in this order, each against its own boundary on the plan. Give an area where one is published; otherwise leave it empty and give a phrase instead — never both, and never an invented figure.",
+                  },
+                  fields: [
+                    {
+                      type: "row",
+                      fields: [
+                        {
+                          name: "name",
+                          type: "text",
+                          required: true,
+                          admin: { width: "40%", placeholder: "Vihaa Township" },
+                        },
+                        {
+                          name: "locality",
+                          type: "text",
+                          required: true,
+                          admin: { width: "30%", placeholder: "Badlapur" },
+                        },
+                        {
+                          name: "status",
+                          type: "text",
+                          required: true,
+                          admin: { width: "30%", placeholder: "Upcoming" },
+                        },
+                      ],
+                    },
+                    {
+                      type: "row",
+                      fields: [
+                        {
+                          name: "areaValue",
+                          type: "text",
+                          label: "Area — figure",
+                          admin: {
+                            width: "25%",
+                            placeholder: "20",
+                            description: "Digits, at most one decimal.",
+                          },
+                        },
+                        {
+                          name: "areaUnit",
+                          type: "text",
+                          label: "Area — unit",
+                          admin: { width: "25%", placeholder: "acres" },
+                        },
+                        {
+                          name: "phrase",
+                          type: "text",
+                          label: "Phrase, where there is no area",
+                          admin: {
+                            width: "50%",
+                            placeholder: "Greenfield parcel",
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      name: "note",
+                      type: "textarea",
+                      required: true,
+                      label: "Note",
+                      admin: { description: "One or two lines." },
+                    },
+                    photo(
+                      "image",
+                      "Photograph",
+                      "Optional. Shown small beside the entry.",
+                    ),
+                    ctaRow("cta", "Link", "/projects"),
+                  ],
+                },
+                para(
+                  "invitationText",
+                  "Invitation",
+                  "The line the schedule closes on, to people who hold land.",
+                ),
+                ctaRow("invitationCta", "Invitation button", "/contact"),
               ],
             },
           ],
@@ -1034,7 +1204,7 @@ export const Home: GlobalConfig = {
         {
           label: "Vihaa",
           description:
-            "Vihaa International School — a joint venture, recorded the way the page records every other partnership. The partner is deliberately not named: say \"joint venture\" and no more until who with is published.",
+            "Vihaa Innovative School — the group's own school. It is NOT a joint venture (MoM 2.5.2): it borrows the ventures' layout because that suits a place, and nothing here should call it a partnership.",
           fields: [
             {
               name: "vihaa",
@@ -1054,7 +1224,7 @@ export const Home: GlobalConfig = {
                       name: "nameRest",
                       type: "text",
                       label: "Name — the line under it",
-                      admin: { width: "60%", placeholder: "International School" },
+                      admin: { width: "60%", placeholder: "Innovative School" },
                     },
                   ],
                 },
@@ -1255,6 +1425,10 @@ export const Home: GlobalConfig = {
                   type: "text",
                   label: "Attribution",
                 },
+                textLines("brandLines", "Brand statements", {
+                  description:
+                    "The group's standalone lines (MoM 2.4.3), one per entry, set last in the close under the button. Two read best.",
+                }),
                 {
                   name: "proofs",
                   type: "array",
@@ -1287,9 +1461,25 @@ export const Home: GlobalConfig = {
                   ],
                 },
                 {
-                  name: "email",
-                  type: "email",
-                  label: "Contact email",
+                  type: "row",
+                  fields: [
+                    {
+                      name: "email",
+                      type: "email",
+                      label: "Contact email",
+                      admin: { width: "50%" },
+                    },
+                    {
+                      name: "rmoEmail",
+                      type: "email",
+                      label: "RMO email",
+                      admin: {
+                        width: "50%",
+                        description:
+                          "The RMO's own address (MoM 2.4.4), listed beside the general one.",
+                      },
+                    },
+                  ],
                 },
                 textLines("addressLines", "Address"),
               ],

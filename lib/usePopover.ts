@@ -12,6 +12,8 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from "react"
  */
 export function usePopover<T extends HTMLElement, B extends HTMLElement>(): {
   open: boolean;
+  /** Open without toggling — for a trigger that opens on hover. */
+  show: () => void;
   toggle: () => void;
   close: (returnFocus?: boolean) => void;
   groupRef: RefObject<T | null>;
@@ -26,6 +28,7 @@ export function usePopover<T extends HTMLElement, B extends HTMLElement>(): {
     if (returnFocus) triggerRef.current?.focus({ preventScroll: true });
   }, []);
 
+  const show = useCallback(() => setOpen(true), []);
   const toggle = useCallback(() => setOpen((value) => !value), []);
 
   useEffect(() => {
@@ -57,5 +60,5 @@ export function usePopover<T extends HTMLElement, B extends HTMLElement>(): {
     };
   }, [open, close]);
 
-  return { open, toggle, close, groupRef, triggerRef };
+  return { open, show, toggle, close, groupRef, triggerRef };
 }

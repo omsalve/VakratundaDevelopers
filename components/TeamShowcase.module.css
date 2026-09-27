@@ -282,18 +282,22 @@
   color: var(--accent-deep);
 }
 
-/* ---- 3 · Leadership -----------------------------------------------------
-   Three panels, stacked, beside one photograph of the team. The panels are
-   boxed here — a filled ground, a hairline, the house radius — so they read
-   as a set held together against the picture rather than as a list. */
+/* ---- 4 · Leadership -----------------------------------------------------
+   Three cards side by side, each a portrait over its type. The portraits are
+   what hold the three together as a set, so the cards themselves are not
+   boxed: the same plate-and-type construction as the Chairman's and the
+   Director's slides, at a third of the width. */
 .leadership {
   display: grid;
-  gap: clamp(var(--space-6), 4vw, var(--space-9));
 }
 
+/* The column gap is kept at 2.5rem or more on purpose: the cut grows each
+   portrait a little about its own centre (PLATES_IN in TeamShowcase.tsx), and
+   the gutter is what that growth has to fit inside. */
 .people {
   display: grid;
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-8) clamp(2.5rem, 3.5vw, var(--space-9));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -303,13 +307,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: var(--space-5);
+}
+
+.personBody {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
-  padding: var(--space-5) var(--space-6);
-  background: var(--cream-100);
-  border: var(--hairline) solid var(--cream-line);
-  border-radius: var(--radius-m);
 }
 
 .personName {
@@ -424,7 +429,7 @@
   border-color: var(--accent-deep);
 }
 
-/* ---- 4 · Core teams ----------------------------------------------------- */
+/* ---- 5 · Core teams ----------------------------------------------------- */
 .roles {
   display: grid;
   gap: clamp(var(--space-6), 3.5vw, var(--space-8))
@@ -434,9 +439,8 @@
   list-style: none;
 }
 
-/* Ruled, not boxed — the same construction as `.person` above, so the two
-   card slides read as one system rather than as two visits to the card
-   pattern. */
+/* Ruled, not boxed — like the leadership cards above, so the two card
+   slides read as one system rather than as two visits to the card pattern. */
 .roleCard {
   display: flex;
   flex-direction: column;
@@ -595,23 +599,39 @@
     align-content: center;
   }
 
-  /* The photograph takes the frame's full height at its own ratio; the
-     panels share whatever width is left and split the height three ways. */
+  /* The three cards share the frame's height: the type takes what it needs
+     and the portraits take the rest. Capped, so on a tall window the set
+     stays a set in the middle of the frame rather than three columns of
+     portrait run floor to ceiling. */
   :global(.motion-on) .leadership {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: stretch;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
     height: 100%;
   }
 
   :global(.motion-on) .people {
-    grid-template-rows: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr) auto;
+    row-gap: var(--space-5);
+    height: 100%;
+    max-height: 46rem;
+  }
+
+  /* SUBGRID, so the three portraits share one row and the three bodies share
+     the next: a name that wraps to two lines lowers its own card's type, not
+     its portrait's foot, and the plates stay one level line across the set. */
+  :global(.motion-on) .person {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
     min-height: 0;
   }
 
-  :global(.motion-on) .leadership .leadershipPlate {
-    width: auto;
+  /* Both dimensions set, so the plate's own aspect ratio stands down and it
+     fills the row instead; the photograph inside crops to it (object-fit). */
+  :global(.motion-on) .person .personPlate {
     height: 100%;
-    max-width: 38vw;
+    min-height: 0;
   }
 
   :global(.motion-on) .roles {
@@ -859,10 +879,6 @@
 
   .introPlate {
     width: 100%;
-  }
-
-  .leadershipPlate {
-    width: min(100%, 26rem);
   }
 
   .roles {

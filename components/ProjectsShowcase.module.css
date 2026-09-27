@@ -66,6 +66,12 @@
   color: var(--text-on-navy);
 }
 
+/* The wordmark's parts. In the default layout they are only the word: the
+   letters run inline as ordinary text, and the rule is not drawn. */
+.titleRule {
+  display: none;
+}
+
 .standfirst {
   margin: 0;
   max-width: var(--measure-lead);
@@ -464,15 +470,50 @@
     text-transform: uppercase;
     color: var(--cream-100);
     text-shadow: 0 3px 34px rgba(9, 13, 33, 0.4);
-    /* The overscaled entrance grows about the middle of the CAP BAND, not the
-       middle of the em box: 35.5px of trim plus half of the 156px band, over
-       a 203px line box — 56%. The wordmark then settles onto the spot it was
-       already occupying, instead of sliding as it lands. */
-    transform-origin: 50% 56%;
-    /* GSAP sets the entrance state — and the exit: the wordmark lifts out
-       of the frame before the map underneath it goes live. Deliberately not
-       `opacity: 0` here: if the script never runs, the title must still be
-       on the screen. */
+    /* GSAP sets the entrance state and the exit, letter by letter. None of
+       it is declared here on purpose: if the script never runs, the title
+       must still be on the screen, ruled and whole. */
+  }
+
+  /* The set shrinks to the word, so the rule under it can be exactly the
+     word's width. Aligned to the top of the heading's line, so the letters
+     sit where the unsplit word sat and the `top` above still places the cap
+     band. */
+  :global(.motion-on) .titleSet {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  /* THE MASK. The letters come up through its floor and leave through its
+     ceiling. Padding with an equal negative margin moves the clip edges out
+     without moving the type. That is 0.12em above the line box, so the
+     shadow over the caps is never cut at rest. It is 0.16em below it, which
+     puts the floor exactly on the rule. Wide at the sides, so a letter still
+     carrying its opening tracking is never cut at the ends. */
+  :global(.motion-on) .titleLine {
+    display: block;
+    overflow: hidden;
+    padding: 0.12em 0.5em 0.16em;
+    margin: -0.12em -0.5em -0.16em;
+  }
+
+  :global(.motion-on) .letter {
+    display: inline-block;
+  }
+
+  /* THE GROUND LINE. It is the width of the word and sits on the mask's
+     floor, so the letters rise out of it. Rose at the weight PageHero rules
+     its hairline in, lifted a little because it lies on a picture rather
+     than on flat navy. It is scaled from the middle, open and shut. */
+  :global(.motion-on) .titleRule {
+    display: block;
+    width: 100%;
+    height: var(--hairline);
+    margin-top: 0.16em;
+    background: var(--accent-rose);
+    opacity: 0.7;
+    box-shadow: 0 0 18px rgba(228, 168, 161, 0.35);
+    transform-origin: 50% 50%;
   }
 
   :global(.motion-on) .standfirst {

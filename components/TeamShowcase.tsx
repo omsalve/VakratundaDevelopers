@@ -167,6 +167,21 @@ const STANDING_QUERY = "(max-width: 63.99rem)";
  */
 const SLIDE_IN = { opacity: 0, scale: 1.1, filter: "blur(9px)" };
 const PLATE_IN = { scale: 1.24, yPercent: 8 };
+const PLATE_OUT = { scale: 1.16, yPercent: -7 };
+
+/**
+ * The same move, at a fraction of the depth, for a slide that sets several
+ * plates side by side — the leadership's three portraits. At the full figure
+ * each one grows by a quarter about its own centre and runs into its
+ * neighbours' gutters; this keeps the growth inside the gap between cards.
+ */
+const PLATES_IN = { scale: 1.06, yPercent: 4 };
+const PLATES_OUT = { scale: 1.04, yPercent: -3 };
+
+const plateIn = (plates: NodeListOf<Element>) =>
+  plates.length > 1 ? PLATES_IN : PLATE_IN;
+const plateOut = (plates: NodeListOf<Element>) =>
+  plates.length > 1 ? PLATES_OUT : PLATE_OUT;
 
 export function TeamShowcase({ content }: { content: TeamContent }) {
   const root = useRef<HTMLElement | null>(null);
@@ -243,7 +258,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
         if (i === 0) return;
         gsap.set(slide, SLIDE_IN);
         const plate = plateOf(slide);
-        if (plate.length) gsap.set(plate, PLATE_IN);
+        if (plate.length) gsap.set(plate, plateIn(plate));
       });
 
       // And the plane waits off the frame's left edge, where it cannot be
@@ -389,8 +404,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
           tl.to(
             fromPlate,
             {
-              scale: 1.16,
-              yPercent: -7,
+              ...plateOut(fromPlate),
               duration: CUT * COVERED,
               ease: "sine.in",
             },
@@ -402,7 +416,7 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
         if (toPlate.length) {
           tl.fromTo(
             toPlate,
-            PLATE_IN,
+            plateIn(toPlate),
             {
               scale: 1,
               yPercent: 0,
@@ -577,13 +591,6 @@ export function TeamShowcase({ content }: { content: TeamContent }) {
                 />
               ))}
             </ul>
-            <PortraitPlate
-              image={content.leadershipImage}
-              name="Vakratunda Leadership"
-              ratio="2 / 3"
-              sizes="(max-width: 64rem) 90vw, 30vw"
-              className={styles.leadershipPlate}
-            />
           </Slide>
 
           {/* ---------------------------------------------- 5 · the teams */}
@@ -703,7 +710,12 @@ function Slide({
 }
 
 /**
- * One leader, as one of the three panels beside the team photograph.
+ * One leader, as one of the three cards on the leadership slide: a portrait,
+ * and the type under it.
+ *
+ * The portrait is a slot like every other on this section — PortraitPlate
+ * draws the lettered plate until the photograph is uploaded, in the same box,
+ * so nothing moves when it arrives.
  *
  * The card carries the name, the title and the one line that says what the
  * person is FOR; the bio is what the disclosure opens. That split is what
@@ -727,21 +739,30 @@ function LeaderCard({
 
   return (
     <li ref={groupRef} className={clsx(styles.person, open && styles.isOpen)}>
-      <h3 className={styles.personName}>{member.name}</h3>
-      <p className={styles.personRole}>{member.title}</p>
-      <p className={styles.personLead}>{member.superpower}</p>
+      <PortraitPlate
+        image={member.portrait}
+        name={member.name}
+        sizes="(max-width: 40rem) 90vw, (max-width: 64rem) 45vw, 28vw"
+        className={styles.personPlate}
+      />
 
-      <button
-        ref={triggerRef}
-        type="button"
-        className={styles.personCta}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={toggle}
-      >
-        {ctaLabel}
-        <span className={styles.personCtaMark} aria-hidden="true" />
-      </button>
+      <div className={styles.personBody}>
+        <h3 className={styles.personName}>{member.name}</h3>
+        <p className={styles.personRole}>{member.title}</p>
+        <p className={styles.personLead}>{member.superpower}</p>
+
+        <button
+          ref={triggerRef}
+          type="button"
+          className={styles.personCta}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={toggle}
+        >
+          {ctaLabel}
+          <span className={styles.personCtaMark} aria-hidden="true" />
+        </button>
+      </div>
 
       <div
         id={panelId}

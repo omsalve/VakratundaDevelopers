@@ -645,6 +645,10 @@ export interface Home {
     ctaHref?: string | null;
     scrollCue?: string | null;
     /**
+     * The one line that tells a visitor the + marks on the photograph are buttons. Shown once the photograph is open.
+     */
+    pinHint?: string | null;
+    /**
      * ONE tall, continuous frame for the whole opening — the hero and the impact figures share it, and it travels from its top edge to its bottom edge across the section, reaching the bottom just as the story section closes over it. Nothing in it may repeat. Portrait, around 2880 × 3240 — roughly 8:9, which is the shape the frame is laid out at; a much taller original loses its sides to the crop. Sits at low opacity behind type throughout, so favour a dark, low-contrast image.
      */
     background?: (number | null) | Media;
@@ -959,7 +963,7 @@ export interface Home {
     };
   };
   /**
-   * Four slides, in this order. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.
+   * Five slides, in this order: introduction, Chairman, Director, leadership, core teams. Leave a portrait empty and the site draws a lettered plate in its place — nothing in the layout moves when the photograph arrives.
    */
   team?: {
     /**
@@ -1006,7 +1010,21 @@ export interface Home {
       ctaLabel?: string | null;
     };
     /**
-     * Three is what the slide is drawn for. The bio is what each card's own disclosure opens, so keep it out of the line above it.
+     * The Chairman's slide, mirrored: the designation, the name, the one line and the bio on the left, the portrait on the right. No quote.
+     */
+    director?: {
+      name?: string | null;
+      title?: string | null;
+      superpower?: string | null;
+      bio?: string | null;
+      /**
+       * Portrait, 4:5.
+       */
+      portrait?: (number | null) | Media;
+      ctaLabel?: string | null;
+    };
+    /**
+     * Three cards side by side, each with its own portrait over the name. Three is what the slide is drawn for. The bio is what each card's own disclosure opens, so keep it out of the line above it.
      */
     leadership?:
       | {
@@ -1014,6 +1032,9 @@ export interface Home {
           title: string;
           superpower: string;
           bio: string;
+          /**
+           * Portrait, 4:5, 1200 × 1500 or larger. Shown at the top of the card and cropped to the space the slide has, so keep the face in the upper middle.
+           */
           portrait?: (number | null) | Media;
           id?: string | null;
         }[]
@@ -1091,6 +1112,58 @@ export interface Home {
     redevelopmentBlurb?: string | null;
     redevelopmentCtaLabel?: string | null;
     redevelopmentCtaHref?: string | null;
+  };
+  openland?: {
+    /**
+     * The wide-tracked label over the headline.
+     */
+    eyebrow?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * Set over the numbered list of parcels.
+     */
+    scheduleTitle?: string | null;
+    /**
+     * Numbered P—01 to P—04 in this order, each against its own boundary on the plan. Give an area where one is published; otherwise leave it empty and give a phrase instead — never both, and never an invented figure.
+     */
+    parcels?:
+      | {
+          name: string;
+          locality: string;
+          status: string;
+          /**
+           * Digits, at most one decimal.
+           */
+          areaValue?: string | null;
+          areaUnit?: string | null;
+          phrase?: string | null;
+          /**
+           * One or two lines.
+           */
+          note: string;
+          /**
+           * Optional. Shown small beside the entry.
+           */
+          image?: (number | null) | Media;
+          ctaLabel?: string | null;
+          ctaHref?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The line the schedule closes on, to people who hold land.
+     */
+    invitationText?: string | null;
+    invitationCtaLabel?: string | null;
+    invitationCtaHref?: string | null;
   };
   vihaa?: {
     nameMark?: string | null;
@@ -1201,6 +1274,15 @@ export interface Home {
     };
     attribution?: string | null;
     /**
+     * The group's standalone lines (MoM 2.4.3), one per entry, set last in the close under the button. Two read best.
+     */
+    brandLines?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
      * Exactly three reads best — they sit in one row of columns.
      */
     proofs?:
@@ -1213,6 +1295,10 @@ export interface Home {
     ctaLabel?: string | null;
     ctaHref?: string | null;
     email?: string | null;
+    /**
+     * The RMO's own address (MoM 2.4.4), listed beside the general one.
+     */
+    rmoEmail?: string | null;
     addressLines?:
       | {
           text: string;
@@ -2919,6 +3005,7 @@ export interface HomeSelect<T extends boolean = true> {
         ctaLabel?: T;
         ctaHref?: T;
         scrollCue?: T;
+        pinHint?: T;
         background?: T;
         pins?:
           | T
@@ -3164,6 +3251,16 @@ export interface HomeSelect<T extends boolean = true> {
               portrait?: T;
               ctaLabel?: T;
             };
+        director?:
+          | T
+          | {
+              name?: T;
+              title?: T;
+              superpower?: T;
+              bio?: T;
+              portrait?: T;
+              ctaLabel?: T;
+            };
         leadership?:
           | T
           | {
@@ -3227,6 +3324,38 @@ export interface HomeSelect<T extends boolean = true> {
         redevelopmentBlurb?: T;
         redevelopmentCtaLabel?: T;
         redevelopmentCtaHref?: T;
+      };
+  openland?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        scheduleTitle?: T;
+        parcels?:
+          | T
+          | {
+              name?: T;
+              locality?: T;
+              status?: T;
+              areaValue?: T;
+              areaUnit?: T;
+              phrase?: T;
+              note?: T;
+              image?: T;
+              ctaLabel?: T;
+              ctaHref?: T;
+              id?: T;
+            };
+        invitationText?: T;
+        invitationCtaLabel?: T;
+        invitationCtaHref?: T;
       };
   vihaa?:
     | T
@@ -3315,6 +3444,12 @@ export interface HomeSelect<T extends boolean = true> {
               after?: T;
             };
         attribution?: T;
+        brandLines?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
         proofs?:
           | T
           | {
@@ -3325,6 +3460,7 @@ export interface HomeSelect<T extends boolean = true> {
         ctaLabel?: T;
         ctaHref?: T;
         email?: T;
+        rmoEmail?: T;
         addressLines?:
           | T
           | {

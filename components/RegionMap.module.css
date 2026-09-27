@@ -101,7 +101,7 @@
 }
 
 /* ---- Place names -------------------------------------------------------- */
-/* The sheet names six places and no others. Set wide and small, like the
+/* The sheet names eight places and no others. Set wide and small, like the
    print on a survey, with a navy shadow so a name holds over a road. */
 .place {
   position: absolute;
@@ -158,7 +158,7 @@
   color: rgba(253, 252, 250, 0.84);
 }
 
-/* A place named without a pin — the city, Dadar — gets a small point of its
+/* A place named without a pin — the city, Sion — gets a small point of its
    own, so the name is attached to somewhere. */
 .mark {
   position: absolute;

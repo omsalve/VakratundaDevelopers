@@ -251,8 +251,7 @@ async function readSiteContent(): Promise<SiteContent> {
         href: text(home.hero?.ctaHref, fallback.hero.primaryCta.href),
       },
       scrollCue: text(home.hero?.scrollCue, fallback.hero.scrollCue),
-      // Not a CMS field yet.
-      pinHint: fallback.hero.pinHint,
+      pinHint: optionalText(home.hero?.pinHint) ?? fallback.hero.pinHint,
       background: image(home.hero?.background, fallback.hero.background),
       // A pin's coordinates are measured against ONE photograph and are not
       // meaningful apart from it, so the field carries x and y in the row
@@ -515,10 +514,24 @@ async function readSiteContent(): Promise<SiteContent> {
           fallback.team.chairman.ctaLabel,
         ),
       },
-      // Not a CMS field yet: a new group on the `home` global is a schema
-      // change on the live database, so the Director's slide ships with the
-      // site until one is made deliberately.
-      director: fallback.team.director,
+      director: {
+        id: fallback.team.director.id,
+        name: text(home.team?.director?.name, fallback.team.director.name),
+        title: text(home.team?.director?.title, fallback.team.director.title),
+        superpower: text(
+          home.team?.director?.superpower,
+          fallback.team.director.superpower,
+        ),
+        bio: text(home.team?.director?.bio, fallback.team.director.bio),
+        portrait: image(
+          home.team?.director?.portrait,
+          fallback.team.director.portrait,
+        ),
+        ctaLabel: text(
+          home.team?.director?.ctaLabel,
+          fallback.team.director.ctaLabel,
+        ),
+      },
       leadership:
         (home.team?.leadership ?? []).length > 0
           ? home.team!.leadership!.map((member, index) => {
@@ -536,7 +549,6 @@ async function readSiteContent(): Promise<SiteContent> {
               };
             })
           : fallback.team.leadership,
-      leadershipImage: fallback.team.leadershipImage,
       roles:
         (home.team?.roles ?? []).length > 0
           ? home.team!.roles!.map((role, index) => ({
@@ -587,10 +599,62 @@ async function readSiteContent(): Promise<SiteContent> {
     },
 
     /* ---- Openland ---------------------------------------------------------
-       Shipped content only for now: the parcels are still to be confirmed
-       with the client (MoM 2.3), and a CMS field for a list that is not yet
-       settled would only have to be migrated once it is. */
-    openland: fallback.openland,
+       The parcels are a list, replaced wholesale once it has a row, and cut
+       to four by the component — the plan has four boundaries drawn
+       (lib/openlandPlan.ts), which is geometry and stays out of the CMS. A
+       parcel leads on its area or on a phrase, never both: the area wins
+       where a figure is given. The photograph and the link are optional and
+       have nothing shipped behind them, so a half-filled one is dropped. */
+    openland: {
+      eyebrow: text(home.openland?.eyebrow, fallback.openland.eyebrow),
+      heading: heading(home.openland?.heading, fallback.openland.heading),
+      standfirst: text(
+        home.openland?.standfirst,
+        fallback.openland.standfirst,
+      ),
+      scheduleTitle: text(
+        home.openland?.scheduleTitle,
+        fallback.openland.scheduleTitle,
+      ),
+      parcels: rows(
+        home.openland?.parcels,
+        fallback.openland.parcels,
+        (row, index) => {
+          const areaValue = optionalText(row.areaValue);
+          const ctaLabel = optionalText(row.ctaLabel);
+          const ctaHref = optionalText(row.ctaHref);
+          return {
+            id: rowId(row.id, "parcel", index),
+            name: row.name,
+            locality: row.locality,
+            status: row.status,
+            area: areaValue
+              ? { value: areaValue, unit: text(row.areaUnit, "") }
+              : undefined,
+            phrase: areaValue ? undefined : optionalText(row.phrase),
+            note: row.note,
+            image: mediaImage(row.image),
+            cta: ctaLabel && ctaHref ? { label: ctaLabel, href: ctaHref } : undefined,
+          };
+        },
+      ),
+      invitation: {
+        text: text(
+          home.openland?.invitationText,
+          fallback.openland.invitation.text,
+        ),
+        cta: {
+          label: text(
+            home.openland?.invitationCtaLabel,
+            fallback.openland.invitation.cta.label,
+          ),
+          href: text(
+            home.openland?.invitationCtaHref,
+            fallback.openland.invitation.cta.href,
+          ),
+        },
+      },
+    },
 
     /* ---- Vihaa -----------------------------------------------------------
        The school is recorded the way every other partnership is, so it
@@ -703,11 +767,15 @@ async function readSiteContent(): Promise<SiteContent> {
         ),
         href: text(home.finalCta?.ctaHref, fallback.finalCta.primaryCta.href),
       },
-      // Not CMS fields yet, for the same reason as the Director above.
-      brandLines: fallback.finalCta.brandLines,
+      brandLines: lines(
+        home.finalCta?.brandLines,
+        fallback.finalCta.brandLines ?? [],
+      ),
       contact: {
         email: text(home.finalCta?.email, fallback.finalCta.contact.email),
-        rmoEmail: fallback.finalCta.contact.rmoEmail,
+        rmoEmail:
+          optionalText(home.finalCta?.rmoEmail) ??
+          fallback.finalCta.contact.rmoEmail,
         addressLines: lines(
           home.finalCta?.addressLines,
           fallback.finalCta.contact.addressLines,

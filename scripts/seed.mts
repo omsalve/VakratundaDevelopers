@@ -473,9 +473,14 @@ async function seedHome(payload: Payload) {
   const [garden, lounge, roof] = site.practice.slides;
   const { plates } = site.atmosphere;
 
-  /** One partnership, as the three prefixed blocks on the Ventures tab. */
+  /**
+   * One partnership, as the prefixed blocks on the Ventures tab. A block whose
+   * slide is no longer shipped (the redevelopment one, MoM 2.5) has nothing to
+   * seed from and is skipped.
+   */
   const venture = async (id: string): Promise<[string, unknown][]> => {
-    const slide = site.ventures.slides.find((s) => s.id === id)!;
+    const slide = site.ventures.slides.find((s) => s.id === id);
+    if (!slide) return [];
     return [
       [`ventures.${id}`, await m(slide.image)],
       [`ventures.${id}Partner`, slide.partner],
@@ -503,6 +508,7 @@ async function seedHome(payload: Payload) {
     ["hero.ctaLabel", site.hero.primaryCta.label],
     ["hero.ctaHref", site.hero.primaryCta.href],
     ["hero.scrollCue", site.hero.scrollCue],
+    ["hero.pinHint", site.hero.pinHint],
     ["hero.background", await m(site.hero.background)],
     [
       "hero.pins",
@@ -628,6 +634,12 @@ async function seedHome(payload: Payload) {
     ["team.chairman.bio", site.team.chairman.bio],
     ["team.chairman.portrait", await m(site.team.chairman.portrait)],
     ["team.chairman.ctaLabel", site.team.chairman.ctaLabel],
+    ["team.director.name", site.team.director.name],
+    ["team.director.title", site.team.director.title],
+    ["team.director.superpower", site.team.director.superpower],
+    ["team.director.bio", site.team.director.bio],
+    ["team.director.portrait", await m(site.team.director.portrait)],
+    ["team.director.ctaLabel", site.team.director.ctaLabel],
     [
       "team.leadership",
       await rowsOf(site.team.leadership, async (member) => ({
@@ -656,6 +668,30 @@ async function seedHome(payload: Payload) {
     ...(await venture("godrej")),
     ...(await venture("shapoorji")),
     ...(await venture("redevelopment")),
+
+    /* ---- Openland ---- */
+    ["openland.eyebrow", site.openland.eyebrow],
+    ["openland.heading", swashOf(site.openland.heading)],
+    ["openland.standfirst", site.openland.standfirst],
+    ["openland.scheduleTitle", site.openland.scheduleTitle],
+    [
+      "openland.parcels",
+      await rowsOf(site.openland.parcels, async (parcel) => ({
+        name: parcel.name,
+        locality: parcel.locality,
+        status: parcel.status,
+        areaValue: parcel.area?.value ?? null,
+        areaUnit: parcel.area?.unit ?? null,
+        phrase: parcel.phrase ?? null,
+        note: parcel.note,
+        image: (await m(parcel.image)) ?? null,
+        ctaLabel: parcel.cta?.label ?? null,
+        ctaHref: parcel.cta?.href ?? null,
+      })),
+    ],
+    ["openland.invitationText", site.openland.invitation.text],
+    ["openland.invitationCtaLabel", site.openland.invitation.cta.label],
+    ["openland.invitationCtaHref", site.openland.invitation.cta.href],
 
     /* ---- Vihaa ---- */
     ["vihaa.nameMark", site.vihaa.name.mark],
@@ -710,6 +746,7 @@ async function seedHome(payload: Payload) {
     /* ---- Contact ---- */
     ["finalCta.quote", swashOf(site.finalCta.quote)],
     ["finalCta.attribution", site.finalCta.attribution],
+    ["finalCta.brandLines", linesOf(site.finalCta.brandLines)],
     [
       "finalCta.proofs",
       site.finalCta.proofs.map((p) => ({ title: p.title, body: p.body })),
@@ -717,6 +754,7 @@ async function seedHome(payload: Payload) {
     ["finalCta.ctaLabel", site.finalCta.primaryCta.label],
     ["finalCta.ctaHref", site.finalCta.primaryCta.href],
     ["finalCta.email", site.finalCta.contact.email],
+    ["finalCta.rmoEmail", site.finalCta.contact.rmoEmail],
     ["finalCta.addressLines", linesOf(site.finalCta.contact.addressLines)],
     ["legal", site.legal],
 

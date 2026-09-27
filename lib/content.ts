@@ -407,11 +407,12 @@ export interface AtmosphereContent {
 
 /* ------------------------------------------------------------------- team */
 /*
- * THE TEAM SHOWCASE — four slides, and each one is a different shape.
+ * THE TEAM SHOWCASE — five slides, and each one is a different shape.
  *
- * Modelled as four named blocks rather than as an array of a union, because
- * the slideshow is not a list that grows: it is an intro, a chairman, three
- * directors and a grid of functions, in that order, and every one of them
+ * Modelled as five named blocks rather than as an array of a union, because
+ * the slideshow is not a list that grows: it is an intro, a chairman, a
+ * director, three leadership cards and a grid of functions, in that order,
+ * and every one of them
  * carries different fields. A union would buy a `.map()` in the component and
  * cost a discriminant switch, an unreadable Payload tab, and the ability of an
  * editor to create a fifth slide the layout has no design for.
@@ -493,9 +494,8 @@ export interface TeamContent {
   chairman: TeamChairman;
   /** Slide three. Required: the slide count sets the section's scroll length. */
   director: TeamDirector;
+  /** Slide four: three cards, each with its own portrait slot. */
   leadership: TeamMember[];
-  /** Slide three's one photograph, beside the three leadership panels. */
-  leadershipImage: ImageAsset;
   roles: TeamRole[];
   /** On every role card. */
   roleCta: Cta;
@@ -670,6 +670,8 @@ export interface OpenlandContent {
   eyebrow: string;
   heading: SwashHeading;
   standfirst: string;
+  /** The rubric over the numbered list of parcels. */
+  scheduleTitle: string;
   /** Up to four. The site plan is drawn for that many boundaries. */
   parcels: OpenlandParcel[];
   /** The invitation the schedule closes on, to people who hold land. */
@@ -1532,15 +1534,6 @@ export const siteContent: SiteContent = {
       },
     ],
 
-    // The leadership at the table, set beside the three panels on slide
-    // three. Portrait orientation once its EXIF rotation is applied.
-    leadershipImage: {
-      src: siteImage("team/DSC05061.JPG"),
-      alt: "The Vakratunda leadership in discussion around the boardroom table",
-      width: 4672,
-      height: 7008,
-    },
-
     /* The six functions. Every descriptor is either quoted from CP_Final or
        restates a line already carried elsewhere in this file, so the grid
        reads in the same voice as the rest of the page rather than in the
@@ -1665,6 +1658,7 @@ export const siteContent: SiteContent = {
     heading: { before: "Where the map is still ", swash: "open", after: "." },
     standfirst:
       "Not every address begins with a building. Some begin with open ground, a survey line and a plan drawn from nothing — townships and neighbourhoods laid out whole, from the first road to the last tree.",
+    scheduleTitle: "Schedule of land",
     parcels: [
       {
         id: "vihaa-township",

@@ -1,18 +1,27 @@
 /* ============================================================================
-   SiteHeader — a floating capsule of navy glass.
+   SiteHeader — the island.
 
-   THE MASTHEAD MEASURES --header-h, EXACTLY: the capsule is inset from the
-   window's top by --space-3 and is --header-h less that tall, so every section
-   that clears the header is still correct by construction.
+   A PILL OF INK AT THE TOP OF THE WINDOW that springs open into the masthead.
+   Always ink, whatever the ground: like the island on a phone it is an object
+   laid on the page, not a pane of it, so on the cream pages it is the one
+   dark thing at the top and on the navy ones a deeper slot cut into them.
 
-   IT TAKES THE COLOUR OF WHAT IS BEHIND IT. SiteHeader.tsx samples the
-   ground under the capsule as the page scrolls and writes it here as
-   `--ground` (an "r g b" triple) and `data-tone` (dark or light). The glass is
-   that ground at about two-thirds opacity, so the capsule reads as a pane of
-   the page rather than a bar laid across it; the tone flips the type, the
-   hairlines and the logo between the navy and cream palettes. Every one of
-   those changes is transitioned, so crossing from navy to cream is a fade,
-   not a cut.
+   THE MASTHEAD STILL FITS INSIDE --header-h: the pill is --space-3 from the
+   window's top and --closed-h tall, so every section that clears the header
+   is still correct by construction. The open island overlays the page.
+
+   HOW THE MORPH STAYS SMOOTH. Only `.island` changes size. Its contents are
+   absolutely positioned at their final size and clipped by it, so a frame of
+   the morph re-lays-out one box and no text. The header is a size container,
+   so nothing outside it is touched either. The two sizes come from the
+   component: `--open-w` / `--open-h` are the content's own measured box, and
+   `--brand-end` is where the lockup ends — the closed pill is that, plus one
+   pill-height of square for the glyph.
+
+   THE SPRINGS are damped springs sampled into `linear()`, not beziers. Open
+   (ζ 0.70) overshoots by about 4.6% and settles; close (ζ 0.88) lands almost
+   dead; the first-load stretch (ζ 0.60) is the one that is allowed to bounce.
+   A reversed hover retargets from wherever the island is mid-flight.
    ========================================================================== */
 
 .header {
@@ -21,154 +30,296 @@
   left: 0;
   right: 0;
   z-index: var(--z-header);
-  padding-top: var(--space-3);
-  padding-inline: clamp(0.625rem, 2vw, var(--space-6));
-  pointer-events: none;
-  --progress: 0;
-  /* Until the first sample: the navy the landing page opens on. */
-  --ground: 22 30 65;
-  --glass-alpha: 0.66;
-  --tone-dur: 650ms;
-
-  /* The dark palette — type and line-work for a navy ground. */
-  --hd-border: rgba(228, 168, 161, 0.18);
-  --hd-track-bg: rgba(255, 255, 255, 0.04);
-  --hd-track-line: rgba(228, 168, 161, 0.12);
-  --hd-indicator-bg: rgba(228, 168, 161, 0.14);
-  --hd-indicator-ring: rgba(228, 168, 161, 0.32);
-  --hd-current: var(--accent-rose-bright);
-  --hd-toggle: var(--accent-rose);
-  --hd-toggle-bg: rgba(228, 168, 161, 0.08);
-  --hd-panel-bg: rgba(12, 18, 48, 0.94);
-  --hd-shadow: rgba(6, 9, 26, 0.55);
-}
-
-/* The light palette — the same tokens re-pointed for a cream ground, the way
-   `.on-cream` does it, so the logo and the type need no branches of their
-   own. */
-.header[data-tone="light"] {
-  --text-on-navy: var(--text-on-cream);
-  --text-on-navy-muted: var(--text-on-cream-muted);
-  --accent-text: var(--accent-deep);
-  --navy-line: rgba(15, 20, 48, 0.14);
-  --navy-line-soft: rgba(15, 20, 48, 0.07);
-
-  --hd-border: rgba(15, 20, 48, 0.12);
-  --hd-track-bg: rgba(15, 20, 48, 0.035);
-  --hd-track-line: rgba(15, 20, 48, 0.08);
-  --hd-indicator-bg: rgba(168, 87, 76, 0.1);
-  --hd-indicator-ring: rgba(168, 87, 76, 0.36);
-  --hd-current: var(--accent-deep);
-  --hd-toggle: var(--accent-deep);
-  --hd-toggle-bg: rgba(168, 87, 76, 0.08);
-  --hd-panel-bg: rgba(253, 252, 250, 0.94);
-  --hd-shadow: rgba(15, 20, 48, 0.22);
-}
-
-.bar {
-  position: relative;
   display: flex;
-  align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  height: calc(var(--header-h) - var(--space-3));
-  max-width: calc(var(--maxw) + var(--space-6));
-  margin-inline: auto;
-  padding-inline: clamp(var(--space-4), 2vw, var(--space-6)) var(--space-2);
-  border: var(--hairline) solid var(--hd-border);
-  border-radius: var(--radius-pill);
-  /* The ground behind, as glass. The blur is what keeps the type legible
-     over whatever scrolls under it. */
-  background-color: rgb(var(--ground) / var(--glass-alpha));
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  justify-content: center;
+  padding: var(--space-3) var(--space-3) 0;
+  pointer-events: none;
+  /* A size container: the morph resizes nothing outside the header, and the
+     phone card sizes itself from the header's width — which, unlike 100vw,
+     never includes a scrollbar. */
+  container-type: inline-size;
+
+  --progress: 0;
+  /* Deeper than --navy-900, so the island reads as a slot even on the navy
+     sections. */
+  --island: #080b1e;
+  --island-rim: inset 0 0 0 1px rgba(228, 168, 161, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  /* ---- Geometry ---------------------------------------------------------- */
+  --closed-h: 2.75rem;
+  --row-h: 3.5rem;
+  /* (44 − 26) / 2: the 26px mark sits concentric with the pill's round end. */
+  --pad: 0.5625rem;
+  --closed-w: calc(var(--brand-end, 11rem) + var(--closed-h));
+  --open-r: calc(var(--open-h, var(--row-h)) / 2);
+  /* Opening deepens the pill by 12px; the lockup steps in by half of it so the
+     mark stays concentric with the larger end. */
+  --brand-shift: calc((var(--row-h) - var(--closed-h)) / 2);
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --spring-open: linear(0, 0.004 1%, 0.025 2.5%, 0.06 4%, 0.106 5.5%, 0.16 7%,
+    0.22 8.5%, 0.478 14.5%, 0.599 17.5%, 0.707 20.5%, 0.785 23%, 0.852 25.5%,
+    0.886 27%, 0.916 28.5%, 0.957 31%, 0.994 34%, 1.016 36.5%, 1.033 39.5%,
+    1.042 42.5%, 1.046 46%, 1.042 51.5%, 1.015 66%, 1.004 75%, 0.998 87%, 1);
+  --spring-close: linear(0, 0.004 1%, 0.025 2.5%, 0.046 3.5%, 0.085 5%,
+    0.133 6.5%, 0.185 8%, 0.41 14%, 0.516 17%, 0.61 20%, 0.692 23%, 0.762 26%,
+    0.819 29%, 0.871 32.5%, 0.911 36%, 0.945 40%, 0.967 44%, 0.984 48.5%,
+    0.995 54%, 1.001 59.5%, 1.003 66.5%, 1);
+  --spring-arrive: linear(0, 0.005 1%, 0.011 1.5%, 0.028 2.5%, 0.068 4%,
+    0.12 5.5%, 0.182 7%, 0.25 8.5%, 0.545 14.5%, 0.66 17%, 0.764 19.5%,
+    0.853 22%, 0.928 24.5%, 0.987 27%, 1.031 29.5%, 1.062 32%, 1.079 34%,
+    1.089 36%, 1.094 38%, 1.094 40.5%, 1.081 45.5%, 1.02 59.5%, 1.008 63.5%,
+    0.998 68%, 0.993 73%, 0.991 79%, 1);
+  --open-dur: 720ms;
+  --close-dur: 540ms;
+  --arrive-dur: 900ms;
+}
+
+@supports not (transition-timing-function: linear(0, 1)) {
+  .header {
+    --spring-open: cubic-bezier(0.34, 1.28, 0.64, 1);
+    --spring-close: cubic-bezier(0.22, 1, 0.36, 1);
+    --spring-arrive: cubic-bezier(0.34, 1.5, 0.64, 1);
+  }
+}
+
+/* The island and its caption. Sized by the island alone — the caption hangs
+   below it — so `::after` (the arrival's pulse) is exactly the pill. */
+.dock {
+  position: relative;
+}
+
+/* ---- The island ---------------------------------------------------------- */
+.island {
+  position: relative;
+  width: var(--closed-w);
+  height: var(--closed-h);
+  border-radius: calc(var(--closed-h) / 2);
+  /* Clip, not hidden: a hidden box is a scroll container, and focusing a
+     link that is still outside the growing pill would scroll the contents
+     sideways to reveal it. */
+  overflow: clip;
+  background: var(--island);
+  color: var(--text-on-navy);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 18px 44px -22px var(--hd-shadow);
+    var(--island-rim),
+    0 12px 30px -14px rgba(4, 6, 18, 0.7),
+    0 2px 6px -2px rgba(4, 6, 18, 0.35);
   pointer-events: auto;
   transition:
-    background-color var(--tone-dur) ease,
-    border-color var(--tone-dur) ease,
-    box-shadow var(--tone-dur) ease;
+    width var(--close-dur) var(--spring-close),
+    height var(--close-dur) var(--spring-close),
+    border-radius var(--close-dur) var(--spring-close),
+    box-shadow var(--close-dur) var(--ease-out-quint),
+    scale 260ms var(--ease-out-quint);
 }
 
-.isScrolled .bar {
-  --glass-alpha: 0.7;
+.header[data-open] .island {
+  width: var(--open-w, var(--closed-w));
+  height: var(--open-h, var(--row-h));
+  border-radius: var(--open-r);
+  box-shadow:
+    var(--island-rim),
+    0 28px 60px -26px rgba(4, 6, 18, 0.8),
+    0 6px 16px -8px rgba(4, 6, 18, 0.45);
+  transition:
+    width var(--open-dur) var(--spring-open),
+    height var(--open-dur) var(--spring-open),
+    border-radius var(--open-dur) var(--spring-open),
+    box-shadow var(--open-dur) var(--ease-out-quint),
+    scale 260ms var(--ease-out-quint);
+}
+
+/* A press on the closed pill gives under the finger before it opens. */
+.header:not([data-open]) .island:has(> .trigger:active) {
+  scale: 0.96;
+}
+
+/* ---- The trigger ---------------------------------------------------------
+   The whole closed pill is one button. Open, it lets every pointer through to
+   the links — except, on a phone, on the glyph, which has become the close. */
+.trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--accent-rose);
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header[data-open] .trigger {
+  pointer-events: none;
+}
+
+/* Drawn inside the edge: outside it, the island's own clip would cut it. */
+.trigger:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: -3px;
+}
+
+/* Two bars, the lower one short: "there is more in here". On a phone it
+   turns into the close. */
+.glyph {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  gap: 5px;
+  width: var(--closed-h);
+  height: var(--closed-h);
+  padding-inline: 14px;
+  transition:
+    opacity 280ms var(--ease-out-quint) 200ms,
+    filter 280ms var(--ease-out-quint) 200ms,
+    transform var(--close-dur) var(--spring-close);
+}
+
+.glyph span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transform-origin: right center;
+  transition: transform var(--close-dur) var(--spring-close);
+}
+
+.glyph span:last-child {
+  transform: scaleX(0.625);
+}
+
+/* ---- The contents --------------------------------------------------------
+   Laid out at full size the whole time and clipped by the island. On a
+   desktop they are a row centred on the island's height, so the lockup stays
+   centred as the pill deepens. */
+.content {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.2vw, 2rem);
+  width: max-content;
+  height: var(--row-h);
+  /* Right: the CTA's pill sits concentric with the island's round end. */
+  padding-inline: var(--pad) calc((var(--row-h) - 2.75rem) / 2);
+  transform: translateY(-50%);
+}
+
+/* Everything but the lockup arrives when the island opens: out of a blur,
+   in reading order, while the island is still growing — and leaves at once,
+   before it shrinks over them. */
+.reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.92);
+  transition:
+    opacity 150ms ease,
+    filter 150ms ease,
+    transform 220ms ease;
+}
+
+.header[data-open] .reveal {
+  --d: calc(90ms + var(--i, 0) * 38ms);
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition:
+    opacity 420ms var(--ease-out-quint) var(--d),
+    filter 460ms var(--ease-out-quint) var(--d),
+    transform 620ms var(--ease-out-expo) var(--d);
+}
+
+/* ---- The lockup ----------------------------------------------------------
+   The one thing that never fades: it rides the island's left edge out and
+   back, which is what makes the pill and the masthead read as one object. */
+.brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--closed-h);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: transform var(--close-dur) var(--spring-close);
+}
+
+.header[data-open] .brand {
+  transform: translateX(var(--brand-shift));
+  transition: transform var(--open-dur) var(--spring-open);
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 2px;
+}
+
+/* The mark is bi-axially symmetric — a half turn lands it exactly on itself,
+   and all that moves is the rose-to-silver light running through the
+   line-work. So the island opening turns it: the light crosses the mark and
+   settles, slowly, on an in-out curve, well after the island has landed. */
+.brandMark {
+  transition: rotate 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.header[data-open] .brandMark {
+  rotate: 180deg;
 }
 
 /* ---- The scroll hairline -------------------------------------------------
-   Along the capsule's foot, inset from its rounded ends so it never runs into
-   the curve. Filled from the left by --progress, written by the component. */
+   Along the closed pill's foot, inset from its round ends. Filled from the
+   left by --progress, written by the component. */
 .progress {
   position: absolute;
-  left: 1.75rem;
-  right: 1.75rem;
-  bottom: -1px;
+  left: calc(var(--closed-h) / 2);
+  right: calc(var(--closed-h) / 2);
+  bottom: 0;
   height: 1px;
   background: linear-gradient(
     90deg,
     rgba(228, 168, 161, 0),
-    var(--accent-rose) 12%,
+    var(--accent-rose) 14%,
     var(--accent-rose-bright)
   );
   transform: scaleX(var(--progress));
   transform-origin: left center;
   opacity: 0.85;
   pointer-events: none;
+  transition: opacity 280ms ease 220ms;
 }
 
-/* ---- The brand ----------------------------------------------------------- */
-.brand {
-  display: flex;
-  flex: none;
-  text-decoration: none;
-  border-radius: var(--radius-pill);
+.header[data-open] .progress {
+  opacity: 0;
+  transition: opacity 120ms ease;
 }
 
-.brand:focus-visible {
-  outline: 2px solid var(--accent-text);
-  outline-offset: 6px;
-}
-
-/* The lockup's colour follows the tone. */
-.brand * {
-  transition: color var(--tone-dur) ease;
-}
-
-/* The mark is bi-axially symmetric — a half turn lands it exactly on itself,
-   and all that moves is the rose-to-silver gradient running through the
-   line-work. So the hover is a mark that turns and is unchanged: the light
-   crosses it and settles.
-
-   SLOW, AND EASED BOTH WAYS. It used to snap round in a second on an expo
-   curve, which spent most of the half turn in its first few frames and read
-   as a twitch. It now takes two and a half seconds on an in-out curve — it
-   gathers, turns, and settles — so it reads as the light moving rather than
-   the mark being flicked. */
-.brandMark {
-  transition:
-    rotate 2.6s cubic-bezier(0.65, 0, 0.35, 1),
-    color var(--tone-dur) ease;
-}
-
-.brand:hover .brandMark,
-.brand:focus-visible .brandMark {
-  rotate: 180deg;
-}
-
-/* ---- Desktop nav --------------------------------------------------------- */
+/* ---- Desktop: the row ---------------------------------------------------- */
 .nav {
-  margin-left: auto;
+  flex: none;
 }
 
 .track {
   position: relative;
   padding: 4px;
-  border: var(--hairline) solid var(--hd-track-line);
+  border: var(--hairline) solid rgba(228, 168, 161, 0.12);
   border-radius: var(--radius-pill);
-  background: var(--hd-track-bg);
-  transition:
-    background-color var(--tone-dur) ease,
-    border-color var(--tone-dur) ease;
+  background: rgba(255, 255, 255, 0.035);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.header[data-open] .track {
+  opacity: 1;
+  transition: opacity 380ms var(--ease-out-quint) 60ms;
 }
 
 /* The indicator. It slides between links rather than appearing under each —
@@ -179,16 +330,14 @@
   bottom: 4px;
   left: 0;
   border-radius: var(--radius-pill);
-  background: var(--hd-indicator-bg);
-  box-shadow: inset 0 0 0 1px var(--hd-indicator-ring);
+  background: rgba(228, 168, 161, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(228, 168, 161, 0.32);
   opacity: 0;
   pointer-events: none;
   transition:
     transform 520ms var(--ease-out-quint),
     width 520ms var(--ease-out-quint),
-    opacity var(--dur-base) ease,
-    background-color var(--tone-dur) ease,
-    box-shadow var(--tone-dur) ease;
+    opacity var(--dur-base) ease;
 }
 
 .indicator[data-on="true"] {
@@ -207,17 +356,16 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: 2.375rem;
-  padding-inline: clamp(0.875rem, 1.4vw, 1.25rem);
+  height: 2.25rem;
+  padding-inline: clamp(0.875rem, 1.3vw, 1.125rem);
   border-radius: var(--radius-pill);
   font-size: var(--fs-small);
   letter-spacing: var(--tracking-ui);
   color: var(--text-on-navy);
   text-decoration: none;
-  opacity: 0.78;
-  transition:
-    opacity var(--dur-fast) ease,
-    color var(--tone-dur) ease;
+  white-space: nowrap;
+  opacity: 0.76;
+  transition: opacity var(--dur-fast) ease;
 }
 
 .link:hover,
@@ -227,24 +375,27 @@
 
 .link:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 1px var(--hd-current);
+  box-shadow: 0 0 0 1px var(--accent-rose-bright);
 }
 
 /* The route the visitor is on: full opacity and the rose, with the indicator
    resting under it. */
 .isCurrent {
   opacity: 1;
-  color: var(--hd-current);
+  color: var(--accent-rose-bright);
 }
 
 /* ---- The one action ------------------------------------------------------ */
-.cta {
+.ctaSlot {
   flex: none;
+}
+
+.cta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  height: 2.875rem;
-  padding: 0 5px 0 var(--space-5);
+  height: 2.75rem;
+  padding: 0 4px 0 var(--space-5);
   border-radius: var(--radius-pill);
   background: var(--accent-rose);
   color: var(--navy-900);
@@ -252,7 +403,7 @@
   font-weight: 600;
   letter-spacing: var(--tracking-ui);
   text-decoration: none;
-  box-shadow: 0 10px 26px -14px rgba(228, 168, 161, 0.7);
+  white-space: nowrap;
   transition:
     background-color var(--dur-base) var(--ease-out-expo),
     box-shadow var(--dur-base) var(--ease-out-expo);
@@ -272,7 +423,7 @@
 .cta:hover,
 .cta:focus-visible {
   background: var(--accent-rose-bright);
-  box-shadow: 0 14px 32px -12px rgba(228, 168, 161, 0.8);
+  box-shadow: 0 10px 24px -12px rgba(228, 168, 161, 0.7);
 }
 
 .cta:hover .ctaIcon,
@@ -282,152 +433,59 @@
 
 .cta:focus-visible {
   outline: 2px solid var(--accent-rose-bright);
-  outline-offset: 3px;
+  outline-offset: -5px;
 }
 
-/* ---- Mobile -------------------------------------------------------------- */
-.mobile {
-  display: none;
-  position: static;
-  margin-left: auto;
-}
-
-.toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  height: 2.75rem;
-  padding: 0 var(--space-4) 0 var(--space-5);
-  background: var(--hd-toggle-bg);
-  border: var(--hairline) solid var(--navy-line);
-  border-radius: var(--radius-pill);
-  color: var(--hd-toggle);
-  font: inherit;
-  font-size: var(--fs-caption);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    background-color var(--tone-dur) ease,
-    border-color var(--tone-dur) ease,
-    color var(--tone-dur) ease;
-}
-
-.toggleBars {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  width: 18px;
-}
-
-.toggleBars span {
-  display: block;
-  height: 1px;
-  background: currentColor;
-  transition: transform var(--dur-base) var(--ease-out-expo);
-}
-
-.toggle[aria-expanded="true"] .toggleBars span:first-child {
-  transform: translateY(2.5px) rotate(45deg);
-}
-
-.toggle[aria-expanded="true"] .toggleBars span:last-child {
-  transform: translateY(-2.5px) rotate(-45deg);
-}
-
-/* The panel drops from the capsule and spans it, as a card of the same glass. */
-.panel {
-  position: absolute;
-  top: calc(100% + var(--space-3));
-  left: 0;
-  right: 0;
-  padding: var(--space-4) var(--space-4) var(--space-5);
-  background: var(--hd-panel-bg);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: var(--hairline) solid var(--navy-line);
-  border-radius: var(--radius-l);
-  box-shadow: var(--shadow-l);
-  animation: panel-in 420ms var(--ease-out-expo) both;
-}
-
-.panel[hidden] {
+/* ---- Phone: the card ----------------------------------------------------- */
+.sheet {
   display: none;
 }
 
-@keyframes panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.985);
-  }
-}
-
-.panelList {
-  display: flex;
-  flex-direction: column;
+.sheetList {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.panelList li {
-  animation: panel-item-in 520ms var(--ease-out-expo) both;
-  animation-delay: calc(60ms + var(--i, 0) * 45ms);
-}
-
-@keyframes panel-item-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-
-.panelLink {
+.sheetLink {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  padding: var(--space-3) var(--space-3);
+  align-items: center;
+  min-height: 3.5rem;
+  padding-inline: var(--space-3);
   border-bottom: var(--hairline) solid var(--navy-line-soft);
+  border-radius: var(--radius-s);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 6.4cqw, 1.875rem);
+  line-height: 1.1;
   color: var(--text-on-navy);
   text-decoration: none;
-  border-radius: var(--radius-s);
   transition:
     background-color var(--dur-fast) ease,
     color var(--dur-fast) ease;
 }
 
-.panelIndex {
-  font-size: var(--fs-caption);
-  color: var(--hd-toggle);
-  opacity: 0.8;
+.sheetLink:hover,
+.sheetLink:focus-visible {
+  background: rgba(228, 168, 161, 0.08);
+  color: var(--accent-rose);
 }
 
-.panelLabel {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 6vw, 2rem);
-  line-height: 1.1;
+.sheetLink:focus-visible {
+  outline: 1px solid var(--accent-rose-bright);
+  outline-offset: -1px;
 }
 
-.panelLink:hover,
-.panelLink:focus-visible {
-  background: var(--hd-toggle-bg);
-  color: var(--hd-toggle);
-}
-
-.panelLink.isCurrent {
-  color: var(--hd-current);
-}
-
-.panelLink.isCurrent .panelLabel {
+.sheetLink.isCurrent {
   font-style: italic;
 }
 
-.panelCta {
+.sheetCta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-5);
-  padding: var(--space-4) var(--space-5);
+  min-height: 3.25rem;
+  margin-top: var(--space-4);
+  padding-inline: var(--space-5);
   border-radius: var(--radius-pill);
   background: var(--accent-rose);
   color: var(--navy-900);
@@ -436,56 +494,273 @@
   text-decoration: none;
 }
 
-@media (max-width: 55rem) {
+.sheetCta:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 3px;
+}
+
+@media (min-width: 58rem) {
+  /* The glyph gives its end of the island to Contact. */
+  .header[data-open] .glyph {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.6);
+    transition:
+      opacity 140ms ease,
+      filter 140ms ease,
+      transform 240ms ease;
+  }
+}
+
+@media (max-width: 57.99rem) {
+  .header {
+    --open-r: 1.625rem;
+    --brand-shift: 0.25rem;
+  }
+
+  /* A column hung from the island's top: the lockup keeps its place in the
+     first row and the card grows down and out around it. */
+  .content {
+    top: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: min(100cqw, 26rem);
+    height: auto;
+    padding: 0 var(--pad) var(--pad);
+    transform: none;
+  }
+
   .nav,
-  .cta {
+  .ctaSlot {
     display: none;
   }
-  .mobile {
+
+  .sheet {
     display: block;
+    align-self: stretch;
+    padding-top: var(--space-2);
+  }
+
+  /* Rows drop out of the island's top edge rather than scaling in place. */
+  .reveal {
+    transform: translateY(-8px);
+  }
+
+  /* The bars close into a cross, and become the way out. */
+  .header[data-open] .glyph {
+    pointer-events: auto;
+    transition: transform var(--open-dur) var(--spring-open);
+  }
+
+  .header[data-open] .glyph span {
+    transform-origin: center;
+    transition: transform var(--open-dur) var(--spring-open);
+  }
+
+  .header[data-open] .glyph span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .header[data-open] .glyph span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
   }
 }
 
-@media (max-width: 47.99rem) {
-  .bar {
-    gap: var(--space-4);
-    padding-inline: var(--space-4) var(--space-2);
+/* ---- The arrival ---------------------------------------------------------
+   Everything here hangs off `.motion-on` (see styles/global.css): with no JS,
+   or with reduced motion, none of it applies and the pill is simply there.
+
+   Until the component has measured the pill it is held invisible, so the
+   arrival never starts from a guessed width. `failsafe` shows it anyway after
+   three seconds, should the script never run. */
+:global(.motion-on) .header:not([data-ready]) .dock {
+  animation: failsafe 1ms 3s both;
+}
+
+@keyframes failsafe {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-@media (max-width: 22rem) {
-  /* The word goes before the lockup has to shrink. */
-  .toggleLabel {
-    display: none;
-  }
-  .toggle {
-    padding-inline: var(--space-3);
+/* A dot drops in where the island will be… */
+:global(.motion-on) .header[data-ready]:is([data-phase="dot"], [data-phase="stretch"]) .dock {
+  animation: dot-in 560ms var(--spring-arrive) both;
+}
+
+@keyframes dot-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.3);
   }
 }
 
+:global(.motion-on) .header[data-ready][data-phase="dot"] .island {
+  width: var(--closed-h);
+  transition: none;
+}
+
+:global(.motion-on) .header[data-ready][data-phase="dot"] :is(.brand, .glyph, .progress) {
+  opacity: 0;
+  filter: blur(4px);
+  transition: none;
+}
+
+/* …and stretches out into the pill, which is the one spring that bounces. */
+:global(.motion-on) .header[data-phase="stretch"] .island {
+  transition:
+    width var(--arrive-dur) var(--spring-arrive),
+    box-shadow var(--arrive-dur) ease;
+}
+
+:global(.motion-on) .header[data-phase="stretch"] :is(.brand, .glyph, .progress) {
+  transition:
+    opacity 520ms var(--ease-out-quint) 170ms,
+    filter 520ms var(--ease-out-quint) 170ms;
+}
+
+/* The caption, hung under the island while the arrival teaches it. */
+.hint {
+  position: absolute;
+  top: calc(100% + 0.625rem);
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem 0.5rem 0.6875rem;
+  border-radius: var(--radius-pill);
+  background: var(--island);
+  box-shadow:
+    var(--island-rim),
+    0 10px 24px -12px rgba(4, 6, 18, 0.65);
+  color: var(--text-on-navy);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-ui);
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% -6px;
+  scale: 0.94;
+  filter: blur(4px);
+  transition:
+    opacity 240ms ease,
+    translate 280ms ease,
+    scale 280ms ease,
+    filter 240ms ease;
+}
+
+.header[data-hint] .hint {
+  opacity: 1;
+  translate: -50% 0;
+  scale: 1;
+  filter: none;
+  transition:
+    opacity 420ms var(--ease-out-quint),
+    translate var(--open-dur) var(--spring-open),
+    scale var(--open-dur) var(--spring-open),
+    filter 420ms var(--ease-out-quint);
+}
+
+.hintIcon {
+  display: grid;
+  color: var(--accent-rose);
+}
+
+/* The cursor reaches up toward the island; the tap presses. Both loop only
+   while the caption is showing. */
+.header[data-hint] .hintIcon[data-mode="hover"] {
+  animation: hint-reach 1.6s var(--ease-in-out-quart) 500ms infinite;
+}
+
+.header[data-hint] .hintIcon[data-mode="tap"] {
+  animation: hint-press 1.6s var(--ease-in-out-quart) 500ms infinite;
+}
+
+@keyframes hint-reach {
+  50% {
+    translate: -1px -3px;
+  }
+}
+
+@keyframes hint-press {
+  50% {
+    scale: 0.8;
+  }
+}
+
+/* The pill pulses while the caption points at it: a rose ring breathing out
+   from its edge, three times, then gone. */
+.dock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--closed-h) / 2);
+  pointer-events: none;
+}
+
+.header[data-hint]:not([data-open]) .dock::after {
+  animation: pulse 1.8s var(--ease-out-quint) 3;
+}
+
+@keyframes pulse {
+  from {
+    box-shadow: 0 0 0 0 rgba(228, 168, 161, 0.5);
+  }
+  to {
+    box-shadow: 0 0 0 12px rgba(228, 168, 161, 0);
+  }
+}
+
+/* ---- Reduced motion ------------------------------------------------------
+   The island still opens and closes, and its contents still fade — that is
+   state, and it has to read — but nothing springs, slides, turns or loops. */
 @media (prefers-reduced-motion: reduce) {
-  .bar,
-  .track,
+  .island,
+  .header[data-open] .island,
+  .brand,
+  .header[data-open] .brand,
+  .glyph,
+  .glyph span,
+  .header[data-open] .glyph,
+  .header[data-open] .glyph span,
   .indicator,
-  .link,
   .cta,
-  .ctaIcon,
-  .toggle,
-  .toggleBars span,
-  .brand * {
+  .ctaIcon {
     transition: none;
   }
-  .panel,
-  .panelList li {
-    animation: none;
+
+  .reveal,
+  .header[data-open] .reveal {
+    filter: none;
+    transform: none;
+    transition: opacity 200ms ease;
   }
-  .brandMark {
-    transition: none;
-  }
-  /* A half turn under reduced motion would be an instant flip, which is worse
-     than no turn at all. */
-  .brand:hover .brandMark,
-  .brand:focus-visible .brandMark {
+
+  .brandMark,
+  .header[data-open] .brandMark {
     rotate: none;
+    transition: none;
+  }
+
+  .header:not([data-open]) .island:has(> .trigger:active) {
+    scale: none;
+  }
+
+  .hint,
+  .header[data-hint] .hint {
+    translate: -50% 0;
+    scale: none;
+    filter: none;
+    transition: opacity 300ms ease;
+  }
+
+  .header[data-hint] .hintIcon,
+  .header[data-hint]:not([data-open]) .dock::after {
+    animation: none;
   }
 }

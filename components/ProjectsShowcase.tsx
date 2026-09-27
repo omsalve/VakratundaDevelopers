@@ -38,13 +38,16 @@ import FitImage from "@/components/FitImage";
  *       2. OPEN. The merged frame's insets — and its rounded corners with
  *          them — collapse to full bleed. Held as an object it has drawn
  *          corners; once it is the screen it has none.
- *       3. TITLE. "PROJECTS" arrives overscaled, settles, holds across the
- *          settled photograph — and then leaves, lifting out through the top
- *          of the frame before the map opens underneath it.
+ *       3. TITLE. A rose hairline is ruled open across the settled picture
+ *          and "PROJECTS" comes up out of it letter by letter, from the
+ *          middle outward, closing its tracking as it lands. It holds, then
+ *          leaves up through the top of its own line from the outer letters
+ *          in, and the rule draws back into the middle after it, before the
+ *          map opens underneath.
  *       4. MAP. The picture is the region, drawn (components/RegionMap):
  *          the plate the panes merged and the frame opened was the map all
  *          along. As the wordmark lifts off it, it comes alive — copper is
- *          drawn out along its seven roads, and its six place names rise —
+ *          drawn out along its seven roads, and its eight place names rise —
  *          and once it has stopped moving AND the wordmark has cleared it,
  *          it becomes something to enter: a pin on every locality the
  *          portfolio has an address in. A pin flies the camera down on to the
@@ -97,40 +100,61 @@ const SEQUENCE = {
   /* (2) The frame's insets collapse to full bleed. */
   open: { at: 0.18, settle: 0.22 },
 
-  /* (3) The wordmark: in, hold, out. It leaves rather than dimming — the
-     map is the next thing to read, and the largest type on the site lying
-     across it is not a caption over the picture, it is a lid on it.
+  /* (3) The wordmark: ruled, raised, held, and taken up. No fades and no
+     zoom. It moves the way every other headline on the site does: an edge
+     crosses it and it goes up out of its own line.
 
-     `lift` IS DERIVED FROM WHERE THE WORDMARK NOW SITS. It is placed in the
-     upper third rather than jammed against the top edge, so the old -42%
-     merely nudged it: its cap band was still on the screen when the tween
-     ran out, and only the opacity was doing the work. The distance to clear
-     is the cap top (--header-h + --space-8 = 124px) plus the measured cap
-     band (156px at 15vw on a 1440 window) over a 203px line box — 138% of
-     its own height. Rounded up so the frame is genuinely empty behind it
-     rather than nearly so. */
+     THE GROUND LINE FIRST. A rose hairline is ruled open from the middle,
+     the width of the word, and the eight letters come up out of it from the
+     middle outward. Each one closes a little tracking as it rises, so the
+     word lands as a set rather than a row. The floor of the letters' mask
+     IS that hairline (see `.titleLine`), so they read as rising from the
+     rule rather than from nowhere.
+
+     THEN OUT THROUGH THE CEILING, the outer letters first and the middle
+     last, while the rule draws back into the middle behind them. The
+     whole mark folds into the centre of the frame, and the map comes alive
+     under the place it left. The wordmark leaves rather than dimming: the
+     map is the next thing to read, and the largest type on the site lying
+     across it would cover it.
+
+     `below` and `above` are the letters' own height, measured in the
+     mask. A letter is a 0.94em box with its cap top 0.16em down and its
+     baseline 0.89em down. The mask runs 0.12em above that box and 0.16em
+     below it, and the navy text-shadow reaches about 0.17em past the
+     glyph. Hidden under the floor therefore needs 115% and hidden over the
+     ceiling needs -126%. Both are rounded out so that no haze of shadow is
+     left on the line. */
   title: {
-    fromScale: 1.9,
-    at: 0.32,
-    settle: 0.13,
+    rule: 0.29,
+    ruleFor: 0.09,
+    at: 0.31,
+    riseFor: 0.1,
+    riseStagger: 0.04,
+    /** Tracking each letter settles out of, em per step from the middle. */
+    track: 0.05,
+    below: 120,
     out: 0.5,
-    clear: 0.09,
-    lift: -140,
+    liftFor: 0.06,
+    liftStagger: 0.025,
+    above: -130,
+    ruleOut: 0.52,
+    ruleOutFor: 0.065,
   },
 
   /* (4) The map comes alive under the departing wordmark. Copper is drawn
      out along each of the seven roads — out of the city, north and east —
      starting the moment the wordmark begins to lift, one road a beat after
      another (the map staggers and eases each road itself, on the section's
-     `power2.inOut`), and the six place names rise as the frame clears. Both
-     are finished as the pins go live, so the map is whole before it is
-     offered. */
+     `power2.inOut`), and the eight place names rise as the frame clears.
+     The stagger is sized so the whole set, marks included, is up in the
+     same span six names used to take. */
   map: {
     draw: 0.47,
     drawFor: 0.16,
     names: 0.54,
     namesFor: 0.06,
-    namesStagger: 0.006,
+    namesStagger: 0.0045,
   },
 
   /* (4) The window in which the map is live. Opens once the wordmark has
@@ -190,6 +214,9 @@ const SEQ_END = 1 / (1 + TAIL);
 /** Below this the motion layout is not built at all — see the stylesheet. */
 const MOTION_QUERY = "(min-width: 60rem)";
 
+/** The wordmark, set letter by letter in the motion layout. */
+const TITLE = "Projects";
+
 export function ProjectsShowcase({ content }: { content: GalleryContent }) {
   const root = useRef<HTMLElement | null>(null);
   const counterRef = useRef<HTMLSpanElement | null>(null);
@@ -220,6 +247,8 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
       // it takes the photograph's overscale and stays registered to it.
       const shots = q("[data-shot]");
       const title = q(`.${styles.title}`)[0];
+      const letters = q(`.${styles.letter}`);
+      const titleRule = q(`.${styles.titleRule}`)[0];
       const standfirst = q(`.${styles.standfirst}`)[0];
       const fill = q(`.${styles.railFill}`)[0];
       // The WRAPPER, not the link. GSAP writes an inline transform on whatever
@@ -243,6 +272,18 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
       // right through the wordmark's hold.
       gsap.set(names, { autoAlpha: 0, y: 8 });
       mapControl.current?.ignite(0);
+
+      // The wordmark's em, read when the timeline records its values, so
+      // `invalidateOnRefresh` re-derives the tracking at every size.
+      const em = () => (title ? parseFloat(getComputedStyle(title).fontSize) : 0);
+      const mid = (letters.length - 1) / 2;
+      const tracked = (i: number) => (i - mid) * SEQUENCE.title.track * em();
+
+      // The letters start under the floor. This is set outright for the
+      // same reason as the names: a staggered `fromTo` only renders its start
+      // for the letters that begin at once, and the rest would stand on the
+      // map until the playhead reached them.
+      gsap.set(letters, { yPercent: SEQUENCE.title.below, x: tracked });
 
       const counter = counterRef.current;
       const pad = (n: number) => String(n).padStart(2, "0");
@@ -321,35 +362,59 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
            the whole screen. */
         .to(standfirst, { opacity: 0, y: -18, duration: 0.1 }, 0.1)
 
-        /* (3) The wordmark fades in from oversize to its final size and
-           holds across the settled photograph. */
+        /* (3) The ground line is ruled open from the middle... */
         .fromTo(
-          title,
-          { opacity: 0, scale: SEQUENCE.title.fromScale, yPercent: 14 },
+          titleRule,
+          { scaleX: 0 },
           {
-            opacity: 1,
-            scale: 1,
+            scaleX: 1,
+            duration: SEQUENCE.title.ruleFor,
+            ease: "power3.out",
+          },
+          SEQUENCE.title.rule,
+        )
+
+        /* ...and the letters come up out of it, middle first, each closing
+           its tracking as it lands. Tracking is written in the wordmark's
+           own em and resolved on every refresh, so it scales with the
+           type. */
+        .fromTo(
+          letters,
+          { yPercent: SEQUENCE.title.below, x: tracked },
+          {
             yPercent: 0,
-            duration: SEQUENCE.title.settle,
-            ease: "power2.out",
+            x: 0,
+            duration: SEQUENCE.title.riseFor,
+            ease: "power3.out",
+            stagger: { amount: SEQUENCE.title.riseStagger, from: "center" },
           },
           SEQUENCE.title.at,
         )
 
-        /* ...and then leaves, up and out through the top of the frame,
-           finishing before the first pin is live. It goes the way it came,
-           on the same axis, so the beat reads as the wordmark withdrawing
-           rather than as a fade someone forgot to finish. */
+        /* It then leaves up through the ceiling, the outer letters first,
+           and is clear of the frame before the first pin is live. It lifts
+           with the scroll and never fades. */
         .to(
-          title,
+          letters,
           {
-            opacity: 0,
-            scale: 0.94,
-            yPercent: SEQUENCE.title.lift,
-            duration: SEQUENCE.title.clear,
+            yPercent: SEQUENCE.title.above,
+            duration: SEQUENCE.title.liftFor,
             ease: "power2.in",
+            stagger: { amount: SEQUENCE.title.liftStagger, from: "edges" },
           },
           SEQUENCE.title.out,
+        )
+
+        /* The rule draws back into the middle after the letters, and is the
+           last mark to leave. */
+        .to(
+          titleRule,
+          {
+            scaleX: 0,
+            duration: SEQUENCE.title.ruleOutFor,
+            ease: "power2.in",
+          },
+          SEQUENCE.title.ruleOut,
         )
 
         /* (4) The map comes alive as the wordmark lifts off it: the copper
@@ -518,8 +583,22 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           </div>
 
           <header className={`u-shell ${styles.head}`}>
+            {/* One span per letter so each can come up out of the line on
+                its own. The heading's name is the plain word, which reads
+                the same with or without the split. The rule is the ground
+                the letters rise from, and exists only in the motion layout. */}
             <h2 id="projects-title" className={styles.title}>
-              Projects
+              <span className="u-visually-hidden">{TITLE}</span>
+              <span className={styles.titleSet} aria-hidden="true">
+                <span className={styles.titleLine}>
+                  {Array.from(TITLE, (letter, i) => (
+                    <span key={i} className={styles.letter}>
+                      {letter}
+                    </span>
+                  ))}
+                </span>
+                <span className={styles.titleRule} />
+              </span>
             </h2>
             <p className={styles.standfirst}>{content.standfirst}</p>
           </header>

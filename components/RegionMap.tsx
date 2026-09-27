@@ -1595,7 +1595,7 @@ function PlacePin({
         <span className="u-visually-hidden">{spokenLabel(place)}</span>
       </button>
 
-      {/* The name, on hover — the sheet only prints the six places it is
+      {/* The name, on hover — the sheet only prints the eight places it is
           labelled with, so a pin anywhere else is named when asked. */}
       <span className={styles.tip} aria-hidden="true">
         {place.name}
