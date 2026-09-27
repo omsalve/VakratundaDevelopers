@@ -1,0 +1,665 @@
+/* ============================================================================
+   RegionMap — the drawn map the Projects section opens onto.
+
+   THE PALETTE is the plate's: a sea deeper than the site's navy, land lifted
+   just off it, and copper for roads and nothing else. Copper is the one warm
+   thing on the sheet, so the eye reads the roads first and the ground second
+   — and the pins, in cream, read before both.
+
+   The map itself is drawn on a canvas by the component (see the note in
+   RegionMap.tsx on why); its inks are set there. This file draws the sea it
+   sits on, and everything laid over it. Everything the component changes at
+   runtime reaches this file as a `data-` attribute or a custom property;
+   nothing here is toggled by class.
+   ========================================================================== */
+
+.planes,
+.layer {
+  --map-sea: #070b1e;
+  --map-copper: #e98b52;
+  --map-copper-lit: #ffc9a1;
+  --map-line: #8394d3;
+}
+
+/* ============================================================================
+   The drawing
+   ========================================================================== */
+
+.planes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* The sea, in the ground's own colour: wherever the ground fades out — at
+     the far edge of a tilted view, or past the edge of its data on a very
+     wide screen — it fades into exactly this, and no seam shows. */
+  background: #040817;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 78% 74% at 42% 48%,
+    rgba(3, 5, 16, 0) 52%,
+    rgba(3, 5, 16, 0.58) 100%
+  );
+  pointer-events: none;
+}
+
+/* ============================================================================
+   The overlay
+   ========================================================================== */
+
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  --pin-hit: 44px;
+  --pin-core: 7px;
+  --pin-ring: 21px;
+  --pin-halo: 52px;
+  --panel-w: min(20rem, 60vw);
+  --panel-offset: 24px;
+}
+
+/* The part of the stage the resting camera is fitted into — clear of the
+   host's own furniture. Measured, never seen. The host sets the four insets
+   on any ancestor; these are only the values if it does not. */
+.safe {
+  position: absolute;
+  top: var(--map-safe-top, var(--space-8));
+  right: var(--map-safe-right, var(--space-8));
+  bottom: var(--map-safe-bottom, var(--space-8));
+  left: var(--map-safe-left, var(--space-8));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* A zero-size point the camera moves; everything drawn at a place hangs off
+   it. The camera writes its transform every frame of a flight. */
+.anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.anchor[data-open="true"] {
+  z-index: 2;
+}
+
+/* ---- Place names -------------------------------------------------------- */
+/* The sheet names six places and no others. Set wide and small, like the
+   print on a survey, with a navy shadow so a name holds over a road. */
+.place {
+  position: absolute;
+  top: 0;
+  transition: opacity var(--dur-base) var(--ease-out-quint);
+}
+
+.anchor[data-covered="true"] .place {
+  opacity: 0;
+}
+
+.anchor[data-side="left"] .place {
+  right: 18px;
+  transform: translateY(-50%);
+}
+
+.anchor[data-side="right"] .place {
+  left: 18px;
+  transform: translateY(-50%);
+}
+
+.anchor[data-side="below"] .place {
+  top: 20px;
+  left: 0;
+  transform: translateX(-50%);
+}
+
+.name {
+  display: block;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(244, 242, 239, 0.66);
+  text-shadow:
+    0 0 10px rgba(5, 8, 22, 0.95),
+    0 1px 2px rgba(5, 8, 22, 0.9);
+  transition: color var(--dur-base) ease;
+}
+
+.name[data-lit="true"] {
+  color: var(--cream-100);
+}
+
+/* The city itself, in the display face and a size up — the one name on the
+   sheet that is a region rather than a neighbourhood. */
+.cityName {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 0.85rem + 0.8vw, 1.625rem);
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: rgba(253, 252, 250, 0.84);
+}
+
+/* A place named without a pin — the city, Dadar — gets a small point of its
+   own, so the name is attached to somewhere. */
+.mark {
+  position: absolute;
+  top: -2.5px;
+  left: -2.5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cream-100);
+  opacity: 0.7;
+  box-shadow: 0 0 10px 1px rgba(233, 139, 82, 0.55);
+}
+
+/* ---- The pin ------------------------------------------------------------ */
+/* The house pin, in the map's copper: a cream core, a ring, a seat of navy
+   under it so it never vanishes into a road, and a slow beacon while the map
+   waits. The target is the ring — round, concentric, and capped by the
+   component at the gap to the nearest pin. */
+.pin {
+  --hit: min(var(--pin-ring), var(--pin-hit));
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  place-items: center;
+  width: var(--hit);
+  height: var(--hit);
+  margin: calc(var(--hit) / -2) 0 0 calc(var(--hit) / -2);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+@media (pointer: coarse) {
+  .pin {
+    --hit: min(44px, var(--pin-hit));
+  }
+}
+
+.pin > * {
+  grid-area: 1 / 1;
+  pointer-events: none;
+}
+
+.pin:focus-visible {
+  outline: none;
+}
+
+.halo {
+  z-index: 0;
+  width: var(--pin-halo);
+  height: var(--pin-halo);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(7, 11, 30, 0.75) 0%,
+      rgba(7, 11, 30, 0.42) 38%,
+      rgba(7, 11, 30, 0) 70%
+    ),
+    radial-gradient(
+      circle,
+      rgba(233, 139, 82, 0.3) 0%,
+      rgba(233, 139, 82, 0) 64%
+    );
+  opacity: 0.9;
+  transition:
+    opacity var(--dur-base) var(--ease-out-quint),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.beacon {
+  z-index: 1;
+  width: var(--pin-ring);
+  height: var(--pin-ring);
+  border: 1px solid var(--map-copper);
+  border-radius: 50%;
+  opacity: 0;
+  animation: beacon 5.2s var(--ease-out-expo) infinite;
+  animation-delay: calc(var(--i, 0) * 460ms);
+}
+
+.ring {
+  z-index: 2;
+  width: var(--pin-ring);
+  height: var(--pin-ring);
+  border: 1px solid rgba(233, 139, 82, 0.7);
+  border-radius: 50%;
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    border-color var(--dur-base) ease,
+    box-shadow var(--dur-base) ease;
+}
+
+/* Several projects at one place: a second, finer ring outside the first. */
+.pin[data-multi="true"] .ring {
+  box-shadow: 0 0 0 3px rgba(7, 11, 30, 0.6), 0 0 0 4px rgba(233, 139, 82, 0.4);
+}
+
+.core {
+  z-index: 3;
+  width: var(--pin-core);
+  height: var(--pin-core);
+  border-radius: 50%;
+  background: var(--cream-100);
+  box-shadow:
+    0 0 0 1px rgba(233, 139, 82, 0.85),
+    0 0 14px 2px rgba(233, 139, 82, 0.6);
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    box-shadow var(--dur-base) ease;
+}
+
+@keyframes beacon {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.6);
+  }
+  55%,
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+}
+
+/* A parked map: faded out, and nothing to aim at. */
+.layer[data-active="false"] .pin {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.layer[data-active="false"] .beacon,
+.layer[data-engaged="true"] .beacon {
+  animation-play-state: paused;
+  opacity: 0;
+}
+
+/* Lit — under the pointer, focused by keyboard, or pointed at from the
+   index. The same look holds while the camera is on the place. */
+.anchor[data-state="lit"] .halo,
+.anchor[data-state="focus"] .halo,
+.pin:focus-visible .halo {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+.anchor[data-state="lit"] .ring,
+.anchor[data-state="focus"] .ring,
+.pin:focus-visible .ring {
+  transform: scale(1.45);
+  border-color: rgba(255, 201, 161, 0.95);
+}
+
+.anchor[data-state="lit"] .core,
+.anchor[data-state="focus"] .core,
+.pin:focus-visible .core {
+  transform: scale(1.25);
+  box-shadow:
+    0 0 0 1px rgba(255, 201, 161, 0.95),
+    0 0 24px 5px rgba(233, 139, 82, 0.72);
+}
+
+.pin:focus-visible .ring {
+  box-shadow: 0 0 0 2px var(--accent-rose);
+}
+
+/* Every other place, while the camera is on one. Still there, still a
+   target — just not the subject. */
+.anchor[data-state="dim"] .pin {
+  opacity: 0.5;
+  transform: scale(0.86);
+}
+
+/* ---- The name on hover -------------------------------------------------- */
+.tip {
+  position: absolute;
+  top: 0;
+  left: 18px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7em;
+  padding: 0.5em 0.8em 0.45em;
+  white-space: nowrap;
+  border: var(--hairline) solid rgba(233, 139, 82, 0.4);
+  border-radius: var(--radius-pill);
+  background: rgba(7, 11, 30, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-100);
+  opacity: 0;
+  transform: translate(-6px, -50%);
+  transition:
+    opacity 180ms var(--ease-out-quint),
+    transform 320ms var(--ease-out-quint);
+  pointer-events: none;
+}
+
+.tipCount {
+  color: var(--map-copper-lit);
+  letter-spacing: 0.08em;
+}
+
+.anchor[data-state="lit"] .tip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* ---- The panel ---------------------------------------------------------- */
+/* Drawn out of the pin to its right, and centred on it. The camera has
+   already made room: a focused place is held left of centre, with the
+   panel's width clear beside it. */
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--panel-w);
+  transform: translate(var(--panel-offset), -50%);
+  pointer-events: none;
+}
+
+.panel {
+  padding: var(--space-5);
+  background: linear-gradient(
+    180deg,
+    rgba(18, 25, 60, 0.9),
+    rgba(9, 13, 36, 0.94)
+  );
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  border: var(--hairline) solid rgba(131, 148, 211, 0.18);
+  border-left-color: rgba(233, 139, 82, 0.55);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-l);
+  color: var(--text-on-navy);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-12px) scale(0.985);
+  transform-origin: left center;
+  transition:
+    opacity 180ms var(--ease-out-quint),
+    transform 260ms var(--ease-out-quint),
+    visibility 0s linear 260ms;
+}
+
+.anchor[data-open="true"] .panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 320ms var(--ease-out-expo),
+    transform 620ms var(--ease-out-expo),
+    visibility 0s;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--map-copper-lit);
+}
+
+.eyebrowRule {
+  flex: none;
+  width: 1.4em;
+  height: var(--hairline);
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+}
+
+.description {
+  margin: var(--space-3) 0 0;
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+  color: var(--text-on-navy);
+  opacity: 0.74;
+}
+
+/* The photographs. One project gets one wide frame; several share the width
+   in portrait frames. FitImage decides, frame by frame, whether a photograph
+   fills its frame or is shown whole on a blurred bed of itself — so a tower
+   shot tall is never cut off at the knees by a wide frame. */
+.media {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mediaItem {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-s);
+  background: var(--navy-900);
+  box-shadow: inset 0 0 0 var(--hairline) rgba(131, 148, 211, 0.14);
+}
+
+.media[data-count="1"] .mediaItem {
+  aspect-ratio: 16 / 10;
+}
+
+.mediaImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.items {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  border-top: var(--hairline) solid rgba(131, 148, 211, 0.14);
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+}
+
+.item:first-child {
+  border-top: 0;
+}
+
+.itemNote {
+  flex: none;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--map-copper-lit);
+  opacity: 0.85;
+}
+
+/* ============================================================================
+   The way home
+   ========================================================================== */
+
+/* Up in the corner the header leaves clear, and only while the camera is
+   down. Bronze, like everything on the map that is meant to catch the eye. */
+.back {
+  position: absolute;
+  top: var(--map-safe-top, var(--space-9));
+  right: var(--map-back-right, var(--space-8));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.6em 1em 0.55em;
+  border: var(--hairline) solid rgba(220, 157, 93, 0.6);
+  border-radius: var(--radius-pill);
+  background: rgba(4, 8, 23, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--cream-100);
+  font: inherit;
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity var(--dur-base) var(--ease-out-quint),
+    transform var(--dur-slow) var(--ease-out-expo),
+    visibility 0s linear var(--dur-base),
+    background-color var(--dur-base) ease,
+    color var(--dur-base) ease;
+}
+
+.back[data-shown="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out-quint),
+    transform var(--dur-slow) var(--ease-out-expo),
+    visibility 0s,
+    background-color var(--dur-base) ease,
+    color var(--dur-base) ease;
+}
+
+.back svg {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.back:hover,
+.back:focus-visible {
+  background: #dc9d5d;
+  color: var(--navy-900);
+}
+
+.back:hover svg {
+  transform: translateX(-3px);
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 3px;
+}
+
+/* ---- The credit ---------------------------------------------------------- */
+/* Small, quiet, and in the corner the link out of the section leaves free —
+   on the map for as long as the map is live, and gone with it. */
+.credit {
+  position: absolute;
+  right: var(--map-back-right, var(--space-8));
+  bottom: calc(7svh + var(--space-5));
+  margin: 0;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: rgba(244, 242, 239, 0.42);
+  pointer-events: auto;
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    visibility 0s;
+}
+
+.credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(244, 242, 239, 0.25);
+  text-underline-offset: 2px;
+}
+
+.credit a:hover,
+.credit a:focus-visible {
+  color: var(--cream-100);
+}
+
+.layer[data-active="false"] .credit {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-base) ease,
+    visibility 0s linear var(--dur-base);
+}
+
+/* ============================================================================
+   Reduced motion — belt and braces: the host never builds this layout under
+   reduced motion, but nothing here may move if it ever does.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .beacon {
+    animation: none;
+    opacity: 0;
+  }
+
+  .pin,
+  .halo,
+  .ring,
+  .core,
+  .tip,
+  .back {
+    transition-duration: 1ms;
+  }
+
+  .panel,
+  .anchor[data-open="true"] .panel {
+    transform: none;
+    transition:
+      opacity 120ms linear,
+      visibility 0s;
+  }
+}

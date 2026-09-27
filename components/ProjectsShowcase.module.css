@@ -229,6 +229,21 @@
     isolation: isolate;
 
     --rail-w: clamp(4.5rem, 7vw, 7.5rem); /* reserved for the progress rail */
+
+    /* THE MAP'S FURNITURE, and what it must keep clear of. The resting
+       camera frames the region clear of the header above, the rail on the
+       left, and the band at the foot the link out of the section rises
+       into — and the same margin on the right as on the left, so the region
+       sits in the middle of the frame. RegionMap measures a box set by these
+       four, so they are the whole contract between this layout and the
+       map's framing: move the furniture here and the region re-centres
+       itself. The way back from a place sits level with the header's clear
+       line, on the same right-hand margin. */
+    --map-safe-top: calc(var(--header-h) + var(--space-6));
+    --map-safe-right: calc(var(--rail-w) + var(--space-5));
+    --map-safe-bottom: calc(7svh + var(--space-10));
+    --map-safe-left: calc(var(--rail-w) + var(--space-5));
+    --map-back-right: clamp(1.5rem, 3vw, 3.5rem);
   }
 
   /* ---- The photograph ---------------------------------------------------
@@ -277,13 +292,19 @@
     transform: translateY(-4.5svh);
   }
 
+  /* The plate, sized to the STAGE rather than to its window. The negative
+     insets undo the frame's own, so each copy of the map is exactly the
+     screen whatever the frame is doing — and opening the frame uncovers more
+     of a map that is standing still, rather than refitting the map to a
+     growing box. It also means the map and the overlay above it are the same
+     rectangle, scaled about the same origin: the pins stay on their places
+     through the overscale without any arithmetic. */
   :global(.motion-on) .shot {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 38%;
+    top: calc(var(--pj-ft) * -1);
+    bottom: calc(var(--pj-fb) * -1);
+    left: calc(var(--pj-fx) * -1);
+    right: calc(var(--pj-fx) * -1);
     will-change: transform;
   }
 
@@ -319,13 +340,18 @@
 
      Above the head (z-3): an open panel is the top layer of the composition,
      wordmark included. */
+  /* No `will-change` here, unlike the plate: the layer carries type — the
+     place names, the panel — and a layer promoted at one scale is rasterised
+     at it, which would leave every letter a fraction soft at the 1.04 the
+     map settles to. It only moves during the entrance and the hand-off, when
+     it holds nothing to read. */
   :global(.motion-on) .pins {
     display: block;
     position: absolute;
     inset: 0;
     z-index: 4;
-    will-change: transform;
   }
+
 
   /* ---- The rail ---------------------------------------------------------- */
   :global(.motion-on) .rail {
@@ -517,7 +543,6 @@
 @media (prefers-reduced-motion: reduce) {
   .pane,
   .shot,
-  .pins,
   .action {
     will-change: auto;
   }

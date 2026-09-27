@@ -1,14 +1,18 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { ARC_RUN } from "@/lib/arc";
 import type { GalleryContent } from "@/lib/content";
-import { projectMapPoints } from "@/lib/mapPoints";
+import { projectPlaces } from "@/lib/mapPoints";
 import { gsap, useGsapScope } from "@/lib/motion";
-import { MapPinLayer } from "./LocationMap";
+import {
+  RegionMap,
+  RegionMapOverlay,
+  RegionMapCanvas,
+  type RegionMapControl,
+} from "./RegionMap";
 import styles from "./ProjectsShowcase.module.css";
 import FitImage from "@/components/FitImage";
 
@@ -37,13 +41,17 @@ import FitImage from "@/components/FitImage";
  *       3. TITLE. "PROJECTS" arrives overscaled, settles, holds across the
  *          settled photograph — and then leaves, lifting out through the top
  *          of the frame before the map opens underneath it.
- *       4. MAP. The photograph is a plate of the metropolitan region, and
- *          once it has stopped moving AND the wordmark has cleared it, it
- *          becomes readable: a pin on every locality the portfolio has an
- *          address in, each opening a panel. The pins are live only across
- *          the long settled hold — there is nothing to aim at while the
- *          picture is still travelling, and nothing to read a panel against
- *          while 22rem of cream serif is lying across the map.
+ *       4. MAP. The picture is the region, drawn (components/RegionMap):
+ *          the plate the panes merged and the frame opened was the map all
+ *          along. As the wordmark lifts off it, it comes alive — copper is
+ *          drawn out along its seven roads, and its six place names rise —
+ *          and once it has stopped moving AND the wordmark has cleared it,
+ *          it becomes something to enter: a pin on every locality the
+ *          portfolio has an address in. A pin flies the camera down on to the
+ *          place, and the map's three planes part as it goes. The pins are
+ *          live only across the long settled hold — there is nothing to aim
+ *          at while the picture is still travelling, and nothing to read a
+ *          panel against while 22rem of cream serif is lying across the map.
  *       5. RAIL, and the WAY OUT. The bar fills across the whole section
  *          while the counter walks 01 → the project count; and at the foot
  *          of the frame, on the same scroll the map goes live on, the link
@@ -108,6 +116,21 @@ const SEQUENCE = {
     out: 0.5,
     clear: 0.09,
     lift: -140,
+  },
+
+  /* (4) The map comes alive under the departing wordmark. Copper is drawn
+     out along each of the seven roads — out of the city, north and east —
+     starting the moment the wordmark begins to lift, one road a beat after
+     another (the map staggers and eases each road itself, on the section's
+     `power2.inOut`), and the six place names rise as the frame clears. Both
+     are finished as the pins go live, so the map is whole before it is
+     offered. */
+  map: {
+    draw: 0.47,
+    drawFor: 0.16,
+    names: 0.54,
+    namesFor: 0.06,
+    namesStagger: 0.006,
   },
 
   /* (4) The window in which the map is live. Opens once the wordmark has
@@ -178,7 +201,10 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
      the pins are live. The wordmark has left the frame by then, so nothing
      has to answer to a panel being open. */
   const [pinsLive, setPinsLive] = useState(false);
-  const points = useMemo(() => projectMapPoints(slides), [slides]);
+  const places = useMemo(() => projectPlaces(slides), [slides]);
+
+  /* The map's timeline-facing controls: the sequence draws its roads. */
+  const mapControl = useRef<RegionMapControl | null>(null);
 
   useGsapScope(root, () => {
     const section = root.current;
@@ -203,6 +229,20 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
       const veil = q(`.${styles.veil}`)[0];
       const frame = q(`.${styles.frame}`)[0];
       if (!frame) return;
+
+      // The map's own moving parts: its roads through its control (they are
+      // drawn on a canvas, not in the DOM), and the rest by the attributes
+      // RegionMap exposes.
+      const lit = { progress: 0 };
+      const names = q("[data-map-reveal]");
+      const overlay = q(`.${styles.pins}`)[0];
+
+      // The names' start state, set outright. A staggered `fromTo` renders
+      // its start values only for the target that starts at once, so every
+      // later name would sit on the plate until the playhead reached it —
+      // right through the wordmark's hold.
+      gsap.set(names, { autoAlpha: 0, y: 8 });
+      mapControl.current?.ignite(0);
 
       const counter = counterRef.current;
       const pad = (n: number) => String(n).padStart(2, "0");
@@ -312,6 +352,33 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           SEQUENCE.title.out,
         )
 
+        /* (4) The map comes alive as the wordmark lifts off it: the copper
+           drawn out along its roads. Linear here — the map eases and
+           staggers each road itself — so scrubbing back undraws it exactly
+           as it was drawn. */
+        .fromTo(
+          lit,
+          { progress: 0 },
+          {
+            progress: 1,
+            duration: SEQUENCE.map.drawFor,
+            onUpdate: () => mapControl.current?.ignite(lit.progress),
+          },
+          SEQUENCE.map.draw,
+        )
+        .fromTo(
+          names,
+          { autoAlpha: 0, y: 8 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: SEQUENCE.map.namesFor,
+            ease: "power2.out",
+            stagger: SEQUENCE.map.namesStagger,
+          },
+          SEQUENCE.map.names,
+        )
+
         /* (5) The way out rises from the foot of the frame as the map opens.
            `fromTo` renders its start state the moment the timeline is built,
            so the link is hidden — and unfocusable, via autoAlpha's
@@ -349,8 +416,10 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
           { opacity: SEQUENCE.exit.veil, duration: TAIL, ease: "power1.out" },
           1,
         )
+        /* The overlay lifts with the frame, so the names on it stay on their
+           places for as long as they are still visible. */
         .to(
-          frame,
+          [frame, overlay].filter(Boolean),
           { y: SEQUENCE.exit.lift, duration: TAIL, ease: "power1.out" },
           1,
         )
@@ -366,6 +435,14 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
             duration: TAIL,
             ease: "power1.out",
           },
+          1,
+        )
+        /* The names sit above the veil, so they are taken out by hand — and
+           sooner than the picture, since a label left on a map that is
+           dimming under it reads as a caption on the arc. */
+        .to(
+          names,
+          { autoAlpha: 0, duration: TAIL * 0.6, ease: "power1.out" },
           1,
         );
 
@@ -385,152 +462,122 @@ export function ProjectsShowcase({ content }: { content: GalleryContent }) {
       aria-labelledby="projects-title"
       style={{ "--span": SPAN } as React.CSSProperties}
     >
-      <div className={styles.stage}>
-        {/* The photograph, as the demo has it: one full-frame image behind
-            two clip-path windows, so the halves merge seamlessly. Decorative
-            here — every project, with its own image and alt text, is in the
-            list below. */}
-        <figure className={styles.frame} aria-hidden="true">
-          <div className={clsx(styles.pane, styles.paneLeft)}>
-            <Image
-              src={content.map.src}
-              alt=""
-              width={content.map.width}
-              height={content.map.height}
-              sizes="100vw"
-              quality={82}
-              priority
-              data-shot
-              className={styles.shot}
-            />
-          </div>
-          <div className={clsx(styles.pane, styles.paneRight)}>
-            <Image
-              src={content.map.src}
-              alt=""
-              width={content.map.width}
-              height={content.map.height}
-              sizes="100vw"
-              quality={82}
-              priority
-              data-shot
-              className={styles.shot}
-            />
-          </div>
-          <div className={styles.veil} aria-hidden="true" />
-        </figure>
-
-        {/* (4) The map, made readable. A sibling of the frame rather than a
-            child of it: the frame is clipped into two windows, and the pins
-            belong to neither half. It carries `data-shot`, so the timeline
-            gives it the photograph's overscale about the same origin, and it
-            stays registered to the picture pin for pin.
-
-            `inert` while the map is still travelling — a pin that cannot be
-            seen must not be reachable by keyboard either. */}
-        <div className={styles.pins} data-shot inert={!pinsLive}>
-          <MapPinLayer
-            // Must match how .shot is painted in the stylesheet.
-            image={{
-              width: content.map.width,
-              height: content.map.height,
-              fit: "cover",
-              focalX: 50,
-              focalY: 38,
-            }}
-            points={points}
-            active={pinsLive}
-            /* Clear of the fixed header at the top and the progress rail on
-               the left. Generous on the other two edges as well: the layer is
-               scaled 1.04 with the photograph, so a panel flush to its
-               measured edge lands just outside the stage, which clips.
-
-               THE FOOT IS THE DEEPEST OF THE FOUR because the link out of the
-               section sits in it, live across exactly the scroll the pins
-               are. A panel is placed once and stays until it is dismissed, so
-               one landing across that band would leave the only button on the
-               stage unclickable underneath it — and the solver has no notion
-               of it, since it only knows about pins. Reserving the band is
-               what keeps the two out of each other's way; it costs a panel
-               nothing but a nudge upward. */
-            safeArea={{ top: 96, right: 72, bottom: 150, left: 132 }}
-            label="Vakratunda projects across the Mumbai metropolitan region"
-          />
-        </div>
-
-        {/* The rail: the demo's progress line and counter. */}
-        <div className={styles.rail} aria-hidden="true">
-          <span className={styles.railTrack}>
-            <span className={styles.railFill} />
-          </span>
-          <p className={clsx(styles.railCount, "u-numeral")}>
-            <span ref={counterRef}>01</span>
-            <span className={styles.railTotal}>
-              /{String(total).padStart(2, "0")}
-            </span>
-          </p>
-        </div>
-
-        <header className={`u-shell ${styles.head}`}>
-          <h2 id="projects-title" className={styles.title}>
-            Projects
-          </h2>
-          <p className={styles.standfirst}>{content.standfirst}</p>
-        </header>
-
-        {/* The projects themselves — the complete portfolio, as cards. The
-            motion layout sets this aside for the demo's single-photograph
-            sequence; for everyone else it IS the section. */}
-        <ol className={styles.index}>
-          {slides.map((slide) => (
-            <li key={slide.id} className={styles.item}>
-              <div className={styles.card}>
-                <FitImage
-                  src={slide.image.src}
-                  alt={slide.image.alt}
-                  width={slide.image.width}
-                  height={slide.image.height}
-                  sizes="(max-width: 48rem) 88vw, (max-width: 60rem) 44vw, 30rem"
-                  loading="lazy"
-                  className={styles.cardImage}
-                />
+      <RegionMap
+        control={mapControl}
+        places={places}
+        active={pinsLive}
+        label="Vakratunda projects across the Mumbai metropolitan region"
+      >
+        <div className={styles.stage}>
+          {/* The picture, as the demo has it: one full-frame plate behind two
+              clip-path windows, so the halves merge seamlessly. The plate is
+              the region map, painted once per window and driven by one camera,
+              so the two windows stay one picture through every move it makes.
+              Each copy is sized to the whole stage rather than to its window —
+              see `.shot` — so opening the frame reveals more of a map that is
+              standing still, instead of refitting it. Decorative here: every
+              project, with its own image and alt text, is in the list below,
+              and every place is a pin in the overlay. */}
+          <figure className={styles.frame} aria-hidden="true">
+            <div className={clsx(styles.pane, styles.paneLeft)}>
+              <div className={styles.shot} data-shot>
+                <RegionMapCanvas />
               </div>
-              <p className={styles.name}>{slide.name}</p>
-              <p className={styles.locality}>
-                {slide.locality}
-                <span className={styles.status} data-status={slide.status}>
-                  {slide.status}
-                </span>
-              </p>
-              <p className={styles.blurb}>{slide.blurb}</p>
-            </li>
-          ))}
-        </ol>
+            </div>
+            <div className={clsx(styles.pane, styles.paneRight)}>
+              <div className={styles.shot} data-shot>
+                <RegionMapCanvas />
+              </div>
+            </div>
+            <div className={styles.veil} aria-hidden="true" />
+          </figure>
 
-        {/* The way out. At the foot of the grid in the default layout, and
-            at the foot of the stage in the motion one — the same element,
-            placed twice, so the section has exactly one door out of it and
-            neither layout is missing it. */}
-        <div className={styles.action}>
-          <Link className={styles.cta} href={content.cta.href}>
-            <span>{content.cta.label}</span>
-            <svg
-              className={styles.ctaIcon}
-              viewBox="0 0 24 24"
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14M13 6l6 6-6 6" />
-            </svg>
-          </Link>
+          {/* (4) The map, made enterable. A sibling of the frame rather than a
+              child of it: the frame is clipped into two windows, and the pins
+              belong to neither half. It carries `data-shot`, so the timeline
+              gives it the plate's overscale about the same origin, and it stays
+              registered to the drawing pin for pin.
+
+              `inert` while the map is still travelling — a pin that cannot be
+              seen must not be reachable by keyboard either. */}
+          <div className={styles.pins} data-shot inert={!pinsLive}>
+            <RegionMapOverlay />
+          </div>
+
+          {/* The rail: the demo's progress line and counter. */}
+          <div className={styles.rail} aria-hidden="true">
+            <span className={styles.railTrack}>
+              <span className={styles.railFill} />
+            </span>
+            <p className={clsx(styles.railCount, "u-numeral")}>
+              <span ref={counterRef}>01</span>
+              <span className={styles.railTotal}>
+                /{String(total).padStart(2, "0")}
+              </span>
+            </p>
+          </div>
+
+          <header className={`u-shell ${styles.head}`}>
+            <h2 id="projects-title" className={styles.title}>
+              Projects
+            </h2>
+            <p className={styles.standfirst}>{content.standfirst}</p>
+          </header>
+
+          {/* The projects themselves — the complete portfolio, as cards. The
+              motion layout sets this aside for the demo's single-photograph
+              sequence; for everyone else it IS the section. */}
+          <ol className={styles.index}>
+            {slides.map((slide) => (
+              <li key={slide.id} className={styles.item}>
+                <div className={styles.card}>
+                  <FitImage
+                    src={slide.image.src}
+                    alt={slide.image.alt}
+                    width={slide.image.width}
+                    height={slide.image.height}
+                    sizes="(max-width: 48rem) 88vw, (max-width: 60rem) 44vw, 30rem"
+                    loading="lazy"
+                    className={styles.cardImage}
+                  />
+                </div>
+                <p className={styles.name}>{slide.name}</p>
+                <p className={styles.locality}>
+                  {slide.locality}
+                  <span className={styles.status} data-status={slide.status}>
+                    {slide.status}
+                  </span>
+                </p>
+                <p className={styles.blurb}>{slide.blurb}</p>
+              </li>
+            ))}
+          </ol>
+
+          {/* The way out. At the foot of the grid in the default layout, and
+              at the foot of the stage in the motion one — the same element,
+              placed twice, so the section has exactly one door out of it and
+              neither layout is missing it. */}
+          <div className={styles.action}>
+            <Link className={styles.cta} href={content.cta.href}>
+              <span>{content.cta.label}</span>
+              <svg
+                className={styles.ctaIcon}
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Link>
+          </div>
         </div>
-      </div>
+      </RegionMap>
     </section>
   );
 }
