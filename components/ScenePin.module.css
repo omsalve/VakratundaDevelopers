@@ -29,8 +29,11 @@
 
   position: absolute;
   z-index: var(--z-hotspot);
-  /* The coordinate is the centre of the node, not its corner. */
-  transform: translate(-50%, -50%);
+  /* The coordinate is the centre of the node, not its corner. And where the
+     camera has drawn back from the photograph — the portrait plate, see
+     Journey — the pin is scaled back up by exactly what it took off, so it
+     stays its own size on the smaller picture. 1 everywhere else. */
+  transform: translate(-50%, -50%) scale(var(--pin-counter, 1));
 }
 
 .pin.isOpen {
@@ -553,6 +556,205 @@
   .up .card {
     bottom: calc(var(--node-size) + 12px);
     --oy: 100%;
+  }
+}
+
+/* ---- On the plate -------------------------------------------------------------
+   On a portrait frame the camera has drawn back until every pin stands on the
+   glass at once — see THE PLATE in Journey — and a pressed pin's card opens
+   there. The card stands straight up out of the pin into the open sky over
+   it: the pins stand on the terrace at the foot of the picture, and the sky is
+   the one band of it nothing is pinned to. The leader turns vertical with it
+   — drawn up out of the node and into the card's foot, which is where the
+   unfold starts — so the opening is the same three beats as beside a pin,
+   stood on end.
+
+   `placeCloseUpCard` (ScenePin.tsx) writes the numbers this needs from where
+   the pin stands: the card's width, the offset that centres it on the window,
+   the corner nearest the leader, and how much sky there is above the pin. Not
+   inside a media query: a portrait tablet gets the plate too, and has to get
+   this card rather than the one that hangs beside a pin. `.guided` is on every
+   pin of a portrait frame for as long as it is one, so a card folds where it
+   opened. */
+.pin.guided {
+  --reach: 28px;
+  /* On the drawn-back plate a pin is a mark on a picture a third the size,
+     so it is drawn smaller — the thumb still gets 48px (see Touch). */
+  --node-size: 30px;
+}
+
+/* And it does not breathe. Six discs breathing on one narrow terrace is
+   noise; the key above says what to press, and each pin rings once instead,
+   when its line in the key is written (`data-called`, set by Journey). */
+.pin.guided .pulse {
+  animation: none;
+  opacity: 0;
+}
+
+.pin.guided[data-called] .pulse {
+  animation: pinPulse 1.8s var(--ease-out-quint) 1;
+}
+
+.pin.guided[data-called] .pulseLate {
+  animation-delay: 0.35s;
+}
+
+/* A pin whose card is up has been answered already. */
+.pin.guided.isOpen .pulse {
+  animation: none;
+  opacity: 0;
+}
+
+.pin.guided .leader {
+  display: block;
+  top: auto;
+  right: auto;
+  bottom: 100%;
+  left: 50%;
+  width: 1px;
+  height: var(--reach);
+  translate: -50% 0;
+  background: linear-gradient(
+    to top,
+    var(--accent-rose),
+    var(--accent-rose-bright)
+  );
+  transform: scaleY(0);
+  transform-origin: center bottom;
+}
+
+.pin.guided.isOpen .leader {
+  transform: scaleY(1);
+}
+
+.pin.guided .card {
+  top: auto;
+  right: auto;
+  bottom: calc(var(--node-size) + var(--reach));
+  left: 50%;
+  width: var(--close-up-w, min(23rem, 84vw));
+  max-height: calc(
+    var(--close-up-room, 100svh) - var(--node-size) / 2 - var(--reach)
+  );
+  translate: calc(-50% + var(--close-up-nudge, 0px)) 0;
+  /* A scroll that starts on the card is the visitor going on, which closes
+     the close-up — so the card may not keep the touch for itself. */
+  overscroll-behavior: auto;
+  /* And a sideways stroke on it turns to the next pin. The card scrolls
+     inside itself if it has to, which makes it a scroll container, and the
+     frame's own `pan-y` (Journey.module.css) stops at one — so it is said
+     again here. Twice, for a browser that will not take `pinch-zoom`. */
+  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
+  --ox: calc(50% - var(--close-up-nudge, 0px));
+  --oy: 100%;
+  /* Rounded, with the corner nearest the leader cut back when the leader
+     lands close to it (placeCloseUpCard). */
+  --radius-card: var(--close-up-radius, var(--radius-l));
+}
+
+/* A phone too short for the card at its full measure — an iPhone SE is 667px
+   tall, and the pin cannot go below its own foot room — closes the card up
+   rather than making it scroll: the same parts in the same order, on the
+   next interval down. */
+@media (max-height: 44rem) {
+  .pin.guided .card {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .pin.guided .cardHead {
+    margin-bottom: var(--space-2);
+  }
+
+  .pin.guided .cardTitle {
+    margin-bottom: var(--space-3);
+    font-size: 1.25rem;
+  }
+
+  .pin.guided .list {
+    gap: var(--space-2);
+  }
+
+  .pin.guided .evidence {
+    margin-top: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .pin.guided .cta {
+    margin-top: var(--space-4);
+  }
+}
+
+/* While one pin is in close-up the rest stand back, and none of them
+   breathes: they are the stops either side of it, not calls to press. */
+.pin.isAside .disc {
+  transform: scale(0.68);
+}
+
+.pin.isAside .node:is(:hover, :focus-visible) .disc {
+  transform: scale(0.84);
+}
+
+.pin.isAside .pulse {
+  animation: none;
+  opacity: 0;
+}
+
+/* ---- The pager ------------------------------------------------------------
+   On the plate the count is flanked by the two controls that move the card
+   on to the neighbouring pins, drawn as the close control is: hairline rings
+   that light rose. At either end of the set the control that has nowhere to
+   go stands back. */
+.pager {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-on-navy-muted);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) ease,
+    border-color var(--dur-fast) ease,
+    opacity var(--dur-fast) ease;
+}
+
+.step:not(:disabled):hover,
+.step:focus-visible {
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 2px;
+}
+
+.step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* A thumb's 48px round each of them, as the pins have. */
+@media (pointer: coarse) {
+  .step {
+    position: relative;
+  }
+
+  .step::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
   }
 }
 

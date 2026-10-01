@@ -15,13 +15,13 @@
 
 .section {
   position: relative;
-  /* It follows the team on the same cream, so it opens with the larger
-     interval to keep the two sections from reading as one block. */
+  /* It arrives through the page's second arc, on the cream the arc opens. */
   padding-block: var(--section-pad);
 }
 
-/* The drawn rule that separates it from the team above — the guide's rose
-   line-work, ranged on the shell rather than bled to the window. */
+/* The drawn rule that separates it from the arc's screen of cream above —
+   the guide's rose line-work, ranged on the shell rather than bled to the
+   window. */
 .section::before {
   content: "";
   position: absolute;

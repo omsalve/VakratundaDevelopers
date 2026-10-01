@@ -24,8 +24,8 @@
   --tail-h: 30px;
 }
 
-/* The drawn rule that separates it from the school above — ranged on the
-   shell, exactly as its neighbours draw their own. */
+/* The drawn rule that separates it from the survey sheet above — ranged on
+   the shell, exactly as its neighbours draw their own. */
 .section::before {
   content: "";
   position: absolute;

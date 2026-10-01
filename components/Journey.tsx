@@ -1,11 +1,27 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Image from "next/image";
 import type { HeroContent } from "@/lib/content";
-import { ScrollTrigger, gsap, useGsapScope } from "@/lib/motion";
+import {
+  ScrollTrigger,
+  gsap,
+  timelineOnEnter,
+  useGsapScope,
+} from "@/lib/motion";
 import { LogoMark } from "./Logo";
-import ScenePin, { PIN_OPENED, PINS_WITHDRAWN } from "./ScenePin";
+import ScenePin, {
+  PIN_OPENED,
+  PINS_WITHDRAWN,
+  closeUpStand,
+  placeCloseUpCard,
+} from "./ScenePin";
 import styles from "./Journey.module.css";
 
 /**
@@ -86,6 +102,11 @@ import styles from "./Journey.module.css";
  *      That is paid for in Concept.module.css, not here — see the
  *      pointer-events note on `.reveal` there.
  *
+ *   4. ON A PORTRAIT FRAME THERE IS NO SIDEWAYS SHOT. The camera pulls back
+ *      instead, until the whole photograph lies across the foot of the
+ *      screen with every pin standing on it, and a key to the six is
+ *      written in the sky above as the scroll goes on. See THE PLATE below.
+ *
  * All of it is skipped wholesale under prefers-reduced-motion via
  * useGsapScope. Without motion — or without JS — the sticky frame and the
  * `.motion-on` overrides in the stylesheet never apply, and the two panels
@@ -122,16 +143,16 @@ const BACKDROP_TRAVEL = -(1 - 1 / BACKDROP_SPAN) * 100;
  */
 const BACKDROP_DESCENT = 2;
 
-/** The camera push-in the hero departure ends on. The tour reads it too. */
+/** The camera push-in the hero departure ends on. The tour and the plate
+ *  read it too. */
 const PUSH_SCALE = 1.06;
 
 /**
  * THE TRACKING SHOT, for frames too narrow to hold every pin at once.
  *
  * The photograph is laid out BACKDROP_SPAN viewports tall and covered, so on
- * a portrait window it is painted several windows wide and the crop throws
- * away its sides — on a 390px phone only the middle quarter is on screen, and
- * five of the six pins are standing on subjects nobody can see.
+ * a narrow window it is painted wider than the window and the crop throws
+ * away its sides, with whichever pins stand on them.
  *
  * So when the pins do not fit, the camera travels across the terrace as well
  * as down it: on the hero's way out it turns toward the leftmost pins, holds
@@ -142,7 +163,8 @@ const PUSH_SCALE = 1.06;
  * Nothing about it is authored per device. Whether the tour runs, and how far
  * it travels, are measured from the frame and the pins' own coordinates, so
  * a desktop window that already holds every pin gets no pan at all and a
- * tablet gets a short drift.
+ * window only just wider than it is tall gets a short drift. A PORTRAIT frame
+ * never gets it — there the camera pulls back instead. See THE PLATE.
  */
 /** The descent is quicker on a tour: the terrace has to arrive in time for it. */
 const TOUR_DESCENT = 1.2;
@@ -153,6 +175,75 @@ const TOUR_SWEEP_TO = 1.95;
 /** How far inside the window an edge pin is brought, in px. */
 const PIN_MARGIN = 48;
 
+/**
+ * THE PLATE, for portrait frames — every phone held upright, and a tablet.
+ *
+ * A portrait window holds about a quarter of the terrace, so the tracking
+ * shot had to drag the picture sideways past it, and the pins with it: small
+ * targets sliding under the thumb, two or three on the glass at a time, the
+ * ones at its edges half off it. No amount of steering fixes that. The crop
+ * is the trouble, so a portrait frame stops cropping.
+ *
+ * THE PULL-BACK. As the hero leaves, the camera draws straight back — down
+ * and out, never sideways — until the terrace spans the window with every pin
+ * on it, PLATE_MARGIN inside the glass, standing on the window's foot. Its sky
+ * dissolves upward into the section's navy (`.backdrop .push` carries the
+ * mask), so the picture never shows a top edge: the terrace and the lit city
+ * lie across the foot of the screen with the evening over them, every pin
+ * standing on it at once and none of them moving. The zoom is even (see
+ * `even` below): the scale changes by the same ratio for every pixel of
+ * scroll, which is what a camera move looks like.
+ *
+ * THE KEY. In the sky above the terrace, the six are listed the way a drawing
+ * keys its marks — a numeral and a title on a hairline each — and the scroll
+ * that used to carry the tracking shot writes them out, one line at a time
+ * (KEY_FROM to KEY_TO). As each line is written its pin answers with a single
+ * ring, so the key teaches which pin is which without a press. Each line is
+ * the way into its pin, as the pin is.
+ *
+ * THE CARD is opened by a press on a pin or a line of the key, and stands up
+ * out of the pin into the sky, over the key: leader, unfold, copy, the three
+ * beats a card always opens in. ‹ and ›, a sideways swipe or the arrow keys
+ * move it to the neighbouring pin; scrolling on, a tap on the photograph, ×
+ * or Escape fold it away. Nothing moves to make room for it, except on a
+ * phone too short for the card above its pin: there the picture dips just as
+ * far as it has to (closeUpStand, read off the card) and rises again after.
+ *
+ * It costs the scroll nothing — the section is exactly as long as on any
+ * other frame, and nothing settles or snaps.
+ */
+const PORTRAIT_QUERY = "(max-aspect-ratio: 1/1)";
+/** Every other frame keeps the camera above, exactly as it was. */
+const LANDSCAPE_QUERY = "(min-aspect-ratio: 1001/1000)";
+/** Viewports of scroll the pull-back takes: the hero's own departure. */
+const PLATE_SETTLE = 1;
+/** How far inside the window the outermost pins stand once it has drawn
+ *  back, in px from their centres. The camera stops there rather than at the
+ *  photograph's own edges: the picture is a sixth larger, and nothing that
+ *  is cropped has a pin on it. */
+const PLATE_MARGIN = 30;
+/** The most it will close in on the pins, against the whole photograph — so
+ *  pins that stood close together could never zoom a picture past its
+ *  resolution. */
+const PLATE_ZOOM_MAX = 1.5;
+/** Its lag behind the thumb — the departure's, so the two move as one. */
+const PLATE_SCRUB = 0.6;
+/** Where the key's first line is written, and its last, in viewports. All
+ *  six are down before the story dome starts to rise at two. */
+const KEY_FROM = 1;
+const KEY_TO = 1.8;
+/** The least air kept under a pin whose card it has to make room for, in px
+ *  from its centre to the foot of the frame. */
+const CLOSE_UP_FOOT = 40;
+/** That dip, and the rise back, in seconds. */
+const CLOSE_UP_GLIDE = 0.9;
+/** How far into the dip the card starts to draw: as the picture settles. */
+const CLOSE_UP_DRAW = 0.6;
+/** Scroll that counts as going on, in px — more than a thumb's tremor. */
+const CLOSE_UP_RELEASE = 40;
+/** A sideways swipe that turns to the next pin, in px. */
+const CLOSE_UP_SWIPE = 44;
+
 type Props = {
   hero: HeroContent;
 };
@@ -160,6 +251,171 @@ type Props = {
 export function Journey({ hero }: Props) {
   const root = useRef<HTMLElement | null>(null);
   const pinFrame = useRef<HTMLDivElement | null>(null);
+
+  /* ---- The plate ---------------------------------------------------------- */
+  const count = hero.pins.length;
+  /** True while the plate is built — a portrait frame, with motion. */
+  const [guided, setGuided] = useState(false);
+  /** The pin whose card is up, or -1. */
+  const [shown, setShown] = useState(-1);
+  /** Its card is drawn — once the picture is still under it. */
+  const [drawn, setDrawn] = useState(false);
+  /** `shown`, for the handlers below, which run outside render. */
+  const shownRef = useRef(-1);
+  /** Set by the plate's setup: makes room for a pin's card (or gives the room
+   *  back, on `null`) and calls back once the picture is still. */
+  const room = useRef<
+    ((index: number | null, onSettle?: () => void) => void) | null
+  >(null);
+  /** The pager control a keyboard was on when its card folded. */
+  const refocus = useRef<string | null>(null);
+
+  const openAt = useCallback((index: number) => {
+    const make = room.current;
+    const section = root.current;
+    if (!make || !section) return;
+
+    const begin = () => {
+      shownRef.current = index;
+      setShown(index);
+      setDrawn(false);
+      make(index, () => setDrawn(true));
+      window.dispatchEvent(new CustomEvent(PIN_OPENED));
+    };
+
+    // Once the story dome has started rising over the foot of the frame, the
+    // pin's card would open under the cream. Step back to the edge of the
+    // dome first, and open there.
+    const edge =
+      section.offsetTop + window.innerHeight * (BACKDROP_DESCENT - 0.05);
+    if (window.scrollY > edge + 2) {
+      window.scrollTo({ top: edge, behavior: "smooth" });
+      window.setTimeout(begin, 480);
+    } else {
+      begin();
+    }
+  }, []);
+
+  const close = useCallback(() => {
+    if (shownRef.current === -1) return;
+    shownRef.current = -1;
+    setShown(-1);
+    setDrawn(false);
+    room.current?.(null);
+  }, []);
+
+  /** The next pin, or the one before: the pager, a swipe, an arrow key. */
+  const step = useCallback(
+    (by: number) => {
+      const from = shownRef.current;
+      if (from === -1) return;
+      const to = Math.max(0, Math.min(count - 1, from + by));
+      if (to === from) return;
+      const active = document.activeElement;
+      refocus.current =
+        active instanceof HTMLElement ? (active.dataset.step ?? null) : null;
+      openAt(to);
+    },
+    [count, openAt],
+  );
+
+  /* A press on the pin whose card is up closes it; on any other, opens that
+     one's — from the photograph or from the key. */
+  const onPinPress = useCallback(
+    (index: number) => {
+      if (index === shownRef.current) close();
+      else openAt(index);
+    },
+    [close, openAt],
+  );
+
+  /* Going on closes it — scrolling past a tremor, or a tap on the open
+     photograph. A sideways swipe, or an arrow key, turns to the next pin, and
+     Escape closes it with focus handed back to the pin. Bound only while a
+     card is up, so the page is exactly as it was the rest of the time. */
+  useEffect(() => {
+    const section = root.current;
+    if (shown === -1 || !section) return;
+    const from = window.scrollY;
+
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - from) > CLOSE_UP_RELEASE) close();
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        const node = section.querySelectorAll<HTMLElement>(
+          "[data-scene-pin] > button",
+        )[shownRef.current];
+        close();
+        node?.focus({ preventScroll: true });
+      } else if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+        event.preventDefault();
+        step(event.key === "ArrowRight" ? 1 : -1);
+      }
+    };
+
+    // A swipe is told from a scroll by its direction; the frame hands the
+    // browser vertical panning only (see `.viewport`), so a sideways one
+    // arrives here whole instead of being cancelled.
+    let press: { id: number; x: number; y: number; open: boolean } | null =
+      null;
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      press = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        // Nothing to press under it: the photograph itself.
+        open: !target?.closest("[data-scene-pin], a, button"),
+      };
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      if (!press || event.pointerId !== press.id) return;
+      const dx = event.clientX - press.x;
+      const dy = event.clientY - press.y;
+      const onPhotograph = press.open;
+      press = null;
+      if (Math.abs(dx) > CLOSE_UP_SWIPE && Math.abs(dx) > Math.abs(dy) * 1.4) {
+        step(dx < 0 ? 1 : -1);
+      } else if (onPhotograph && Math.hypot(dx, dy) < 10) {
+        close();
+      }
+    };
+    const onPointerCancel = () => {
+      press = null;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("keydown", onKeyDown);
+    section.addEventListener("pointerdown", onPointerDown);
+    section.addEventListener("pointerup", onPointerUp);
+    section.addEventListener("pointercancel", onPointerCancel);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("keydown", onKeyDown);
+      section.removeEventListener("pointerdown", onPointerDown);
+      section.removeEventListener("pointerup", onPointerUp);
+      section.removeEventListener("pointercancel", onPointerCancel);
+    };
+  }, [shown, close, step]);
+
+  /* The pager a keyboard was on folds with its card. Hand focus to the same
+     control on the card that replaces it, once that one is drawn. */
+  useEffect(() => {
+    const which = refocus.current;
+    if (!drawn || shown === -1 || !which) return;
+    refocus.current = null;
+    const pin =
+      root.current?.querySelectorAll<HTMLElement>("[data-scene-pin]")[shown];
+    const same = pin?.querySelector<HTMLButtonElement>(`[data-step="${which}"]`);
+    const control =
+      same && !same.disabled
+        ? same
+        : pin?.querySelector<HTMLButtonElement>("[data-step]:not(:disabled)");
+    control?.focus({ preventScroll: true });
+  }, [drawn, shown]);
 
   /**
    * Size the pin layer to the photograph's PAINTED rectangle.
@@ -268,57 +524,280 @@ export function Journey({ hero }: Props) {
       return { from, to, tour: true };
     };
 
-    // ---- The continuous backdrop -----------------------------------------
-    // One tween across everything the section is looked at: top edge of the
-    // photograph at the top of the scroll, bottom edge reached just as the
-    // story dome starts closing over it. See BACKDROP_DESCENT — and
-    // TOUR_DESCENT, which a narrow frame uses instead.
-    gsap.to(`.${styles.travel}`, {
-      yPercent: BACKDROP_TRAVEL,
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: () =>
-          `+=${vh() * (camera().tour ? TOUR_DESCENT : BACKDROP_DESCENT)}`,
-        scrub: true,
-      },
-    });
+    // The camera is one of two, chosen by the frame's shape and rebuilt
+    // whenever that changes: a phone turned on its side gets the tracking
+    // shot, and one stood back up gets the plate again. Scoped to the
+    // section, like the context around it.
+    const mm = gsap.matchMedia(section);
 
-    // ---- The tracking shot -------------------------------------------------
-    // Sideways, on the same two stacks. The timeline is TOUR_SWEEP_TO long
-    // and scrubbed over that many viewports, so its positions ARE viewports.
-    // Where no tour is needed both ends resolve to the same place and this
-    // does nothing. See TOUR_DESCENT.
-    gsap
-      .timeline({
+    mm.add(LANDSCAPE_QUERY, () => {
+      // ---- The continuous backdrop ---------------------------------------
+      // One tween across everything the section is looked at: top edge of
+      // the photograph at the top of the scroll, bottom edge reached just as
+      // the story dome starts closing over it. See BACKDROP_DESCENT — and
+      // TOUR_DESCENT, which a narrow frame uses instead.
+      gsap.to(`.${styles.travel}`, {
+        yPercent: BACKDROP_TRAVEL,
+        ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${vh() * TOUR_SWEEP_TO}`,
+          end: () =>
+            `+=${vh() * (camera().tour ? TOUR_DESCENT : BACKDROP_DESCENT)}`,
           scrub: true,
-          invalidateOnRefresh: true,
         },
-      })
-      // As the hero leaves, the camera turns toward the leftmost pins.
-      .fromTo(
-        `.${styles.travel}`,
-        { x: 0 },
-        { x: () => camera().from, duration: 1, ease: "sine.inOut" },
-        0,
-      )
-      // It holds while the terrace arrives, then tracks across it.
-      .fromTo(
-        `.${styles.travel}`,
-        { x: () => camera().from },
-        {
-          x: () => camera().to,
-          duration: TOUR_SWEEP_TO - TOUR_SWEEP_FROM,
-          ease: "sine.inOut",
-          immediateRender: false,
-        },
-        TOUR_SWEEP_FROM,
+      });
+
+      // ---- The tracking shot -----------------------------------------------
+      // Sideways, on the same two stacks. The timeline is TOUR_SWEEP_TO long
+      // and scrubbed over that many viewports, so its positions ARE
+      // viewports. Where no tour is needed both ends resolve to the same
+      // place and this does nothing. See TOUR_DESCENT.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${vh() * TOUR_SWEEP_TO}`,
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        })
+        // As the hero leaves, the camera turns toward the leftmost pins.
+        .fromTo(
+          `.${styles.travel}`,
+          { x: 0 },
+          { x: () => camera().from, duration: 1, ease: "sine.inOut" },
+          0,
+        )
+        // It holds while the terrace arrives, then tracks across it.
+        .fromTo(
+          `.${styles.travel}`,
+          { x: () => camera().from },
+          {
+            x: () => camera().to,
+            duration: TOUR_SWEEP_TO - TOUR_SWEEP_FROM,
+            ease: "sine.inOut",
+            immediateRender: false,
+          },
+          TOUR_SWEEP_FROM,
+        );
+    });
+
+    mm.add(PORTRAIT_QUERY, () => {
+      const travels = gsap.utils.toArray<HTMLElement>(`.${styles.travel}`, section);
+      const travel = travels[0];
+      const push = section.querySelector<HTMLElement>(`.${styles.push}`);
+      const pinLayer = section.querySelector<HTMLElement>(`.${styles.pinLayer}`);
+      const layers = gsap.utils.toArray<HTMLElement>(
+        `.${styles.backdrop}, .${styles.pinLayer}`,
+        section,
       );
+      const pins = gsap.utils.toArray<HTMLElement>("[data-scene-pin]", section);
+      const lines = gsap.utils.toArray<HTMLElement>(`.${styles.keyItem}`, section);
+      if (!frame || !travel || !push || !pinLayer) return;
+
+      section.dataset.guided = "on";
+      setGuided(true);
+
+      // ---- The pull-back ---------------------------------------------------
+      // Both travel stacks, with one tween, so a pin can no more slip off its
+      // subject here than on any other frame. They scale about their own
+      // foot, which is the photograph's, so the picture stays standing on the
+      // foot of the window all the way back.
+      /** Where the camera comes to rest: the scale that brings the outermost
+       *  pins PLATE_MARGIN inside the window — never less than the whole
+       *  photograph's width, never more than PLATE_ZOOM_MAX of it — and the
+       *  small sideways set that centres the pins between the window's edges.
+       *  Laid out, not measured off the screen, so it can be asked at any
+       *  point of the scroll and follows a rotation through the refresh. */
+      const framing = () => {
+        const vw = frame.clientWidth;
+        const wide = travel.offsetWidth * PUSH_SCALE;
+        const whole = vw / wide;
+        if (!pinXs.length) return { scale: whole, x: 0 };
+        const lo = Math.min(...pinXs);
+        const hi = Math.max(...pinXs);
+        const scale = gsap.utils.clamp(
+          whole,
+          whole * PLATE_ZOOM_MAX,
+          (vw - PLATE_MARGIN * 2) / (Math.max(hi - lo, 0.01) * wide),
+        );
+        const half = (wide * scale) / 2;
+        const x = gsap.utils.clamp(
+          vw / 2 - half, // the picture's right edge on the window's
+          half - vw / 2, // its left edge on the window's
+          (0.5 - (lo + hi) / 2) * 2 * half,
+        );
+        return { scale, x };
+      };
+      /* An even zoom: the scale changes by the same RATIO for every pixel of
+         scroll — s^t — which is how a camera drawing back looks. A linear
+         scale would seem to gather speed, each step a bigger share of what is
+         left of the picture. Written as an ease so the tween can stay
+         function-valued and follow a rotation through the refresh. */
+      let ratioLog = Math.log(framing().scale);
+      const even = (t: number) => {
+        const r = Math.exp(ratioLog);
+        return Math.abs(1 - r) < 1e-4 ? t : (1 - Math.pow(r, t)) / (1 - r);
+      };
+
+      gsap.set(travels, { transformOrigin: "50% 100%" });
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${vh() * PLATE_SETTLE}`,
+            scrub: PLATE_SCRUB,
+            invalidateOnRefresh: true,
+            onRefresh: () => {
+              ratioLog = Math.log(framing().scale);
+            },
+          },
+        })
+        .fromTo(
+          travels,
+          { yPercent: 0, scale: 1, x: 0 },
+          {
+            yPercent: BACKDROP_TRAVEL,
+            scale: () => framing().scale,
+            x: () => framing().x,
+            ease: even,
+            duration: 1,
+          },
+        );
+
+      // ---- The pins, at their own size --------------------------------------
+      // They ride the photograph's transforms, which is what keeps them on
+      // their subjects — so the pull-back would take them down to a third of
+      // their size with it. Each is scaled back up by exactly what the camera
+      // has taken off (`--pin-counter`, read by `.pin`), cards and all, and it
+      // is only written when it changes.
+      let counter = 0;
+      const hold = () => {
+        const scale =
+          (Number(gsap.getProperty(travel, "scale")) || 1) *
+          (Number(gsap.getProperty(push, "scale")) || 1);
+        const next = Math.round(10000 / scale) / 10000;
+        if (next === counter) return;
+        counter = next;
+        pinLayer.style.setProperty("--pin-counter", String(next));
+      };
+      gsap.ticker.add(hold);
+      hold();
+
+      // ---- The key ---------------------------------------------------------
+      // Each line is written as the scroll reaches it: its rule drawn from
+      // the left, then its numeral, title and arrow rising out of their own
+      // boxes, as the hero's roman lines do. Played rather than scrubbed — a
+      // line is written or it is not — and taken back the same way if the
+      // visitor scrolls up past it.
+      //
+      // As a line is written, its pin answers: one ring out of the disc (the
+      // stylesheet plays it on `data-called`, and only on the way down), so
+      // which pin a line belongs to is learnt by watching, not by pressing.
+      const call = (pin: HTMLElement | undefined) => {
+        if (!pin) return;
+        delete pin.dataset.called;
+        // Read layout between the two, so a second call restarts the ring.
+        void pin.offsetWidth;
+        pin.dataset.called = "";
+      };
+      const spacing =
+        lines.length > 1 ? (KEY_TO - KEY_FROM) / (lines.length - 1) : 0;
+      lines.forEach((line, i) => {
+        timelineOnEnter(
+          {
+            trigger: section,
+            start: () => `top top-=${vh() * (KEY_FROM + i * spacing)}`,
+            toggleActions: "play none none reverse",
+            onEnter: () => call(pins[i]),
+          },
+          (timeline) => {
+            timeline
+              .fromTo(
+                line.querySelectorAll(`.${styles.keyRule}`),
+                { scaleX: 0 },
+                { scaleX: 1, duration: 1, ease: "expo.out" },
+                0,
+              )
+              .fromTo(
+                line.querySelectorAll(`.${styles.keyRise}`),
+                { yPercent: 110 },
+                { yPercent: 0, duration: 0.9, ease: "expo.out", stagger: 0.06 },
+                0.1,
+              );
+          },
+        );
+      });
+
+      // ---- Room for a card -------------------------------------------------
+      // A card stands up out of its pin into the sky, so a pin needs the
+      // card's height above it. On most phones every pin already has it, and
+      // nothing moves. On one too short for that, the picture dips just as
+      // far as this pin needs — never further than leaves it clear of the
+      // foot — and rises again when the card goes. The dip moves the two
+      // outer layers, which nothing else transforms, in window px.
+      let dip: gsap.core.Tween | null = null;
+      let settle: gsap.core.Tween | null = null;
+
+      room.current = (index, onSettle) => {
+        dip?.kill();
+        settle?.kill();
+
+        const was = Number(gsap.getProperty(pinLayer, "y")) || 0;
+        let y = 0;
+        const pin = index === null ? undefined : pins[index];
+        const node = pin?.querySelector("button");
+        if (pin && node) {
+          const at = node.getBoundingClientRect();
+          const cx = at.left + at.width / 2;
+          // Where the pin stands with no dip at all.
+          const cy = at.top + at.height / 2 - was;
+          // The card's width first: its height, and so the sky it needs,
+          // follow from it. The pins are at their own size (see above), so
+          // the card's px are the window's.
+          placeCloseUpCard(pin, { x: cx, y: cy }, 1);
+          const stand = Math.min(
+            closeUpStand(pin, 1),
+            frame.clientHeight - CLOSE_UP_FOOT,
+          );
+          y = Math.max(0, stand - cy);
+          placeCloseUpCard(pin, { x: cx, y: cy + y }, 1);
+        }
+
+        const moving = Math.abs(y - was) > 1;
+        if (moving) {
+          dip = gsap.to(layers, {
+            y,
+            duration: CLOSE_UP_GLIDE,
+            ease: "power2.inOut",
+          });
+        }
+        if (onSettle) {
+          settle = gsap.delayedCall(
+            moving ? CLOSE_UP_GLIDE * CLOSE_UP_DRAW : 0,
+            onSettle,
+          );
+        }
+      };
+
+      return () => {
+        gsap.ticker.remove(hold);
+        dip?.kill();
+        settle?.kill();
+        gsap.set(layers, { clearProps: "transform" });
+        pinLayer.style.removeProperty("--pin-counter");
+        pins.forEach((pin) => delete pin.dataset.called);
+        room.current = null;
+        shownRef.current = -1;
+        delete section.dataset.guided;
+        setGuided(false);
+        setShown(-1);
+        setDrawn(false);
+      };
+    });
 
     // ---- 1. Hero entrance -------------------------------------------------
     // The lockup is the moment. The two roman lines rise out of their own
@@ -411,8 +890,13 @@ export function Journey({ hero }: Props) {
     // them, when the visitor scrolls back up into the hero. Played rather
     // than scrubbed: an arrival and a departure, not a scroll-tracked fade.
     // `autoAlpha`, so a withdrawn pin is `visibility: hidden` and can be
-    // neither clicked nor tabbed to under the hero.
-    const pinChrome = [`.${styles.pinLayer}`, `.${styles.pinHint}`];
+    // neither clicked nor tabbed to under the hero. On a portrait frame the
+    // key over them comes and goes with them; elsewhere it is not displayed.
+    const pinChrome = [
+      `.${styles.pinLayer}`,
+      `.${styles.pinHint}`,
+      `.${styles.key}`,
+    ];
     const showPins = () =>
       gsap.to(pinChrome, {
         autoAlpha: 1,
@@ -453,6 +937,8 @@ export function Journey({ hero }: Props) {
     // created — a reload part-way down the page would otherwise start in the
     // wrong phase.
     setPhase(phase.isActive);
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -522,6 +1008,20 @@ export function Journey({ hero }: Props) {
                     data={pin}
                     index={index}
                     total={hero.pins.length}
+                    guide={
+                      guided
+                        ? {
+                            live: index === shown,
+                            open: index === shown && drawn,
+                            aside: shown !== -1 && index !== shown,
+                            first: index === 0,
+                            last: index === count - 1,
+                            onPress: onPinPress,
+                            onClose: close,
+                            onStep: step,
+                          }
+                        : undefined
+                    }
                   />
                 ))}
               </div>
@@ -539,6 +1039,84 @@ export function Journey({ hero }: Props) {
             {hero.pinHint ?? "Press a + on the photograph to explore"}
           </p>
         </div>
+
+        {/* ---- The key ----------------------------------------------------- */}
+        {/* Portrait frames only — see THE PLATE. The six pins, listed in the
+            sky over the terrace the way a drawing keys its marks: the hint as
+            the key's caption, then a numeral and a title on a hairline for
+            each pin, every line the way into its card. Written out one line
+            at a time as the scroll goes on, and stood aside while a card is
+            up, since the card stands in the same sky.
+
+            Rendered everywhere and displayed only on the plate (the stylesheet
+            reads `data-guided`), because the plate's setup has to find its
+            lines the moment it is built. Elsewhere it is `display: none`, out
+            of the tree and out of the tab order. */}
+        <nav className={styles.key} aria-label="The story, pin by pin">
+          <div
+            className={`${styles.keyInner} ${shown !== -1 ? styles.keyAside : ""}`}
+          >
+            <p className={styles.keyCaption}>
+              <span className={styles.pinHintDot} aria-hidden="true">
+                +
+              </span>
+              {hero.pinHint ?? "Press a + on the photograph to explore"}
+            </p>
+            <ol className={styles.keyList}>
+              {hero.pins.map((pin, index) => (
+                <li key={pin.id} className={styles.keyItem}>
+                  <span className={styles.keyRule} aria-hidden="true" />
+                  <button
+                    type="button"
+                    className={styles.keyButton}
+                    onClick={() => onPinPress(index)}
+                  >
+                    {/* Each part rises out of a box of its own — inside the
+                        button, not on it, so the focus ring is never
+                        clipped. */}
+                    <span className={styles.keyLine}>
+                      <span className={styles.keyMask}>
+                        <span
+                          className={`u-numeral ${styles.keyNumber} ${styles.keyRise}`}
+                        >
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      </span>
+                      <span className={styles.keyMask}>
+                        <span className={`${styles.keyTitle} ${styles.keyRise}`}>
+                          {pin.title}
+                        </span>
+                      </span>
+                      <span className={styles.keyMask} aria-hidden="true">
+                        <svg
+                          className={`${styles.keyArrow} ${styles.keyRise}`}
+                          viewBox="0 0 24 24"
+                          width="14"
+                          height="14"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
+                    </span>
+                  </button>
+                  {/* The key is closed by a rule of its own, drawn with
+                      the last line. */}
+                  {index === hero.pins.length - 1 && (
+                    <span
+                      className={`${styles.keyRule} ${styles.keyRuleEnd}`}
+                      aria-hidden="true"
+                    />
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
 
         {/* ---- Panel one: the brand line ---------------------------------- */}
         <div className={styles.hero}>

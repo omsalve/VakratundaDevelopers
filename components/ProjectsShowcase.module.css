@@ -9,8 +9,8 @@
 
      · `.motion-on`, 60rem and up. The section grows to `--span` viewports
        (set inline by the component) and its stage goes sticky. Two offset
-       panes merge into one photograph, the frame opens to full bleed,
-       PROJECTS lands across the hero and then lifts away so the map beneath
+       panes merge into one photograph, the frame opens to full bleed, the
+       title card rises over the map and then lifts away so the map beneath
        it can be read, and the rail counts the portfolio.
 
    THE SPLIT STATE IS DECLARED HERE, exactly as the demo declares it: the
@@ -42,6 +42,21 @@
      forgot to finish, not a frame. In vw so it tracks the frame it belongs
      to, and in the same unit as --pj-gap so both animate identically. */
   --pj-r: 1.6vw;
+
+  /* BRONZE, for the title's rubric and swash in place of the house rose. It
+     is the metal, not the map's lighter coastline tan, which read as orange
+     on the navy. It is flat for the small label (5.2:1 on this navy). The
+     swash gets a sheen: the same bronze lit from above and falling to its
+     shadow, because a flat warm colour at display size reads as orange
+     rather than metal. The darkest stop is still 3.2:1 on the navy, which
+     clears the bar for type this large. */
+  --pj-bronze: #cd7f32;
+  --pj-bronze-sheen: linear-gradient(
+    180deg,
+    #e2a66b 12%,
+    #cd7f32 55%,
+    #a3622c 96%
+  );
 }
 
 /* ---- Head --------------------------------------------------------------- */
@@ -66,10 +81,72 @@
   color: var(--text-on-navy);
 }
 
-/* The wordmark's parts. In the default layout they are only the word: the
-   letters run inline as ordinary text, and the rule is not drawn. */
-.titleRule {
+/* The sheen is painted inside the letters. The flat bronze under it is what
+   shows wherever background-clip: text is not supported. The inline padding
+   and matching negative margin widen the painted box without moving the
+   type, so the italic's overhang at either end is not cut off. */
+.title :global(.u-swash) {
+  padding-inline: 0.12em;
+  margin-inline: -0.12em;
+  color: var(--pj-bronze);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .title :global(.u-swash) {
+    background: var(--pj-bronze-sheen);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* The rubric and the headline, kept together so the motion layout can move
+   them as one card. */
+.titleCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* The house label, in bronze. Its hairlines are only drawn where the card is
+   centred, in the motion layout. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  margin: 0;
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--pj-bronze);
+}
+
+.eyebrowRule {
   display: none;
+}
+
+.eyebrowMask,
+.eyebrowText {
+  display: inline-block;
+}
+
+/* One clipped box per word, as Atmosphere's headline has, so each word can
+   rise out of its own line. Padding with an equal negative margin moves the
+   clip edges out without moving the type. There is room below for the
+   descenders, and at the sides for the italic's overhang. */
+.wordMask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.06em 0.1em 0.16em;
+  margin: -0.06em -0.1em -0.16em;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .standfirst {
@@ -334,7 +411,7 @@
   /* ---- The map overlay ---------------------------------------------------
      A sibling of the frame, not a child: the frame is clipped into two
      windows and the pins belong to neither half, and the frame's own
-     `z-index: 0` would trap them under the wordmark.
+     `z-index: 0` would trap them under the title.
 
      Inset to the stage rather than to `--pj-*`, deliberately. The pins are
      only ever live once those insets have reached zero and the frame IS the
@@ -345,7 +422,7 @@
      timeline, about the same origin, so the two stay registered.
 
      Above the head (z-3): an open panel is the top layer of the composition,
-     wordmark included. */
+     title included. */
   /* No `will-change` here, unlike the plate: the layer carries type — the
      place names, the panel — and a layer promoted at one scale is rasterised
      at it, which would leave every letter a fraction soft at the 1.04 the
@@ -409,7 +486,7 @@
      cancel; its `max-width: var(--maxw)` was not. So the head kept an 84rem
      ceiling while being stretched `inset: 0` with no auto margins left to
      centre it: a 1344px box pinned to the LEFT of a 1440px stage. Everything
-     placed inside it — the wordmark, the standfirst — was centred on 672
+     placed inside it — the title, the standfirst — was centred on 672
      instead of 720, a 48px list nothing on the page accounted for. Released
      here, so `left: 0; right: 0` means the frame it appears to mean. */
   :global(.motion-on) .head {
@@ -423,97 +500,76 @@
     z-index: 3;
   }
 
-  /* Placed, not ranged: both revert to the full frame. */
-  :global(.motion-on) .title,
-  :global(.motion-on) .standfirst {
-    max-width: none;
-  }
+  /* ---- The title card -----------------------------------------------------
+     A rubric and a headline at heading size, centred over the map. The old
+     wordmark was the largest type on the site, and it covered the map it
+     introduced. This is set the way the site sets its other section
+     openings: a small bronze label between two hairlines over a serif line
+     with one swash, and nothing boxed.
 
-  /* ---- The wordmark -------------------------------------------------------
-     Monumental, thin, cream, with a soft navy shadow so it holds over the
-     bright sky. PLACED FROM ITS CAP BAND AND SIZED FROM ITS OWN MEASURE —
-     both of which the demo it was ported from had no need to do, because the
-     demo has no fixed header and no left rail to answer to.
+     THE VERTICAL. The card fills the stage and centres its content in the
+     part the header leaves clear, pushed up by the bottom padding so the
+     headline sits a little above the middle, at about 44% of the frame. The
+     map's own mass sits below it, and the standfirst and the way out have
+     the foot of the frame.
 
-     THE VERTICAL. The demo's `top: 1svh` is the top of the EM BOX, and an em
-     box is not what anyone sees. Measured in the browser, Playfair Display's
-     cap top sits 0.1644em below it inside this 0.94 line box — 35.5 unseen
-     pixels at 15vw on a 1440 window. So `top: 1svh` put the visible P about
-     forty-five pixels down, squarely underneath a 4.75rem fixed header that
-     goes opaque navy the moment this section is on screen. Subtracting the
-     trim makes the number below mean what it says: the CAP TOP lands exactly
-     --space-8 clear of the header, and the wordmark reads in the upper third
-     — cap band running 124px to 280px of a 900px frame — with the map's own
-     mass, focal point 38% down, carrying everything beneath it.
-
-     THE MEASURE. "PROJECTS" is eight Playfair caps, ≈4.96em of advance plus
-     tracking; at the demo's 19vw that is ~95vw of type in a field the rail
-     already owns 7vw of. It did not have margins, it had an overflow. 15vw
-     sets it at ~75vw — a full 12.5vw of air each side, so it clears the rail
-     by a wide margin and is never the widest thing on the screen. The svh arm
-     of the min() is for the wide, short window, where a vw-only figure sets a
-     wordmark taller than the space above the map.
-
-     Both figures are measured rather than estimated: at 1440 x 900 this
-     renders at 216px, 1035px of type, 203px of air each side of a 100px
-     rail. */
-  :global(.motion-on) .title {
+     No transform is declared here: GSAP drives the card's drift, and a CSS
+     translate would be read into its `y` and fight it. No text-shadow
+     either: the word masks would cut it into boxes, so the map dims under
+     the card instead (see the timeline). */
+  :global(.motion-on) .titleCard {
     position: absolute;
-    top: calc(var(--header-h) + var(--space-8) - 0.1644em);
-    left: 0;
-    right: 0;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-5);
+    padding: var(--header-h) var(--gutter) 20svh;
     text-align: center;
-    font-size: clamp(3rem, min(15vw, 30svh), 18rem);
-    font-weight: 400;
-    line-height: 0.94;
-    letter-spacing: 0.005em;
-    text-transform: uppercase;
-    color: var(--cream-100);
-    text-shadow: 0 3px 34px rgba(9, 13, 33, 0.4);
-    /* GSAP sets the entrance state and the exit, letter by letter. None of
-       it is declared here on purpose: if the script never runs, the title
-       must still be on the screen, ruled and whole. */
   }
 
-  /* The set shrinks to the word, so the rule under it can be exactly the
-     word's width. Aligned to the top of the heading's line, so the letters
-     sit where the unsplit word sat and the `top` above still places the cap
-     band. */
-  :global(.motion-on) .titleSet {
-    display: inline-block;
-    vertical-align: top;
+  :global(.motion-on) .eyebrow {
+    letter-spacing: 0.34em;
   }
 
-  /* THE MASK. The letters come up through its floor and leave through its
-     ceiling. Padding with an equal negative margin moves the clip edges out
-     without moving the type. That is 0.12em above the line box, so the
-     shadow over the caps is never cut at rest. It is 0.16em below it, which
-     puts the floor exactly on the rule. Wide at the sides, so a letter still
-     carrying its opening tracking is never cut at the ends. */
-  :global(.motion-on) .titleLine {
-    display: block;
+  /* The label's own mask, for the same rise the words make. The negative
+     end margin takes back the tracking after the last letter, so the label
+     sits dead centre between its rules. */
+  :global(.motion-on) .eyebrowMask {
     overflow: hidden;
-    padding: 0.12em 0.5em 0.16em;
-    margin: -0.12em -0.5em -0.16em;
+    padding: 0.3em 0;
+    margin: -0.3em -0.34em -0.3em 0;
   }
 
-  :global(.motion-on) .letter {
-    display: inline-block;
-  }
-
-  /* THE GROUND LINE. It is the width of the word and sits on the mask's
-     floor, so the letters rise out of it. Rose at the weight PageHero rules
-     its hairline in, lifted a little because it lies on a picture rather
-     than on flat navy. It is scaled from the middle, open and shut. */
-  :global(.motion-on) .titleRule {
+  /* Ruled open outward from the label, and drawn back into it. */
+  :global(.motion-on) .eyebrowRule {
     display: block;
-    width: 100%;
+    width: clamp(2rem, 3.2vw, 3.25rem);
     height: var(--hairline);
-    margin-top: 0.16em;
-    background: var(--accent-rose);
-    opacity: 0.7;
-    box-shadow: 0 0 18px rgba(228, 168, 161, 0.35);
-    transform-origin: 50% 50%;
+    background: currentColor;
+    opacity: 0.65;
+  }
+
+  :global(.motion-on) .eyebrowRule:first-child {
+    transform-origin: 100% 50%;
+  }
+
+  :global(.motion-on) .eyebrowRule:last-child {
+    transform-origin: 0% 50%;
+  }
+
+  /* Heading size, a step under the site's h1: large enough to open the
+     section, small enough to be a line of type over a picture rather than
+     a mark stamped on it. On one line at every width the layout runs at,
+     balanced if it ever has to break. GSAP sets the entrance state; none of
+     it is declared here, so without the script the card is simply there. */
+  :global(.motion-on) .title {
+    max-width: 20em;
+    font-size: clamp(2.25rem, 1.2rem + 2.9vw, 3.75rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--cream-100);
+    text-wrap: balance;
   }
 
   :global(.motion-on) .standfirst {
@@ -537,7 +593,7 @@
   }
 
   /* ---- The way out, placed ------------------------------------------------
-     At the foot of the stage and centred, on the axis the wordmark left by
+     At the foot of the stage and centred, on the axis the title left by
      and the standfirst sat on before it — one column down the middle of the
      frame, so the link lands where the section has already taught the eye to
      look. Above the pins (z-4) so it is never buried by an open panel; the

@@ -155,6 +155,199 @@
   transform: translateY(-12px);
 }
 
+/* ---- The plate ----------------------------------------------------------------
+   Portrait frames only, once the plate is built (`data-guided`, set by the
+   setup) — see THE PLATE in Journey.tsx. */
+
+/* A card turns to the next pin on a sideways swipe, so the frame hands the
+   browser vertical panning (and zoom) only, and a sideways stroke reaches the
+   page whole instead of being cancelled. There is nothing to pan sideways
+   here; the page itself is clipped to the window's width. */
+.journey[data-guided="on"] .viewport {
+  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
+}
+
+/* The photograph's head dissolves into the section's own navy, so once the
+   camera has drawn back there is no top edge to the picture — only the
+   evening going up into the page. On the photograph's stack alone: the pins'
+   stack is a layer of pins, not of picture. In the hero this band is under
+   the masthead and the scrim's own top shade, so it does not read there. */
+.journey[data-guided="on"] .backdrop .push {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 16%);
+}
+
+/* The key carries the hint as its caption, so the pill would say it twice. */
+.journey[data-guided="on"] .pinHint {
+  display: none;
+}
+
+/* ---- The key ---------------------------------------------------------------
+   The six pins listed in the sky over the terrace, as a drawing keys its
+   marks: a numeral and a title, each on a hairline of its own. It fills the
+   band between the masthead and the head of the plate and stands on the
+   plate — `margin-top: auto` — and where that band is too short for it (an
+   iPhone SE), it starts under the masthead instead and runs on over the
+   photograph's sky, which is empty: the pins stand on the terrace below. */
+.key {
+  display: none;
+}
+
+.journey[data-guided="on"] .key {
+  position: absolute;
+  top: calc(var(--header-h) + var(--space-3));
+  /* The head of the plate: the photograph, drawn back to the window's
+     width, is that width over its own ratio tall. */
+  bottom: calc(100vw / var(--backdrop-ratio));
+  left: var(--gutter);
+  right: var(--gutter);
+  /* With the hint: under the hero panel while it is on screen, under the
+     pins and their cards always. */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.keyInner {
+  margin-top: auto;
+  padding-bottom: var(--space-5);
+  pointer-events: auto;
+  transition:
+    opacity 360ms ease,
+    visibility 0s linear 0s;
+}
+
+/* A card stands in the same sky, over the key. */
+.keyAside {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 240ms ease,
+    visibility 0s linear 240ms;
+}
+
+.keyCaption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-navy-muted);
+}
+
+.keyCaption .pinHintDot {
+  width: 1.375rem;
+  height: 1.375rem;
+  font-size: var(--fs-small);
+}
+
+.keyList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keyItem {
+  position: relative;
+}
+
+/* The rule each line is written on, drawn from the left. */
+.keyRule {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hairline);
+  background: var(--navy-line);
+  transform-origin: left center;
+}
+
+.keyRuleEnd {
+  top: auto;
+  bottom: 0;
+}
+
+.keyButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.keyButton:focus-visible {
+  outline: 2px solid var(--accent-rose-bright);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
+}
+
+/* A thumb's height, at least: numeral, title, and the arrow that says the
+   line opens something. */
+.keyLine {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 var(--space-3);
+  min-height: 2.75rem;
+  padding-block: 0.6rem;
+}
+
+/* The box each part rises out of: its own, exactly — the rise is a hundred
+   and ten percent of the part, so it clears it whatever the type resolves
+   to. */
+.keyMask {
+  display: block;
+  overflow: hidden;
+}
+
+.keyArrow {
+  color: var(--accent-rose);
+  opacity: 0.7;
+  transition:
+    opacity var(--dur-fast) ease,
+    translate var(--dur-base) var(--ease-out-expo);
+}
+
+.keyButton:hover .keyArrow,
+.keyButton:focus-visible .keyArrow {
+  opacity: 1;
+  translate: 3px 0;
+}
+
+.keyNumber {
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-text);
+}
+
+.keyTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1.25;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+  transition: color var(--dur-fast) ease;
+}
+
+.keyButton:hover .keyTitle,
+.keyButton:focus-visible .keyTitle {
+  color: var(--accent-rose-bright);
+}
+
+/* The descenders stay inside the mask they rise out of. */
+.keyRise {
+  display: block;
+  padding-bottom: 0.08em;
+}
+
 /* ---- Panel one: the brand line ------------------------------------------ */
 /* Above the figures, not below them: on the way out it travels up and over
    them rather than dimming away underneath. */
@@ -571,7 +764,8 @@
 /* Hidden until the hero has cleared, and again whenever it comes back — see
    the pins' ScrollTrigger in Journey.tsx, which tweens `autoAlpha`. */
 :global(.motion-on) .pinLayer,
-:global(.motion-on) .pinHint {
+:global(.motion-on) .pinHint,
+:global(.motion-on) .key {
   opacity: 0;
   visibility: hidden;
 }

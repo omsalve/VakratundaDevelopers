@@ -266,6 +266,8 @@ export interface ProjectSlide {
 }
 
 export interface GalleryContent {
+  /** The small rubric over the headline. It has no /admin field yet. */
+  eyebrow: string;
   heading: SwashHeading;
   standfirst: string;
   slides: ProjectSlide[];
@@ -465,10 +467,11 @@ export interface TeamRole {
 }
 
 /**
- * The copy that rides the cream field between the projects section and this
- * one — the arc's own moment, which until now carried nothing at all. It
- * belongs to the team section rather than to the page: it is the sentence
- * that introduces the team, and it should travel with them.
+ * The copy that rides the cream field of the page's second arc — the arc's
+ * own moment, which until now carried nothing at all. It was written to
+ * introduce the team and is still stored with them, but the arc now opens on
+ * the partnerships (see app/(frontend)/page.tsx), so the line has to read as
+ * an introduction to those.
  */
 export interface TeamInterstitial {
   heading: SwashHeading;
@@ -949,7 +952,7 @@ export const siteContent: SiteContent = {
       // CP_Final p.4, verbatim.
       "Established in 1973, Vakratunda Group began as a single vision, rooted in purpose, driven by progress. Over five decades later, that vision has grown into a legacy of shaping not just skylines, but lives.",
       // AUTHORED. The education work, said here rather than only in `vihaa`
-      // six sections further down: this is the paragraph a visitor reads to
+      // further down the page: this is the paragraph a visitor reads to
       // find out what the group actually does, and a school is part of the
       // answer. It stands on Vihaa International School, Badlapur — the
       // section below — and adds no figure of its own.
@@ -1065,8 +1068,9 @@ export const siteContent: SiteContent = {
   },
 
   gallery: {
-    // CP_Final p.25 — "Our Projects".
-    heading: { before: "Our ", swash: "Projects" },
+    // CP_Final p.25 — "Our Projects", kept as the rubric over the headline.
+    eyebrow: "Our Projects",
+    heading: { before: "A city, ", swash: "address by address", after: "." },
     // AUTHORED — factual summary of pp.9-12.
     standfirst:
       "Addresses where dreams found a home — from redevelopment in Bandra to a twenty-acre township in Badlapur.",

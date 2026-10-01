@@ -25,8 +25,8 @@
 
 .section {
   position: relative;
-  /* The larger rhythm token, as the section this replaces used: it arrives
-     through the page's second arc, and the cream has to be open above the
+  /* The larger rhythm token, as the section this replaces used: it follows
+     the school on the same cream, and the cream has to be open above the
      first slide for a beat before the first slide appears in it. */
   padding-block: var(--section-pad-lg);
 
@@ -41,6 +41,20 @@
   );
 
   --node-size: 12px;
+}
+
+/* The drawn rule that separates it from the school above — ranged on the
+   shell, exactly as its neighbours draw their own. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: min(100% - var(--gutter) * 2, var(--maxw) - var(--gutter) * 2);
+  height: var(--hairline);
+  background: var(--cream-line-rose);
+  opacity: 0.5;
 }
 
 .stage {

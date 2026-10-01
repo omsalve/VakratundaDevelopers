@@ -95,38 +95,43 @@ export default async function HomePage() {
 
         {/* Navy → cream, second and last. The arc carries the page's second
             lockup — a tower of type on a screen of open cream — and hands it
-            straight to the people it is about. Nothing may be inserted
-            between the arc and the section above it. */}
+            straight to the partnerships. Nothing may be inserted between the
+            arc and the section above it. Its line is still read from
+            `team.interstitial`, where it has always been edited. */}
         <ArcTransition interstitial={content.team.interstitial}>
-          <TeamShowcase content={content.team} />
+          {/* THE PROOF COMES BEFORE THE PEOPLE. The site's job is to show the
+              group is what it says it is, and the strongest case for that is
+              the company it keeps and what it has built beyond housing: the
+              names it builds beside, and then its own school. So those two
+              follow the portfolio directly, and the team — the longest scroll
+              set piece on the page — follows them, rather than standing
+              between the portfolio and its proof.
+
+              The partnerships, driven by hand rather than by the scroll — the
+              one section the visitor operates. */}
+          <JointVentures content={content.ventures} />
         </ArcTransition>
 
-        {/* The partnerships, on the same cream the team stands on and driven
-            by hand rather than by the scroll — the one section the visitor
-            operates. It closes the case the team opened: who trusts them. */}
-        <JointVentures content={content.ventures} />
-
-        {/* The land. The partnerships say who the group builds beside; this
-            says what it builds from nothing — open ground, surveyed and laid
-            out whole. Set here because the ventures have just introduced the
-            Badlapur township, and this is where that township came from. Its
-            own ground (a survey sheet on cream) rather than a third change of
-            ground: the page still goes navy → cream exactly twice. */}
-        <Openland content={content.openland} />
-
-        {/* The school, on the land the section above surveyed. Same cream;
-            the sticky copy and drifting columns are read, not driven, so the
-            page does not gain a third scroll set piece. */}
+        {/* The school, given priority: the group's own institution, straight
+            after the partnerships, whose first slide has just shown Badlapur,
+            the school's own town. Same cream; the sticky copy and drifting
+            columns are read, not driven, so the page does not gain a third
+            scroll set piece. */}
         <Vihaa content={content.vihaa} />
 
-        {/* The clients, in their own words. The partnerships and the school
-            say who the group builds beside; this says what it was like to be
-            built for, and it is set here — after every claim the page makes
-            and before the close — so the last voices a visitor hears before
-            the contact form are the clients', not the group's. Same cream,
-            and read rather than driven: a thread of quotes that ink in as the
-            eye reaches them, not a third scroll set piece or a second
-            carousel. */}
+        {/* The people, once the case for them has been made. */}
+        <TeamShowcase content={content.team} />
+
+        {/* The land: what the group builds from nothing — open ground,
+            surveyed and laid out whole. Its own ground (a survey sheet on
+            cream) rather than a third change of ground: the page still goes
+            navy → cream exactly twice. */}
+        <Openland content={content.openland} />
+
+        {/* The clients, in their own words — the last voices before the
+            page's closing section. Same cream, and read rather than driven: a
+            thread of quotes that ink in as the eye reaches them, not a scroll
+            set piece or a second carousel. */}
         <Testimonials content={content.testimonials} />
 
         {/* What the group owes the ground it builds on, on the same cream. It
@@ -135,7 +140,7 @@ export default async function HomePage() {
             conduct that runs long stops being a claim about conduct.
 
             IT DOES NOT CHANGE THE GROUND. The page still changes ground twice
-            and only twice; this section takes the ventures' cream and hands
+            and only twice; this section takes the cream above it and hands
             the same cream to the shell below, which closes over it in navy —
             the same cut to navy the close always made, now made by the thing
             that encloses the page rather than by its last section. */}

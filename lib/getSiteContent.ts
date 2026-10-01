@@ -357,6 +357,7 @@ async function readSiteContent(): Promise<SiteContent> {
     },
 
     gallery: {
+      eyebrow: fallback.gallery.eyebrow,
       heading: heading(home.gallery?.heading, fallback.gallery.heading),
       standfirst: text(home.gallery?.standfirst, fallback.gallery.standfirst),
       cta: {
