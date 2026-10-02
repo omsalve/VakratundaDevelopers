@@ -359,8 +359,16 @@
   min-height: 100svh;
   /* The masthead above is furniture and is reserved here. The foot of the
      frame is not: the credentials band IS the bottom edge of the layout, so
-     it takes the gutter and nothing is held back for it. */
-  padding: calc(var(--header-h) + var(--space-6)) var(--gutter) var(--space-7);
+     it takes the gutter and nothing is held back for it.
+
+     EVERY INTERVAL IN THE PANEL GIVES WAY TO A SHORT FRAME. The panel is one
+     sticky screen, so whatever does not fit in it is not scrolled to — it is
+     cut off. Each interval is therefore its old value at any ordinary height
+     (the svh term reaches the old figure at about 800px) and closes up below
+     that, which is what keeps the action and the credentials on the glass of
+     a short phone or a laptop with its toolbars down. */
+  padding: calc(var(--header-h) + clamp(0.75rem, 4svh, 2rem)) var(--gutter)
+    var(--space-7);
   overflow: hidden;
 }
 
@@ -426,7 +434,7 @@
 .heroInner {
   display: grid;
   grid-template-rows: 1fr auto;
-  gap: var(--space-7);
+  gap: clamp(1.5rem, 5svh, 2.5rem);
   width: 100%;
   /* The shell's content width, so the credentials band ends on the same two
      lines as the header's brand mark and its Contact pill above it. */
@@ -461,15 +469,20 @@
 /* One heading, three parts. --fs-hero is the brief's first-viewport figure,
    clamp(2.75rem, 6.2vw, 6rem): the one place the type IS the image, held at
    the display ceiling so the mark, standfirst, action and credentials band
-   share the frame in proportion instead of the title crowding them out. */
+   share the frame in proportion instead of the title crowding them out.
+
+   The width term is capped by the height as well (11svh), so a wide, short
+   window — a laptop with its toolbars down — does not set a title the frame
+   cannot hold. At any ordinary desktop shape the 6.2vw term is the smaller
+   and nothing changes. */
 .title {
-  --fs-hero: clamp(2.75rem, 6.2vw, 6rem);
+  --fs-hero: clamp(2.75rem, min(6.2vw, 11svh), 6rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   min-width: 0;
-  margin-top: clamp(1.5rem, 3vh, 2.25rem);
+  margin-top: clamp(0.75rem, 3svh, 2.25rem);
   font-family: var(--font-display);
   font-size: var(--fs-hero);
   font-weight: 400;
@@ -515,7 +528,7 @@
 }
 
 .standfirst {
-  margin-top: clamp(1.75rem, 3.4vh, 2.75rem);
+  margin-top: clamp(1rem, 3.4svh, 2.75rem);
   max-width: min(40rem, 100%);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
@@ -533,7 +546,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
-  margin-top: clamp(2rem, 4vh, 3rem);
+  margin-top: clamp(1.25rem, 4svh, 3rem);
   padding: 0.4rem 0.4rem 0.4rem var(--space-6);
   border-radius: var(--radius-pill);
   background: var(--accent-rose);
@@ -741,17 +754,26 @@
    the sides of the picture away before the camera could pan to them. Sized to
    the cover rectangle instead, the crop is done by .viewport, and a tour (see
    Journey.tsx) can move across the whole picture. On a window that already
-   holds the full width this resolves to 100% and nothing changes. Centred
-   with `translate`, because GSAP owns `transform` here. */
+   holds the full width this resolves to 100% and nothing changes.
+
+   CENTRED WITH `left`, NEVER WITH A TRANSLATE. GSAP owns `transform` here,
+   and the first time it touches the element it folds any CSS `translate`
+   into its own `x` and sets `translate: none` inline. It only recognises the
+   fold as -50% when `Math.round(offsetWidth / 2) === Math.round(-x)`, and a
+   portrait width of 1.5 x 100svh x ratio is fractional — on roughly one
+   phone height in four the test fails, the offset is kept as a plain `x`,
+   and the plate's `x: 0` wipes it: the photograph then starts at the middle
+   of the glass and the pins are off its right edge. `left` is layout, which
+   GSAP never touches. Both percentages resolve against the frame's width. */
 :global(.motion-on) .travel {
-  inset: auto;
-  top: 0;
-  left: 50%;
-  translate: -50% 0;
-  width: max(
+  --travel-w: max(
     100%,
     calc(var(--backdrop-span, 2) * 100svh * var(--backdrop-ratio, 1))
   );
+  inset: auto;
+  top: 0;
+  left: calc((100% - var(--travel-w)) / 2);
+  width: var(--travel-w);
   height: calc(var(--backdrop-span, 2) * 100%);
 }
 
@@ -905,7 +927,104 @@
   }
 
   .heroInner {
-    gap: var(--space-6);
+    gap: clamp(1rem, 4svh, 2rem);
+  }
+
+  /* A PHONE HAS TO HOLD THE WHOLE LOCKUP ON ONE SCREEN. It is drawn in four
+     lines here (the lower line breaks after AN), so the title takes its size
+     from the short side as well as the narrow one, and never grows past the
+     size it always had on a phone. The standfirst, the action and the
+     intervals between them close up with the height the same way. */
+  .title {
+    --fs-hero: clamp(2.25rem, min(12.5vw, 7.2svh), 2.75rem);
+    margin-top: clamp(0.75rem, 2.6svh, 1.5rem);
+  }
+
+  .standfirst {
+    margin-top: clamp(0.875rem, 3svh, 1.75rem);
+    font-size: clamp(0.875rem, 2.6svh, 1rem);
+    line-height: 1.55;
+  }
+
+  /* Tighter in its padding, so "Explore our addresses" stays one line on a
+     320px screen instead of breaking inside the pill. */
+  .cta {
+    margin-top: clamp(1rem, 3.6svh, 2rem);
+    gap: var(--space-3);
+    padding-left: var(--space-5);
+    font-size: 0.9375rem;
+  }
+
+  .band {
+    gap: clamp(0.5rem, 2svh, 1rem);
+  }
+
+  .metaItem {
+    font-size: var(--fs-caption);
+    letter-spacing: 0.12em;
+  }
+
+  .rail {
+    bottom: clamp(0.5rem, 2svh, 1rem);
+  }
+
+  .railTrack {
+    height: clamp(1.25rem, 4.5svh, 2.5rem);
+  }
+
+  /* What the lying-down rail needs under the band: its own height, the air
+     under it, and a step of air above it. */
+  .hero {
+    padding-bottom: calc(
+      clamp(0.5rem, 2svh, 1rem) * 2 + clamp(1.25rem, 4.5svh, 2.5rem) + 2.25rem
+    );
+  }
+}
+
+/* Under about 300px the first pair of credentials no longer fits on one line,
+   and in a centred row the dot that hangs before the second would lead its
+   new line. The gap alone separates them there. */
+@media (max-width: 19rem) {
+  .metaItem + .metaItem::before {
+    display: none;
+  }
+}
+
+/* ---- A short phone ---------------------------------------------------------
+   Under 45rem of height (an iPhone SE, any phone with its display size turned
+   up, most phones with the browser's bars showing) the lockup and the band
+   only share the screen if two pieces of furniture step aside: the mark,
+   which the masthead already carries directly above it, and the scroll rail,
+   whose job the pins' arrival does once the visitor moves. A phone on its
+   side already drops both, below. */
+@media (max-width: 47.99rem) and (max-height: 44.99rem) {
+  .mark,
+  .rail {
+    display: none;
+  }
+
+  .title {
+    margin-top: 0;
+  }
+
+  .hero {
+    padding-bottom: clamp(1rem, 3svh, 1.5rem);
+  }
+
+  /* The key closes up too: at full size its six lines ran down past the
+     head of the plate and on to the terrace, among the pins it keys. */
+  .keyCaption {
+    margin-bottom: var(--space-2);
+  }
+
+  .keyLine {
+    min-height: 2.5rem;
+    padding-block: 0.4rem;
+  }
+
+  .keyTitle {
+    font-size: 1rem;
+    line-height: 1.2;
   }
 }
 

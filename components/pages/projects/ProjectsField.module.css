@@ -204,27 +204,37 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2) var(--space-5);
   font-size: var(--fs-caption);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-on-cream-muted);
+  /* The dot hangs in the gap before the locality, so when a narrow column
+     wraps the locality under the status it would lead the new line; there it
+     falls outside this box. */
+  overflow-x: clip;
 }
 
 .status {
   color: var(--accent-deep);
 }
 
-/* The dot between status and locality, drawn rather than typed. */
+.locality {
+  position: relative;
+}
+
+/* The dot between status and locality, drawn rather than typed, centred in
+   the gap rather than laid out in the locality. */
 .locality::before {
   content: "";
-  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: calc((var(--space-5) + 3px) / -2);
   width: 3px;
   height: 3px;
   border-radius: 50%;
   background: currentColor;
-  vertical-align: middle;
-  margin-inline-end: var(--space-3);
+  translate: 0 -50%;
   opacity: 0.6;
 }
 
@@ -277,6 +287,23 @@
 
   .note {
     max-width: var(--measure);
+  }
+}
+
+/* A tablet: the zig-zag holds, but its narrow beats are evened out a step.
+   At four columns of twelve the small entry's caption was set two words to a
+   line beside the large one. */
+@media (min-width: 48rem) and (max-width: 61.99rem) {
+  .card[data-beat="0"] {
+    grid-column: 1 / span 7;
+  }
+
+  .card[data-beat="1"] {
+    grid-column: 8 / span 5;
+  }
+
+  .card[data-beat="2"] {
+    grid-column: 1 / span 6;
   }
 }
 

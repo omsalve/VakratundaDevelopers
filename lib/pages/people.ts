@@ -24,9 +24,9 @@
 import type { CareersPageContent, ContactPageContent } from "./types";
 import { siteImage } from "../siteImages";
 
-const OFFICE_EMAIL = "info@vakratundagroup.com";
-/** MoM 2.4.4. */
-const RMO_EMAIL = "rmo@vakratundagroup.com";
+const OFFICE_EMAIL = "rmo@vakratundagroup.com";
+/** MoM 2.4.4. The office's general address is the RMO's own now. */
+const RMO_EMAIL = OFFICE_EMAIL;
 
 export const careersPage: CareersPageContent = {
   seo: {
@@ -180,15 +180,15 @@ export const contactPage: ContactPageContent = {
   seo: {
     title: "Contact Us",
     description:
-      "Begin your journey with Vakratunda Group in Bandra East — enquiries about buying, society redevelopment, land and joint development, or joining our team.",
+      "Begin your journey with Vakratunda Group in Mahalaxmi — enquiries about buying, society redevelopment, land and joint development, or joining our team.",
   },
 
   hero: {
     label: "Contact Us",
     heading: { before: "Let’s build your ", swash: "future", after: ", together" },
     standfirst:
-      "Every enquiry below reaches our own office in Bandra East, not a call centre. Choose the line that fits, and it opens addressed to the person who can help.",
-    meta: ["Bandra East", "Mumbai — 400 051", "MCHI-CREDAI"],
+      "Every enquiry below reaches our own office in Mahalaxmi, not a call centre. Choose the line that fits, and it opens addressed to the person who can help.",
+    meta: ["Mahalaxmi", "Mumbai — 400 011", "MCHI-CREDAI"],
   },
 
   channels: {
@@ -263,7 +263,7 @@ export const contactPage: ContactPageContent = {
         action: "Read",
       },
     ],
-    note: `Everything above reaches ${OFFICE_EMAIL}, except the RMO line, which reaches ${RMO_EMAIL}. There is no contact form on this site: an enquiry from a society committee is worth more than a form submission, and it is answered by a person.`,
+    note: `Everything above reaches ${OFFICE_EMAIL}. There is no contact form on this site: an enquiry from a society committee is worth more than a form submission, and it is answered by a person.`,
   },
 
   form: {
@@ -276,13 +276,13 @@ export const contactPage: ContactPageContent = {
 
   office: {
     label: "The office",
-    heading: { before: "Bandra ", swash: "East" },
+    heading: { before: "", swash: "Mahalaxmi" },
     standfirst:
       "We have one office, and it is where every blueprint begins. Visitors are welcome by appointment — write first and we will confirm a time.",
     addressLines: [
       "Vakratunda Group",
-      "Vakratunda CHS Ltd, Bandra East",
-      "Mumbai — 400 051",
+      "2505, Prestige Turf Towers",
+      "Mahalaxmi, Mumbai — 400 011",
       "Maharashtra, India",
     ],
     hours: [

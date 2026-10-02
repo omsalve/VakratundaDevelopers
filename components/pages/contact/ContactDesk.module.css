@@ -2,6 +2,9 @@
 
 .section {
   padding-block: var(--section-pad) var(--section-pad-lg);
+  /* `#enquiry` is a landing point (the footer's action goes here), and the
+     masthead floats over the top of the window. */
+  scroll-margin-top: var(--header-h);
 }
 
 .desk {

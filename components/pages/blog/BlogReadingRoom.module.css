@@ -288,6 +288,18 @@
   }
 }
 
+/* A narrow phone: the thumbnail keeps its column, but gives the excerpt beside
+   it the room it was left without — about twenty characters a line at 320px. */
+@media (max-width: 29.99rem) {
+  .rowLink {
+    column-gap: var(--space-4);
+  }
+
+  .thumb {
+    width: 3.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .leadImage,
   .thumbImage,

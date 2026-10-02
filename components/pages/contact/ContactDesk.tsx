@@ -108,7 +108,13 @@ export function ContactDesk({
   }
 
   return (
-    <section ref={root} className={styles.section} aria-labelledby="enquiry-title">
+    // `#enquiry` is where the footer's "Let's build it together" lands.
+    <section
+      ref={root}
+      id="enquiry"
+      className={styles.section}
+      aria-labelledby="enquiry-title"
+    >
       <div className={`u-shell ${styles.desk}`}>
         {/* ---- The enquiry ---- */}
         <div className={styles.working}>

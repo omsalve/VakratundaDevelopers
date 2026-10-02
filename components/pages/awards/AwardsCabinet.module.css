@@ -65,17 +65,19 @@
   height: 100%;
 }
 
-/* The standard's number, inside its ring. Broken onto two lines at the colon
-   so "ISO 9001:2015" is never set as one long line inside a circle. */
+/* The standard's number, inside its ring, stacked so "ISO 9001:2015" is never
+   set as one long line inside a circle: "ISO", "9001:", "2015". It breaks only
+   at the spaces, the hyphen and the colon (the component puts a <wbr> after
+   it). The measure is the widest of those pieces, "14001:" or "CREDAI", with
+   its tracking; at 6ch the browser had to break inside them instead, and set
+   "9001:2 / 015" and "CRED / AI". */
 .sealText {
   position: relative;
   font-size: var(--fs-caption);
   letter-spacing: 0.08em;
   color: var(--accent-rose);
-  max-width: 6ch;
+  max-width: 7.5ch;
   line-height: 1.35;
-  /* Breaks after the colon and between words without a hyphen. */
-  overflow-wrap: break-word;
 }
 
 .sealBody {
@@ -98,9 +100,9 @@
 /* ---- Narrow -------------------------------------------------------------- */
 
 @media (max-width: 47.99rem) {
-  /* Two per row down to the smallest screens: four seals in a single column
-     is a very long page for four short paragraphs, and the seal is legible
-     small. */
+  /* Two per row: four seals in a single column is a very long page for four
+     short paragraphs, and the seal is legible small. (Under 30rem the
+     standings turn on their side instead — see below.) */
   .case {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-8) var(--space-5);
@@ -112,5 +114,30 @@
 
   .title {
     font-size: var(--fs-body);
+  }
+}
+
+/* On a phone two columns left each paragraph about eighteen characters wide.
+   Each standing turns on its side instead — the seal beside its words — which
+   takes the same length of page and reads at a proper measure. */
+@media (max-width: 29.99rem) {
+  .case {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+
+  .standing {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .seal {
+    flex: none;
+    width: 5.5rem;
+  }
+
+  .sealBody {
+    max-width: none;
   }
 }

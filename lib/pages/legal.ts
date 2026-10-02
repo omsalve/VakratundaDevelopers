@@ -28,7 +28,9 @@
 
 import type { LegalPageContent } from "./types";
 
-const OFFICE_EMAIL = "info@vakratundagroup.com";
+const OFFICE_EMAIL = "rmo@vakratundagroup.com";
+const OFFICE_POSTAL =
+  "Vakratunda Group, 2505, Prestige Turf Towers, Mahalaxmi, Mumbai — 400 011, Maharashtra, India";
 const UPDATED = "9 September 2026";
 
 export const termsPage: LegalPageContent = {
@@ -123,7 +125,7 @@ export const termsPage: LegalPageContent = {
         id: "contact",
         heading: "How to contact us about these terms",
         body: [
-          `Write to ${OFFICE_EMAIL}, or to Vakratunda Group, Vakratunda CHS Ltd, Bandra East, Mumbai — 400 051, Maharashtra, India.`,
+          `Write to ${OFFICE_EMAIL}, or to ${OFFICE_POSTAL}.`,
           "We may update these terms from time to time. The date at the head of this document is the date of the version you are reading.",
         ],
       },
@@ -231,7 +233,7 @@ export const grievancePage: LegalPageContent = {
     heading: { before: "Grievance ", swash: "Redressal" },
     standfirst:
       "How to raise a complaint about us, a project, or this website — who it goes to, and what happens after it is logged.",
-    meta: ["Complaints", `Updated ${UPDATED}`, "Bandra East"],
+    meta: ["Complaints", `Updated ${UPDATED}`, "Mahalaxmi"],
   },
 
   doc: {
@@ -255,7 +257,7 @@ export const grievancePage: LegalPageContent = {
         id: "how",
         heading: "How to raise one",
         body: [
-          `Write to ${OFFICE_EMAIL} with "Grievance" in the subject line, or by post to the Grievance Officer at Vakratunda Group, Vakratunda CHS Ltd, Bandra East, Mumbai — 400 051, Maharashtra, India.`,
+          `Write to ${OFFICE_EMAIL} with "Grievance" in the subject line, or by post to the Grievance Officer at ${OFFICE_POSTAL}.`,
         ],
         list: [
           "Your name, and an address or number we can reply to.",

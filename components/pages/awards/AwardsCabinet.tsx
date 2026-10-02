@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import type { CardItem } from "@/lib/pages";
 import type { SwashHeading } from "@/lib/content";
 import { drawOnEnter, revealOnEnter, useGsapScope } from "@/lib/motion";
@@ -122,7 +122,18 @@ export function AwardsCabinet({
 
                 {item.eyebrow ? (
                   <span className={`p-numeral ${styles.sealText}`}>
-                    {item.eyebrow}
+                    {/* A break opportunity after each colon, so the year
+                        drops whole under the standard's number. */}
+                    {item.eyebrow.split(":").map((part, i, parts) => (
+                      <Fragment key={i}>
+                        {part}
+                        {i < parts.length - 1 ? (
+                          <>
+                            :<wbr />
+                          </>
+                        ) : null}
+                      </Fragment>
+                    ))}
                   </span>
                 ) : null}
               </span>

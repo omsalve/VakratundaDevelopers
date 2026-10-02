@@ -44,11 +44,10 @@ export function LogoMark({ className, size }: MarkProps) {
       height={size ?? MARK.height}
       aria-hidden="true"
       draggable={false}
-      style={
-        size === undefined
-          ? undefined
-          : { width: size, height: size, display: "block" }
-      }
+      // No inline `display`: the reset already makes every <img> a block, and
+      // an inline value is the one thing a breakpoint cannot take back — the
+      // hero's mark has to step aside on a short phone.
+      style={size === undefined ? undefined : { width: size, height: size }}
     />
   );
 }

@@ -236,6 +236,19 @@
   }
 }
 
+/* On a phone the pill beside the name left the name a column two words wide,
+   so it drops under the note instead, on the same left edge. */
+@media (max-width: 29.99rem) {
+  .filing .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .download,
+  .state {
+    justify-self: start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .download,
   .cta {

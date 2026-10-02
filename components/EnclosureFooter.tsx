@@ -232,23 +232,20 @@ export function EnclosureFooter({
           </ul>
 
           <div className={`${styles.block} ${styles.action}`} style={step(4)}>
-            <a className={styles.cta} href={content.primaryCta.href}>
-              <span>{content.primaryCta.label}</span>
-              <svg
-                className={styles.ctaIcon}
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </a>
+            {/* A page on this site goes through the router; anything else
+                (a `mailto:` or an outside link set in the CMS) stays a plain
+                anchor. */}
+            {content.primaryCta.href.startsWith("/") ? (
+              <Link className={styles.cta} href={content.primaryCta.href}>
+                <span>{content.primaryCta.label}</span>
+                <CtaArrow />
+              </Link>
+            ) : (
+              <a className={styles.cta} href={content.primaryCta.href}>
+                <span>{content.primaryCta.label}</span>
+                <CtaArrow />
+              </a>
+            )}
             <p className={styles.attribution}>{content.attribution}</p>
           </div>
 
@@ -284,7 +281,10 @@ export function EnclosureFooter({
               >
                 {content.contact.email}
               </a>
-              {content.contact.rmoEmail ? (
+              {/* Only when it is a second address: the general inbox is the
+                  RMO's own, and the same line twice reads as a mistake. */}
+              {content.contact.rmoEmail &&
+              content.contact.rmoEmail !== content.contact.email ? (
                 <a
                   className={`${styles.email} ${styles.emailSecondary}`}
                   href={`mailto:${content.contact.rmoEmail}`}
@@ -356,6 +356,25 @@ export function EnclosureFooter({
         </div>
       </div>
     </footer>
+  );
+}
+
+function CtaArrow() {
+  return (
+    <svg
+      className={styles.ctaIcon}
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
   );
 }
 

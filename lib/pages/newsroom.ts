@@ -83,7 +83,7 @@ export const pressPage: PressPageContent = {
         state: "Print",
       },
     ],
-    note: "Cuttings are kept at our Bandra East office and can be shared on request.",
+    note: "Cuttings are kept at our office and can be shared on request.",
   },
 
   enquiries: {
@@ -96,7 +96,7 @@ export const pressPage: PressPageContent = {
         meta: "Media",
         title: "Press and interview requests",
         note: "Project details, imagery, and interviews with our leadership.",
-        href: "mailto:info@vakratundagroup.com?subject=Press%20enquiry",
+        href: "mailto:rmo@vakratundagroup.com?subject=Press%20enquiry",
         action: "Write",
       },
       {
@@ -104,7 +104,7 @@ export const pressPage: PressPageContent = {
         meta: "Assets",
         title: "Photography and project fact sheets",
         note: "High-resolution imagery and the current specification for any named project.",
-        href: "mailto:info@vakratundagroup.com?subject=Press%20asset%20request",
+        href: "mailto:rmo@vakratundagroup.com?subject=Press%20asset%20request",
         action: "Request",
       },
       {
@@ -163,7 +163,7 @@ export const awardsPage: AwardsPageContent = {
         state: "Citation",
       },
     ],
-    note: "Citations are kept at our Bandra East office and can be verified on request.",
+    note: "Citations are kept at our office and can be verified on request.",
   },
 
   certifications: {

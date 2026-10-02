@@ -57,32 +57,37 @@
 .dateline {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
+  gap: var(--space-2) var(--space-7);
   align-items: center;
+  /* The rule hangs in the gap before each item, so a wrapped line would start
+     with one; every such rule falls outside this box. */
+  overflow-x: clip;
 }
 
 .datelineItem {
+  position: relative;
   font-family: var(--font-display);
   font-size: var(--fs-caption);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--accent-rose);
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
 }
 
 .motion-on .datelineItem {
   opacity: 0;
 }
 
+/* Drawn in the gap, not laid out in the item: a rule that took up room in
+   its item indented whichever item started a wrapped line. */
 .datelineItem + .datelineItem::before {
   content: "";
+  position: absolute;
+  top: 50%;
+  left: calc((var(--space-7) + var(--space-4)) / -2);
   width: var(--space-4);
   height: 1px;
   background: var(--accent-rose);
   opacity: 0.5;
-  margin-inline-start: calc(var(--space-5) * -1);
 }
 
 /* ---- Narrow -------------------------------------------------------------- */

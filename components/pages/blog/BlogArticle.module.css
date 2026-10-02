@@ -153,6 +153,14 @@
   margin: 0;
 }
 
+/* The hook the contents' reveal selects by. It has to be DEFINED here: a CSS
+   module exports only the classes it declares, so without this rule the items
+   rendered with no class at all, the reveal matched nothing, and the list sat
+   at the `[data-reveal]` start state — invisible — on every article. */
+.contentsItem {
+  min-width: 0;
+}
+
 .contentsLink {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

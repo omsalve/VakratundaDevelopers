@@ -223,6 +223,20 @@
   }
 }
 
+/* On a phone the action beside the role left its note a narrow column, so it
+   drops under the note instead, on the same left edge. */
+@media (max-width: 29.99rem) {
+  .roleLink,
+  .roleStatic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .roleAction,
+  .roleState {
+    justify-self: start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .roleLink {
     transition: none;

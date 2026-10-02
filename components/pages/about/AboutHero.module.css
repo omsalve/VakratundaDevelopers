@@ -103,6 +103,10 @@
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-5);
   align-items: baseline;
+  /* Each dot hangs in the gap BEFORE its credential, so when the row wraps on
+     a phone the first credential of the new line would carry one out at the
+     left edge. Every such dot falls outside the list's own box: clip them. */
+  overflow-x: clip;
 }
 
 .metaItem {
@@ -111,19 +115,21 @@
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--text-on-navy-muted);
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
+  position: relative;
 }
 
 /* A rose dot between the credentials, not a slash. */
 .metaItem + .metaItem::before {
   content: "";
+  /* Centred in the gap, not hung off the end of the word before it. */
+  position: absolute;
+  top: 50%;
+  left: calc((var(--space-5) + 3px) / -2);
   width: 3px;
   height: 3px;
   border-radius: 50%;
   background: var(--accent-rose);
-  margin-inline-start: calc(var(--space-5) * -1 + 1px);
+  translate: 0 -50%;
 }
 
 @media (max-width: 47.99rem) {

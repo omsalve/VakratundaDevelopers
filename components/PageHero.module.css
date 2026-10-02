@@ -84,6 +84,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2) var(--space-5);
+  /* The divider hangs in the gap before each item, so a wrapped line would
+     start with one; every such divider falls outside this box. */
+  overflow-x: clip;
   margin: 0;
   margin-top: clamp(var(--space-7), 5vh, var(--space-9));
   padding: 0;

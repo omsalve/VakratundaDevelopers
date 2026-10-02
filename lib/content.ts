@@ -1902,14 +1902,18 @@ export const siteContent: SiteContent = {
     ],
     primaryCta: {
       label: "Let’s build it together",
-      href: "mailto:info@vakratundagroup.com",
+      // The enquiry desk on /contact, not a bare `mailto:`. A mailto does
+      // nothing at all on a phone or a browser with no mail app set to answer
+      // it, so the one action the close exists for looked broken; the desk
+      // shows the address and the form, and composes the email from there.
+      href: "/contact#enquiry",
     },
-    // CP_Final p.26, verbatim.
     contact: {
-      email: "info@vakratundagroup.com",
-      // MoM 2.4.4 — listed beside the general address in the close.
+      email: "rmo@vakratundagroup.com",
+      // MoM 2.4.4 — listed beside the general address in the close. It is the
+      // general address now, so the footer shows it once.
       rmoEmail: "rmo@vakratundagroup.com",
-      addressLines: ["Vakratunda CHS Ltd, Bandra East", "Mumbai — 400 051"],
+      addressLines: ["2505, Prestige Turf Towers", "Mahalaxmi, Mumbai — 400 011"],
     },
   },
 
