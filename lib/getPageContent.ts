@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import type { SeoContent } from "./content";
 import { buildMetadata } from "./cms/metadata";
-import { heading, image, lines, text, type Maybe } from "./cms/merge";
+import { heading, image, lines, mediaImage, text, type Maybe } from "./cms/merge";
 import { getPayloadClient, readWithFallback } from "./cms/read";
 import {
   mergeCards,
@@ -113,8 +113,8 @@ const pages = {
   about: definePage("about-page", aboutPage, (doc, shipped) => ({
     story: mergeStory(doc.story, shipped.story),
     principles: mergeCardSection(doc.principles, shipped.principles),
-    // No field in the about-page global yet; see AboutPageContent.family.
-    family: shipped.family,
+    // Only the photograph is a field; the framing stays shipped copy.
+    family: { ...shipped.family, image: mediaImage(doc.family?.image) },
   })),
 
   projects: definePage("projects-page", projectsPage, (doc, shipped) => ({

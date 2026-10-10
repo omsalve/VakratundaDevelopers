@@ -162,16 +162,16 @@ export interface AboutPageContent {
     items: CardItem[];
   };
   /**
-   * The Chairman and the Director, husband and wife, side by side. Only the
-   * framing lives here: their names, titles, lines and portraits are read
-   * from the landing page's `team.chairman` and `team.director`, so a
-   * portrait uploaded once in /admin appears in both places. Shipped copy
-   * only — the about-page global has no field for it yet.
+   * The Chairman and the Director, husband and wife, in one photograph. The
+   * framing is shipped copy; `image` is the one thing the about-page global
+   * holds for it, and is absent until a photograph is uploaded in /admin —
+   * the section then shows an empty frame rather than inventing a stand-in.
    */
   family: {
     label: string;
     heading: SwashHeading;
     standfirst: string;
+    image?: ImageAsset;
   };
 }
 

@@ -1396,6 +1396,12 @@ export interface AboutPage {
      */
     pullquote?: string | null;
   };
+  family?: {
+    /**
+     * One photograph of the Chairman and the Director together. Any shape is shown whole, never cropped. Until one is uploaded the page shows an empty frame in its place.
+     */
+    image?: (number | null) | Media;
+  };
   principles?: {
     /**
      * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
@@ -3526,6 +3532,11 @@ export interface AboutPageSelect<T extends boolean = true> {
         image?: T;
         imageCaption?: T;
         pullquote?: T;
+      };
+  family?:
+    | T
+    | {
+        image?: T;
       };
   principles?:
     | T

@@ -28,8 +28,8 @@ import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
  * two-column band and a card grid. Nothing has to be re-entered in /admin.
  *
  * Between the story and the stations, the Chairman and the Director — husband
- * and wife — side by side on the same line (AboutFamily). Their names and
- * portraits are the landing page's `team`, so nothing is entered twice.
+ * and wife — in a single photograph on the same line (AboutFamily). It is the
+ * one thing the about-page global holds for that section.
  *
  * A Server Component; the sections below are client components because each
  * owns its own GSAP scope.
@@ -54,12 +54,9 @@ export default async function AboutPage() {
 
       <AboutThread content={page.story} />
 
-      {/* The Chairman and the Director, husband and wife — read from the
-          landing page's team, so their portraits are uploaded once. */}
-      <AboutFamily
-        content={page.family}
-        people={[site.team.chairman, site.team.director]}
-      />
+      {/* The Chairman and the Director, husband and wife, in the one
+          photograph uploaded under About → Husband and wife in /admin. */}
+      <AboutFamily content={page.family} />
 
       <AboutStations
         heading={page.principles.heading}

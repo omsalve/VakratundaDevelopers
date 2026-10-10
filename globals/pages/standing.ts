@@ -10,6 +10,28 @@ export const AboutPage = pageGlobal({
   tabs: [
     { label: "Story", fields: [story()] },
     {
+      label: "Husband and wife",
+      fields: [
+        {
+          name: "family",
+          type: "group",
+          label: "Husband and wife",
+          fields: [
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              label: "Photograph",
+              admin: {
+                description:
+                  "One photograph of the Chairman and the Director together. Any shape is shown whole, never cropped. Until one is uploaded the page shows an empty frame in its place.",
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
       label: "Principles",
       fields: [
         cardSection("principles", "Principles", { withRubric: false }),

@@ -1,37 +1,40 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
+import Image from "next/image";
 import type { AboutPageContent } from "@/lib/pages";
-import type { TeamMember } from "@/lib/content";
 import { drawOnEnter, maskReveal, revealOnEnter, useGsapScope } from "@/lib/motion";
 import PortraitPlate from "@/components/PortraitPlate";
 import Swash from "@/components/Swash";
 import styles from "./AboutFamily.module.css";
 
 /**
- * /about — the Chairman and the Director, husband and wife.
+ * /about — the Chairman and the Director, husband and wife, in one photograph.
  *
- * TWO PORTRAITS, ONE PAIR. They stand side by side at the same size, joined
- * by an ampersand rather than set one above the other, because the point of
- * the section is that they lead together. On a phone they stay side by side,
- * at half the width each, rather than becoming two screens of scroll.
+ * ONE SLOT, ONE IMAGE. The photograph is uploaded in /admin (About → Husband
+ * and wife) and nothing else about the section is editable there: the heading
+ * and standfirst are this page's shipped copy. Until a photograph exists the
+ * slot is an empty frame — PortraitPlate's mounted blank.
+ *
+ * THE FRAME TAKES THE PHOTOGRAPH'S OWN SHAPE. It is a photograph of two people,
+ * taken in whatever shape the photographer chose, so the frame is cut to fit
+ * it rather than the other way round: nothing is cropped, and nothing is
+ * letterboxed. (FitImage, which letterboxes behind a blurred copy of the same
+ * picture, was tried here and read as three images, not one.) A tall photograph
+ * is capped in height by the stylesheet so it cannot outgrow the screen.
  *
  * THE LINE RUNS THROUGH IT. It sits between the story and the cream stations,
  * so it carries the page's rose thread on from AboutThread to AboutStations
  * the way every other section here does, scrubbed by the reader's own scroll.
- *
- * Names, titles, lines and portraits are the landing page's `team.chairman`
- * and `team.director`, passed in by the route, so they are edited in one
- * place in /admin. Only the heading and standfirst are this page's.
  */
 
-export function AboutFamily({
-  content,
-  people,
-}: {
-  content: AboutPageContent["family"];
-  people: [TeamMember, TeamMember];
-}) {
+const NO_IMAGE = { src: "", alt: "", width: 0, height: 0 };
+
+/** The empty frame's shape: portrait, which is how a seated-and-standing pair is shot. */
+const EMPTY_RATIO = "2 / 3";
+const EMPTY_N = 2 / 3;
+
+export function AboutFamily({ content }: { content: AboutPageContent["family"] }) {
   const root = useRef<HTMLElement | null>(null);
 
   useGsapScope(root, () => {
@@ -47,21 +50,15 @@ export function AboutFamily({
     revealOnEnter(`.${styles.head} > [data-reveal]`, rootEl, { stagger: 0.09 });
 
     // Uncovered from the bottom edge, the way the story's plate is.
-    maskReveal(`.${styles.portrait}`, rootEl, {
+    maskReveal(`.${styles.slot}`, rootEl, {
       from: "bottom",
       duration: 1.3,
-      stagger: 0.14,
       start: "top 70%",
-    });
-
-    revealOnEnter(`.${styles.pair} [data-reveal]`, rootEl, {
-      start: "top 70%",
-      stagger: 0.07,
-      delay: 0.2,
     });
   }, []);
 
-  const [first, second] = people;
+  const { image } = content;
+  const ratio = image ? `${image.width} / ${image.height}` : EMPTY_RATIO;
 
   return (
     <section ref={root} className={styles.section} aria-labelledby="family-title">
@@ -94,46 +91,38 @@ export function AboutFamily({
           </p>
         </div>
 
-        <div className={styles.pair}>
-          <Person person={first} />
-          <span className={styles.amp} aria-hidden="true" data-reveal="up">
-            &amp;
-          </span>
-          <Person person={second} />
-        </div>
+        <figure
+          className={styles.figure}
+          style={
+            {
+              "--slot-ratio": ratio,
+              "--slot-n": image ? image.width / image.height : EMPTY_N,
+            } as CSSProperties
+          }
+        >
+          {image ? (
+            <div className={`p-plate ${styles.slot}`}>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                width={image.width}
+                height={image.height}
+                sizes="(max-width: 47.99rem) 90vw, 46rem"
+                quality={82}
+              />
+            </div>
+          ) : (
+            <PortraitPlate
+              className={styles.slot}
+              image={NO_IMAGE}
+              name=""
+              ratio={ratio}
+              sizes="46rem"
+            />
+          )}
+        </figure>
       </div>
     </section>
-  );
-}
-
-function Person({ person }: { person: TeamMember }) {
-  return (
-    <figure className={styles.person}>
-      {/* 2:3, the shape both portraits were shot in. At that ratio a
-          portrait the CMS has flagged as a cut-out (and so sets with
-          `contain`) fills its box exactly as a photograph does, and the
-          two stand at the same size. */}
-      <PortraitPlate
-        className={styles.portrait}
-        image={person.portrait}
-        name={person.name}
-        ratio="2 / 3"
-        sizes="(max-width: 47.99rem) 42vw, 19rem"
-      />
-      <figcaption className={styles.caption}>
-        <span className={styles.name} data-reveal="up">
-          {person.name}
-        </span>
-        <span className={`u-label ${styles.role}`} data-reveal="up">
-          {person.title}
-        </span>
-        {person.superpower ? (
-          <span className={styles.line} data-reveal="up">
-            {person.superpower}
-          </span>
-        ) : null}
-      </figcaption>
-    </figure>
   );
 }
 
