@@ -110,18 +110,23 @@ export function SiteHeader({ links, cta }: { links: NavLink[]; cta: Cta }) {
   /**
    * A root-relative anchor becomes a same-page anchor on the landing page,
    * which is the only place those sections exist. Everywhere else it stays a
-   * link, so it navigates home and then scrolls.
+   * link, so it navigates home and then scrolls. Home itself, pressed on the
+   * landing page, goes back to the top the way the mark does.
    */
-  const resolve = (href: string) =>
-    href.startsWith("/#") && pathname === "/" ? href.slice(1) : href;
+  const resolve = (href: string) => {
+    if (pathname !== "/") return href;
+    if (href === "/") return "#top";
+    return href.startsWith("/#") ? href.slice(1) : href;
+  };
 
-  /** True for the route this link points at, or any route beneath it. Hash
-   *  links are never "current". */
+  /** True for the route this link points at, or any route beneath it. Home
+   *  is current on the landing page only. Hash links are never "current". */
   const isCurrent = useCallback(
     (href: string) =>
       !href.includes("#") &&
-      href !== "/" &&
-      (pathname === href || pathname.startsWith(`${href}/`)),
+      (href === "/"
+        ? pathname === "/"
+        : pathname === href || pathname.startsWith(`${href}/`)),
     [pathname],
   );
 

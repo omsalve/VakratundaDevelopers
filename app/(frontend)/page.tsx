@@ -6,7 +6,6 @@ import EnclosureFooter from "@/components/EnclosureFooter";
 import JointVentures from "@/components/JointVentures";
 import Journey from "@/components/Journey";
 import Legacy from "@/components/Legacy";
-import Openland from "@/components/Openland";
 import ProjectsShowcase from "@/components/ProjectsShowcase";
 import Responsibility from "@/components/Responsibility";
 import SiteHeader from "@/components/SiteHeader";
@@ -121,12 +120,6 @@ export default async function HomePage() {
 
         {/* The people, once the case for them has been made. */}
         <TeamShowcase content={content.team} />
-
-        {/* The land: what the group builds from nothing — open ground,
-            surveyed and laid out whole. Its own ground (a survey sheet on
-            cream) rather than a third change of ground: the page still goes
-            navy → cream exactly twice. */}
-        <Openland content={content.openland} />
 
         {/* The clients, in their own words — the last voices before the
             page's closing section. Same cream, and read rather than driven: a

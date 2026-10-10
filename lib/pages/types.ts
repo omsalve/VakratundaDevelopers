@@ -161,6 +161,18 @@ export interface AboutPageContent {
     standfirst: string;
     items: CardItem[];
   };
+  /**
+   * The Chairman and the Director, husband and wife, side by side. Only the
+   * framing lives here: their names, titles, lines and portraits are read
+   * from the landing page's `team.chairman` and `team.director`, so a
+   * portrait uploaded once in /admin appears in both places. Shipped copy
+   * only — the about-page global has no field for it yet.
+   */
+  family: {
+    label: string;
+    heading: SwashHeading;
+    standfirst: string;
+  };
 }
 
 /**
@@ -355,7 +367,7 @@ export interface ContactPageContent {
   seo: SeoContent;
   hero: PageHeroContent;
   channels: LedgerBand;
-  /** The composed-enquiry band. See components/ContactForm.tsx. */
+  /** The enquiry form band. See components/pages/contact/ContactDesk.tsx. */
   form: {
     label: string;
     heading: string;

@@ -136,6 +136,18 @@ export const termsPage: LegalPageContent = {
   },
 };
 
+/**
+ * The short notice that greets a visitor once per visit, in the corner of
+ * every page (components/SiteDisclaimer.tsx). It is a summary of the page
+ * below and a way to it, so it must never say anything that page does not.
+ */
+export const disclaimerNotice = {
+  label: "Disclaimer",
+  body: "This website is for information only and is not an offer or a solicitation. Images, plans and areas are indicative — please verify any project on the MahaRERA website before relying on it.",
+  link: { label: "Read the full disclaimer", href: "/disclaimer" },
+  accept: "I understand",
+};
+
 export const disclaimerPage: LegalPageContent = {
   seo: {
     title: "Disclaimer",

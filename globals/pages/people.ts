@@ -32,7 +32,7 @@ export const ContactPage = pageGlobal({
     {
       label: "Form",
       description:
-        "The form opens an email to the contact address in the Home global's Contact tab.",
+        "The form emails each enquiry to the contact address in the Home global's Contact tab (or to ENQUIRY_TO, when the server sets one).",
       fields: [
         {
           name: "form",

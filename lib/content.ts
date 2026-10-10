@@ -225,6 +225,18 @@ export interface ConceptLockup {
   caption: string[];
 }
 
+/** The three kinds of ground the group builds on, each with its own drawing. */
+export type ProjectKindIcon = "greenfield" | "brownfield" | "redevelopment";
+
+export interface ProjectKind {
+  id: string;
+  icon: ProjectKindIcon;
+  /** One word, set in the display face. */
+  name: string;
+  /** One line. The tile is small on purpose; keep it under ~90 characters. */
+  line: string;
+}
+
 export interface ConceptContent {
   /** The section's heading, set as the brand lockup rather than as a phrase. */
   lockup: ConceptLockup;
@@ -235,6 +247,11 @@ export interface ConceptContent {
    */
   arcText?: string;
   body: string[];
+  /**
+   * The three kinds of project, as small tiles under the prose. Shipped copy
+   * only — there is no CMS field for it yet, so it is edited here.
+   */
+  projectKinds: { label: string; items: ProjectKind[] };
   /** The band between the copy and the showcase: the five proofs, drawn. */
   legacy: LegacyContent;
   showcase: ConceptShowcaseContent;
@@ -731,8 +748,10 @@ export const siteContent: SiteContent = {
        carries the pages a visitor arrives looking for; the rest of the site
        is grouped in the footer's map (see lib/navigation.ts). A root-relative
        anchor still works here if one is ever added back — the masthead
-       collapses it to a hash on the landing page. */
+       collapses it to a hash on the landing page. Home leads, so every
+       page has a named way back besides the mark. */
     links: [
+      { label: "Home", href: "/" },
       { label: "About", href: "/about" },
       { label: "Projects", href: "/projects" },
       { label: "Sustainability", href: "/sustainability" },
@@ -960,6 +979,33 @@ export const siteContent: SiteContent = {
       // CP_Final p.4, verbatim.
       "At the heart of Vakratunda lies a simple promise: to deliver more than structures, to deliver belonging. Because we don’t just build for today, we build for tomorrow.",
     ],
+    // AUTHORED. The three kinds of ground the group builds on, given a tile
+    // each. The greenfield line restates the Openland section's own promise
+    // ("from the first road to the last tree"); the redevelopment line restates
+    // `immersive.hotspots` (MCGM and MHADA). No figure is added.
+    projectKinds: {
+      label: "Three ways we build",
+      items: [
+        {
+          id: "greenfield",
+          icon: "greenfield",
+          name: "Greenfield",
+          line: "Open land, master-planned whole, from the first road to the last tree.",
+        },
+        {
+          id: "brownfield",
+          icon: "brownfield",
+          name: "Brownfield",
+          line: "Previously used land, cleared and reimagined for how the city lives today.",
+        },
+        {
+          id: "redevelopment",
+          icon: "redevelopment",
+          name: "Redevelopment",
+          line: "Ageing societies rebuilt through MCGM and MHADA, with families returning to new homes.",
+        },
+      ],
+    },
     // The five proofs of CP_Final p.3, drawn as the guide's own circles and
     // set against the Skygarden roof render. AUTHORED framing; every figure
     // is the one already carried by `immersive.hotspots` above.
@@ -1489,7 +1535,7 @@ export const siteContent: SiteContent = {
 
     leadership: [
       // MoM 2.4.2: Khelaan Unadkat and Naimesh Tanna removed; Twinkle Unadkat
-      // and Dhawal Joshi added, with the designations the client gave. The
+      // and Dhaval Joshi added, with the designations the client gave. The
       // one-line and bio copy for both is AUTHORED from the designation alone
       // and claims nothing else — ⚠️ TO CONFIRM, with photographs (MoM 4.2).
       {
@@ -1523,15 +1569,15 @@ export const siteContent: SiteContent = {
         },
       },
       {
-        id: "dhawal-joshi",
-        name: "Dhawal Joshi",
+        id: "dhaval-joshi",
+        name: "Dhaval Joshi",
         title: "Vice President, Procurement",
         superpower: "The right materials, at the right time, to the right standard.",
         bio: "Leads procurement for every site — sourcing, vendor partnerships and the checks that come before anything is built.",
         portrait: {
-          // TO SUPPLY (upload in /admin) → team/dhawal-joshi.jpg
+          // TO SUPPLY (upload in /admin) → team/dhaval-joshi.jpg
           src: "",
-          alt: "Portrait — Dhawal Joshi, Vice President, Procurement",
+          alt: "Portrait — Dhaval Joshi, Vice President, Procurement",
           width: 1000,
           height: 1250,
         },
@@ -1905,7 +1951,7 @@ export const siteContent: SiteContent = {
       // The enquiry desk on /contact, not a bare `mailto:`. A mailto does
       // nothing at all on a phone or a browser with no mail app set to answer
       // it, so the one action the close exists for looked broken; the desk
-      // shows the address and the form, and composes the email from there.
+      // shows the address and the form, and sends the enquiry from there.
       href: "/contact#enquiry",
     },
     contact: {

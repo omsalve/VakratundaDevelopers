@@ -1,4 +1,4 @@
-/* /experiences — the hours. See ExperiencesHours.tsx. */
+/* /experiences — the moments. See ExperiencesHours.tsx. */
 
 .section {
   position: relative;
@@ -9,7 +9,7 @@
   --day: 0;
 }
 
-/* The light climbing through the day and falling away again. `sin`-like by
+/* The light climbing as the band is read and falling away again. `sin`-like by
    construction: the wash peaks at noon because the gradient's own stop moves
    with --day and its opacity is highest in the middle of the run. */
 .wash {
@@ -49,7 +49,7 @@
   color: var(--text-on-navy-muted);
 }
 
-/* ---- The hours ----------------------------------------------------------- */
+/* ---- The moments --------------------------------------------------------- */
 
 .hours {
   position: relative;
@@ -93,7 +93,7 @@
 /* The <figure> is the positioning context; `.frame` is the clipped box inside
    it and the caption is its SIBLING. Keeping those two apart is what lets the
    caption move from over the photograph to under it at a narrow width without
-   the scrim and the hour re-anchoring to a box that has grown a caption. */
+   the scrim and the name re-anchoring to a box that has grown a caption. */
 .figure {
   position: relative;
   margin: 0;
@@ -116,7 +116,7 @@
   scale: 1.16;
 }
 
-/* Keeps the hour legible over any frame. */
+/* Keeps the name legible over any frame. */
 .scrim {
   position: absolute;
   inset: 0;
@@ -129,12 +129,14 @@
 }
 
 /* THE ONE PLACE ON THE SITE WHERE TYPE SITS OVER A PHOTOGRAPH. */
-.time {
+.mark {
   position: absolute;
   inset-inline-start: clamp(var(--space-5), 3vw, var(--space-8));
   inset-block-end: clamp(var(--space-5), 3vw, var(--space-8));
-  font-size: clamp(2.5rem, 1.4rem + 4.4vw, 5.5rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.3rem + 3.8vw, 4.75rem);
   line-height: 1;
+  letter-spacing: var(--tracking-display);
   color: var(--cream-100);
   text-shadow: 0 2px 24px rgba(12, 18, 48, 0.5);
 }
@@ -156,12 +158,9 @@
   padding-block-end: var(--space-5);
 }
 
-/* The readable copy of the time. Small: the large one on the frame is the
+/* The readable copy of the name. Small: the large one on the frame is the
    image, this is the label. */
-.panelTime {
-  font-size: var(--fs-caption);
-  letter-spacing: var(--tracking-label);
-  color: var(--accent-rose);
+.panelLabel {
   margin-bottom: var(--space-4);
 }
 
@@ -198,8 +197,8 @@
   }
 
   /* The caption drops out from over the photograph to under it — it would
-     otherwise sit on top of the hour at this width. Because it is a sibling
-     of `.frame` and not inside it, the scrim and the hour keep anchoring to
+     otherwise sit on top of the name at this width. Because it is a sibling
+     of `.frame` and not inside it, the scrim and the name keep anchoring to
      the picture and nothing else moves. */
   .caption {
     position: static;

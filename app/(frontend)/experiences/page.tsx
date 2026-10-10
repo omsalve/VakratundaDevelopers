@@ -6,17 +6,13 @@ import PageShell from "@/components/PageShell";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Experiences — THE HOURS.
+ * Experiences — THE MOMENTS.
  *
- * THE CONTENT ALREADY KNEW WHAT THIS PAGE WAS. Every moment's `eyebrow` is a
- * clock time — 07:40, and so on — and the old page set those as a small caps
- * label in the corner of a card in a two-column grid, which is the one
- * arrangement that throws away the fact that they are times at all.
- *
- * So the day is the page: four full-bleed photographs, each with its hour set
+ * Four moments a home is built for — the arrival, play, the terrace, the
+ * community — as four full-bleed photographs, each with its one-word name set
  * over it at display scale, alternating sides, with the ground lifting from
- * the night of the opening through the middle of the day and falling away
- * again. It is the ONLY page on the site where type sits over a photograph —
+ * the night of the opening and falling away again. (They were labelled with
+ * clock times and a day until the client asked for those to go.) It is the ONLY page on the site where type sits over a photograph —
  * everywhere else a photograph is a plate with its caption underneath — and
  * that one rule is what makes it unmistakable at a glance.
  *

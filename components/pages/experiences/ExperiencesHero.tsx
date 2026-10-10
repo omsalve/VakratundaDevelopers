@@ -7,13 +7,12 @@ import Swash from "@/components/Swash";
 import styles from "./ExperiencesHero.module.css";
 
 /**
- * /experiences — before the day starts.
+ * /experiences — the opening.
  *
- * THE PAGE'S SUBJECT IS TIME PASSING, so the page's material is LIGHT. This
+ * THE PAGE'S SUBJECT IS EVERYDAY LIFE, so the page's material is LIGHT. This
  * opening sits on the deepest navy the palette holds and NOTHING WASHES OVER
- * IT — the hour before the light arrives is one flat field, not a gradient.
- * The band below runs the four moments of the day; the close settles onto
- * cream.
+ * IT — one flat field, not a gradient, before the light arrives. The band
+ * below runs the four moments; the close settles onto cream.
  *
  * NO DRAWN FIGURE HERE, and that is the distinction from every other opening
  * on the site. /about draws a line, /nri-corner a meridian, /sustainability a

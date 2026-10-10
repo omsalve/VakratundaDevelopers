@@ -87,6 +87,16 @@ export const aboutPage: AboutPageContent = {
       "More than structures — a place to belong.",
   },
 
+  // The client's own framing: Ram and Anjana Makhecha are husband and wife.
+  // AUTHORED around it, from what content.ts already says of the two of them
+  // (Chairman, Director) and of the group ("guided by family values").
+  family: {
+    label: "Husband and wife",
+    heading: { before: "Leading ", swash: "together", after: "" },
+    standfirst:
+      "Ram and Anjana Makhecha lead Vakratunda as husband and wife — he as Chairman, she as Director — guided by the family values the group is built on.",
+  },
+
   principles: {
     heading: { before: "Values you can ", swash: "build", after: " on" },
     standfirst:

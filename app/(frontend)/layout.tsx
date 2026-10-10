@@ -6,6 +6,7 @@ import {
   TITLE_TEMPLATE,
 } from "@/lib/cms/metadata";
 import { siteContent } from "@/lib/content";
+import SiteDisclaimer from "@/components/SiteDisclaimer";
 
 // Order matters: tokens first, then the rules that consume them.
 import "@/styles/vars.css";
@@ -116,6 +117,9 @@ export default function FrontendLayout({
         />
         <script dangerouslySetInnerHTML={{ __html: MOTION_GATE }} />
         {children}
+        {/* After the page, so it is the last thing in the reading order and
+            never ahead of the skip link. Once per visit; see the component. */}
+        <SiteDisclaimer />
       </body>
     </html>
   );

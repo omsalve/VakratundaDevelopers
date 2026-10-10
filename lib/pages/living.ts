@@ -5,9 +5,9 @@
  * live in one of these buildings, and what the group does with the parts of
  * them that are not homes.
  *
- * THE PHOTOGRAPHS ARE HALF RE-SHOT. Two of the day's four frames are now
- * Anantaraa — the court at the hour after school, and the screening room on a
- * Saturday — and each is cast against the copy it is actually evidence for
+ * THE PHOTOGRAPHS ARE HALF RE-SHOT. Two of the four frames are now
+ * Anantaraa — the court for the play moment, and the screening room for the
+ * community one — and each is cast against the copy it is actually evidence for
  * rather than against the copy it happened to sit next to. Both also appear in
  * the landing page's spread, a whole page away and cropped to a different
  * shape, which is the rule this site works to: a frame repeated within a
@@ -15,8 +15,13 @@
  * a library.
  *
  * THE OTHER TWO ARE STILL THE OLD ART, and they are the next to go. Neither
- * 07:40 nor 20:00 has a frame that is evidence of what it claims — the walk
- * out is about a lobby and a drop-off, and there is no photograph of either.
+ * the arrival nor the terrace has a frame that is evidence of what it claims —
+ * the walk in is about a lobby and a drop-off, and there is no photograph of
+ * either.
+ *
+ * NO CLOCK TIMES OR DAYS. The four moments used to be labelled 07:40, 16:15,
+ * 20:00 and Saturday; each now carries a one-word name instead, which the
+ * Experiences band sets large over its photograph.
  *
  * COPY: AUTHORED. Nothing below states a figure that is not already in
  * lib/content.ts, and nothing describes an amenity that is not visible in the
@@ -35,29 +40,29 @@ export const experiencesPage: ExperiencesPageContent = {
   seo: {
     title: "Experiences",
     description:
-      "Where homes don't just exist, they belong — the morning walk out, the hour after school, the terrace at eight, and what comes standard in every Vakratunda home.",
+      "Homes designed around everyday life — the arrival, the play space, the terrace and the rooms a community shares — and what comes standard in every Vakratunda home.",
   },
 
   hero: {
     label: "Experiences",
     heading: { before: "The moments a ", swash: "home", after: " is built for" },
     standfirst:
-      "A home isn't measured by its launch render, but by its ordinary evenings. This is what we design for: the walk in, the hour after school, the terrace at eight.",
+      "A home is judged by everyday life, not by its launch render. So that is what we design for: the walk in, the play downstairs, the terrace shared with neighbours.",
     meta: ["Residential", "Mumbai · MMR", "Since 1973"],
   },
 
   day: {
-    label: "A day, in order",
-    heading: { before: "From the ", swash: "morning", after: " walk to the last light" },
+    label: "Moments we design for",
+    heading: { before: "From the front door to the ", swash: "terrace", after: "" },
     standfirst:
-      "Four moments we design for by name, because long after the keys are handed over, these are the moments a family measures home by.",
+      "Four moments we design for by name — long after handover, they are how a family measures home.",
     figures: [
       {
         src: siteImage("gallery/outdoor.png"),
         alt: "The landscaped deck of a Vakratunda development in the late afternoon, with seating under mature planting.",
         width: 1672,
         height: 941,
-        caption: "The deck, as afternoon slows.",
+        caption: "The landscaped deck, shaded and planted.",
       },
       {
         src: siteImage("anantaraa/basketball169.png"),
@@ -71,7 +76,7 @@ export const experiencesPage: ExperiencesPageContent = {
         alt: "A rooftop sky deck looking out across the Mumbai skyline at dusk.",
         width: 4096,
         height: 2160,
-        caption: "The sky deck, at golden hour.",
+        caption: "The sky deck, open to the city.",
       },
       {
         src: siteImage("anantaraa/theatre169.png"),
@@ -84,27 +89,27 @@ export const experiencesPage: ExperiencesPageContent = {
     items: [
       {
         id: "arrival",
-        eyebrow: "07:40",
-        title: "The walk out",
-        body: "A lobby that welcomes rather than merely connects, lifts sized for the tower's real morning rush, and a drop-off where the school run and a delivery van never share the same line.",
+        eyebrow: "Arrival",
+        title: "The walk in",
+        body: "A lobby that welcomes, lifts sized for the real rush, and a drop-off where the school run and deliveries never share a lane.",
       },
       {
         id: "afternoon",
-        eyebrow: "16:15",
-        title: "The hour after school",
-        body: "Play space within sight of the homes above it, shaded through the hottest hours, and surfaced so a fall is only a fall — child-safe by design.",
+        eyebrow: "Play",
+        title: "Play, within sight of home",
+        body: "Play areas overlooked by the homes above, shaded from the hottest sun and surfaced so a fall is only a fall — child-safe by design.",
       },
       {
         id: "evening",
-        eyebrow: "20:00",
-        title: "The terrace at eight",
-        body: "The deck isn't just for golden-hour photographs, it's planted to be lived in after dark — lit low, screened from the road, and close enough to the lifts that going up needs no plan.",
+        eyebrow: "Leisure",
+        title: "A terrace made for living",
+        body: "Planted, softly lit and screened from the road — a deck built to be lived on, not just photographed, and only a lift ride from home.",
       },
       {
         id: "weekend",
-        eyebrow: "Saturday",
+        eyebrow: "Community",
         title: "The whole community, together",
-        body: "Common spaces sized for the days a building truly comes alive — a society meeting, a festival, a birthday that spills out of a home — because that is when a community is made.",
+        body: "Common spaces sized for the days a building comes alive — society meetings, festivals, birthdays that spill out of a home. That is how a community is made.",
       },
     ],
   },
@@ -113,36 +118,36 @@ export const experiencesPage: ExperiencesPageContent = {
     label: "In every home",
     heading: { before: "What is ", swash: "standard", after: ", not optional" },
     standfirst:
-      "The foundations of every home — decided once, at the drawing board, and built in so they never need adding later.",
+      "Decided at the drawing board and built in from the start — never added later.",
     items: [
       {
         id: "light",
         eyebrow: "Orientation",
         title: "Daylight in every habitable room",
-        body: "Wings turned to the sun path and the monsoon wind, not the plot boundary, so every living room is filled with light, not heat.",
+        body: "Wings turned to the sun and the monsoon wind, not the plot line — so living rooms fill with light, not heat.",
       },
       {
         id: "air",
         eyebrow: "Ventilation",
-        title: "Cross-ventilation as a plan rule",
-        body: "Openings on two sides wherever the plan allows, and lobbies that breathe rather than trap heat — the most natural cooling a home can have.",
+        title: "Cross-ventilation as a rule",
+        body: "Openings on two sides wherever the plan allows, and lobbies that breathe instead of trapping heat — the most natural cooling there is.",
       },
       {
         id: "landscape",
         eyebrow: "Landscape",
-        title: "Planting that is chosen to thrive",
-        body: "Species selected for a Mumbai monsoon and a Mumbai April, with irrigation and soil depth planned at the podium stage, so every garden takes root for good.",
+        title: "Planting chosen to thrive",
+        body: "Species picked for Mumbai's monsoon and summer heat, with irrigation and soil depth planned at the podium stage — so gardens take root for good.",
       },
       {
         id: "safety",
         eyebrow: "Safety",
-        title: "Safety, always — drawn first",
-        body: "Fire tender access, refuge floors and hydrant runs are set before the home layouts, in strict adherence to IS codes and NBC — safety is never an afterthought.",
+        title: "Safety, drawn first",
+        body: "Fire-tender access, refuge floors and hydrant lines are planned before the homes, to IS codes and the NBC. Safety is never an afterthought.",
       },
     ],
   },
 
-  coda: "Built to last, designed for life — each of these is drawn in from the start, which is why our homes still feel right, five decades on.",
+  coda: "Built to last, designed for life — which is why our homes still feel right, five decades on.",
   cta: { label: "Explore our addresses", href: "/projects" },
 };
 

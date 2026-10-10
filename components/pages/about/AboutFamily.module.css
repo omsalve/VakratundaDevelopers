@@ -1,0 +1,173 @@
+/* /about — the Chairman and the Director, husband and wife. See AboutFamily.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* ---- The line, carried on from the story --------------------------------- */
+
+.thread {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--spine-inset) + var(--gutter));
+  width: 2px;
+  height: 100%;
+  color: var(--accent-rose);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Everything hangs the same distance off the line as the story above. */
+.head,
+.pair {
+  padding-inline-start: calc(var(--spine-inset) + var(--space-6));
+}
+
+/* ---- The head ------------------------------------------------------------ */
+
+.head {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.label::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-6) * -1);
+  inset-block-start: 50%;
+  width: var(--space-5);
+  height: 1px;
+  background: var(--accent-rose);
+  opacity: 0.55;
+}
+
+.heading {
+  max-width: 20ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The pair ------------------------------------------------------------ */
+
+.pair {
+  --portrait-w: 19rem;
+
+  display: grid;
+  grid-template-columns: minmax(0, var(--portrait-w)) auto minmax(0, var(--portrait-w));
+  /* Hugs the line rather than spreading the pair across the shell, which
+     would hand all the spare width to the ampersand's column. */
+  justify-content: start;
+  /* Top-aligned: the portraits must start level even when one name wraps. */
+  align-items: start;
+  column-gap: clamp(var(--space-4), 3vw, var(--space-8));
+}
+
+/* Both plates rounded alike. PortraitPlate squares off an image the CMS has
+   flagged as a cut-out, which at this ratio is a photograph like the other. */
+.person .portrait {
+  border-radius: var(--radius-m);
+}
+
+.person {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  min-width: 0;
+}
+
+/* The ampersand joins the two at the height of the portraits, not of the
+   captions: it is drawn against the photographs, which is where the eye is. */
+.amp {
+  align-self: start;
+  /* Half the height of a 2:3 portrait, less half the glyph. */
+  margin-top: calc(var(--portrait-w) * 0.75 - 0.6em);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(2.5rem, 1.6rem + 3vw, 4.5rem);
+  line-height: 1;
+  color: var(--accent-text);
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-navy);
+}
+
+.role {
+  margin-top: var(--space-1);
+}
+
+.line {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  max-width: 34ch;
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .thread {
+    inset-inline-start: calc(var(--gutter) * 0.5);
+  }
+
+  .head,
+  .pair {
+    padding-inline-start: var(--space-6);
+  }
+
+  /* Still side by side: two half-width portraits rather than two screens. */
+  .pair {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    justify-content: stretch;
+    column-gap: var(--space-2);
+  }
+
+  /* Each column is a little over a third of the screen wide here, so the
+     middle of a 2:3 portrait sits about a quarter of the width down. */
+  .amp {
+    margin-top: calc(26vw - 0.6em);
+    font-size: 1.75rem;
+  }
+
+  .person {
+    gap: var(--space-4);
+  }
+
+  .name {
+    font-size: 1.125rem;
+  }
+
+  .line {
+    font-size: var(--fs-caption);
+  }
+}

@@ -9,13 +9,11 @@
  * applicant tracking system it does not run. Replace the array when the real
  * vacancies exist, and delete this notice.
  *
- * THERE IS NO CONTACT FORM, DELIBERATELY. A form needs somewhere to post; the
- * project has no submission endpoint and no enquiries collection, and a form
- * that silently drops what a society writes into it is worse than no form at
- * all. Every channel on the contact page is therefore a real address the
- * office already reads, pre-subjected so the right person opens it. Wiring a
- * real form is a small piece of work — a Payload collection and a server
- * action — and it should be done before launch.
+ * THE CONTACT FORM SENDS BY EMAIL. It posts to a server action that mails the
+ * office over SMTP (lib/sendEnquiry.ts, lib/mailer.ts); nothing is stored in
+ * the CMS. Every channel on the contact page is still a real address the
+ * office already reads, pre-subjected so the right person opens it, and every
+ * form failure names that address.
  *
  * The one telephone number the group has not published anywhere in the brief
  * is absent for the same reason: it is not invented here.
@@ -263,15 +261,15 @@ export const contactPage: ContactPageContent = {
         action: "Read",
       },
     ],
-    note: `Everything above reaches ${OFFICE_EMAIL}. There is no contact form on this site: an enquiry from a society committee is worth more than a form submission, and it is answered by a person.`,
+    note: `Everything above reaches ${OFFICE_EMAIL}, and every enquiry is answered by a person.`,
   },
 
   form: {
     label: "Or write it here",
     heading: "Tell us your story, in your own words",
     standfirst:
-      "The same office, reached the other way round: fill this in and it is laid out into an email for you, addressed and titled, ready to send.",
-    note: "The form does not send anything by itself. It opens the enquiry in your own mail client, so you keep a copy of exactly what you sent and we reply to an address you already use.",
+      "The same office, reached the other way round: fill this in and it arrives in our inbox, addressed and titled, with nothing else to do.",
+    note: "Your enquiry goes straight to our office and is answered by a person, by email, at the address you give.",
   },
 
   office: {

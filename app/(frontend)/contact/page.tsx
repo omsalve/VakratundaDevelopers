@@ -20,9 +20,8 @@ import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
  * can see both answers at once. The old page put the address a full screen
  * below the box you were writing in.
  *
- * NOTHING IS POSTED ANYWHERE. The submit composes the fields into a plain-text
- * body and hands it to the visitor's own mail client — behaviour carried over
- * unchanged from the component this replaces.
+ * THE FORM SENDS. The submit goes to a server action that emails the office,
+ * with the visitor as Reply-To — lib/sendEnquiry.ts.
  *
  * Content: the `contact-page` global over lib/pages/people.ts, shape untouched.
  */

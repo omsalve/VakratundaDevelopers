@@ -187,6 +187,91 @@
   color: var(--text-on-cream-muted);
 }
 
+/* ---- The three kinds of project ------------------------------------------ */
+/* Three small tiles on one row, wider than the prose measure but well inside
+   the shell. They are the one filled shape between the dome and the showcase,
+   lit a step above the cream and edged in the rose line-work, which is what
+   catches the eye; the size is kept to a single short line each so they read
+   as a highlight rather than as a second section. */
+.kinds {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 60rem;
+  margin-top: clamp(var(--space-8), 5vw, var(--space-10));
+}
+
+.kindList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kind {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  text-align: start;
+  background: var(--cream-100);
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: var(--radius-m);
+  box-shadow: 0 18px 36px -28px rgba(15, 20, 48, 0.45);
+  overflow: hidden;
+}
+
+/* A short rose bar along the top edge: the tile's one mark of colour. */
+.kind::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: var(--space-5);
+  width: var(--space-7);
+  height: 3px;
+  border-radius: 0 0 2px 2px;
+  background: var(--accent-deep);
+}
+
+.kindIcon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-block-start: var(--space-2);
+  border: var(--hairline) solid var(--cream-line-rose);
+  border-radius: 50%;
+  background: var(--accent-wash);
+  color: var(--accent-deep);
+}
+
+.kindIcon svg {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.kindName {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1.15rem + 0.7vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: var(--tracking-heading);
+  color: var(--text-on-cream);
+}
+
+.kindLine {
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--text-on-cream-muted);
+}
+
 /* The mark that leaves for /about. `.shell` centres its children, so it is
    set on the same axis the prose above it is — the one line of display face
    under a block of body copy, which is all it needs to be seen. */
@@ -317,6 +402,38 @@
   .captionLine {
     letter-spacing: 0.16em;
     text-indent: 0.16em;
+  }
+  /* One tile to a row, set as a strip: the drawing beside the name and
+     line rather than over them, so three tiles cost three short rows of
+     scroll rather than three cards. */
+  .kindList {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .kind {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-4);
+    row-gap: var(--space-1);
+    align-items: center;
+    padding: var(--space-4);
+  }
+  .kind::before {
+    inset-inline-start: var(--space-4);
+  }
+  .kindIcon {
+    grid-row: span 2;
+    align-self: start;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-block-start: var(--space-1);
+  }
+  .kindIcon svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .kindName {
+    font-size: 1.3rem;
   }
   /* Smaller and tighter on a tighter arc: at phone widths the same line has
      roughly half the arc length to sit on, and at the desktop size the fit

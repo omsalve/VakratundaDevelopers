@@ -16,16 +16,15 @@ import styles from "./ExperiencesHours.module.css";
 import FitImage from "@/components/FitImage";
 
 /**
- * /experiences — the day, hour by hour.
+ * /experiences — the moments a home is built for.
  *
- * THE CONTENT ALREADY KNEW WHAT THIS PAGE WAS. Each moment's `eyebrow` is a
- * clock time — 07:40, and so on — and the old page set those as the small
- * caps label in the corner of a card in a two-column grid, which is the one
- * arrangement that throws away the fact that they are times at all.
+ * Each moment's `eyebrow` is its one-word name — Arrival, Play and so on. It
+ * used to be a clock time; the client asked for the times and days to go, and
+ * the word now takes the place the hour had.
  *
- * SO THE TIME IS THE PAGE. Each moment is a full-bleed photograph with its
- * hour set over it at display scale, the copy in a panel beside it, and the
- * sides alternating so the day reads as a sequence of frames rather than a
+ * SO THE NAME IS THE FRAME. Each moment is a full-bleed photograph with its
+ * name set over it at display scale, the copy in a panel beside it, and the
+ * sides alternating so the moments read as a sequence of frames rather than a
  * list of features. It is the only page on the site where type sits over
  * photography — everywhere else a photograph is a plate with its caption
  * underneath — and that single rule is what makes it unmistakable.
@@ -76,11 +75,11 @@ export function ExperiencesHours({
         delay: 0.15,
       });
 
-      // The hour itself arrives large and settles, the way a title card does.
-      const time = hour.querySelector(`.${styles.time}`);
-      if (time) {
+      // The name arrives large and settles, the way a title card does.
+      const mark = hour.querySelector(`.${styles.mark}`);
+      if (mark) {
         gsap.fromTo(
-          time,
+          mark,
           { opacity: 0, scale: 1.14 },
           {
             opacity: 1,
@@ -139,14 +138,14 @@ export function ExperiencesHours({
                       sizes="(max-width: 62rem) 100vw, 62vw"
                       className={styles.image}
                     />
-                    {/* The scrim exists so the hour set over the photograph
+                    {/* The scrim exists so the name set over the photograph
                         keeps its contrast whatever the frame happens to be. */}
                     <span className={styles.scrim} aria-hidden="true" />
 
-                    {/* Decorative: the same time is the moment's own eyebrow
+                    {/* Decorative: the same name is the moment's own eyebrow
                         in the panel, where it is read. */}
                     {item.eyebrow ? (
-                      <span className={`p-numeral ${styles.time}`} aria-hidden="true">
+                      <span className={styles.mark} aria-hidden="true">
                         {item.eyebrow}
                       </span>
                     ) : null}
@@ -162,7 +161,7 @@ export function ExperiencesHours({
 
               <div className={styles.panel}>
                 {item.eyebrow ? (
-                  <p className={`p-numeral ${styles.panelTime}`} data-reveal="up">
+                  <p className={`u-label ${styles.panelLabel}`} data-reveal="up">
                     {item.eyebrow}
                   </p>
                 ) : null}

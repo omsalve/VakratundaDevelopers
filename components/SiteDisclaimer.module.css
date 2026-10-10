@@ -1,0 +1,106 @@
+/* The once-per-visit disclaimer card. See SiteDisclaimer.tsx. */
+
+.card {
+  position: fixed;
+  inset-inline-start: var(--space-4);
+  inset-block-end: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  /* Above the page, the masthead and the arcs; below the lightbox, which is
+     the one thing that should ever cover it. */
+  z-index: calc(var(--z-modal) - 10);
+  width: min(25rem, calc(100vw - 2 * var(--space-4)));
+  padding: var(--space-5);
+  background: var(--navy-800);
+  color: var(--text-on-navy);
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-m);
+  box-shadow:
+    0 24px 48px -24px rgba(6, 10, 30, 0.6),
+    0 2px 6px rgba(6, 10, 30, 0.25);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.card[data-state="entering"],
+.card[data-state="leaving"] {
+  opacity: 0;
+  transform: translate3d(0, 1.25rem, 0);
+}
+
+.card[data-state="leaving"] {
+  pointer-events: none;
+  transition-duration: 420ms;
+}
+
+.label {
+  margin-bottom: var(--space-3);
+}
+
+.body {
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--text-on-navy-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.link {
+  font-size: var(--fs-small);
+  color: var(--accent-rose);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  transition: color var(--dur-fast) ease;
+}
+
+.link:hover {
+  color: var(--accent-rose-bright);
+}
+
+.accept {
+  padding: var(--space-2) var(--space-5);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--navy-900);
+  background: var(--accent-rose);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--dur-fast) ease;
+}
+
+.accept:hover {
+  background: var(--accent-rose-bright);
+}
+
+/* A phone: the full width of the screen, minus the 16px gutter each side. */
+@media (max-width: 47.99rem) {
+  .card {
+    inset-inline-end: var(--space-4);
+    width: auto;
+    padding: var(--space-4);
+  }
+
+  .label {
+    margin-bottom: var(--space-2);
+  }
+
+  .actions {
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .accept {
+    padding-inline: var(--space-4);
+  }
+}

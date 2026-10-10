@@ -1,9 +1,22 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  type FormEvent,
+} from "react";
 import Image from "next/image";
+import {
+  ENQUIRY_LIMITS,
+  ENQUIRY_SUBJECTS,
+  INITIAL_ENQUIRY,
+  enquiryStatusMessage,
+} from "@/lib/enquiry";
 import type { ContactPageContent } from "@/lib/pages";
 import { maskReveal, revealOnEnter, useGsapScope } from "@/lib/motion";
+import { sendEnquiry } from "@/lib/sendEnquiry";
 import Swash from "@/components/Swash";
 import styles from "./ContactDesk.module.css";
 
@@ -23,10 +36,16 @@ import styles from "./ContactDesk.module.css";
  * the only two-panel working layout on the site, and it is what makes this
  * page unmistakable next to the fourteen others.
  *
- * THE SUBMIT BEHAVIOUR IS CARRIED OVER UNCHANGED from the old ContactForm:
- * the fields are composed into a plain-text body and handed to the visitor's
- * own mail client. There is no endpoint, nothing is posted anywhere, and the
- * result is announced in a live region because the page does not navigate.
+ * THE SUBMIT SENDS. The fields go to the `sendEnquiry` server action, which
+ * emails them to the office with the visitor as Reply-To (lib/sendEnquiry.ts).
+ * The result is announced in a live region because the page does not
+ * navigate, and every failure names the office address beside the form.
+ *
+ * WHY onSubmit AND NOT `<form action>`. React resets an action form's fields
+ * once the action settles — on a failed send too, which would wipe a long
+ * enquiry at the moment somebody most needs it back. So the submit is
+ * dispatched by hand inside a transition, and the fields are cleared only
+ * when the office actually has the message.
  *
  * THE FORM IS A FIELD, NOT A PANEL — no boxes and no fills, only a label, a
  * line of type and the hairline under it, with the rose marking focus exactly
@@ -34,16 +53,6 @@ import styles from "./ContactDesk.module.css";
  * inherited from the component this replaces and is the reason the form reads
  * as part of the page rather than as something dropped onto it.
  */
-
-const SUBJECTS = [
-  "Buying a home or commercial space",
-  "Society redevelopment",
-  "Land and joint development",
-  "Buying as a non-resident",
-  "Careers",
-  "Press and media",
-  "Something else",
-] as const;
 
 export function ContactDesk({
   form,
@@ -55,7 +64,12 @@ export function ContactDesk({
   email: string;
 }) {
   const root = useRef<HTMLElement | null>(null);
-  const [sent, setSent] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [state, dispatch, pending] = useActionState(sendEnquiry, INITIAL_ENQUIRY);
+
+  useEffect(() => {
+    if (state.status === "sent") formRef.current?.reset();
+  }, [state]);
 
   useGsapScope(root, () => {
     const rootEl = root.current;
@@ -86,25 +100,9 @@ export function ContactDesk({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
     const data = new FormData(event.currentTarget);
-    const get = (key: string) => String(data.get(key) ?? "").trim();
-
-    const body = [
-      "Name: " + get("name"),
-      "Email: " + get("email"),
-      get("phone") ? "Phone: " + get("phone") : null,
-      get("locality") ? "Locality or project: " + get("locality") : null,
-      "",
-      get("message"),
-    ]
-      .filter((line): line is string => line !== null)
-      .join("\n");
-
-    const subject = encodeURIComponent("Enquiry — " + get("subject"));
-    window.location.href =
-      "mailto:" + email + "?subject=" + subject + "&body=" + encodeURIComponent(body);
-
-    setSent(true);
+    startTransition(() => dispatch(data));
   }
 
   return (
@@ -133,7 +131,7 @@ export function ContactDesk({
             </p>
           </div>
 
-          <form className={styles.form} onSubmit={handleSubmit}>
+          <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
             <p className={styles.row} data-reveal="up">
               <label className={styles.label} htmlFor="cf-name">
                 Your name
@@ -142,6 +140,7 @@ export function ContactDesk({
                 className={styles.input}
                 id="cf-name"
                 name="name"
+                maxLength={ENQUIRY_LIMITS.name}
                 type="text"
                 autoComplete="name"
                 required
@@ -156,6 +155,7 @@ export function ContactDesk({
                 className={styles.input}
                 id="cf-email"
                 name="email"
+                maxLength={ENQUIRY_LIMITS.email}
                 type="email"
                 autoComplete="email"
                 required
@@ -170,6 +170,7 @@ export function ContactDesk({
                 className={styles.input}
                 id="cf-phone"
                 name="phone"
+                maxLength={ENQUIRY_LIMITS.phone}
                 type="tel"
                 autoComplete="tel"
               />
@@ -184,6 +185,7 @@ export function ContactDesk({
                 className={styles.input}
                 id="cf-locality"
                 name="locality"
+                maxLength={ENQUIRY_LIMITS.locality}
                 type="text"
               />
             </p>
@@ -196,9 +198,9 @@ export function ContactDesk({
                 className={styles.input}
                 id="cf-subject"
                 name="subject"
-                defaultValue={SUBJECTS[0]}
+                defaultValue={ENQUIRY_SUBJECTS[0]}
               >
-                {SUBJECTS.map((subject) => (
+                {ENQUIRY_SUBJECTS.map((subject) => (
                   <option key={subject} value={subject}>
                     {subject}
                   </option>
@@ -214,14 +216,28 @@ export function ContactDesk({
                 className={`${styles.input} ${styles.textarea}`}
                 id="cf-message"
                 name="message"
+                maxLength={ENQUIRY_LIMITS.message}
                 rows={5}
                 required
               />
             </p>
 
+            {/* The honeypot (lib/sendEnquiry.ts): out of sight, out of the tab
+                order and out of the accessibility tree, so only a bot fills it. */}
+            <p className="u-visually-hidden" aria-hidden="true">
+              <label htmlFor="cf-website">Leave this empty</label>
+              <input
+                id="cf-website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </p>
+
             <div className={styles.actions} data-reveal="up">
-              <button type="submit" className={styles.submit}>
-                <span>Compose the enquiry</span>
+              <button type="submit" className={styles.submit} disabled={pending}>
+                <span>{pending ? "Sending…" : "Send the enquiry"}</span>
                 <svg
                   className={styles.icon}
                   viewBox="0 0 24 24"
@@ -242,9 +258,7 @@ export function ContactDesk({
                   navigate, so nothing else tells a screen reader what
                   happened. */}
               <p className={styles.status} role="status">
-                {sent
-                  ? `Your mail client should now be open, addressed to ${email}. If it did not open, write to that address directly.`
-                  : ""}
+                {enquiryStatusMessage(state, email)}
               </p>
             </div>
           </form>

@@ -308,6 +308,9 @@ async function readSiteContent(): Promise<SiteContent> {
       },
       arcText: text(home.concept?.arcText, fallback.concept.arcText ?? ""),
       body: lines(home.concept?.body, fallback.concept.body),
+      // Not a CMS field yet: adding one changes the database schema, which
+      // has to be pushed to the hosted database first. Shipped copy until then.
+      projectKinds: fallback.concept.projectKinds,
       legacy: {
         kicker: text(home.concept?.legacy?.kicker, fallback.concept.legacy.kicker),
         heading: heading(

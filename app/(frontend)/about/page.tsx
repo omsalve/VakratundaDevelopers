@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AboutFamily from "@/components/pages/about/AboutFamily";
 import AboutHero from "@/components/pages/about/AboutHero";
 import AboutStations from "@/components/pages/about/AboutStations";
 import AboutThread from "@/components/pages/about/AboutThread";
@@ -26,8 +27,12 @@ import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
  * CardItems, presented as a threaded story and four stations instead of as a
  * two-column band and a card grid. Nothing has to be re-entered in /admin.
  *
- * A Server Component; the three sections below are client components because
- * each owns its own GSAP scope.
+ * Between the story and the stations, the Chairman and the Director — husband
+ * and wife — side by side on the same line (AboutFamily). Their names and
+ * portraits are the landing page's `team`, so nothing is entered twice.
+ *
+ * A Server Component; the sections below are client components because each
+ * owns its own GSAP scope.
  */
 
 export const revalidate = 60;
@@ -48,6 +53,13 @@ export default async function AboutPage() {
       <AboutHero content={page.hero} />
 
       <AboutThread content={page.story} />
+
+      {/* The Chairman and the Director, husband and wife — read from the
+          landing page's team, so their portraits are uploaded once. */}
+      <AboutFamily
+        content={page.family}
+        people={[site.team.chairman, site.team.director]}
+      />
 
       <AboutStations
         heading={page.principles.heading}

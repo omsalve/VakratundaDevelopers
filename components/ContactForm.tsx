@@ -1,39 +1,39 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import {
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  type FormEvent,
+} from "react";
+import {
+  ENQUIRY_LIMITS,
+  ENQUIRY_SUBJECTS,
+  INITIAL_ENQUIRY,
+  enquiryStatusMessage,
+} from "@/lib/enquiry";
 import { revealOnEnter, useGsapScope } from "@/lib/motion";
+import { sendEnquiry } from "@/lib/sendEnquiry";
 import styles from "./ContactForm.module.css";
 
 /**
  * The enquiry form.
  *
- * IT COMPOSES, IT DOES NOT POST. The project has no submission endpoint and
- * no store to put an enquiry in, and a form that accepts what a society
- * committee writes into it and silently drops it is worse than no form at
- * all. So the submit builds a `mailto:` to the office — subject already set
- * from the chosen line, the fields laid out in the body — and hands the
- * enquiry to the sender's own client, where they keep a copy of what they
- * sent. Nothing is lost, and nothing is claimed to have been received.
+ * NOT CURRENTLY RENDERED — /contact uses ContactDesk, which carries the same
+ * fields beside the office panel. Kept in step with it so it can come back.
  *
- * WHEN THERE IS AN ENDPOINT, this becomes a server action: swap the body of
- * `handleSubmit` for the action and the markup below is unchanged. The fields
- * are already the ones a Payload `enquiries` collection would carry.
+ * IT SENDS. The submit goes to the `sendEnquiry` server action, which emails
+ * the office with the visitor as Reply-To (lib/sendEnquiry.ts). It is
+ * dispatched from onSubmit rather than `<form action>` so a failed send does
+ * not reset the fields; they are cleared only once the office has the
+ * message. See ContactDesk for the longer note.
  *
  * The controls are the site's own vocabulary — a hairline under each field,
  * no box, no fill, the rose on focus — and the button is SectionCoda's ghost
  * pill. The entrance is the house `revealOnEnter`, on the same trigger and
  * stagger every other band uses.
  */
-
-const SUBJECTS = [
-  "Buying a home or commercial space",
-  "Society redevelopment",
-  "Land and joint development",
-  "Buying as a non-resident",
-  "Careers",
-  "Press and media",
-  "Something else",
-] as const;
 
 export function ContactForm({
   email,
@@ -42,7 +42,7 @@ export function ContactForm({
   standfirst,
   note,
 }: {
-  /** The office address the enquiry is composed to. */
+  /** The office address, named in every failure message as the way round. */
   email: string;
   label: string;
   heading: string;
@@ -50,7 +50,12 @@ export function ContactForm({
   note: string;
 }) {
   const root = useRef<HTMLDivElement | null>(null);
-  const [sent, setSent] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [state, dispatch, pending] = useActionState(sendEnquiry, INITIAL_ENQUIRY);
+
+  useEffect(() => {
+    if (state.status === "sent") formRef.current?.reset();
+  }, [state]);
 
   useGsapScope(root, () => {
     if (!root.current) return;
@@ -62,25 +67,9 @@ export function ContactForm({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (pending) return;
     const data = new FormData(event.currentTarget);
-    const get = (key: string) => String(data.get(key) ?? "").trim();
-
-    const body = [
-      "Name: " + get("name"),
-      "Email: " + get("email"),
-      get("phone") ? "Phone: " + get("phone") : null,
-      get("locality") ? "Locality or project: " + get("locality") : null,
-      "",
-      get("message"),
-    ]
-      .filter((line): line is string => line !== null)
-      .join("\n");
-
-    const subject = encodeURIComponent("Enquiry — " + get("subject"));
-    window.location.href =
-      "mailto:" + email + "?subject=" + subject + "&body=" + encodeURIComponent(body);
-
-    setSent(true);
+    startTransition(() => dispatch(data));
   }
 
   return (
@@ -100,7 +89,12 @@ export function ContactForm({
         </p>
       </div>
 
-      <form className={styles.form} onSubmit={handleSubmit} data-reveal="up">
+      <form
+        ref={formRef}
+        className={styles.form}
+        onSubmit={handleSubmit}
+        data-reveal="up"
+      >
         <p className={styles.row}>
           <label className={styles.label} htmlFor="cf-name">
             Your name
@@ -109,6 +103,7 @@ export function ContactForm({
             className={styles.input}
             id="cf-name"
             name="name"
+            maxLength={ENQUIRY_LIMITS.name}
             type="text"
             autoComplete="name"
             required
@@ -123,6 +118,7 @@ export function ContactForm({
             className={styles.input}
             id="cf-email"
             name="email"
+            maxLength={ENQUIRY_LIMITS.email}
             type="email"
             autoComplete="email"
             required
@@ -137,6 +133,7 @@ export function ContactForm({
             className={styles.input}
             id="cf-phone"
             name="phone"
+            maxLength={ENQUIRY_LIMITS.phone}
             type="tel"
             autoComplete="tel"
           />
@@ -150,6 +147,7 @@ export function ContactForm({
             className={styles.input}
             id="cf-locality"
             name="locality"
+            maxLength={ENQUIRY_LIMITS.locality}
             type="text"
           />
         </p>
@@ -162,9 +160,9 @@ export function ContactForm({
             className={styles.input}
             id="cf-subject"
             name="subject"
-            defaultValue={SUBJECTS[0]}
+            defaultValue={ENQUIRY_SUBJECTS[0]}
           >
-            {SUBJECTS.map((subject) => (
+            {ENQUIRY_SUBJECTS.map((subject) => (
               <option key={subject} value={subject}>
                 {subject}
               </option>
@@ -180,14 +178,28 @@ export function ContactForm({
             className={`${styles.input} ${styles.textarea}`}
             id="cf-message"
             name="message"
+            maxLength={ENQUIRY_LIMITS.message}
             rows={5}
             required
           />
         </p>
 
+        {/* The honeypot (lib/sendEnquiry.ts): out of sight, out of the tab
+            order and out of the accessibility tree, so only a bot fills it. */}
+        <p className="u-visually-hidden" aria-hidden="true">
+          <label htmlFor="cf-website">Leave this empty</label>
+          <input
+            id="cf-website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </p>
+
         <div className={styles.actions}>
-          <button type="submit" className={styles.submit}>
-            <span>Compose the enquiry</span>
+          <button type="submit" className={styles.submit} disabled={pending}>
+            <span>{pending ? "Sending…" : "Send the enquiry"}</span>
             <svg
               className={styles.icon}
               viewBox="0 0 24 24"
@@ -207,9 +219,7 @@ export function ContactForm({
           {/* Announced rather than left to the eye: the page does not navigate,
               so nothing else tells a screen reader what happened. */}
           <p className={styles.status} role="status">
-            {sent
-              ? `Your mail client should now be open, addressed to ${email}. If it did not open, write to that address directly.`
-              : ""}
+            {enquiryStatusMessage(state, email)}
           </p>
         </div>
       </form>

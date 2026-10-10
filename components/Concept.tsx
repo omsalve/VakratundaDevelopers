@@ -6,6 +6,7 @@ import type { ConceptContent } from "@/lib/content";
 import { gsap, revealOnEnter, useGsapScope } from "@/lib/motion";
 import ConceptShowcase from "./ConceptShowcase";
 import PageLink from "./PageLink";
+import ProjectKindIcons from "./ProjectKindIcons";
 import styles from "./Concept.module.css";
 
 /**
@@ -230,6 +231,17 @@ export function Concept({ content }: { content: ConceptContent }) {
 
     revealOnEnter(`.${styles.stack} > *`, rest.current, { stagger: 0.1 });
 
+    // The project-kind tiles take the house entrance on their own trigger:
+    // they sit a screen below the prose, and on the prose's trigger they
+    // would finish arriving before anyone had scrolled down to them.
+    const kinds = rest.current.querySelector(`.${styles.kinds}`);
+    if (kinds) {
+      revealOnEnter(kinds.querySelectorAll("[data-reveal]"), kinds, {
+        start: "top 85%",
+        stagger: 0.08,
+      });
+    }
+
     // The fit test above is a type measurement, and the display face arrives
     // after first paint. Without this the line is sized against a fallback
     // font's metrics and appears a little early or a little late.
@@ -325,6 +337,27 @@ export function Concept({ content }: { content: ConceptContent }) {
                 {paragraph}
               </p>
             ))}
+          </div>
+
+          {/* The three kinds of ground the group builds on — greenfield,
+              brownfield, redevelopment — as three small lit tiles. Small, so
+              they sit under the prose rather than competing with the dome
+              above; filled and drawn, so the eye still catches them. */}
+          <div className={styles.kinds}>
+            <p className={`u-label ${styles.kindsLabel}`} data-reveal="up">
+              {content.projectKinds.label}
+            </p>
+            <ul className={styles.kindList}>
+              {content.projectKinds.items.map((kind) => (
+                <li key={kind.id} className={styles.kind} data-reveal="up">
+                  <span className={styles.kindIcon}>
+                    <ProjectKindIcons name={kind.icon} />
+                  </span>
+                  <h3 className={styles.kindName}>{kind.name}</h3>
+                  <p className={styles.kindLine}>{kind.line}</p>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* The way out of the prose and into the long version of it. Placed

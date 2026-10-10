@@ -8,13 +8,13 @@ import Swash from "@/components/Swash";
 import styles from "./ExperiencesStandard.module.css";
 
 /**
- * /experiences — what comes as standard, after the day is over.
+ * /experiences — what comes as standard, in every home.
  *
  * THE PAGE'S ONE CHANGE OF GROUND, and it is spent on the change of register.
- * Everything above is a day: photographs, an hour set over each one, the light
- * climbing and falling. This is the specification — what is true of every home
- * whatever hour it is — so it is on cream, in daylight, with no photography at
- * all and nothing moving but the rules.
+ * Everything above is lived moments: photographs, a name set over each one,
+ * the light climbing and falling. This is the specification — what is true of
+ * every home, whatever the moment — so it is on cream, in daylight, with no
+ * photography at all and nothing moving but the rules.
  *
  * The site's rule that the ground changes rarely enough to be an event is what
  * makes this work: after four full-bleed frames on deep navy, arriving at a

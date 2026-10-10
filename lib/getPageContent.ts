@@ -113,6 +113,8 @@ const pages = {
   about: definePage("about-page", aboutPage, (doc, shipped) => ({
     story: mergeStory(doc.story, shipped.story),
     principles: mergeCardSection(doc.principles, shipped.principles),
+    // No field in the about-page global yet; see AboutPageContent.family.
+    family: shipped.family,
   })),
 
   projects: definePage("projects-page", projectsPage, (doc, shipped) => ({
