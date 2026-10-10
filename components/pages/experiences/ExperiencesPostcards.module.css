@@ -1,0 +1,549 @@
+/* /experiences — the postcards. See ExperiencesPostcards.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad-lg);
+  background: var(--navy-900);
+  /* A card on its way off the pile may travel past the shell. */
+  overflow-x: clip;
+}
+
+/* A low warm light across the table, falling under the pile. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    52% 42% at 34% 64%,
+    rgba(228, 168, 161, 0.09),
+    transparent 72%
+  );
+}
+
+/* ---- The head ------------------------------------------------------------
+   Measures on the type, never on the shell: a narrower shell would re-centre
+   the head and pull it inboard of the pile it heads. */
+
+.head {
+  position: relative;
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-bottom: var(--space-5);
+}
+
+.standfirst {
+  max-width: var(--measure-lead);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+}
+
+/* ---- The table: the pile beside its back ------------------------------- */
+
+.table {
+  position: relative;
+  display: grid;
+  gap: var(--space-8);
+}
+
+/* The fan's step is set here, so the pile and the controls under it leave
+   the same room on the right. */
+.deck {
+  --fan-x: clamp(6px, 1vw, 14px);
+  --fan-y: clamp(5px, 0.8vw, 11px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+/* The pile holds the top card's shape; the cards under it fan out into the
+   room left for them on the right and below. */
+.pile {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  margin-inline-end: calc(var(--fan-x) * 3);
+  margin-block-end: calc(var(--fan-y) * 3);
+}
+
+/* One card. Where it lies is a function of its depth in the pile, so dealing
+   is nothing more than every card being handed a new depth: the transition
+   carries each one to its new place. Its lean straightens most of the way
+   when it reaches the top. */
+.card {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  z-index: calc(10 - var(--depth));
+  transform:
+    translate3d(
+      calc(var(--depth) * var(--fan-x)),
+      calc(var(--depth) * var(--fan-y)),
+      0
+    )
+    rotate(calc(var(--lean) * (0.3 + 0.7 * min(var(--depth), 1)) * 1deg))
+    scale(calc(1 - var(--depth) * 0.025));
+  transform-origin: 50% 60%;
+  transition: transform 0.95s var(--ease-out-expo);
+}
+
+/* Dealt: off the top to the left, still above the pile. When the state
+   clears the card drops under the others and slides home to the bottom. */
+.card[data-motion="leaving"] {
+  z-index: 20;
+  transform: translate3d(-64%, -7%, 0) rotate(-9deg);
+  transition: transform 0.42s cubic-bezier(0.55, 0, 0.8, 0.2);
+}
+
+/* Drawn out from behind, still under the pile, before it is laid on top. */
+.card[data-motion="arriving"] {
+  transform: translate3d(-64%, 5%, 0) rotate(-6deg);
+  transition: transform 0.38s cubic-bezier(0.55, 0, 0.8, 0.2);
+}
+
+/* The card stock: cream, a narrow border, a soft corner. */
+.stock {
+  position: absolute;
+  inset: 0;
+  padding: clamp(5px, 0.55vw, 8px);
+  background: var(--cream-100);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-m);
+}
+
+.card[data-depth="0"] .stock {
+  box-shadow: var(--shadow-l);
+}
+
+.photo {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--navy-800);
+}
+
+/* Keeps the name legible over any photograph. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(12, 18, 48, 0.7),
+    rgba(12, 18, 48, 0.14) 46%,
+    transparent 64%
+  );
+}
+
+/* A moment with no photograph: the name on the bare stock. */
+.lettercard {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--cream-200);
+}
+
+/* The name, lettered across the front at display scale. */
+.name {
+  position: absolute;
+  z-index: 3;
+  inset-inline-start: clamp(1.1rem, 3vw, 2.25rem);
+  inset-block-end: clamp(0.9rem, 2.6vw, 1.9rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.1rem + 4.4vw, 5rem);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  color: var(--cream-100);
+  text-shadow: 0 2px 24px rgba(12, 18, 48, 0.5);
+  pointer-events: none;
+}
+
+.name[data-on="stock"] {
+  color: var(--navy-700);
+  text-shadow: none;
+}
+
+/* The whole top card is the button that deals the next one. */
+.hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  cursor: pointer;
+}
+
+.hit:focus-visible {
+  outline-offset: 5px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stock {
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+
+  .card[data-depth="0"]:not([data-motion]):hover .stock {
+    transform: translate3d(0, -6px, 0) rotate(-0.6deg);
+  }
+}
+
+/* ---- The controls -------------------------------------------------------- */
+
+.controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  margin-inline-end: calc(var(--fan-x) * 3);
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding: 0;
+  border: var(--hairline) solid var(--navy-line);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-on-navy);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
+}
+
+.arrow:hover {
+  border-color: var(--accent-rose);
+  background-color: var(--accent-wash);
+  color: var(--accent-rose-bright);
+}
+
+.index {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.indexButton {
+  position: relative;
+  min-block-size: 2.75rem;
+  padding: var(--space-2) 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--text-on-navy-muted);
+  transition: color var(--dur-base) var(--ease-out-expo);
+}
+
+/* The rose rule under the card that is up, drawn along from its left. */
+.indexButton::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0.45rem;
+  block-size: var(--hairline);
+  background: var(--accent-rose);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.indexButton:hover {
+  color: var(--text-on-navy);
+}
+
+.indexButton[aria-current="true"] {
+  font-style: italic;
+  color: var(--accent-rose);
+}
+
+.indexButton[aria-current="true"]::after {
+  transform: scaleX(1);
+}
+
+.hint {
+  margin: 0;
+  margin-inline-end: calc(var(--fan-x) * 3);
+  text-align: center;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+}
+
+/* The hint names the gesture the visitor has: a tap, or a click. */
+.hintPointer {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hintTouch {
+    display: none;
+  }
+
+  .hintPointer {
+    display: inline;
+  }
+}
+
+/* ---- The back ------------------------------------------------------------ */
+
+.back {
+  position: relative;
+  min-width: 0;
+  padding: clamp(1.5rem, 2.8vw, 2.5rem);
+  background: var(--cream-200);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-l);
+}
+
+/* `hidden` is a UA rule, and the display below would outrank it. */
+.verso[hidden] {
+  display: none;
+}
+
+/* Contains the floated postage, so the message can wrap round the stamp. */
+.verso {
+  display: flow-root;
+}
+
+.postage {
+  position: relative;
+  float: right;
+  inline-size: 132px;
+  block-size: 76px;
+  margin: calc(var(--space-2) * -1) calc(var(--space-2) * -1) var(--space-4) var(--space-4);
+}
+
+/* The perforation is a mask: a band of holes round a solid face. The size
+   is a whole number of holes each way, so a hole lands on every corner. */
+.stampWrap {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  filter: drop-shadow(0 1px 1.5px rgba(15, 20, 48, 0.24));
+}
+
+.stamp {
+  --pitch: 8px;
+  --hole: 2.4px;
+  display: block;
+  inline-size: calc(var(--pitch) * 8);
+  block-size: calc(var(--pitch) * 9);
+  padding: 5px;
+  background: #fffdf8;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle at center, #0000 var(--hole), #000 calc(var(--hole) + 0.6px))
+      calc(var(--pitch) / -2) calc(var(--pitch) / -2) / var(--pitch) var(--pitch) border-box;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle at center, #0000 var(--hole), #000 calc(var(--hole) + 0.6px))
+      calc(var(--pitch) / -2) calc(var(--pitch) / -2) / var(--pitch) var(--pitch) border-box;
+}
+
+.stampField {
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  background: var(--navy-700);
+  box-shadow: inset 0 0 0 1px rgba(228, 168, 161, 0.35);
+}
+
+.stampMark {
+  inline-size: 30px;
+  block-size: 30px;
+}
+
+/* The postmark, in rose ink, over the stamp's left edge. */
+.postmark {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 6px;
+  inset-inline-start: 0;
+  inline-size: 112px;
+  block-size: auto;
+  overflow: visible;
+  fill: none;
+  stroke: rgba(168, 87, 76, 0.78);
+  stroke-width: 1.4;
+  transform: rotate(var(--turn));
+  transform-origin: 28% 50%;
+}
+
+.postmarkRing,
+.postmarkTown {
+  fill: rgba(168, 87, 76, 0.86);
+  stroke: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.postmarkRing {
+  font-size: 7px;
+  letter-spacing: 0.06em;
+}
+
+.postmarkTown {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+}
+
+.wave {
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+/* ---- The message --------------------------------------------------------- */
+
+.title {
+  margin: var(--space-1) 0 var(--space-4);
+  color: var(--text-on-cream);
+  text-wrap: balance;
+}
+
+.body {
+  clear: right;
+  margin: 0;
+  max-width: 48ch;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-on-cream-muted);
+  text-wrap: pretty;
+}
+
+/* The printed line that says what is on the front, and the address. */
+.foot {
+  clear: both;
+  display: grid;
+  gap: var(--space-5);
+  margin-block-start: var(--space-7);
+  padding-block-start: var(--space-4);
+  border-block-start: var(--hairline) solid var(--cream-line);
+}
+
+.printLine {
+  margin: 0;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-on-cream-muted);
+}
+
+.address {
+  justify-self: end;
+  inline-size: min(100%, 16rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.address li {
+  padding-block: 0.55em 0.2em;
+  border-block-end: var(--hairline) solid var(--cream-line-rose);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  color: var(--accent-deep);
+}
+
+/* ---- Dealing: the writing is wiped on, the postmark is struck ------------
+   Only once a card has been dealt by hand, so the first card's back arrives
+   with the section's own entrance rather than playing on load. */
+
+.section[data-dealt="true"] .verso:not([hidden]) > :not(.postage) {
+  animation: write 0.9s var(--ease-out-expo) both;
+}
+
+.section[data-dealt="true"] .verso:not([hidden]) .postmark {
+  animation: strike 0.6s var(--ease-out-expo) 0.12s both;
+}
+
+@keyframes write {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes strike {
+  from {
+    transform: rotate(var(--turn)) scale(1.24);
+    clip-path: circle(0% at 28% 50%);
+  }
+  to {
+    transform: rotate(var(--turn)) scale(1);
+    clip-path: circle(120% at 28% 50%);
+  }
+}
+
+/* ---- Wide ---------------------------------------------------------------- */
+
+@media (min-width: 64rem) {
+  .table {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(3rem, 5vw, 5.5rem);
+    align-items: start;
+  }
+
+  /* Set a little lower than the pile, so the two cards do not square up. */
+  .back {
+    margin-block-start: clamp(1.5rem, 3vw, 3rem);
+  }
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
+@media (max-width: 47.99rem) {
+  .index {
+    gap: 0 var(--space-4);
+  }
+
+  .indexButton {
+    font-size: var(--fs-small);
+  }
+
+  .postage {
+    inline-size: 118px;
+    block-size: 70px;
+  }
+
+  .postmark {
+    inline-size: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card[data-motion],
+  .stock {
+    transition: none;
+  }
+
+  .verso * {
+    animation: none !important;
+  }
+}

@@ -178,15 +178,15 @@ export const contactPage: ContactPageContent = {
   seo: {
     title: "Contact Us",
     description:
-      "Begin your journey with Vakratunda Group in Mahalaxmi — enquiries about buying, society redevelopment, land and joint development, or joining our team.",
+      "Begin your journey with Vakratunda Group in Mahalakshmi — enquiries about buying, society redevelopment, land and joint development, or joining our team.",
   },
 
   hero: {
     label: "Contact Us",
     heading: { before: "Let’s build your ", swash: "future", after: ", together" },
     standfirst:
-      "Every enquiry below reaches our own office in Mahalaxmi, not a call centre. Choose the line that fits, and it opens addressed to the person who can help.",
-    meta: ["Mahalaxmi", "Mumbai — 400 011", "MCHI-CREDAI"],
+      "Every enquiry below reaches our own office in Mahalakshmi, not a call centre. Choose the line that fits, and it opens addressed to the person who can help.",
+    meta: ["Mahalakshmi", "Mumbai — 400011", "MCHI-CREDAI"],
   },
 
   channels: {
@@ -274,14 +274,14 @@ export const contactPage: ContactPageContent = {
 
   office: {
     label: "The office",
-    heading: { before: "", swash: "Mahalaxmi" },
+    heading: { before: "", swash: "Mahalakshmi" },
     standfirst:
       "We have one office, and it is where every blueprint begins. Visitors are welcome by appointment — write first and we will confirm a time.",
     addressLines: [
       "Vakratunda Group",
-      "2505, Prestige Turf Towers",
-      "Mahalaxmi, Mumbai — 400 011",
-      "Maharashtra, India",
+      "2505, Prestige Turf Towers, Turf Estate",
+      "315, Shakti Mills Ln, Mahalakshmi",
+      "Mumbai, Maharashtra 400011, India",
     ],
     hours: [
       "Monday to Friday, by appointment",

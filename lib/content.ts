@@ -1271,10 +1271,12 @@ export const siteContent: SiteContent = {
 
      THE PHOTOGRAPHY LANDED, AND THIS IS THE SECTION IT WAS SPENT ON FIRST,
      which is what the note that stood here asked for. All five frames are
-     Anantaraa, all five are the same hour, and not one of them appears again
-     anywhere on this page: `practice`, which follows immediately, keeps the
-     older library entirely to itself, so the two sections no longer share a
-     single photograph between them.
+     the same hour, and not one of them appears again anywhere on this page.
+     Three are Anantaraa; two — the bedroom behind its wall of glass and the
+     fire-lit roof lounge — came with the October 2026 gallery, and took the
+     two frames whose photographs had stopped matching the side they stood on
+     (an interior under "Exterior", an open terrace under "one wall of
+     glass"). They are the same light as the rest, which is why they could.
 
      THE ONE LIGHT IS THE POINT, not a coincidence of what arrived. A spread
      arguing that rooms are felt rather than seen cannot be assembled out of
@@ -1314,8 +1316,8 @@ export const siteContent: SiteContent = {
       },
       glass: {
         image: {
-          src: siteImage("anantaraa/gym169.png"),
-          alt: "The residents’ gym: treadmills and weights ranged along a full-height wall of glass, with the podium garden, the pool and the sunset beyond it",
+          src: siteImage("gallery/bedroom.png"),
+          alt: "A bedroom at sunset: an upholstered headboard under a misty forest mural and a glass chandelier, with full-height glass opening onto a planted balcony",
           width: 1672,
           height: 941,
         },
@@ -1343,13 +1345,13 @@ export const siteContent: SiteContent = {
       },
       garden: {
         image: {
-          src: siteImage("anantaraa/basketball169.png"),
-          alt: "The lit court at the foot of the tower at sunset: a game under way, benches and a basket of balls at the near side, mature planting behind the screen",
-          width: 1672,
-          height: 941,
+          src: siteImage("gallery/roof-lounge.png"),
+          alt: "A rooftop lounge at dusk: deep sofas around a glass-cased fire table and candles, with planting lit from below and the sun setting over the city",
+          width: 1488,
+          height: 1057,
         },
         side: "Exterior",
-        note: "Dusk at the foot of the tower, lit with the same care as the homes above it.",
+        note: "Dusk on the roof, lit with the same care as the homes below it.",
       },
     },
 
@@ -1959,7 +1961,11 @@ export const siteContent: SiteContent = {
       // MoM 2.4.4 — listed beside the general address in the close. It is the
       // general address now, so the footer shows it once.
       rmoEmail: "rmo@vakratundagroup.com",
-      addressLines: ["2505, Prestige Turf Towers", "Mahalaxmi, Mumbai — 400 011"],
+      addressLines: [
+        "2505, Prestige Turf Towers, Turf Estate",
+        "315, Shakti Mills Ln, Mahalakshmi",
+        "Mumbai, Maharashtra 400011, India",
+      ],
     },
   },
 

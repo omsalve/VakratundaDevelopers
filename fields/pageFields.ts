@@ -45,7 +45,7 @@ export function sectionHead({
 
 /* ------------------------------------------------------------------ hero */
 
-export function pageHero(): Field {
+export function pageHero({ image = false }: { image?: boolean } = {}): Field {
   return {
     name: "hero",
     type: "group",
@@ -61,6 +61,23 @@ export function pageHero(): Field {
       textLines("meta", "Credentials row", {
         description: "Short items, dot-separated on the page. Three read best.",
       }),
+      // Only on the pages whose opening is a photograph. Every other page's
+      // opening frame is set on its own ground, and an input for a picture
+      // it never draws would be an edit that changes nothing.
+      ...(image
+        ? [
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              label: "Photograph",
+              admin: {
+                description:
+                  "Set behind the headline. Landscape, with open sky or quiet space on the left for the type.",
+              },
+            } satisfies Field,
+          ]
+        : []),
     ],
   };
 }
@@ -121,6 +138,8 @@ export function cardSection(
     /** The standfirst's field name, where the shape calls it something else. */
     standfirst?: string;
     figures?: boolean;
+    /** Shown under the photographs, where they pair with the cards. */
+    figuresDescription?: string;
   } = {},
 ): Field {
   return {
@@ -129,7 +148,9 @@ export function cardSection(
     label,
     fields: [
       ...sectionHead(options),
-      ...(options.figures ? [figures()] : []),
+      ...(options.figures
+        ? [figures("figures", "Photographs", options.figuresDescription)]
+        : []),
       cardItems({ icons: options.icons }),
     ],
   };
@@ -346,6 +367,54 @@ export function figures(
       { name: "image", type: "upload", relationTo: "media", required: true },
       { name: "caption", type: "text" },
     ],
+  };
+}
+
+/** A set of places, each a photograph with the place's name and a caption. */
+export function placeFigures(
+  name = "figures",
+  label = "Places",
+  description?: string,
+): Field {
+  return {
+    name,
+    type: "array",
+    label,
+    admin: { description },
+    fields: [
+      { name: "image", type: "upload", relationTo: "media", required: true },
+      {
+        type: "row",
+        fields: [
+          {
+            name: "name",
+            type: "text",
+            required: true,
+            label: "Place",
+            admin: { width: "40%", placeholder: "The court" },
+          },
+          {
+            name: "caption",
+            type: "text",
+            admin: { width: "60%" },
+          },
+        ],
+      },
+    ],
+  };
+}
+
+/** A section head over a set of named places. */
+export function placeSection(
+  name: string,
+  label: string,
+  description?: string,
+): Field {
+  return {
+    name,
+    type: "group",
+    label,
+    fields: [...sectionHead(), placeFigures("figures", "Places", description)],
   };
 }
 

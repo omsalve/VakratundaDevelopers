@@ -40,6 +40,13 @@ export interface PageHeroContent {
   heading: SwashHeading;
   standfirst: string;
   meta: string[];
+  /** Only the pages whose opening is a photograph carry one (/experiences). */
+  image?: ImageAsset;
+}
+
+/** A photograph with the name of the place it shows, for a set of places. */
+export interface PlaceFigure extends ImageAsset {
+  name: string;
 }
 
 /**
@@ -205,12 +212,20 @@ export interface SustainabilityPageContent {
 export interface ExperiencesPageContent {
   seo: SeoContent;
   hero: PageHeroContent;
+  /** The postcards: each card's front is the figure at its own position. */
   day: {
     label: string;
     heading: SwashHeading;
     standfirst: string;
     figures: ImageAsset[];
     items: CardItem[];
+  };
+  /** The rack: every other shared space, one named photograph each. */
+  spaces: {
+    label: string;
+    heading: SwashHeading;
+    standfirst: string;
+    figures: PlaceFigure[];
   };
   standard: {
     label: string;

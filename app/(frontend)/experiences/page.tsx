@@ -1,32 +1,33 @@
 import type { Metadata } from "next";
 import ExperiencesHero from "@/components/pages/experiences/ExperiencesHero";
-import ExperiencesHours from "@/components/pages/experiences/ExperiencesHours";
+import ExperiencesPostcards from "@/components/pages/experiences/ExperiencesPostcards";
+import ExperiencesSpaces from "@/components/pages/experiences/ExperiencesSpaces";
 import ExperiencesStandard from "@/components/pages/experiences/ExperiencesStandard";
 import PageShell from "@/components/PageShell";
 import { getPageMetadata, getStandingPage } from "@/lib/getPageContent";
 
 /**
- * Experiences — THE MOMENTS.
+ * Experiences — POSTCARDS FROM HOME.
  *
- * Four moments a home is built for — the arrival, play, the terrace, the
- * community — as four full-bleed photographs, each with its one-word name set
- * over it at display scale, alternating sides, with the ground lifting from
- * the night of the opening and falling away again. (They were labelled with
- * clock times and a day until the client asked for those to go.) It is the ONLY page on the site where type sits over a photograph —
+ * The page is a stack of postcards, all from the same golden hour. It opens on
+ * the first one held up to the light — the roof pool on its cream stock, the
+ * headline lettered across the sky. Then the pile: six moments a home is
+ * built for, each a card whose front is the photograph with its one-word name
+ * lettered over it and whose back is the copy, stamped with the group's mark
+ * and postmarked Mumbai, since 1973. The visitor deals through it by hand;
+ * nothing is driven by the scroll. Under it, the rack: every other space the
+ * residents share, a card each, at the shape of its own photograph.
+ *
+ * It is still the ONLY page on the site where type sits over a photograph —
  * everywhere else a photograph is a plate with its caption underneath — and
- * that one rule is what makes it unmistakable at a glance.
+ * the postcard is where that device comes from.
  *
  * Then the ground changes once, to cream, for the specification: what is true
- * of every home whatever hour it is, set as a ruled schedule with no
- * photography and nothing moving. After four lit frames on deep navy that
+ * of every home whatever the moment, set as a ruled schedule with no
+ * photography and nothing moving. After the cards on the night ground it
  * reads as the lights coming up.
  *
- * FIGURES ARE PAIRED BY POSITION AND NEITHER SIDE IS ASSUMED — a moment with
- * no photograph is set as a typographic band rather than borrowing a frame
- * that is not evidence of it.
- *
- * Content: the `experiences-page` global over lib/pages/living.ts, shape
- * untouched.
+ * Content: the `experiences-page` global over lib/pages/living.ts.
  */
 
 export const revalidate = 60;
@@ -46,12 +47,19 @@ export default async function ExperiencesPage() {
     >
       <ExperiencesHero content={page.hero} />
 
-      <ExperiencesHours
+      <ExperiencesPostcards
         label={page.day.label}
         heading={page.day.heading}
         standfirst={page.day.standfirst}
         items={page.day.items}
         figures={page.day.figures}
+      />
+
+      <ExperiencesSpaces
+        label={page.spaces.label}
+        heading={page.spaces.heading}
+        standfirst={page.spaces.standfirst}
+        figures={page.spaces.figures}
       />
 
       <ExperiencesStandard

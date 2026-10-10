@@ -30,7 +30,7 @@ import type { LegalPageContent } from "./types";
 
 const OFFICE_EMAIL = "rmo@vakratundagroup.com";
 const OFFICE_POSTAL =
-  "Vakratunda Group, 2505, Prestige Turf Towers, Mahalaxmi, Mumbai — 400 011, Maharashtra, India";
+  "Vakratunda Group, 2505, Prestige Turf Towers, Turf Estate, 315, Shakti Mills Ln, Mahalakshmi, Mumbai, Maharashtra 400011, India";
 const UPDATED = "9 September 2026";
 
 export const termsPage: LegalPageContent = {
@@ -245,7 +245,7 @@ export const grievancePage: LegalPageContent = {
     heading: { before: "Grievance ", swash: "Redressal" },
     standfirst:
       "How to raise a complaint about us, a project, or this website — who it goes to, and what happens after it is logged.",
-    meta: ["Complaints", `Updated ${UPDATED}`, "Mahalaxmi"],
+    meta: ["Complaints", `Updated ${UPDATED}`, "Mahalakshmi"],
   },
 
   doc: {

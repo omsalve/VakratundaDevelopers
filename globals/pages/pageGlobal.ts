@@ -19,6 +19,7 @@ export function pageGlobal({
   label,
   path,
   nested = false,
+  hero,
   tabs,
 }: {
   slug: string;
@@ -27,6 +28,8 @@ export function pageGlobal({
   path: string;
   /** Set where the global also renders the routes under `path`. */
   nested?: boolean;
+  /** Options for the opening frame — a photograph, where the page draws one. */
+  hero?: Parameters<typeof pageHero>[0];
   tabs: Tab[];
 }): GlobalConfig {
   return {
@@ -45,7 +48,7 @@ export function pageGlobal({
     fields: [
       {
         type: "tabs",
-        tabs: [{ label: "Opening", fields: [pageHero()] }, ...tabs, seoTab()],
+        tabs: [{ label: "Opening", fields: [pageHero(hero)] }, ...tabs, seoTab()],
       },
     ],
   };

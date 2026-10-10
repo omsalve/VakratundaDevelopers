@@ -805,6 +805,8 @@ async function seedPages(payload: Payload) {
 
   await fillGlobal(payload, "experiences-page", [
     ["hero", heroOf(experiencesPage.hero)],
+    // The one opening frame with a photograph field.
+    ["hero.image", await m(experiencesPage.hero.image)],
     [
       "day",
       {
@@ -814,6 +816,20 @@ async function seedPages(payload: Payload) {
           return image === undefined
             ? undefined
             : { image, caption: figure.caption ?? null };
+        }),
+      },
+    ],
+    [
+      "spaces",
+      {
+        label: experiencesPage.spaces.label,
+        heading: swashOf(experiencesPage.spaces.heading),
+        standfirst: experiencesPage.spaces.standfirst,
+        figures: await rowsOf(experiencesPage.spaces.figures, async (figure) => {
+          const image = await m(figure);
+          return image === undefined
+            ? undefined
+            : { image, name: figure.name, caption: figure.caption ?? null };
         }),
       },
     ],

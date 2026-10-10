@@ -5,28 +5,29 @@
  * live in one of these buildings, and what the group does with the parts of
  * them that are not homes.
  *
- * THE PHOTOGRAPHS ARE HALF RE-SHOT. Two of the four frames are now
- * Anantaraa — the court for the play moment, and the screening room for the
- * community one — and each is cast against the copy it is actually evidence for
- * rather than against the copy it happened to sit next to. Both also appear in
- * the landing page's spread, a whole page away and cropped to a different
- * shape, which is the rule this site works to: a frame repeated within a
- * screen of itself is a repeat, the same place seen twice across two pages is
- * a library.
+ * EXPERIENCES IS SET IN ONE LIGHT. Its photographs are renders of the group's
+ * amenities, and the five that arrived together in October 2026 — the roof
+ * pool, the bedroom, the balcony, the skyline gym and the fire-lit roof
+ * lounge — share a single golden hour with the older Anantaraa set
+ * (`anantaraa/…`) and the first gallery (`gallery/…`). That shared light is
+ * what lets the page be one evening's postcards rather than a brochure of
+ * unrelated places.
  *
- * THE OTHER TWO ARE STILL THE OLD ART, and they are the next to go. Neither
- * the arrival nor the terrace has a frame that is evidence of what it claims —
- * the walk in is about a lobby and a drop-off, and there is no photograph of
- * either.
+ * EVERY CAPTION STAYS INSIDE ITS FRAME. None of these renders is tied here to
+ * a named project, so no line below says which building a room is in, and
+ * nothing describes an amenity that is not visible in the photograph beside
+ * it. Each card is cast against the copy it is evidence for: the bedroom for
+ * rest, the children's room for play, and so on.
  *
- * NO CLOCK TIMES OR DAYS. The four moments used to be labelled 07:40, 16:15,
- * 20:00 and Saturday; each now carries a one-word name instead, which the
- * Experiences band sets large over its photograph.
+ * NO CLOCK TIMES OR DAYS. The moments used to be labelled 07:40, 16:15, 20:00
+ * and Saturday until the client asked for those to go; each carries a
+ * one-word name instead, which the postcards letter across their fronts.
+ * "Arrival" left with the October revamp: it was about a lobby and a
+ * drop-off, and there was never a photograph of either.
  *
  * COPY: AUTHORED. Nothing below states a figure that is not already in
- * lib/content.ts, and nothing describes an amenity that is not visible in the
- * photograph beside it. The hospitality page in particular claims a practice,
- * not a portfolio: the group runs food and beverage space inside its own
+ * lib/content.ts. The hospitality page in particular claims a practice, not a
+ * portfolio: the group runs food and beverage space inside its own
  * developments, and every line is written to stay inside that.
  */
 
@@ -40,76 +41,186 @@ export const experiencesPage: ExperiencesPageContent = {
   seo: {
     title: "Experiences",
     description:
-      "Homes designed around everyday life — the arrival, the play space, the terrace and the rooms a community shares — and what comes standard in every Vakratunda home.",
+      "Homes designed around everyday life — the room you come home to, the play space, the roof and the rooms a community shares — and what comes standard in every Vakratunda home.",
   },
 
   hero: {
     label: "Experiences",
     heading: { before: "The moments a ", swash: "home", after: " is built for" },
     standfirst:
-      "A home is judged by everyday life, not by its launch render. So that is what we design for: the walk in, the play downstairs, the terrace shared with neighbours.",
+      "A home is judged by everyday life, not by its launch render. So that is what we design for: the room you come home to, the play downstairs, the roof shared with neighbours.",
     meta: ["Residential", "Mumbai · MMR", "Since 1973"],
+    image: {
+      src: siteImage("gallery/roof-pool.png"),
+      alt: "A rooftop pool at sunset: timber decking, two loungers and a lit planted wall beside the water, with the city skyline beyond a glass balustrade.",
+      width: 1489,
+      height: 1056,
+    },
   },
 
+  /* The postcards. A card's front is the figure at its own position, so the
+     two lists are edited together: the bedroom is Rest because it is first. */
   day: {
     label: "Moments we design for",
-    heading: { before: "From the front door to the ", swash: "terrace", after: "" },
+    heading: { before: "From your own room to the ", swash: "roof", after: "" },
     standfirst:
-      "Four moments we design for by name — long after handover, they are how a family measures home.",
+      "Six moments we design for by name — long after handover, they are how a family measures home.",
     figures: [
       {
-        src: siteImage("gallery/outdoor.png"),
-        alt: "The landscaped deck of a Vakratunda development in the late afternoon, with seating under mature planting.",
+        src: siteImage("gallery/bedroom.png"),
+        alt: "A bedroom at sunset: an upholstered headboard under a misty forest mural and a glass chandelier, with full-height glass opening onto a planted balcony.",
         width: 1672,
         height: 941,
-        caption: "The landscaped deck, shaded and planted.",
+        caption: "The bedroom, as the sun goes down.",
       },
       {
-        src: siteImage("anantaraa/basketball169.png"),
-        alt: "A game under way on the lit court of a Vakratunda development in the late afternoon, with benches and a basket of balls at the near side.",
-        width: 1672,
-        height: 941,
-        caption: "Room to play, safely.",
+        src: siteImage("gallery/balcony.png"),
+        alt: "A private balcony at sunset: a woven lounge chair, a footstool and potted palms on timber decking, behind a glass balustrade high above the city.",
+        width: 1482,
+        height: 1061,
+        caption: "A private balcony, open to the city.",
       },
       {
-        src: siteImage("skydeck.jpg"),
-        alt: "A rooftop sky deck looking out across the Mumbai skyline at dusk.",
-        width: 4096,
-        height: 2160,
-        caption: "The sky deck, open to the city.",
+        src: siteImage("gallery/skyline-gym.png"),
+        alt: "A residents’ gym at dusk: treadmills, a stair climber and racked dumbbells along a full-height wall of glass, with the skyline and the setting sun beyond.",
+        width: 1492,
+        height: 1054,
+        caption: "The residents’ gym, along its wall of glass.",
+      },
+      {
+        src: siteImage("gallery/kids.png"),
+        alt: "The children’s room: a book wall and small timber furniture beside a climbing wall, with the play garden through full-height glass.",
+        width: 1537,
+        height: 1023,
+        caption: "The children’s room and its play garden.",
       },
       {
         src: siteImage("anantaraa/theatre169.png"),
-        alt: "Residents together in the screening room of a Vakratunda development, tiered velvet seating turned to a lit screen.",
+        alt: "The residents’ screening room: tiered velvet sofas lit from beneath, ribbed acoustic walls and a fibre-optic ceiling, turned to a lit screen.",
         width: 1672,
         height: 941,
-        caption: "The whole building, in one room.",
+        caption: "The screening room, lit for a film.",
+      },
+      {
+        src: siteImage("gallery/roof-lounge.png"),
+        alt: "A rooftop lounge at dusk: deep sofas around a glass-cased fire table and candles, with planting lit from below and the sun setting over the city.",
+        width: 1488,
+        height: 1057,
+        caption: "The roof lounge, by firelight.",
       },
     ],
     items: [
       {
-        id: "arrival",
-        eyebrow: "Arrival",
-        title: "The walk in",
-        body: "A lobby that welcomes, lifts sized for the real rush, and a drop-off where the school run and deliveries never share a lane.",
+        id: "rest",
+        eyebrow: "Rest",
+        title: "A room that keeps the evening",
+        body: "Full-height glass to the balcony, planting just beyond it, and a room laid out so the last of the light reaches the bed before the lamps do.",
       },
       {
-        id: "afternoon",
+        id: "outlook",
+        eyebrow: "Outlook",
+        title: "Your own share of the sky",
+        body: "A balcony deep enough for a chair, a footstool and a pot of palms, with glass rather than a wall at its edge — so the city stays in view.",
+      },
+      {
+        id: "move",
+        eyebrow: "Move",
+        title: "A gym with the skyline in it",
+        body: "Cardio along a wall of glass and free weights racked and ready — a gym in the building, so the habit never depends on the commute.",
+      },
+      {
+        id: "play",
         eyebrow: "Play",
-        title: "Play, within sight of home",
-        body: "Play areas overlooked by the homes above, shaded from the hottest sun and surfaced so a fall is only a fall — child-safe by design.",
+        title: "A room of their own",
+        body: "Built for the youngest residents: a wall of books, furniture sized for them, a wall to climb — and the play garden just past the glass.",
       },
       {
-        id: "evening",
-        eyebrow: "Leisure",
-        title: "A terrace made for living",
-        body: "Planted, softly lit and screened from the road — a deck built to be lived on, not just photographed, and only a lift ride from home.",
-      },
-      {
-        id: "weekend",
+        id: "community",
         eyebrow: "Community",
         title: "The whole community, together",
-        body: "Common spaces sized for the days a building comes alive — society meetings, festivals, birthdays that spill out of a home. That is how a community is made.",
+        body: "Common rooms sized for the days a building comes alive — a film night for the whole society, a birthday that spills out of a home. That is how a community is made.",
+      },
+      {
+        id: "unwind",
+        eyebrow: "Unwind",
+        title: "A roof made for evenings",
+        body: "Deep sofas, a fire table and planting lit from below — a terrace built to be lived on, not just photographed, and only a lift ride from home.",
+      },
+    ],
+  },
+
+  /* The rack. Every other shared space in the gallery, each once. The two
+     portrait frames lead their columns, which is what lets the rack balance
+     at three columns: portrait-and-landscape, twice, beside four landscapes. */
+  spaces: {
+    label: "Every space",
+    heading: { before: "Shared by ", swash: "everyone", after: " who lives here" },
+    standfirst:
+      "Gardens, courts, pools and common rooms — planned into the building from the start, never added to it later.",
+    figures: [
+      {
+        name: "The roof terrace",
+        src: siteImage("anantaraa/terrace916.png"),
+        alt: "The roof terrace at sunset: residents in low seating and on an open lawn between planted beds and timber canopies, with the lit city and the hills below the parapet.",
+        width: 941,
+        height: 1672,
+        caption: "A lawn, low seating and timber canopies above the city.",
+      },
+      {
+        name: "The garden",
+        src: siteImage("gallery/outdoor.png"),
+        alt: "The landscaped garden at the foot of the tower at sunset, with lit stone seating, a lawn and a timber deck.",
+        width: 1672,
+        height: 941,
+        caption: "Lit stone seating, a lawn and a deck at the tower’s foot.",
+      },
+      {
+        name: "The dining terrace",
+        src: siteImage("gallery/restaurant.png"),
+        alt: "The rooftop dining terrace at sunset: tables laid among planting, with the city framed by an opening in the wall behind the bar.",
+        width: 941,
+        height: 1672,
+        caption: "Tables laid among planting, the city beyond the bar.",
+      },
+      {
+        name: "The court",
+        src: siteImage("anantaraa/basketball169.png"),
+        alt: "The lit court at the foot of the tower at sunset: a game under way, benches and a basket of balls at the near side, mature planting behind the screen.",
+        width: 1672,
+        height: 941,
+        caption: "Lit for a game, with benches at the courtside.",
+      },
+      {
+        name: "The pool",
+        src: siteImage("gallery/pool169.png"),
+        alt: "A pool at dusk beside a residential tower: lit water between a planted wall and the building, with palms, loungers and umbrellas along its edge.",
+        width: 2560,
+        height: 1440,
+        caption: "Lit water beside the tower, loungers along its edge.",
+      },
+      {
+        name: "The fitness deck",
+        src: siteImage("anantaraa/outgym169.png"),
+        alt: "The open-air fitness deck on the roof at sunset: equipment on a coloured track beside timber decking and lit planters, a resident at the parapet with the skyline beyond.",
+        width: 1672,
+        height: 941,
+        caption: "Open-air equipment on the roof, beside the planting.",
+      },
+      {
+        name: "The gym by the pool",
+        src: siteImage("anantaraa/gym169.png"),
+        alt: "The residents’ gym: treadmills and weights ranged along a full-height wall of glass, with the podium garden, the pool and the sunset beyond it.",
+        width: 1672,
+        height: 941,
+        caption: "Treadmills and weights along a wall of glass.",
+      },
+      {
+        name: "The residents’ lounge",
+        src: siteImage("gallery/bar.png"),
+        alt: "The residents’ lounge: timber panelling, leather banquettes and brass pendants over round tables.",
+        width: 1672,
+        height: 941,
+        caption: "Timber panelling, leather banquettes, brass pendants.",
       },
     ],
   },

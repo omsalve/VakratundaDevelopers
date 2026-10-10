@@ -1627,6 +1627,10 @@ export interface ExperiencesPage {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Set behind the headline. Landscape, with open sky or quiet space on the left for the type.
+     */
+    image?: (number | null) | Media;
   };
   day?: {
     /**
@@ -1642,6 +1646,9 @@ export interface ExperiencesPage {
       after?: string | null;
     };
     standfirst?: string | null;
+    /**
+     * Each card's front is the photograph at its own position: the first photograph is the first card's. Six read best.
+     */
     figures?:
       | {
           image: number | Media;
@@ -1657,6 +1664,32 @@ export interface ExperiencesPage {
           eyebrow?: string | null;
           title: string;
           body: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  spaces?: {
+    /**
+     * The small spaced capitals above the headline.
+     */
+    label?: string | null;
+    /**
+     * The middle word is set in the italic display face — e.g. before: "The ", italic: "story", after: " behind the structure".
+     */
+    heading?: {
+      before?: string | null;
+      swash?: string | null;
+      after?: string | null;
+    };
+    standfirst?: string | null;
+    /**
+     * The rack under the postcards. Mix landscape and portrait photographs freely; each keeps its own shape.
+     */
+    figures?:
+      | {
+          image: number | Media;
+          name: string;
+          caption?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -3698,6 +3731,7 @@ export interface ExperiencesPageSelect<T extends boolean = true> {
               text?: T;
               id?: T;
             };
+        image?: T;
       };
   day?:
     | T
@@ -3724,6 +3758,27 @@ export interface ExperiencesPageSelect<T extends boolean = true> {
               eyebrow?: T;
               title?: T;
               body?: T;
+              id?: T;
+            };
+      };
+  spaces?:
+    | T
+    | {
+        label?: T;
+        heading?:
+          | T
+          | {
+              before?: T;
+              swash?: T;
+              after?: T;
+            };
+        standfirst?: T;
+        figures?:
+          | T
+          | {
+              image?: T;
+              name?: T;
+              caption?: T;
               id?: T;
             };
       };

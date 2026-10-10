@@ -1,0 +1,177 @@
+/* /experiences — the rack. See ExperiencesSpaces.tsx. */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad) var(--section-pad-lg);
+  background: var(--navy-900);
+}
+
+/* ---- The head: the headline left, the standfirst low on the right -------- */
+
+.head {
+  display: grid;
+  gap: var(--space-5);
+  margin-bottom: var(--head-gap);
+}
+
+.label {
+  margin-bottom: var(--space-5);
+}
+
+.heading {
+  max-width: 16ch;
+  margin: 0;
+}
+
+.standfirst {
+  max-width: 34rem;
+  margin: 0;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  color: var(--text-on-navy-muted);
+  text-wrap: pretty;
+}
+
+/* ---- The rack ------------------------------------------------------------
+   Columns rather than a grid, so every card keeps its photograph's own shape
+   and the rack still closes up without gaps. */
+
+.rack {
+  columns: 2;
+  column-gap: clamp(1rem, 2.6vw, 2.5rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slot {
+  break-inside: avoid;
+  margin-block-end: clamp(1.75rem, 3.4vw, 3rem);
+}
+
+.card {
+  margin: 0;
+}
+
+.stock {
+  padding: clamp(4px, 0.45vw, 7px);
+  background: var(--cream-100);
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-m);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--ratio, 16 / 9);
+  border-radius: 3px;
+  background: var(--navy-800);
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* ---- Caption: the rose rule, the place, the line ------------------------- */
+
+.caption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: var(--space-2);
+  margin-block-start: var(--space-4);
+}
+
+.rule {
+  display: block;
+  inline-size: var(--space-5);
+  block-size: var(--hairline);
+  background: var(--accent-rose);
+}
+
+.place {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.note {
+  grid-column: 2;
+  font-size: var(--fs-small);
+  line-height: var(--lh-caption);
+  color: var(--text-on-navy-muted);
+  text-wrap: pretty;
+}
+
+/* ---- Hover: the card lifts off the rack. Fine pointers only. ------------ */
+
+@media (hover: hover) and (pointer: fine) {
+  .stock {
+    transition:
+      transform 0.8s var(--ease-out-expo),
+      box-shadow 0.8s var(--ease-out-expo);
+  }
+
+  .image {
+    transition: transform 1.4s var(--ease-out-expo);
+  }
+
+  .card:hover .stock {
+    transform: translate3d(0, -5px, 0);
+    box-shadow: var(--shadow-l);
+  }
+
+  .card:hover .image {
+    transform: scale(1.04);
+  }
+}
+
+/* ---- Wide ---------------------------------------------------------------- */
+
+@media (min-width: 48rem) {
+  .rack {
+    columns: 3;
+  }
+}
+
+@media (min-width: 64rem) {
+  .head {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    column-gap: clamp(3rem, 5vw, 5.5rem);
+    align-items: end;
+  }
+
+  .standfirst {
+    padding-block-end: 0.35em;
+  }
+}
+
+/* ---- Narrow: two columns, so the caption drops its rule ------------------ */
+
+@media (max-width: 47.99rem) {
+  .caption {
+    grid-template-columns: minmax(0, 1fr);
+    margin-block-start: var(--space-3);
+  }
+
+  .rule {
+    display: none;
+  }
+
+  .note {
+    grid-column: 1;
+    font-size: var(--fs-caption);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stock,
+  .image {
+    transition: none;
+    transform: none !important;
+  }
+}

@@ -1,26 +1,79 @@
-/* /experiences — before the day starts. See ExperiencesHero.tsx. */
+/* /experiences — the opening, a postcard front. See ExperiencesHero.tsx. */
 
 .section {
   position: relative;
-  min-height: clamp(32rem, calc(100svh - var(--header-h)), 50rem);
-  display: flex;
-  align-items: flex-end;
-  /* The hour before the light: deeper than the page's own ground. */
   background: var(--navy-900);
-  padding-block: calc(var(--header-h) + var(--space-9)) var(--section-pad-lg);
+  /* The stock sits just inside the glass, clear of the masthead. */
+  --stock-gap: clamp(0.75rem, 1.4vw, 1.25rem);
+  padding: calc(var(--header-h) + var(--space-2)) var(--stock-gap) 0;
 }
 
-.inner {
+/* The card stock: cream, a little proud of the photograph on every side, with
+   the page's soft corner and a long shadow onto the night ground. */
+.card {
   position: relative;
-  z-index: 1;
-  width: 100%;
+  height: clamp(32rem, calc(100svh - var(--header-h) - var(--space-2) - var(--stock-gap)), 58rem);
+  padding: clamp(6px, 0.6vw, 10px);
+  background: var(--cream-100);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-l);
 }
 
-.stack {
+.photo {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: calc(var(--radius-m) - 5px);
+  background: var(--navy-800);
+  isolation: isolate;
+}
+
+.image {
+  object-fit: cover;
+  object-position: 50% 55%;
+}
+
+/* Settles into the stock on arrival — declared here so the first paint is
+   already the starting crop and nothing jumps when the script takes over. */
+:global(.motion-on) .image {
+  transform: scale(1.07);
+}
+
+/* Shade where the type is and nowhere else: from the left for the headline,
+   from the foot for the standfirst. The sun, on the right, stays clear. */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(12, 18, 48, 0.76) 0%,
+      rgba(12, 18, 48, 0.46) 30%,
+      rgba(12, 18, 48, 0) 58%
+    ),
+    linear-gradient(to top, rgba(12, 18, 48, 0.6) 0%, rgba(12, 18, 48, 0) 36%);
+}
+
+/* ---- The lettering ------------------------------------------------------- */
+
+.copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-7);
+  padding: clamp(1.5rem, 4.2vw, 4.5rem);
+}
+
+.lead {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 48rem;
+  padding-block-start: clamp(0rem, 2vw, 1.5rem);
 }
 
 .label {
@@ -28,22 +81,37 @@
 }
 
 .heading {
-  max-width: 16ch;
-  margin-bottom: var(--space-6);
+  max-width: 13.5ch;
+  margin: 0;
+  color: var(--text-on-navy);
+  text-wrap: balance;
+  text-shadow: 0 2px 28px rgba(12, 18, 48, 0.45);
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
 }
 
 .standfirst {
+  max-width: var(--measure-overlay);
+  margin: 0;
   font-size: var(--fs-lead);
   line-height: var(--lh-lead);
-  max-width: var(--measure-lead);
-  color: var(--text-on-navy-muted);
-  margin-bottom: var(--space-7);
+  color: rgba(244, 242, 239, 0.9);
+  text-wrap: pretty;
+  text-shadow: 0 1px 18px rgba(12, 18, 48, 0.5);
 }
 
 .meta {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .metaItem {
@@ -51,12 +119,46 @@
   font-size: var(--fs-caption);
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--text-on-navy-muted);
+  color: rgba(244, 242, 239, 0.78);
 }
 
+/* No photograph in the global: the stock frames the night ground instead. */
+.card[data-bare="true"] .photo {
+  background: var(--navy-800);
+}
+
+/* ---- Narrow -------------------------------------------------------------- */
+
 @media (max-width: 47.99rem) {
-  .section {
-    min-height: 0;
-    padding-block: calc(var(--header-h) + var(--space-8)) var(--section-pad);
+  .card {
+    height: clamp(34rem, calc(100svh - var(--header-h) - var(--space-2) - var(--stock-gap)), 48rem);
+  }
+
+  /* Right of centre, so the sun stays in a portrait crop. */
+  .image {
+    object-position: 66% 50%;
+  }
+
+  /* The type runs the full width here, so the shade does too: down from the
+     top for the headline, up from the foot for the standfirst. */
+  .shade {
+    background: linear-gradient(
+      to bottom,
+      rgba(12, 18, 48, 0.72) 0%,
+      rgba(12, 18, 48, 0.3) 30%,
+      rgba(12, 18, 48, 0) 46%,
+      rgba(12, 18, 48, 0.32) 60%,
+      rgba(12, 18, 48, 0.84) 100%
+    );
+  }
+
+  .lead {
+    padding-block-start: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transform: none;
   }
 }

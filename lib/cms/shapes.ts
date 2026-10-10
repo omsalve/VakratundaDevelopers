@@ -10,6 +10,7 @@ import type {
   FaqItem,
   LedgerEntry,
   PageHeroContent,
+  PlaceFigure,
   ProseClause,
   ProseDoc,
   Stat,
@@ -77,17 +78,21 @@ export function mergeSection<T extends SectionHead>(
 
 export interface CmsHero extends CmsSectionHead {
   meta?: Maybe<CmsLine[]>;
+  /** Only on the globals whose opening frame has a photograph field. */
+  image?: CmsMedia;
 }
 
 export function mergeHero(
   value: Maybe<CmsHero>,
   fallback: PageHeroContent,
 ): PageHeroContent {
+  const photograph = mediaImage(value?.image) ?? fallback.image;
   return {
     label: text(value?.label, fallback.label),
     heading: heading(value?.heading, fallback.heading),
     standfirst: text(value?.standfirst, fallback.standfirst),
     meta: lines(value?.meta, fallback.meta),
+    ...(photograph ? { image: photograph } : {}),
   };
 }
 
@@ -274,6 +279,22 @@ export function mergeFigures(
   fallback: ImageAsset[],
 ): ImageAsset[] {
   return rows(value, fallback, (row) => mediaImage(row.image, row.caption));
+}
+
+export interface CmsPlaceFigure extends CmsFigure {
+  name?: Maybe<string>;
+}
+
+/** As `mergeFigures`, for photographs that name the place they show. */
+export function mergePlaceFigures(
+  value: Maybe<CmsPlaceFigure[]>,
+  fallback: PlaceFigure[],
+): PlaceFigure[] {
+  return rows(value, fallback, (row) => {
+    const photograph = mediaImage(row.image, row.caption);
+    const name = optionalText(row.name);
+    return photograph && name ? { ...photograph, name } : undefined;
+  });
 }
 
 /* ----------------------------------------------------------------- prose */

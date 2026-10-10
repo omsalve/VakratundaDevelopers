@@ -14,6 +14,7 @@ import {
   mergeFigures,
   mergeHero,
   mergeLedgerSection,
+  mergePlaceFigures,
   mergeProseDoc,
   mergeSection,
   mergeSeo,
@@ -144,6 +145,10 @@ const pages = {
     day: {
       ...mergeCardSection(doc.day, shipped.day),
       figures: mergeFigures(doc.day?.figures, shipped.day.figures),
+    },
+    spaces: {
+      ...mergeSection(doc.spaces, shipped.spaces),
+      figures: mergePlaceFigures(doc.spaces?.figures, shipped.spaces.figures),
     },
     standard: mergeCardSection(doc.standard, shipped.standard),
     coda: text(doc.coda, shipped.coda),

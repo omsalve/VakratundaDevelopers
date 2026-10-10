@@ -12,10 +12,13 @@
     "placeholders": "node scripts/make-placeholders.mjs",
     "seed": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/seed.mts",
     "typecheck": "tsc --noEmit",
+    "update:address": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/update-office-address.mts",
     "update:contact": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/update-contact-details.mts",
     "update:copy": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/update-site-copy.mts",
+    "update:imagery": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/update-experiences-imagery.mts",
     "repair:cloudinary": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/repair-cloudinary.mts",
-    "upload:site-images": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/upload-site-images.mts"
+    "upload:site-images": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/upload-site-images.mts",
+    "update:contact-form": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --import ./scripts/register-hooks.mjs scripts/update-contact-form-copy.mts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.85.1",
