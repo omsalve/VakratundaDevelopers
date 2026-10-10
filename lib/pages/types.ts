@@ -179,6 +179,13 @@ export interface AboutPageContent {
     heading: SwashHeading;
     standfirst: string;
     image?: ImageAsset;
+    /** The Chairman on his own, under the pair: a portrait and a paragraph. Shipped copy. */
+    chairman: {
+      name: string;
+      title: string;
+      body: string;
+      image: ImageAsset;
+    };
   };
 }
 

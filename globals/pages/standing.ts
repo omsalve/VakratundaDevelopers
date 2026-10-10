@@ -27,6 +27,21 @@ export const AboutPage = pageGlobal({
                   "One photograph of the Chairman and the Director together. Any shape is shown whole, never cropped. Until one is uploaded the page shows an empty frame in its place.",
               },
             },
+            {
+              name: "chairman",
+              type: "group",
+              label: "The Chairman, on his own",
+              admin: {
+                description:
+                  "The portrait and paragraph under the pair. Anything left empty shows the shipped copy and photograph.",
+              },
+              fields: [
+                { name: "image", type: "upload", relationTo: "media", label: "Portrait" },
+                { name: "name", type: "text", label: "Name" },
+                { name: "title", type: "text", label: "Designation" },
+                { name: "body", type: "textarea", label: "Paragraph" },
+              ],
+            },
           ],
         },
       ],

@@ -114,8 +114,17 @@ const pages = {
   about: definePage("about-page", aboutPage, (doc, shipped) => ({
     story: mergeStory(doc.story, shipped.story),
     principles: mergeCardSection(doc.principles, shipped.principles),
-    // Only the photograph is a field; the framing stays shipped copy.
-    family: { ...shipped.family, image: mediaImage(doc.family?.image) },
+    // The pair's photograph and the Chairman's block are fields; the framing stays shipped copy.
+    family: {
+      ...shipped.family,
+      image: mediaImage(doc.family?.image),
+      chairman: {
+        name: text(doc.family?.chairman?.name, shipped.family.chairman.name),
+        title: text(doc.family?.chairman?.title, shipped.family.chairman.title),
+        body: text(doc.family?.chairman?.body, shipped.family.chairman.body),
+        image: image(doc.family?.chairman?.image, shipped.family.chairman.image),
+      },
+    },
   })),
 
   projects: definePage("projects-page", projectsPage, (doc, shipped) => ({

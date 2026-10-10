@@ -25,7 +25,8 @@
 
 /* Everything hangs the same distance off the line as the story above. */
 .head,
-.figure {
+.figure,
+.chairman {
   padding-inline-start: calc(var(--spine-inset) + var(--space-6));
 }
 
@@ -82,6 +83,41 @@
   max-width: min(46rem, calc(min(80svh, 44rem) * var(--slot-n)));
 }
 
+/* ---- The Chairman, on his own ------------------------------------------ */
+
+.chairman {
+  margin: var(--section-pad) 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  gap: var(--space-8, 3rem);
+  align-items: center;
+}
+
+/* Its own shape (--plate-ratio, set inline from the image), uncropped. */
+.chairmanSlot {
+  width: 100%;
+  max-width: 24rem;
+}
+
+.chairmanText {
+  margin: 0;
+}
+
+.chairmanTitle {
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+.chairmanName {
+  margin-bottom: var(--space-5);
+}
+
+.chairmanBody {
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  max-width: var(--measure-lead);
+  color: var(--text-on-navy-muted);
+}
+
 /* ---- Narrow -------------------------------------------------------------- */
 
 @media (max-width: 47.99rem) {
@@ -90,7 +126,13 @@
   }
 
   .head,
-  .figure {
+  .figure,
+  .chairman {
     padding-inline-start: var(--space-6);
+  }
+
+  .chairman {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
   }
 }

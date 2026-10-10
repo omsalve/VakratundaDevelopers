@@ -55,6 +55,17 @@ export function AboutFamily({ content }: { content: AboutPageContent["family"] }
       duration: 1.3,
       start: "top 70%",
     });
+
+    // The Chairman's own portrait, triggered by itself further down the section.
+    const chairmanEl = rootEl.querySelector(`.${styles.chairman}`);
+    if (chairmanEl) {
+      maskReveal(`.${styles.chairmanSlot}`, chairmanEl, {
+        from: "bottom",
+        duration: 1.3,
+        start: "top 75%",
+      });
+      revealOnEnter(`.${styles.chairmanText}`, chairmanEl);
+    }
   }, []);
 
   const { image } = content;
@@ -120,6 +131,31 @@ export function AboutFamily({ content }: { content: AboutPageContent["family"] }
               sizes="46rem"
             />
           )}
+        </figure>
+
+        <figure className={styles.chairman}>
+          <div
+            className={`p-plate ${styles.chairmanSlot}`}
+            style={
+              {
+                "--plate-ratio": `${content.chairman.image.width} / ${content.chairman.image.height}`,
+              } as CSSProperties
+            }
+          >
+            <Image
+              src={content.chairman.image.src}
+              alt={content.chairman.image.alt}
+              width={content.chairman.image.width}
+              height={content.chairman.image.height}
+              sizes="(max-width: 47.99rem) 90vw, 30rem"
+              quality={82}
+            />
+          </div>
+          <figcaption className={styles.chairmanText} data-reveal="up">
+            <p className={`u-label ${styles.chairmanTitle}`}>{content.chairman.title}</p>
+            <h3 className={`u-h3 ${styles.chairmanName}`}>{content.chairman.name}</h3>
+            <p className={styles.chairmanBody}>{content.chairman.body}</p>
+          </figcaption>
         </figure>
       </div>
     </section>

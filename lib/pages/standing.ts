@@ -95,6 +95,18 @@ export const aboutPage: AboutPageContent = {
     heading: { before: "Leading ", swash: "together", after: "" },
     standfirst:
       "Ram and Anjana Makhecha lead Vakratunda as husband and wife — he as Chairman, she as Director — guided by the family values the group is built on.",
+    // AUTHORED from what content.ts already says of him (bio, superpower).
+    chairman: {
+      name: "Ram Kantilal Makhecha",
+      title: "Chairman",
+      body: "As Chairman, Ram Makhecha is the passionate young visionary behind Vakratunda's turn towards the customer — the conviction that a family should be heard before a single line is drawn. He brings a contemporary outlook to a practice that has been building since 1973, rooted in care for the society every address becomes part of.",
+      image: {
+        src: siteImage("team/ram2.JPG"),
+        alt: "Portrait — Ram Makhecha, Chairman of Vakratunda Group",
+        width: 4672,
+        height: 7008,
+      },
+    },
   },
 
   principles: {

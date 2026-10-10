@@ -1401,6 +1401,15 @@ export interface AboutPage {
      * One photograph of the Chairman and the Director together. Any shape is shown whole, never cropped. Until one is uploaded the page shows an empty frame in its place.
      */
     image?: (number | null) | Media;
+    /**
+     * The portrait and paragraph under the pair. Anything left empty shows the shipped copy and photograph.
+     */
+    chairman?: {
+      image?: (number | null) | Media;
+      name?: string | null;
+      title?: string | null;
+      body?: string | null;
+    };
   };
   principles?: {
     /**
@@ -3570,6 +3579,14 @@ export interface AboutPageSelect<T extends boolean = true> {
     | T
     | {
         image?: T;
+        chairman?:
+          | T
+          | {
+              image?: T;
+              name?: T;
+              title?: T;
+              body?: T;
+            };
       };
   principles?:
     | T
