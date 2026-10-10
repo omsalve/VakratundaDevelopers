@@ -16,6 +16,7 @@ import {
 import { getPayloadClient, readWithFallback } from "./cms/read";
 import { mergeFigures, mergeSeo } from "./cms/shapes";
 import {
+  PROJECT_PLACEHOLDER,
   siteContent,
   type AtmospherePlate,
   type Commitment,
@@ -58,16 +59,26 @@ function isProject(value: unknown): value is Project {
   return typeof value === "object" && value !== null && "name" in value;
 }
 
-function toSlide(project: Project, index: number): ProjectSlide {
-  const fallback =
-    siteContent.gallery.slides[index] ?? siteContent.gallery.slides[0];
+/**
+ * A project with no card image falls back to its own shipped photograph,
+ * matched by slug, and otherwise to the placeholder plate — never to another
+ * project's photograph, which a positional fallback would hand it.
+ */
+function toSlide(project: Project): ProjectSlide {
+  const shipped = siteContent.gallery.slides.find(
+    (slide) => slide.id === project.slug,
+  );
+  const fallback = shipped?.image ?? {
+    ...PROJECT_PLACEHOLDER,
+    alt: `${project.name}, ${project.locality}. Photograph to follow.`,
+  };
   return {
     id: project.slug ?? String(project.id),
     name: project.name,
     locality: project.locality,
     status: (project.status ?? "Completed") as ProjectStatus,
     blurb: text(project.blurb, ""),
-    image: image(project.cardImage, fallback.image),
+    image: image(project.cardImage, fallback),
   };
 }
 

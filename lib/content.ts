@@ -282,6 +282,17 @@ export interface ProjectSlide {
   image: ImageAsset;
 }
 
+/**
+ * The plate a project card shows until its photograph is uploaded: the navy
+ * share-card placeholder, already hosted. The alt is per project and is set
+ * where the card is built (lib/getSiteContent.ts).
+ */
+export const PROJECT_PLACEHOLDER: Omit<ImageAsset, "alt"> = {
+  src: siteImage("og.jpg"),
+  width: 1600,
+  height: 840,
+};
+
 export interface GalleryContent {
   /** The small rubric over the headline. It has no /admin field yet. */
   eyebrow: string;
